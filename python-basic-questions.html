@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Interactivo de Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .quiz-option {
+            transition: all 0.2s ease-in-out;
+        }
+        .quiz-option:hover:not([disabled]) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .correct {
+            background-color: #22c55e !important; /* green-500 */
+            color: white !important;
+            border-color: #16a34a !important; /* green-600 */
+        }
+        .incorrect {
+            background-color: #ef4444 !important; /* red-500 */
+            color: white !important;
+            border-color: #dc2626 !important; /* red-600 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="quiz-container" class="w-full max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
+        
+        <!-- Pantalla de Inicio -->
+        <div id="start-screen">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">Cuestionario de Python</h1>
+            <p class="text-slate-600 mb-6">Evalúa tus conocimientos básicos de programación en Python.</p>
+            <button id="start-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                ¡Empezar Cuestionario!
+            </button>
+        </div>
+
+        <!-- Pantalla del Cuestionario -->
+        <div id="quiz-screen" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-slate-800">Pregunta <span id="question-number"></span></h2>
+                <span id="progress-text" class="text-sm font-medium text-slate-500"></span>
+            </div>
+            
+            <div class="bg-slate-50 rounded-lg p-5 mb-6">
+                <p id="question-text" class="text-lg text-slate-700 leading-relaxed"></p>
+            </div>
+
+            <div id="answer-options" class="grid grid-cols-1 gap-4 mb-6">
+                <!-- Las opciones de respuesta se generan aquí -->
+            </div>
+            
+            <div id="feedback-container" class="hidden min-h-[80px] p-4 rounded-lg bg-slate-50 border border-slate-200">
+                 <p class="font-semibold text-slate-700">Justificación:</p>
+                 <p id="feedback-text" class="text-slate-600"></p>
+            </div>
+
+            <button id="next-btn" class="w-full mt-6 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-300 hidden">
+                Siguiente Pregunta
+            </button>
+        </div>
+        
+        <!-- Pantalla Final -->
+        <div id="end-screen" class="hidden text-center">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">¡Cuestionario Completado!</h1>
+            <p class="text-slate-600 mb-6">Este es tu resultado final:</p>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-8 mb-6">
+                <p class="text-5xl font-extrabold text-blue-600" id="final-score"></p>
+                <p class="text-slate-500 font-medium mt-1">Respuestas correctas</p>
+            </div>
+            <button id="restart-btn" class="w-full bg-slate-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-slate-800 transition-colors duration-300">
+                Intentar de Nuevo
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const quizData = {
+            "questions": [
+                {
+                    "question": "¿Cuál es la forma correcta de declarar una variable y asignarle un valor entero en Python?",
+                    "answerOptions": [
+                        { "text": "int numero = 5", "rationale": "Esta sintaxis es para otros lenguajes. En Python el tipo de dato no se especifica al declarar.", "isCorrect": false },
+                        { "text": "numero = 5", "rationale": "Correcto. Python infiere que 'numero' es un entero por el valor que se le asigna.", "isCorrect": true },
+                        { "text": "variable numero = 5", "rationale": "La palabra clave 'variable' no se usa para declarar variables en Python.", "isCorrect": false },
+                        { "text": "numero : int = 5", "rationale": "Esto es una 'pista de tipo' (type hint), no la forma estándar de declaración.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué tipo de dato es el valor `True`?",
+                    "answerOptions": [
+                        { "text": "String (cadena de texto)", "rationale": "Un string estaría entre comillas, como `'True'`.", "isCorrect": false },
+                        { "text": "Integer (entero)", "rationale": "Los enteros son números sin decimales, como 1 o 0.", "isCorrect": false },
+                        { "text": "Boolean (booleano)", "rationale": "Correcto. Los booleanos representan valores de verdad y solo pueden ser `True` o `False`.", "isCorrect": true },
+                        { "text": "Float (flotante)", "rationale": "Los flotantes son números con decimales, como 1.0.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "En la instrucción `nombre = \"Ana\"`, ¿cómo se le llama al texto `\"Ana\"`?",
+                    "answerOptions": [
+                        { "text": "Variable", "rationale": "La variable es 'nombre', que es donde se guarda el valor.", "isCorrect": false },
+                        { "text": "Literal de cadena (string literal)", "rationale": "Correcto. Un 'literal' es un valor fijo escrito directamente en el código.", "isCorrect": true },
+                        { "text": "Función", "rationale": "Una función es un bloque de código que realiza una tarea, como `print()`.", "isCorrect": false },
+                        { "text": "Tipo de dato", "rationale": "El tipo de dato es `str`, pero el valor `\"Ana\"` en sí mismo es un literal.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué imprimirá el siguiente código?\n\n`print(10 // 3)`",
+                    "answerOptions": [
+                        { "text": "3.333", "rationale": "Eso sería el resultado de la división normal (`10 / 3`).", "isCorrect": false },
+                        { "text": "1", "rationale": "Eso sería el residuo de la división (`10 % 3`).", "isCorrect": false },
+                        { "text": "3", "rationale": "Correcto. El operador `//` realiza una división de piso, devolviendo solo la parte entera.", "isCorrect": true },
+                        { "text": "Error", "rationale": "La sintaxis es válida y la operación es correcta.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué valor tendrá la variable `resultado`?\n\n`resultado = \"Hola\" + \"Mundo\"`",
+                    "answerOptions": [
+                        { "text": "Hola Mundo", "rationale": "Casi. Faltaría un espacio entre las palabras. El operador `+` une las cadenas exactamente como están.", "isCorrect": false },
+                        { "text": "HolaMundo", "rationale": "Correcto. El operador `+` en cadenas se usa para concatenar (unir) una justo después de la otra.", "isCorrect": true },
+                        { "text": "Error", "rationale": "La concatenación de cadenas con `+` es una operación válida en Python.", "isCorrect": false },
+                        { "text": "(\"Hola\", \"Mundo\")", "rationale": "Esto sería una tupla, no el resultado de una concatenación de cadenas.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué función se usa para convertir el string `'7'` en un número entero?",
+                    "answerOptions": [
+                        { "text": "str(7)", "rationale": "La función `str()` hace lo contrario, convierte un número a string.", "isCorrect": false },
+                        { "text": "integer('7')", "rationale": "No existe una función llamada 'integer' para esta tarea.", "isCorrect": false },
+                        { "text": "convert.int('7')", "rationale": "Esta sintaxis no es válida en Python para conversiones de tipo.", "isCorrect": false },
+                        { "text": "int('7')", "rationale": "Correcto. La función `int()` puede tomar un string que represente un número y convertirlo a un entero.", "isCorrect": true }
+                    ]
+                },
+                {
+                    "question": "En la expresión `edad = 25`, ¿cómo se llama al símbolo `=`?",
+                    "answerOptions": [
+                        { "text": "Operador de comparación", "rationale": "El operador de comparación para ver si dos cosas son iguales es `==` (doble igual).", "isCorrect": false },
+                        { "text": "Símbolo matemático", "rationale": "Aunque se usa en matemáticas, en programación tiene un nombre específico para esta acción.", "isCorrect": false },
+                        { "text": "Operador de asignación", "rationale": "Correcto. Su función es 'asignar' el valor de la derecha a la variable de la izquierda.", "isCorrect": true },
+                        { "text": "Igualador", "rationale": "Aunque suene lógico, el término técnico es 'operador de asignación'.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué función se utiliza para obtener datos del usuario, que siempre se reciben como un string?",
+                    "answerOptions": [
+                        { "text": "print()", "rationale": "La función `print()` se utiliza para mostrar datos, no para recibirlos.", "isCorrect": false },
+                        { "text": "get()", "rationale": "No existe una función `get()` global para esto. Se usa en otros contextos como diccionarios.", "isCorrect": false },
+                        { "text": "input()", "rationale": "Correcto. Esta función espera a que el usuario escriba algo y lo devuelve como una cadena de texto (str).", "isCorrect": true },
+                        { "text": "read()", "rationale": "La función `read()` se usa para leer datos de archivos.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Cuál es la sintaxis para un comentario de una sola línea en Python?",
+                    "answerOptions": [
+                        { "text": "// Esto es un comentario", "rationale": "Esta sintaxis es para comentarios en otros lenguajes como Java o JavaScript.", "isCorrect": false },
+                        { "text": "/* Esto es un comentario */", "rationale": "Esta es la sintaxis para comentarios de bloque en otros lenguajes.", "isCorrect": false },
+                        { "text": "# Esto es un comentario", "rationale": "Correcto. El símbolo de numeral indica que el resto de la línea es un comentario.", "isCorrect": true },
+                        { "text": "<!-- Esto es un comentario -->", "rationale": "Esta es la sintaxis para comentarios en HTML.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Cuál es el operador para comprobar si dos valores son iguales?",
+                    "answerOptions": [
+                        { "text": "=", "rationale": "El signo de igual único es el operador de 'asignación'.", "isCorrect": false },
+                        { "text": "==", "rationale": "Correcto. El doble signo de igual es el operador de 'comparación' que devuelve `True` o `False`.", "isCorrect": true },
+                        { "text": "!=", "rationale": "Este es el operador para comprobar si dos valores son 'diferentes'.", "isCorrect": false },
+                        { "text": "is", "rationale": "El operador `is` comprueba si dos variables son el mismo objeto en memoria, no solo si tienen el mismo valor.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué resultado produce la expresión `'Na' * 3`?",
+                    "answerOptions": [
+                        { "text": "\"NaNaNa\"", "rationale": "Correcto. En Python, multiplicar un string por un entero `n` repite el string `n` veces.", "isCorrect": true },
+                        { "text": "\"Na3\"", "rationale": "Esto no es una operación matemática válida. El operador `*` tiene un significado especial con strings.", "isCorrect": false },
+                        { "text": "Error", "rationale": "Esta operación es completamente válida en Python y se conoce como repetición de secuencias.", "isCorrect": false },
+                        { "text": "3Na", "rationale": "Esto sería conceptualmente incorrecto. La sintaxis no produce este resultado.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "En la línea `resultado = 10 > 5`, ¿qué tipo de dato tendrá la variable `resultado`?",
+                    "answerOptions": [
+                        { "text": "Integer", "rationale": "Un entero sería un número como 10 o 5, no el resultado de una comparación.", "isCorrect": false },
+                        { "text": "String", "rationale": "El resultado no es un texto, es un valor de verdad.", "isCorrect": false },
+                        { "text": "Boolean", "rationale": "Correcto. Los operadores de comparación como `>` devuelven un valor booleano: `True` o `False`.", "isCorrect": true },
+                        { "text": "Float", "rationale": "Un flotante sería un número con decimales. Las comparaciones no producen este tipo de dato.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Cuál de los siguientes es un nombre de variable válido y sigue la convención de estilo de Python (snake_case)?",
+                    "answerOptions": [
+                        { "text": "miVariable", "rationale": "Esto es 'camelCase', común en otros lenguajes como JavaScript.", "isCorrect": false },
+                        { "text": "MiVariable", "rationale": "Esto es 'PascalCase', usado para nombres de clases en Python.", "isCorrect": false },
+                        { "text": "mi-variable", "rationale": "El guion medio no está permitido en nombres de variables, ya que se interpreta como el operador de resta.", "isCorrect": false },
+                        { "text": "mi_variable", "rationale": "Correcto. Python recomienda 'snake_case' (palabras en minúsculas separadas por guiones bajos) para nombres de variables.", "isCorrect": true }
+                    ]
+                },
+                {
+                    "question": "En la expresión `5 + 2`, ¿cómo se le conoce al símbolo `+`?",
+                    "answerOptions": [
+                        { "text": "Función", "rationale": "Una función se invocaría con paréntesis, como `sum(5, 2)`.", "isCorrect": false },
+                        { "text": "Operador", "rationale": "Correcto. `+` es un operador aritmético que realiza la suma.", "isCorrect": true },
+                        { "text": "Variable", "rationale": "Una variable es un nombre que almacena un valor, como `mi_numero = 5`.", "isCorrect": false },
+                        { "text": "Palabra clave", "rationale": "Una palabra clave es una palabra reservada del lenguaje, como `if` o `for`.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué imprimirá `print(type(9.0))`?",
+                    "answerOptions": [
+                        { "text": "<class 'int'>", "rationale": "Esto sería el resultado para un número sin decimales, como `9`.", "isCorrect": false },
+                        { "text": "<class 'float'>", "rationale": "Correcto. La función `type()` devuelve el tipo de un valor. Como `9.0` tiene un punto decimal, es un flotante (float).", "isCorrect": true },
+                        { "text": "<class 'str'>", "rationale": "Esto sería el resultado si el valor estuviera entre comillas, como `'9.0'`.", "isCorrect": false },
+                        { "text": "<class 'bool'>", "rationale": "Esto sería el resultado para `True` o `False`.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Cuál de las siguientes es una 'palabra clave' (keyword) reservada en Python?",
+                    "answerOptions": [
+                        { "text": "print", "rationale": "`print` es una función incorporada, no una palabra clave. Se puede reasignar (aunque no es recomendable).", "isCorrect": false },
+                        { "text": "main", "rationale": "`main` es una convención común para el punto de entrada de un programa, pero no es una palabra reservada.", "isCorrect": false },
+                        { "text": "if", "rationale": "Correcto. `if` es una palabra clave usada para condicionales y no puede ser usada como nombre de variable.", "isCorrect": true },
+                        { "text": "variable", "rationale": "`variable` es un sustantivo común, pero no tiene un significado especial para el intérprete de Python.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "Si ejecutas `valor = float(\"12.5\")`, ¿qué contendrá la variable `valor`?",
+                    "answerOptions": [
+                        { "text": "El string \"12.5\"", "rationale": "El valor se convierte, no se mantiene como string.", "isCorrect": false },
+                        { "text": "El entero 12", "rationale": "Esto sucedería si se usara la función `int()` sobre el resultado (o si el string fuera \"12\").", "isCorrect": false },
+                        { "text": "El flotante 12.5", "rationale": "Correcto. La función `float()` convierte un string que representa un número decimal en un tipo de dato flotante.", "isCorrect": true },
+                        { "text": "Error", "rationale": "La operación es válida porque el string contiene una representación correcta de un número flotante.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué resultado da la operación `13 % 5` (módulo)?",
+                    "answerOptions": [
+                        { "text": "2.6", "rationale": "Este es el resultado de la división normal (`13 / 5`).", "isCorrect": false },
+                        { "text": "2", "rationale": "Este es el resultado de la división de piso (`13 // 5`).", "isCorrect": false },
+                        { "text": "3", "rationale": "Correcto. El operador módulo (`%`) devuelve el residuo de una división. 13 dividido por 5 es 2 con un residuo de 3.", "isCorrect": true },
+                        { "text": "Error", "rationale": "El operador módulo es una operación aritmética válida en Python.", "isCorrect": false }
+                    ]
+                },
+                {
+                    "question": "¿Qué tipo de dato se utiliza para representar números con decimales, como 3.1416?",
+                    "answerOptions": [
+                        { "text": "int", "rationale": "El tipo `int` es para números enteros, sin parte decimal.", "isCorrect": false },
+                        { "text": "str", "rationale": "El tipo `str` es para texto. Se podría guardar '3.1416' como texto, pero no para cálculos matemáticos.", "isCorrect": false },
+                        { "text": "bool", "rationale": "El tipo `bool` es para valores de verdad, `True` o `False`.", "isCorrect": false },
+                        { "text": "float", "rationale": "Correcto. El tipo de dato `float` (flotante) se usa para números que tienen una parte fraccionaria.", "isCorrect": true }
+                    ]
+                },
+                {
+                    "question": "En la sintaxis `def mi_funcion():`, ¿cómo se le llama a `mi_funcion`?",
+                    "answerOptions": [
+                        { "text": "Parámetro", "rationale": "Los parámetros irían dentro de los paréntesis `()`.", "isCorrect": false },
+                        { "text": "Palabra clave", "rationale": "La palabra clave en esta línea es `def`.", "isCorrect": false },
+                        { "text": "Nombre de la función (Identificador)", "rationale": "Correcto. Es el identificador o nombre que usamos para llamar a la función más tarde.", "isCorrect": true },
+                        { "text": "Operador", "rationale": "No hay operadores en esta parte de la declaración de la función.", "isCorrect": false }
+                    ]
+                }
+            ]
+        };
+
+        // Elementos del DOM
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const endScreen = document.getElementById('end-screen');
+
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        const questionNumberEl = document.getElementById('question-number');
+        const progressTextEl = document.getElementById('progress-text');
+        const questionTextEl = document.getElementById('question-text');
+        const answerOptionsEl = document.getElementById('answer-options');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackTextEl = document.getElementById('feedback-text');
+        const finalScoreEl = document.getElementById('final-score');
+
+        // Estado del cuestionario
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalQuestions = 0;
+
+        // Event Listeners
+        startBtn.addEventListener('click', startQuiz);
+        restartBtn.addEventListener('click', startQuiz);
+        nextBtn.addEventListener('click', handleNextQuestion);
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            // Opcional: Desordenar preguntas cada vez que inicia el quiz
+            quizData.questions.sort(() => Math.random() - 0.5);
+            totalQuestions = quizData.questions.length;
+            
+            startScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            nextBtn.textContent = 'Siguiente Pregunta';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            const question = quizData.questions[currentQuestionIndex];
+            questionNumberEl.textContent = currentQuestionIndex + 1;
+            progressTextEl.textContent = `Pregunta ${currentQuestionIndex + 1} de ${totalQuestions}`;
+            questionTextEl.innerHTML = question.question.replace(/\n/g, '<br>').replace(/`([^`]+)`/g, '<code class="bg-slate-200 text-slate-800 font-mono px-2 py-1 rounded-md">$1</code>');
+            
+            question.answerOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.classList.add('quiz-option', 'w-full', 'p-4', 'border-2', 'rounded-lg', 'text-left', 'font-medium', 'text-slate-700', 'bg-white', 'hover:bg-slate-50', 'hover:border-blue-500');
+                button.dataset.correct = option.isCorrect;
+                button.dataset.rationale = option.rationale;
+                button.addEventListener('click', selectAnswer);
+                answerOptionsEl.appendChild(button);
+            });
+        }
+
+        function resetState() {
+            nextBtn.classList.add('hidden');
+            feedbackContainer.classList.add('hidden');
+            while (answerOptionsEl.firstChild) {
+                answerOptionsEl.removeChild(answerOptionsEl.firstChild);
+            }
+        }
+
+        function selectAnswer(e) {
+            const selectedButton = e.target;
+            const isCorrect = selectedButton.dataset.correct === 'true';
+
+            if (isCorrect) {
+                score++;
+            }
+
+            feedbackTextEl.textContent = selectedButton.dataset.rationale;
+            feedbackContainer.classList.remove('hidden');
+
+            Array.from(answerOptionsEl.children).forEach(button => {
+                setStatusClass(button, button.dataset.correct === 'true');
+                button.disabled = true;
+            });
+            
+            if (currentQuestionIndex < totalQuestions - 1) {
+                nextBtn.classList.remove('hidden');
+            } else {
+                nextBtn.textContent = 'Finalizar Cuestionario';
+                nextBtn.classList.remove('hidden');
+            }
+        }
+
+        function setStatusClass(element, isCorrect) {
+            if (isCorrect) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('incorrect');
+            }
+        }
+
+        function handleNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestions) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            finalScoreEl.textContent = `${score} / ${totalQuestions}`;
+        }
+
+        // Iniciar el quiz al cargar la página (opcional)
+        // window.onload = () => {
+        //     totalQuestions = quizData.questions.length;
+        // };
+    </script>
+</body>
+</html>
+
