@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inteligencia Interpersonal - Presentación Interactiva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d3748 0%, #4a5568 25%, #553c9a 50%, #805ad5 75%, #2b6cb0 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            padding: 60px 80px;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideIn 0.8s ease-out;
+            position: relative;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .slide h1 {
+            color: #2d3748;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(45deg, #2b6cb0, #553c9a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide h2 {
+            color: #2d3748;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            text-align: center;
+            background: linear-gradient(45deg, #805ad5, #d53f8c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide h3 {
+            color: #2b6cb0;
+            font-size: 1.8em;
+            margin: 25px 0 15px 0;
+            border-left: 5px solid #4299e1;
+            padding-left: 20px;
+        }
+
+        .slide p {
+            color: #2c3e50;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .slide ul {
+            color: #2c3e50;
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .slide li {
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, rgba(43, 108, 176, 0.15), rgba(128, 90, 213, 0.15));
+            border-left: 5px solid #4299e1;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, rgba(213, 63, 140, 0.25), rgba(128, 90, 213, 0.25));
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #2b6cb0, #553c9a);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+            background: linear-gradient(45deg, #553c9a, #805ad5);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .brain-icon {
+            font-size: 4em;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .university-logo {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 180px;
+            height: auto;
+            max-width: 15vw;
+            min-width: 120px;
+            opacity: 0.8;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            z-index: 500;
+            pointer-events: none;
+        }
+
+        .university-logo:hover {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+        }
+
+        .shape:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 7s;
+        }
+
+        .shape:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 14s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(20px) rotate(240deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(43, 108, 176, 0.15), rgba(85, 60, 154, 0.15));
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+            animation: slideInTeam 0.6s ease-out;
+        }
+
+        .team-member:nth-child(1) { animation-delay: 0.1s; }
+        .team-member:nth-child(2) { animation-delay: 0.2s; }
+        .team-member:nth-child(3) { animation-delay: 0.3s; }
+        .team-member:nth-child(4) { animation-delay: 0.4s; }
+
+        .team-member:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(135deg, rgba(43, 108, 176, 0.2), rgba(85, 60, 154, 0.2));
+        }
+
+        .member-icon {
+            font-size: 2em;
+            margin-right: 18px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .member-name {
+            color: #2d3748;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin: 0;
+            background: linear-gradient(45deg, #2b6cb0, #805ad5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+
+        @keyframes slideInTeam {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 40px 30px;
+                margin: 20px;
+                max-height: 85vh;
+            }
+            
+            .slide h1 {
+                font-size: 2.2em;
+            }
+            
+            .slide h2 {
+                font-size: 1.8em;
+            }
+            
+            .slide h3 {
+                font-size: 1.5em;
+            }
+            
+            .slide p, .slide ul {
+                font-size: 1em;
+            }
+            
+            .team-member {
+                padding: 10px 15px;
+                flex-direction: column;
+                text-align: center;
+                gap: 8px;
+            }
+            
+            .member-icon {
+                font-size: 1.6em;
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+            
+            .member-name {
+                font-size: 1em;
+            }
+            
+            .university-logo {
+                width: 100px;
+                min-width: 80px;
+                max-width: 20vw;
+                bottom: 15px;
+                left: 15px;
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape">🧠</div>
+        <div class="shape">💭</div>
+        <div class="shape">🤝</div>
+    </div>
+
+    <img src="https://cucuta.unisimon.edu.co/estudiante/publics/filest/banner/banner1.jpg" 
+         alt="Universidad Simón Bolívar" 
+         class="university-logo"
+         onerror="this.style.display='none'">
+
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">9</span>
+    </div>
+
+    <div class="presentation-container">
+        <!-- Slide 1: Título -->
+        <div class="slide active">
+            <div class="brain-icon">🧠🤝</div>
+            <h1>Inteligencia Interpersonal</h1>
+            <p style="text-align: center; font-size: 1.4em; color: #7f8c8d; font-style: italic;">
+                La capacidad de entender y relacionarse efectivamente con otras personas
+            </p>
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="font-size: 1.1em; color: #2c3e50;">
+                    Una de las <span class="highlight">8 inteligencias múltiples</span> propuestas por Howard Gardner
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Integrantes del Equipo -->
+        <div class="slide">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h2>👥 Equipo de Trabajo</h2>
+                <div style="background: linear-gradient(135deg, rgba(43, 108, 176, 0.1), rgba(128, 90, 213, 0.1)); padding: 15px 25px; border-radius: 15px; margin: 20px 0; border-left: 4px solid #4299e1;">
+                    <p style="font-weight: 600; color: #2d3748; margin: 5px 0; font-size: 1.1em;">
+                        📚 <strong>Curso:</strong> Desarrollo Humano
+                    </p>
+                    <p style="font-weight: 600; color: #2d3748; margin: 5px 0; font-size: 1.1em;">
+                        👩‍🏫 <strong>Profesora:</strong> María
+                    </p>
+                </div>
+                <p style="font-style: italic; color: #7f8c8d; font-size: 1.2em;">
+                    Presentado por
+                </p>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 30px;">
+                <div class="team-member">
+                    <div class="member-icon">🎓</div>
+                    <h3 class="member-name">Manuel Alejandro Marciales Tocarruncho</h3>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-icon">💼</div>
+                    <h3 class="member-name">Jefferson Alexis Pardo Ortiz</h3>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-icon">🚀</div>
+                    <h3 class="member-name">Mauricio Alejandro III Limas Jaimes</h3>
+                </div>
+                
+                <div class="team-member">
+                    <div class="member-icon">⭐</div>
+                    <h3 class="member-name">Stivenson Rincón Mora</h3>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 25px;">
+                <p style="font-style: italic; color: #2c3e50; font-size: 1em;">
+                    "El trabajo en equipo es la capacidad de trabajar juntos hacia una visión común"
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Definición -->
+        <div class="slide">
+            <h2>¿Qué es la Inteligencia Interpersonal?</h2>
+            <p>
+                La <span class="highlight">inteligencia interpersonal</span> es la capacidad de comprender a otras personas: 
+                qué los motiva, cómo trabajan y cómo trabajar cooperativamente con ellos.
+            </p>
+            
+            <h3>Características principales:</h3>
+            <ul>
+                <li><strong>Empatía:</strong> Capacidad de ponerse en el lugar del otro</li>
+                <li><strong>Comunicación efectiva:</strong> Saber expresarse y escuchar</li>
+                <li><strong>Liderazgo:</strong> Capacidad de influir y motivar a otros</li>
+                <li><strong>Trabajo en equipo:</strong> Colaborar eficazmente en grupos</li>
+                <li><strong>Resolución de conflictos:</strong> Mediar y encontrar soluciones</li>
+            </ul>
+
+            <div class="example-box">
+                <strong>💡 Ejemplo:</strong> Un maestro que puede identificar cuando un estudiante está confundido 
+                solo por su expresión facial y ajusta su explicación para ayudarlo mejor.
+            </div>
+        </div>
+
+        <!-- Slide 3: Componentes clave -->
+        <div class="slide">
+            <h2>Componentes Clave</h2>
+            
+            <h3>1. Percepción Social</h3>
+            <p>Habilidad para leer señales no verbales, expresiones faciales y lenguaje corporal.</p>
+            
+            <h3>2. Comprensión Emocional</h3>
+            <p>Capacidad de identificar y entender las emociones de otros.</p>
+            
+            <h3>3. Influencia Social</h3>
+            <p>Habilidad para persuadir, motivar e inspirar a otros.</p>
+            
+            <h3>4. Adaptabilidad Social</h3>
+            <p>Flexibilidad para ajustar el comportamiento según el contexto social.</p>
+
+            <div class="example-box">
+                <strong>🎯 Aplicación práctica:</strong> Un vendedor exitoso que puede leer las necesidades 
+                del cliente, adaptar su estilo de comunicación y crear una conexión genuina para cerrar la venta.
+            </div>
+        </div>
+
+        <!-- Slide 4: Profesiones que la requieren -->
+        <div class="slide">
+            <h2>Profesiones que Requieren Alta Inteligencia Interpersonal</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+                <div>
+                    <h3>Educación y Formación</h3>
+                    <ul>
+                        <li>Profesores y educadores</li>
+                        <li>Entrenadores deportivos</li>
+                        <li>Capacitadores corporativos</li>
+                    </ul>
+                    
+                    <h3>Salud y Bienestar</h3>
+                    <ul>
+                        <li>Psicólogos y terapeutas</li>
+                        <li>Trabajadores sociales</li>
+                        <li>Enfermeros</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Negocios y Liderazgo</h3>
+                    <ul>
+                        <li>Gerentes y directivos</li>
+                        <li>Vendedores</li>
+                        <li>Consultores</li>
+                    </ul>
+                    
+                    <h3>Comunicación</h3>
+                    <ul>
+                        <li>Periodistas</li>
+                        <li>Políticos</li>
+                        <li>Relaciones públicas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <strong>🌟 Ejemplo destacado:</strong> Oprah Winfrey - Su habilidad para conectar con las personas, 
+                crear empatía y hacer que se sientan cómodas compartiendo sus historias la convirtió en una de las 
+                presentadoras más exitosas del mundo.
+            </div>
+        </div>
+
+        <!-- Slide 5: Cómo desarrollarla -->
+        <div class="slide">
+            <h2>Cómo Desarrollar la Inteligencia Interpersonal</h2>
+            
+            <h3>🎯 Estrategias Prácticas</h3>
+            <ul>
+                <li><strong>Practica la escucha activa:</strong> Presta atención completa cuando otros hablan</li>
+                <li><strong>Observa el lenguaje no verbal:</strong> Gestos, postura, tono de voz</li>
+                <li><strong>Haz preguntas abiertas:</strong> Fomenta conversaciones más profundas</li>
+                <li><strong>Practica la empatía:</strong> Trata de entender diferentes perspectivas</li>
+                <li><strong>Participa en actividades grupales:</strong> Deportes, voluntariado, clubs</li>
+            </ul>
+
+            <h3>📚 Actividades de Desarrollo</h3>
+            <ul>
+                <li>Juegos de rol y simulaciones</li>
+                <li>Trabajo en equipo en proyectos</li>
+                <li>Mediación en conflictos</li>
+                <li>Presentaciones públicas</li>
+                <li>Mentoring y coaching</li>
+            </ul>
+
+            <div class="example-box">
+                <strong>💪 Ejercicio práctico:</strong> Durante una semana, practica hacer una pregunta genuina 
+                sobre los sentimientos o experiencias de alguien cada día, y escucha activamente su respuesta.
+            </div>
+        </div>
+
+        <!-- Slide 6: Beneficios -->
+        <div class="slide">
+            <h2>Beneficios de Desarrollar la Inteligencia Interpersonal</h2>
+            
+            <h3>🏆 En el Ámbito Profesional</h3>
+            <ul>
+                <li>Mayor efectividad en el liderazgo</li>
+                <li>Mejores habilidades de negociación</li>
+                <li>Equipos más productivos y cohesionados</li>
+                <li>Mejor servicio al cliente</li>
+                <li>Oportunidades de crecimiento profesional</li>
+            </ul>
+
+            <h3>💖 En el Ámbito Personal</h3>
+            <ul>
+                <li>Relaciones más profundas y satisfactorias</li>
+                <li>Mayor capacidad para resolver conflictos</li>
+                <li>Mejor comprensión de las necesidades familiares</li>
+                <li>Mayor influencia positiva en la comunidad</li>
+                <li>Aumento de la autoestima y confianza social</li>
+            </ul>
+
+            <div class="example-box">
+                <strong>📊 Dato interesante:</strong> Según estudios de Harvard Business School, el 85% del éxito 
+                profesional se debe a habilidades interpersonales bien desarrolladas, mientras que solo el 15% 
+                se debe a conocimientos técnicos.
+            </div>
+        </div>
+
+        <!-- Slide 7: Ejemplos famosos -->
+        <div class="slide">
+            <h2>Ejemplos de Personas con Alta Inteligencia Interpersonal</h2>
+            
+            <div style="margin-top: 30px;">
+                <h3>🌟 Líderes Históricos</h3>
+                <div class="example-box">
+                    <strong>Nelson Mandela:</strong> Su capacidad para unir a un país dividido a través del diálogo, 
+                    la comprensión y el perdón demostró una inteligencia interpersonal excepcional.
+                </div>
+
+                <h3>🎭 Entretenimiento</h3>
+                <div class="example-box">
+                    <strong>Ellen DeGeneres:</strong> Su habilidad para hacer que los invitados se sientan cómodos 
+                    y crear conexiones auténticas con la audiencia la convirtió en una presentadora querida mundialmente.
+                </div>
+
+                <h3>💼 Mundo Empresarial</h3>
+                <div class="example-box">
+                    <strong>Richard Branson:</strong> Fundador de Virgin Group, conocido por su capacidad de inspirar 
+                    a sus empleados, entender a los clientes y crear una cultura empresarial positiva.
+                </div>
+
+                <h3>🏥 Servicio Social</h3>
+                <div class="example-box">
+                    <strong>Madre Teresa:</strong> Su dedicación y capacidad para conectar con personas de todas las 
+                    culturas y condiciones sociales la convirtió en un símbolo de compasión mundial.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Conclusión -->
+        <div class="slide">
+            <h2>Reflexión Final</h2>
+            <div class="brain-icon">🌟</div>
+            
+            <p style="font-size: 1.3em; text-align: center; margin-bottom: 30px;">
+                <span class="highlight">La inteligencia interpersonal no es un talento innato</span>, 
+                sino una habilidad que se puede desarrollar y perfeccionar a lo largo de la vida.
+            </p>
+
+            <h3>🎯 Puntos Clave para Recordar</h3>
+            <ul>
+                <li>Es fundamental para el éxito personal y profesional</li>
+                <li>Se basa en la empatía, comunicación y comprensión social</li>
+                <li>Se puede desarrollar a través de práctica consciente</li>
+                <li>Beneficia todas las áreas de nuestra vida</li>
+                <li>Es especialmente valiosa en un mundo cada vez más conectado</li>
+            </ul>
+
+            <div class="example-box" style="text-align: center; margin-top: 40px;">
+                <strong>💭 Pregunta para reflexionar:</strong><br>
+                ¿Cómo puedes aplicar los conceptos de inteligencia interpersonal 
+                en tu vida diaria para mejorar tus relaciones y lograr tus objetivos?
+            </div>
+
+            <p style="text-align: center; font-style: italic; color: #7f8c8d; margin-top: 30px;">
+                "La capacidad de llevarse bien con otros y hacer que hagan lo que uno quiere 
+                que hagan es la habilidad más importante que uno puede poseer." - John C. Maxwell
+            </p>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">← Anterior</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            document.getElementById('current-slide').textContent = index + 1;
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').disabled = index === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                nextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide(); // Swipe left - next slide
+                } else {
+                    previousSlide(); // Swipe right - previous slide
+                }
+            }
+        }
+    </script>
+</body>
+</html>
