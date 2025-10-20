@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Ejercicios de Algoritmia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --secondary: #06B6D4;
+            --accent: #F59E0B;
+            --background: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-primary: #1F2937;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .signature {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            font-style: italic;
+            margin-top: 0.5rem;
+        }
+
+        .auto-generate-notice {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .control-panel h2 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .top-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .select-all-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4338CA;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #0891B2;
+            transform: translateY(-1px);
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, var(--accent), #F97316);
+            color: white;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quantity-selector select {
+            padding: 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+        }
+
+        /* Topics Grid */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .topic-group {
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            background: #FAFAFA;
+        }
+
+        .topic-group h3 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .topic-group h3::before {
+            content: "📚";
+            font-size: 1.2rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.375rem;
+            border-radius: var(--radius);
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .custom-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .custom-checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .custom-checkbox.checked::after {
+            content: "✓";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        /* Results Area */
+        .results-area {
+            margin-top: 2rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-count {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .exercise-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary);
+            transition: all 0.2s;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .exercise-number {
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .exercise-topic {
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .exercise-statement {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hint-section {
+            margin-top: 1rem;
+        }
+
+        .hint-toggle {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .hint-toggle:hover {
+            background: #0891B2;
+        }
+
+        .hint-content {
+            background: #F0F9FF;
+            border: 1px solid #BAE6FD;
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 0.75rem;
+            display: none;
+        }
+
+        .hint-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .hint-content code {
+            background: #1E293B;
+            color: #F1F5F9;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .top-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .select-all-buttons {
+                justify-content: center;
+            }
+
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .exercise-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1.5rem 0;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .control-panel {
+                padding: 1.5rem;
+            }
+
+            .exercise-card {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🎯 Generador de Ejercicios de Algoritmia</h1>
+            <p>Genera ejercicios personalizados de programación con valores aleatorios y pistas útiles</p>
+            <p class="signature">By Stivenson Rincon</p>
+            <div class="auto-generate-notice" id="auto-generate-notice" style="display: none;">
+                🎲 <strong>¡Ejercicios generados automáticamente!</strong> Se seleccionó al menos un tema de cada categoría para una práctica variada.
+            </div>
+        </header>
+
+        <!-- Control Panel -->
+        <section class="control-panel">
+            <h2>⚙️ Configuración de Ejercicios</h2>
+            
+            <div class="top-controls">
+                <div class="select-all-buttons">
+                    <button class="btn btn-primary" onclick="selectAllTopics()">Seleccionar Todos</button>
+                    <button class="btn btn-secondary" onclick="deselectAllTopics()">Deseleccionar Todos</button>
+                </div>
+                
+                <div class="quantity-selector">
+                    <label for="quantity">Cantidad de ejercicios:</label>
+                    <select id="quantity">
+                        <option value="1">1 ejercicio</option>
+                        <option value="3" selected>3 ejercicios</option>
+                        <option value="5">5 ejercicios</option>
+                        <option value="8">8 ejercicios</option>
+                        <option value="10">10 ejercicios</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-generate" onclick="generateExercises()">🚀 Generar Ejercicios</button>
+            </div>
+
+            <!-- Topics Grid -->
+            <div class="topics-grid">
+                <div class="topic-group">
+                    <h3>Tipos de Datos y Operaciones</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="operaciones_basicas">
+                            <span class="checkbox-label">Operaciones aritméticas básicas</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="concatenacion">
+                            <span class="checkbox-label">Concatenación de strings</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="conversiones">
+                            <span class="checkbox-label">Conversiones entre tipos</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="topic-group">
+                    <h3>Expresiones Matemáticas</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="geometria">
+                            <span class="checkbox-label">Cálculos geométricos</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="fisica">
+                            <span class="checkbox-label">Fórmulas físicas</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="conversion_unidades">
+                            <span class="checkbox-label">Conversión de unidades</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="topic-group">
+                    <h3>Estructuras de Selección</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="condicionales">
+                            <span class="checkbox-label">Condicionales if/elif/else</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="clasificacion">
+                            <span class="checkbox-label">Clasificación de datos</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="validacion">
+                            <span class="checkbox-label">Validación de rangos</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="topic-group">
+                    <h3>Estructuras Iterativas</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="bucles_while">
+                            <span class="checkbox-label">Bucles while</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="bucles_for">
+                            <span class="checkbox-label">Bucles for</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="acumuladores">
+                            <span class="checkbox-label">Acumuladores y contadores</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="topic-group">
+                    <h3>Listas y Estructuras</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="listas_basicas">
+                            <span class="checkbox-label">Operaciones con listas</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="busqueda_listas">
+                            <span class="checkbox-label">Búsqueda en listas</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="estadisticas">
+                            <span class="checkbox-label">Estadísticas básicas</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="topic-group">
+                    <h3>Funciones</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="funciones_basicas">
+                            <span class="checkbox-label">Funciones básicas</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="menus">
+                            <span class="checkbox-label">Menús con funciones</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <div class="custom-checkbox"></div>
+                            <input type="checkbox" value="parametros">
+                            <span class="checkbox-label">Parámetros y retornos</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Area -->
+        <section class="results-area">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Generando ejercicios...</p>
+            </div>
+
+            <div class="empty-state" id="empty-state">
+                <h3>🎯 ¡Selecciona temas y genera ejercicios!</h3>
+                <p>Elige los temas que quieres practicar y haz clic en "Generar Ejercicios" para comenzar.</p>
+            </div>
+
+            <div id="results-container" style="display: none;">
+                <div class="results-header">
+                    <h2>📝 Ejercicios Generados</h2>
+                    <div class="results-count" id="results-count"></div>
+                </div>
+                <div id="exercises-list"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Base de datos de ejercicios
+        const ejerciciosDatabase = {
+            operaciones_basicas: [
+                {
+                    template: "Calcular la suma de {num1} y {num2}, luego multiplicar el resultado por {num3}.",
+                    generateValues: () => ({
+                        num1: Math.floor(Math.random() * 50) + 1,
+                        num2: Math.floor(Math.random() * 50) + 1,
+                        num3: Math.floor(Math.random() * 10) + 2
+                    }),
+                    hint: "Usa variables para almacenar los valores: suma = num1 + num2, resultado = suma * num3"
+                },
+                {
+                    template: "Calcular el promedio de {num1}, {num2} y {num3}.",
+                    generateValues: () => ({
+                        num1: Math.floor(Math.random() * 100) + 1,
+                        num2: Math.floor(Math.random() * 100) + 1,
+                        num3: Math.floor(Math.random() * 100) + 1
+                    }),
+                    hint: "promedio = (num1 + num2 + num3) / 3"
+                },
+                {
+                    template: "Calcular el {porcentaje}% de {valor}.",
+                    generateValues: () => ({
+                        porcentaje: Math.floor(Math.random() * 30) + 5,
+                        valor: Math.floor(Math.random() * 1000) + 100
+                    }),
+                    hint: "resultado = valor * (porcentaje / 100)"
+                }
+            ],
+            concatenacion: [
+                {
+                    template: "Concatenar el nombre '{nombre}' con el apellido '{apellido}' y agregar la edad {edad}.",
+                    generateValues: () => ({
+                        nombre: ['Ana', 'Carlos', 'María', 'Luis', 'Sofia', 'Diego', 'Laura', 'Andrés'][Math.floor(Math.random() * 8)],
+                        apellido: ['García', 'Rodríguez', 'Martínez', 'López', 'González', 'Pérez', 'Sánchez', 'Ramírez'][Math.floor(Math.random() * 8)],
+                        edad: Math.floor(Math.random() * 50) + 18
+                    }),
+                    hint: "nombre_completo = nombre + ' ' + apellido + ', edad: ' + str(edad)"
+                },
+                {
+                    template: "Crear una frase que diga 'Hola, mi nombre es {nombre} y tengo {edad} años'.",
+                    generateValues: () => ({
+                        nombre: ['Pedro', 'Ana', 'Miguel', 'Carmen', 'Jorge', 'Isabel'][Math.floor(Math.random() * 6)],
+                        edad: Math.floor(Math.random() * 40) + 20
+                    }),
+                    hint: "mensaje = 'Hola, mi nombre es ' + nombre + ' y tengo ' + str(edad) + ' años'"
+                }
+            ],
+            conversiones: [
+                {
+                    template: "Convertir {metros} metros a centímetros y a kilómetros.",
+                    generateValues: () => ({
+                        metros: (Math.random() * 10 + 1).toFixed(2)
+                    }),
+                    hint: "centimetros = metros * 100, kilometros = metros / 1000"
+                },
+                {
+                    template: "Convertir {celsius}°C a Fahrenheit y Kelvin.",
+                    generateValues: () => ({
+                        celsius: Math.floor(Math.random() * 40) + 10
+                    }),
+                    hint: "fahrenheit = (celsius * 9/5) + 32, kelvin = celsius + 273.15"
+                }
+            ],
+            geometria: [
+                {
+                    template: "Calcular el área de un rectángulo con base {base} y altura {altura}.",
+                    generateValues: () => ({
+                        base: Math.floor(Math.random() * 20) + 5,
+                        altura: Math.floor(Math.random() * 20) + 5
+                    }),
+                    hint: "area = base * altura"
+                },
+                {
+                    template: "Calcular el volumen de una esfera con radio {radio}.",
+                    generateValues: () => ({
+                        radio: Math.floor(Math.random() * 10) + 2
+                    }),
+                    hint: "import math; volumen = (4/3) * math.pi * (radio ** 3)"
+                },
+                {
+                    template: "Calcular el perímetro de un cuadrado con lado {lado}.",
+                    generateValues: () => ({
+                        lado: Math.floor(Math.random() * 15) + 3
+                    }),
+                    hint: "perimetro = lado * 4"
+                }
+            ],
+            fisica: [
+                {
+                    template: "Calcular la velocidad final de un objeto que parte del reposo y acelera a {aceleracion} m/s² durante {tiempo} segundos.",
+                    generateValues: () => ({
+                        aceleracion: Math.floor(Math.random() * 10) + 2,
+                        tiempo: Math.floor(Math.random() * 10) + 3
+                    }),
+                    hint: "velocidad_final = aceleracion * tiempo"
+                },
+                {
+                    template: "Calcular la energía cinética de un objeto de {masa} kg que se mueve a {velocidad} m/s.",
+                    generateValues: () => ({
+                        masa: Math.floor(Math.random() * 50) + 10,
+                        velocidad: Math.floor(Math.random() * 20) + 5
+                    }),
+                    hint: "energia_cinetica = 0.5 * masa * (velocidad ** 2)"
+                }
+            ],
+            conversion_unidades: [
+                {
+                    template: "Convertir {kilometros} km a metros, centímetros y milímetros.",
+                    generateValues: () => ({
+                        kilometros: (Math.random() * 5 + 1).toFixed(2)
+                    }),
+                    hint: "metros = kilometros * 1000, centimetros = metros * 100, milimetros = centimetros * 10"
+                },
+                {
+                    template: "Convertir {horas} horas a minutos y segundos.",
+                    generateValues: () => ({
+                        horas: Math.floor(Math.random() * 12) + 1
+                    }),
+                    hint: "minutos = horas * 60, segundos = minutos * 60"
+                }
+            ],
+            condicionales: [
+                {
+                    template: "Determinar si el número {numero} es par o impar.",
+                    generateValues: () => ({
+                        numero: Math.floor(Math.random() * 100) + 1
+                    }),
+                    hint: "if numero % 2 == 0: print('Par') else: print('Impar')"
+                },
+                {
+                    template: "Clasificar la temperatura {temperatura}°C como fría, templada o caliente (fría < 15, templada 15-30, caliente > 30).",
+                    generateValues: () => ({
+                        temperatura: Math.floor(Math.random() * 50) - 5
+                    }),
+                    hint: "if temperatura < 15: print('Fría') elif temperatura <= 30: print('Templada') else: print('Caliente')"
+                },
+                {
+                    template: "Calcular el descuento del {porcentaje}% si la compra es mayor a ${monto_minimo}, sino no hay descuento. El monto de compra es ${monto}.",
+                    generateValues: () => ({
+                        porcentaje: Math.floor(Math.random() * 20) + 10,
+                        monto_minimo: Math.floor(Math.random() * 200) + 100,
+                        monto: Math.floor(Math.random() * 500) + 50
+                    }),
+                    hint: "if monto > monto_minimo: descuento = monto * (porcentaje / 100) else: descuento = 0"
+                }
+            ],
+            clasificacion: [
+                {
+                    template: "Clasificar el triángulo con lados {a}, {b} y {c} como equilátero, isósceles o escaleno.",
+                    generateValues: () => {
+                        const lados = [Math.floor(Math.random() * 10) + 3, Math.floor(Math.random() * 10) + 3, Math.floor(Math.random() * 10) + 3];
+                        return { a: lados[0], b: lados[1], c: lados[2] };
+                    },
+                    hint: "if a == b == c: print('Equilátero') elif a == b or b == c or a == c: print('Isósceles') else: print('Escaleno')"
+                },
+                {
+                    template: "Calcular el IMC con peso {peso} kg y estatura {estatura} m, y clasificar como bajo peso, normal, sobrepeso u obeso.",
+                    generateValues: () => ({
+                        peso: Math.floor(Math.random() * 50) + 50,
+                        estatura: (Math.random() * 0.5 + 1.5).toFixed(2)
+                    }),
+                    hint: "imc = peso / (estatura ** 2); if imc < 18.5: print('Bajo peso') elif imc < 25: print('Normal') elif imc < 30: print('Sobrepeso') else: print('Obeso')"
+                }
+            ],
+            validacion: [
+                {
+                    template: "Validar si el año {año} es bisiesto (divisible por 4, no por 100, o divisible por 400).",
+                    generateValues: () => ({
+                        año: Math.floor(Math.random() * 100) + 1900
+                    }),
+                    hint: "if (año % 4 == 0 and año % 100 != 0) or (año % 400 == 0): print('Bisiesto') else: print('No bisiesto')"
+                },
+                {
+                    template: "Validar si la edad {edad} está en el rango válido (18-65 años).",
+                    generateValues: () => ({
+                        edad: Math.floor(Math.random() * 80) + 10
+                    }),
+                    hint: "if 18 <= edad <= 65: print('Edad válida') else: print('Edad inválida')"
+                }
+            ],
+            bucles_while: [
+                {
+                    template: "Calcular la suma de los primeros {n} números naturales usando while.",
+                    generateValues: () => ({
+                        n: Math.floor(Math.random() * 20) + 5
+                    }),
+                    hint: "suma = 0; i = 1; while i <= n: suma += i; i += 1"
+                },
+                {
+                    template: "Calcular el factorial de {n} usando while.",
+                    generateValues: () => ({
+                        n: Math.floor(Math.random() * 8) + 3
+                    }),
+                    hint: "factorial = 1; i = 1; while i <= n: factorial *= i; i += 1"
+                },
+                {
+                    template: "Contar cuántos billetes de $2000 se necesitan para pagar ${monto}.",
+                    generateValues: () => ({
+                        monto: Math.floor(Math.random() * 50000) + 10000
+                    }),
+                    hint: "billetes = 0; while monto >= 2000: billetes += 1; monto -= 2000"
+                }
+            ],
+            bucles_for: [
+                {
+                    template: "Imprimir los números pares del 1 al {n} usando for.",
+                    generateValues: () => ({
+                        n: Math.floor(Math.random() * 20) + 10
+                    }),
+                    hint: "for i in range(1, n+1): if i % 2 == 0: print(i)"
+                },
+                {
+                    template: "Calcular el promedio de los números en la lista [{lista}] usando for.",
+                    generateValues: () => {
+                        const lista = Array.from({length: 5}, () => Math.floor(Math.random() * 100) + 1);
+                        return { lista: lista.join(', ') };
+                    },
+                    hint: "suma = 0; for num in lista: suma += num; promedio = suma / len(lista)"
+                }
+            ],
+            acumuladores: [
+                {
+                    template: "Contar cuántos números mayores a {umbral} hay en la lista [{lista}].",
+                    generateValues: () => {
+                        const lista = Array.from({length: 8}, () => Math.floor(Math.random() * 50) + 1);
+                        const umbral = Math.floor(Math.random() * 30) + 10;
+                        return { lista: lista.join(', '), umbral };
+                    },
+                    hint: "contador = 0; for num in lista: if num > umbral: contador += 1"
+                },
+                {
+                    template: "Calcular la suma de los cuadrados de los números del 1 al {n}.",
+                    generateValues: () => ({
+                        n: Math.floor(Math.random() * 10) + 5
+                    }),
+                    hint: "suma = 0; for i in range(1, n+1): suma += i**2"
+                }
+            ],
+            listas_basicas: [
+                {
+                    template: "Crear una lista con los números del 1 al {n} y luego agregar el número {extra}.",
+                    generateValues: () => ({
+                        n: Math.floor(Math.random() * 10) + 5,
+                        extra: Math.floor(Math.random() * 20) + 10
+                    }),
+                    hint: "lista = list(range(1, n+1)); lista.append(extra)"
+                },
+                {
+                    template: "Encontrar el elemento en la posición {posicion} de la lista [{lista}].",
+                    generateValues: () => {
+                        const lista = Array.from({length: 6}, () => Math.floor(Math.random() * 50) + 1);
+                        const posicion = Math.floor(Math.random() * 6);
+                        return { lista: lista.join(', '), posicion };
+                    },
+                    hint: "elemento = lista[posicion]"
+                }
+            ],
+            busqueda_listas: [
+                {
+                    template: "Buscar si el número {buscar} está en la lista [{lista}].",
+                    generateValues: () => {
+                        const lista = Array.from({length: 8}, () => Math.floor(Math.random() * 20) + 1);
+                        const buscar = Math.floor(Math.random() * 20) + 1;
+                        return { lista: lista.join(', '), buscar };
+                    },
+                    hint: "if buscar in lista: print('Encontrado') else: print('No encontrado')"
+                },
+                {
+                    template: "Encontrar el índice del número {buscar} en la lista [{lista}].",
+                    generateValues: () => {
+                        const lista = Array.from({length: 6}, () => Math.floor(Math.random() * 15) + 1);
+                        const buscar = lista[Math.floor(Math.random() * 6)];
+                        return { lista: lista.join(', '), buscar };
+                    },
+                    hint: "indice = lista.index(buscar)"
+                }
+            ],
+            estadisticas: [
+                {
+                    template: "Calcular el promedio, máximo y mínimo de la lista [{lista}].",
+                    generateValues: () => {
+                        const lista = Array.from({length: 7}, () => Math.floor(Math.random() * 100) + 1);
+                        return { lista: lista.join(', ') };
+                    },
+                    hint: "promedio = sum(lista) / len(lista); maximo = max(lista); minimo = min(lista)"
+                },
+                {
+                    template: "Contar cuántos números pares e impares hay en la lista [{lista}].",
+                    generateValues: () => {
+                        const lista = Array.from({length: 8}, () => Math.floor(Math.random() * 20) + 1);
+                        return { lista: lista.join(', ') };
+                    },
+                    hint: "pares = sum(1 for x in lista if x % 2 == 0); impares = len(lista) - pares"
+                }
+            ],
+            funciones_basicas: [
+                {
+                    template: "Crear una función que calcule el área de un círculo con radio {radio}.",
+                    generateValues: () => ({
+                        radio: Math.floor(Math.random() * 10) + 2
+                    }),
+                    hint: "def area_circulo(radio): return 3.14159 * radio ** 2"
+                },
+                {
+                    template: "Crear una función que determine si un número {numero} es primo.",
+                    generateValues: () => ({
+                        numero: Math.floor(Math.random() * 20) + 2
+                    }),
+                    hint: "def es_primo(n): return all(n % i != 0 for i in range(2, int(n**0.5) + 1))"
+                }
+            ],
+            menus: [
+                {
+                    template: "Crear un menú con 3 opciones que llame a diferentes funciones según la opción elegida.",
+                    generateValues: () => ({}),
+                    hint: "def menu(): print('1. Opción 1'); print('2. Opción 2'); print('3. Opción 3'); return input('Elige: ')"
+                }
+            ],
+            parametros: [
+                {
+                    template: "Crear una función que reciba {param1} y {param2} y retorne su suma y multiplicación.",
+                    generateValues: () => ({
+                        param1: Math.floor(Math.random() * 20) + 1,
+                        param2: Math.floor(Math.random() * 20) + 1
+                    }),
+                    hint: "def operaciones(a, b): return a + b, a * b"
+                }
+            ]
+        };
+
+        // Función para generar valores aleatorios
+        function generateRandomValues(template, generateValuesFunc) {
+            const values = generateValuesFunc();
+            let result = template;
+            for (const [key, value] of Object.entries(values)) {
+                result = result.replace(new RegExp(`{${key}}`, 'g'), value);
+            }
+            return result;
+        }
+
+        // Función para seleccionar todos los temas
+        function selectAllTopics() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+                updateCheckboxVisual(checkbox);
+            });
+        }
+
+        // Función para deseleccionar todos los temas
+        function deselectAllTopics() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                updateCheckboxVisual(checkbox);
+            });
+        }
+
+        // Función para actualizar la apariencia visual del checkbox
+        function updateCheckboxVisual(checkbox) {
+            const customCheckbox = checkbox.parentElement.querySelector('.custom-checkbox');
+            if (checkbox.checked) {
+                customCheckbox.classList.add('checked');
+            } else {
+                customCheckbox.classList.remove('checked');
+            }
+        }
+
+        // Función para generar ejercicios
+        function generateExercises(shouldScroll = true) {
+            const selectedTopics = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            if (selectedTopics.length === 0) {
+                alert('Por favor selecciona al menos un tema.');
+                return;
+            }
+
+            const quantity = parseInt(document.getElementById('quantity').value);
+            
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('results-container').style.display = 'none';
+
+            // Scroll suave hacia la sección de resultados solo si se solicita
+            if (shouldScroll) {
+                setTimeout(() => {
+                    const resultsArea = document.querySelector('.results-area');
+                    resultsArea.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+
+            // Simular delay para mostrar loading
+            setTimeout(() => {
+                const exercises = [];
+                
+                for (let i = 0; i < quantity; i++) {
+                    const randomTopic = selectedTopics[Math.floor(Math.random() * selectedTopics.length)];
+                    const topicExercises = ejerciciosDatabase[randomTopic];
+                    const randomExercise = topicExercises[Math.floor(Math.random() * topicExercises.length)];
+                    
+                    const statement = generateRandomValues(randomExercise.template, randomExercise.generateValues);
+                    
+                    exercises.push({
+                        number: i + 1,
+                        topic: randomTopic,
+                        statement: statement,
+                        hint: randomExercise.hint
+                    });
+                }
+
+                displayExercises(exercises, shouldScroll);
+            }, 1000);
+        }
+
+        // Función para mostrar ejercicios
+        function displayExercises(exercises, shouldScroll = true) {
+            const resultsContainer = document.getElementById('results-container');
+            const exercisesList = document.getElementById('exercises-list');
+            const resultsCount = document.getElementById('results-count');
+            
+            exercisesList.innerHTML = '';
+            
+            exercises.forEach(exercise => {
+                const exerciseCard = document.createElement('div');
+                exerciseCard.className = 'exercise-card';
+                exerciseCard.innerHTML = `
+                    <div class="exercise-header">
+                        <span class="exercise-number">Ejercicio ${exercise.number}</span>
+                        <span class="exercise-topic">${getTopicName(exercise.topic)}</span>
+                    </div>
+                    <div class="exercise-statement">${exercise.statement}</div>
+                    <div class="hint-section">
+                        <button class="hint-toggle" onclick="toggleHint(this)">💡 Mostrar Pista</button>
+                        <div class="hint-content">
+                            <strong>Pista:</strong> ${exercise.hint}
+                        </div>
+                    </div>
+                `;
+                exercisesList.appendChild(exerciseCard);
+            });
+            
+            resultsCount.textContent = `${exercises.length} ejercicio${exercises.length !== 1 ? 's' : ''} generado${exercises.length !== 1 ? 's' : ''}`;
+            
+            // Ocultar loading y mostrar resultados
+            document.getElementById('loading').style.display = 'none';
+            resultsContainer.style.display = 'block';
+            
+            // Scroll adicional para asegurar que los ejercicios estén completamente visibles solo si se solicita
+            if (shouldScroll) {
+                setTimeout(() => {
+                    resultsContainer.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            }
+        }
+
+        // Función para obtener el nombre del tema
+        function getTopicName(topic) {
+            const topicNames = {
+                'operaciones_basicas': 'Operaciones Básicas',
+                'concatenacion': 'Concatenación',
+                'conversiones': 'Conversiones',
+                'geometria': 'Geometría',
+                'fisica': 'Física',
+                'conversion_unidades': 'Conversión Unidades',
+                'condicionales': 'Condicionales',
+                'clasificacion': 'Clasificación',
+                'validacion': 'Validación',
+                'bucles_while': 'Bucles While',
+                'bucles_for': 'Bucles For',
+                'acumuladores': 'Acumuladores',
+                'listas_basicas': 'Listas Básicas',
+                'busqueda_listas': 'Búsqueda Listas',
+                'estadisticas': 'Estadísticas',
+                'funciones_basicas': 'Funciones Básicas',
+                'menus': 'Menús',
+                'parametros': 'Parámetros'
+            };
+            return topicNames[topic] || topic;
+        }
+
+        // Función para toggle de pistas
+        function toggleHint(button) {
+            const hintContent = button.nextElementSibling;
+            const isVisible = hintContent.classList.contains('show');
+            
+            if (isVisible) {
+                hintContent.classList.remove('show');
+                button.textContent = '💡 Mostrar Pista';
+            } else {
+                hintContent.classList.add('show');
+                button.textContent = '🙈 Ocultar Pista';
+            }
+        }
+
+        // Función para seleccionar checkboxes aleatoriamente
+        function selectRandomTopics() {
+            const topicGroups = document.querySelectorAll('.topic-group');
+            const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+            const selectedIndices = [];
+            
+            // Deseleccionar todos primero
+            allCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                updateCheckboxVisual(checkbox);
+            });
+            
+            // Para cada grupo de temas, seleccionar al menos uno aleatoriamente
+            topicGroups.forEach(group => {
+                const groupCheckboxes = group.querySelectorAll('input[type="checkbox"]');
+                if (groupCheckboxes.length > 0) {
+                    // Seleccionar al menos uno del grupo
+                    const randomIndex = Math.floor(Math.random() * groupCheckboxes.length);
+                    const checkbox = groupCheckboxes[randomIndex];
+                    const globalIndex = Array.from(allCheckboxes).indexOf(checkbox);
+                    
+                    if (!selectedIndices.includes(globalIndex)) {
+                        selectedIndices.push(globalIndex);
+                    }
+                    
+                    // Con 50% de probabilidad, seleccionar uno adicional del mismo grupo
+                    if (groupCheckboxes.length > 1 && Math.random() < 0.5) {
+                        let additionalIndex;
+                        do {
+                            additionalIndex = Math.floor(Math.random() * groupCheckboxes.length);
+                        } while (additionalIndex === randomIndex);
+                        
+                        const additionalCheckbox = groupCheckboxes[additionalIndex];
+                        const additionalGlobalIndex = Array.from(allCheckboxes).indexOf(additionalCheckbox);
+                        
+                        if (!selectedIndices.includes(additionalGlobalIndex)) {
+                            selectedIndices.push(additionalGlobalIndex);
+                        }
+                    }
+                }
+            });
+            
+            // Marcar los seleccionados
+            selectedIndices.forEach(index => {
+                allCheckboxes[index].checked = true;
+                updateCheckboxVisual(allCheckboxes[index]);
+            });
+            
+            return selectedIndices.length;
+        }
+
+        // Función para generar ejercicios automáticamente al cargar
+        function autoGenerateOnLoad() {
+            const numSelected = selectRandomTopics();
+            const quantity = Math.min(numSelected + 1, 5); // Generar entre 4-5 ejercicios
+            
+            // Actualizar el selector de cantidad
+            document.getElementById('quantity').value = quantity;
+            
+            // Mostrar mensaje informativo
+            const notice = document.getElementById('auto-generate-notice');
+            notice.style.display = 'block';
+            
+            // Ocultar el mensaje después de 5 segundos
+            setTimeout(() => {
+                notice.style.display = 'none';
+            }, 5000);
+            
+            // Generar ejercicios automáticamente después de un pequeño delay (sin scroll)
+            setTimeout(() => {
+                generateExercises(false);
+            }, 500);
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar event listeners a los checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    updateCheckboxVisual(this);
+                });
+            });
+            
+            // Generar ejercicios automáticamente al cargar
+            autoGenerateOnLoad();
+        });
+    </script>
+</body>
+</html>
