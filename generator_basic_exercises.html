@@ -773,6 +773,61 @@
                         lado: Math.floor(Math.random() * 15) + 3
                     }),
                     hint: "perimetro = lado * 4"
+                },
+                {
+                    template: "Calcular el área de un triángulo con base {base} y altura {altura}.",
+                    generateValues: () => ({
+                        base: Math.floor(Math.random() * 15) + 4,
+                        altura: Math.floor(Math.random() * 15) + 4
+                    }),
+                    hint: "area = (base * altura) / 2"
+                },
+                {
+                    template: "Calcular el área de un círculo con radio {radio}.",
+                    generateValues: () => ({
+                        radio: Math.floor(Math.random() * 12) + 3
+                    }),
+                    hint: "import math; area = math.pi * (radio ** 2)"
+                },
+                {
+                    template: "Calcular el perímetro de un rectángulo con base {base} y altura {altura}.",
+                    generateValues: () => ({
+                        base: Math.floor(Math.random() * 20) + 5,
+                        altura: Math.floor(Math.random() * 20) + 5
+                    }),
+                    hint: "perimetro = 2 * (base + altura)"
+                },
+                {
+                    template: "Calcular el área de un trapecio con base mayor {base_mayor}, base menor {base_menor} y altura {altura}.",
+                    generateValues: () => ({
+                        base_mayor: Math.floor(Math.random() * 20) + 8,
+                        base_menor: Math.floor(Math.random() * 15) + 4,
+                        altura: Math.floor(Math.random() * 12) + 3
+                    }),
+                    hint: "area = ((base_mayor + base_menor) * altura) / 2"
+                },
+                {
+                    template: "Calcular el volumen de un cilindro con radio {radio} y altura {altura}.",
+                    generateValues: () => ({
+                        radio: Math.floor(Math.random() * 8) + 2,
+                        altura: Math.floor(Math.random() * 15) + 5
+                    }),
+                    hint: "import math; volumen = math.pi * (radio ** 2) * altura"
+                },
+                {
+                    template: "Calcular el área de un rombo con diagonal mayor {diagonal_mayor} y diagonal menor {diagonal_menor}.",
+                    generateValues: () => ({
+                        diagonal_mayor: Math.floor(Math.random() * 20) + 6,
+                        diagonal_menor: Math.floor(Math.random() * 15) + 4
+                    }),
+                    hint: "area = (diagonal_mayor * diagonal_menor) / 2"
+                },
+                {
+                    template: "Calcular el área de un hexágono regular con lado {lado}.",
+                    generateValues: () => ({
+                        lado: Math.floor(Math.random() * 10) + 3
+                    }),
+                    hint: "import math; area = (3 * math.sqrt(3) * (lado ** 2)) / 2"
                 }
             ],
             fisica: [
@@ -844,12 +899,48 @@
                     hint: "if a == b == c: print('Equilátero') elif a == b or b == c or a == c: print('Isósceles') else: print('Escaleno')"
                 },
                 {
+                    template: "Clasificar el triángulo con lados {a}, {b} y {c} según sus ángulos: rectángulo, acutángulo u obtusángulo.",
+                    generateValues: () => {
+                        const lados = [Math.floor(Math.random() * 10) + 3, Math.floor(Math.random() * 10) + 3, Math.floor(Math.random() * 10) + 3];
+                        return { a: lados[0], b: lados[1], c: lados[2] };
+                    },
+                    hint: "lados = sorted([a, b, c]); if lados[2]**2 == lados[0]**2 + lados[1]**2: print('Rectángulo') elif lados[2]**2 < lados[0]**2 + lados[1]**2: print('Acutángulo') else: print('Obtusángulo')"
+                },
+                {
+                    template: "Clasificar el polígono de {lados} lados como triángulo, cuadrado, pentágono, hexágono u otro.",
+                    generateValues: () => ({
+                        lados: Math.floor(Math.random() * 8) + 3
+                    }),
+                    hint: "if lados == 3: print('Triángulo') elif lados == 4: print('Cuadrado') elif lados == 5: print('Pentágono') elif lados == 6: print('Hexágono') else: print('Otro polígono')"
+                },
+                {
+                    template: "Clasificar el ángulo de {grados}° como agudo, recto, obtuso o llano.",
+                    generateValues: () => ({
+                        grados: Math.floor(Math.random() * 360) + 1
+                    }),
+                    hint: "if grados < 90: print('Agudo') elif grados == 90: print('Recto') elif grados < 180: print('Obtuso') else: print('Llano')"
+                },
+                {
                     template: "Calcular el IMC con peso {peso} kg y estatura {estatura} m, y clasificar como bajo peso, normal, sobrepeso u obeso.",
                     generateValues: () => ({
                         peso: Math.floor(Math.random() * 50) + 50,
                         estatura: (Math.random() * 0.5 + 1.5).toFixed(2)
                     }),
                     hint: "imc = peso / (estatura ** 2); if imc < 18.5: print('Bajo peso') elif imc < 25: print('Normal') elif imc < 30: print('Sobrepeso') else: print('Obeso')"
+                },
+                {
+                    template: "Clasificar la temperatura de {temperatura}°C como muy fría, fría, templada, caliente o muy caliente.",
+                    generateValues: () => ({
+                        temperatura: Math.floor(Math.random() * 50) - 10
+                    }),
+                    hint: "if temperatura < 0: print('Muy fría') elif temperatura < 10: print('Fría') elif temperatura < 25: print('Templada') elif temperatura < 35: print('Caliente') else: print('Muy caliente')"
+                },
+                {
+                    template: "Clasificar el número {numero} como positivo, negativo o cero, y además como par o impar.",
+                    generateValues: () => ({
+                        numero: Math.floor(Math.random() * 21) - 10
+                    }),
+                    hint: "if numero > 0: print('Positivo') elif numero < 0: print('Negativo') else: print('Cero'); if numero % 2 == 0: print('Par') else: print('Impar')"
                 }
             ],
             validacion: [
@@ -1001,9 +1092,40 @@
             ],
             menus: [
                 {
-                    template: "Crear un menú con 3 opciones que llame a diferentes funciones según la opción elegida.",
-                    generateValues: () => ({}),
-                    hint: "def menu(): print('1. Opción 1'); print('2. Opción 2'); print('3. Opción 3'); return input('Elige: ')"
+                    template: "Crear un menú de restaurante con {opcion1}, {opcion2} y {opcion3}. El usuario debe elegir una opción y el programa debe mostrar el precio correspondiente.",
+                    generateValues: () => ({
+                        opcion1: ['Hamburguesa', 'Pizza', 'Pasta', 'Ensalada', 'Sándwich'][Math.floor(Math.random() * 5)],
+                        opcion2: ['Pollo', 'Pescado', 'Carne', 'Vegetariano', 'Mariscos'][Math.floor(Math.random() * 5)],
+                        opcion3: ['Postre', 'Bebida', 'Entrada', 'Sopa', 'Ensalada'][Math.floor(Math.random() * 5)]
+                    }),
+                    hint: "def menu_restaurante(): print('1. ' + opcion1); print('2. ' + opcion2); print('3. ' + opcion3); opcion = input('Elige: '); if opcion == '1': print('Precio: $15')"
+                },
+                {
+                    template: "Crear un menú de calculadora con operaciones: {operacion1}, {operacion2}, {operacion3}. El usuario ingresa dos números y elige la operación.",
+                    generateValues: () => ({
+                        operacion1: ['Suma', 'Resta', 'Multiplicación', 'División', 'Potencia'][Math.floor(Math.random() * 5)],
+                        operacion2: ['Raíz cuadrada', 'Porcentaje', 'Máximo', 'Mínimo', 'Promedio'][Math.floor(Math.random() * 5)],
+                        operacion3: ['Factorial', 'Fibonacci', 'Primo', 'Par/Impar', 'Absoluto'][Math.floor(Math.random() * 5)]
+                    }),
+                    hint: "def calculadora(): print('1. ' + operacion1); print('2. ' + operacion2); print('3. ' + operacion3); opcion = input('Elige: '); num1 = float(input('Número 1: '))"
+                },
+                {
+                    template: "Crear un menú de gestión de estudiantes con opciones: {opcion1}, {opcion2}, {opcion3}. Cada opción debe llamar a una función específica.",
+                    generateValues: () => ({
+                        opcion1: ['Agregar estudiante', 'Ver estudiantes', 'Buscar estudiante', 'Eliminar estudiante', 'Modificar datos'][Math.floor(Math.random() * 5)],
+                        opcion2: ['Calcular promedio', 'Ver calificaciones', 'Generar reporte', 'Exportar datos', 'Importar datos'][Math.floor(Math.random() * 5)],
+                        opcion3: ['Estadísticas', 'Gráficos', 'Configuración', 'Ayuda', 'Salir'][Math.floor(Math.random() * 5)]
+                    }),
+                    hint: "def menu_estudiantes(): print('1. ' + opcion1); print('2. ' + opcion2); print('3. ' + opcion3); opcion = input('Elige: '); if opcion == '1': agregar_estudiante()"
+                },
+                {
+                    template: "Crear un menú de tienda online con categorías: {categoria1}, {categoria2}, {categoria3}. El usuario puede navegar entre categorías y ver productos.",
+                    generateValues: () => ({
+                        categoria1: ['Electrónicos', 'Ropa', 'Hogar', 'Deportes', 'Libros'][Math.floor(Math.random() * 5)],
+                        categoria2: ['Juguetes', 'Cocina', 'Jardín', 'Automotriz', 'Belleza'][Math.floor(Math.random() * 5)],
+                        categoria3: ['Salud', 'Viajes', 'Música', 'Arte', 'Herramientas'][Math.floor(Math.random() * 5)]
+                    }),
+                    hint: "def menu_tienda(): print('1. ' + categoria1); print('2. ' + categoria2); print('3. ' + categoria3); opcion = input('Elige categoría: '); if opcion == '1': mostrar_productos(categoria1)"
                 }
             ],
             parametros: [
