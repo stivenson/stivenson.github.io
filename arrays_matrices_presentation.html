@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arrays y Matrices - Sistema de Ecuaciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-280px);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            /* Fondo lo maneja Vanta.js */
+            background: none;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .sidebar-header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .sidebar-header p {
+            color: white;
+        }
+
+        .menu-items {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+        }
+
+        .menu-item.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-left-color: #667eea;
+            font-weight: 600;
+        }
+
+        .menu-item .icon {
+            font-size: 1.3rem;
+            min-width: 25px;
+        }
+
+        .menu-item .text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            transition: margin-left 0.3s ease;
+            padding: 20px;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Toggle button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Content panel */
+        .content-panel {
+            background: rgba(255, 255, 255, 0.76);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative; /* para anclar footer interno */
+            padding-bottom: 110px; /* espacio para footer */
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        p {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .example-box {
+            background: rgba(248, 249, 250, 0.78);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+
+        .matrix-display {
+            font-family: monospace;
+            background: rgba(248, 249, 250, 0.78);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        /* Inicio - badges de meta (materia y profesor) */
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0 20px 0;
+        }
+        .badge {
+            background: rgba(102, 126, 234, 0.12);
+            color: #3f51b5;
+            border: 1px solid #667eea;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+        .badge-alt {
+            background: rgba(118, 75, 162, 0.12);
+            color: #764ba2;
+            border-color: #764ba2;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* Footer dentro del panel de contenido */
+        .global-panel-footer {
+            position: absolute;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        .global-panel-footer img { height: 42px; }
+
+        /* Footer al final del menú lateral */
+        .sidebar-footer {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            padding: 12px 10px;
+            margin: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        .sidebar-footer img { height: 36px; }
+
+        /* Fullscreen animated background container (Vanta.js) */
+        #vanta-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+
+            .sidebar.collapsed {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .content-panel {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+    <!-- Highlight.js styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        /* Ajuste de color para comentarios en bloques de código (más claro) */
+        .hljs-comment, .hljs-quote { color: #b0b0b0; }
+    </style>
+    <!-- three.js + Vanta.js WAVES for animated background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+</head>
+<body>
+    <div id="vanta-bg"></div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header" id="menu-banner">
+                <h2>📚 Navegación</h2>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Arrays y Matrices</p>
+            </div>
+            <nav class="menu-items">
+                <div class="menu-item active" onclick="showSection(0)">
+                    <span class="icon">🏠</span>
+                    <span class="text">Inicio</span>
+                </div>
+                <div class="menu-item" onclick="showSection(1)">
+                    <span class="icon">📘</span>
+                    <span class="text">Introducción</span>
+                </div>
+                <div class="menu-item" onclick="showSection(2)">
+                    <span class="icon">📊</span>
+                    <span class="text">¿Qué es un Array?</span>
+                </div>
+                <div class="menu-item" onclick="showSection(3)">
+                    <span class="icon">🔢</span>
+                    <span class="text">¿Qué es una Matriz?</span>
+                </div>
+                <div class="menu-item" onclick="showSection(4)">
+                    <span class="icon">🎯</span>
+                    <span class="text">Nuestro Problema</span>
+                </div>
+                <div class="menu-item" onclick="showSection(5)">
+                    <span class="icon">🧮</span>
+                    <span class="text">Creando la Matriz</span>
+                </div>
+                <div class="menu-item" onclick="showSection(6)">
+                    <span class="icon">📝</span>
+                    <span class="text">Creando el Array</span>
+                </div>
+                <div class="menu-item" onclick="showSection(7)">
+                    <span class="icon">🔄</span>
+                    <span class="text">Operaciones Básicas</span>
+                </div>
+                <div class="menu-item" onclick="showSection(8)">
+                    <span class="icon">🔀</span>
+                    <span class="text">Transpuesta</span>
+                </div>
+                <div class="menu-item" onclick="showSection(9)">
+                    <span class="icon">✖️</span>
+                    <span class="text">Producto Matricial</span>
+                </div>
+                <div class="menu-item" onclick="showSection(10)">
+                    <span class="icon">🎓</span>
+                    <span class="text">Método de Cramer</span>
+                </div>
+                <div class="menu-item" onclick="showSection(11)">
+                    <span class="icon">✅</span>
+                    <span class="text">Conclusiones</span>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <img src="https://www.unisimon.edu.co/cucuta/recursos/img/unisimon-logo-50-year.png" alt="Logo Universidad Simón Bolívar">
+            </div>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <div class="content-panel">
+                <div class="global-panel-footer" aria-label="Universidad Simón Bolívar">
+                    <img src="https://www.unisimon.edu.co/cucuta/recursos/img/unisimon-logo-50-year.png" alt="Logo Universidad Simón Bolívar">
+                </div>
+                <!-- Sección 0: Inicio / Portada -->
+                <section class="content-section active">
+                    <h1>Arrays y Matrices</h1>
+                    <p style="margin-bottom: 25px;">Presentación del tema y equipo de trabajo</p>
+                    <div class="hero-meta">
+                        <span class="badge">Algoritmia</span>
+                        <span class="badge badge-alt">Profesor: Ing. Wilson</span>
+                    </div>
+                    <div class="example-box" style="max-width: 520px;">
+                        <h3>Integrantes</h3>
+                        <p>• Cesar</p>
+                        <p>• Mauricio</p>
+                        <p>• Stivenson</p>
+                    </div>
+                </section>
+                <!-- Sección 1: Introducción -->
+                <section class="content-section">
+                    <h1>🎓 Arrays y Matrices en Programación</h1>
+                    <p>Bienvenido a esta presentación interactiva donde exploraremos los conceptos fundamentales de arrays y matrices a través de un ejemplo práctico: <span class="highlight">resolver un sistema de ecuaciones lineales</span> usando el Método de Cramer.</p>
+                    
+                    <div class="example-box">
+                        <h3>📋 Lo que aprenderás:</h3>
+                        <p>✓ Conceptos fundamentales de arrays y matrices</p>
+                        <p>✓ Diferencias entre listas de Python y arrays</p>
+                        <p>✓ Representación en memoria</p>
+                        <p>✓ Operaciones básicas (suma, resta, multiplicación)</p>
+                        <p>✓ Transpuesta y producto matricial</p>
+                        <p>✓ Aplicación práctica con el Método de Cramer</p>
+                    </div>
+
+                    <h2>🎯 Nuestro Caso de Estudio</h2>
+                    <p>Utilizaremos un sistema de ecuaciones que modela variables relacionadas con el aire (cobertura vegetal, temperatura ambiental, etc.) para entender cómo los arrays y matrices nos ayudan a resolver problemas reales.</p>
+                </section>
+
+                <!-- Sección 1: ¿Qué es un Array? -->
+                <section class="content-section">
+                    <h1>📊 ¿Qué es un Array?</h1>
+                    
+                    <h2>Definición desde la Programación</h2>
+                    <p>Un <span class="highlight">array</span> es una estructura de datos que almacena una colección de elementos del mismo tipo en posiciones de memoria contiguas. Cada elemento se accede mediante un índice numérico.</p>
+
+                    <div class="example-box">
+                        <h3>🔍 Características Clave:</h3>
+                        <p><strong>• Tamaño fijo:</strong> Una vez creado, su tamaño no cambia</p>
+                        <p><strong>• Tipo homogéneo:</strong> Todos los elementos son del mismo tipo</p>
+                        <p><strong>• Acceso O(1):</strong> Acceso directo por índice en tiempo constante</p>
+                        <p><strong>• Memoria contigua:</strong> Los elementos están uno al lado del otro en memoria</p>
+                    </div>
+
+                    <h2>¿Cómo se diferencia una lista en Python?</h2>
+                    
+                    <div class="code-box">
+# Lista de Python (dinámica, heterogénea)
+lista = [1, "texto", 3.14, True]
+lista.append(5)  # Puede crecer
+
+# Array de NumPy (fijo, homogéneo)
+import numpy as np
+array = np.array([1, 2, 3, 4, 5])
+# array.append(6)  ❌ No existe este método
+                    </div>
+
+                    <p><strong>Diferencias principales:</strong></p>
+                    <p>• Las <span class="highlight">listas de Python</span> son dinámicas (pueden crecer/decrecer) y heterogéneas (pueden contener diferentes tipos)</p>
+                    <p>• Los <span class="highlight">arrays</span> tienen tamaño fijo y tipo homogéneo, lo que los hace más eficientes</p>
+
+                    <h2>Ventajas en Rendimiento y Memoria</h2>
+                    <div class="example-box">
+                        <p><strong>⚡ Rendimiento:</strong> Los arrays son hasta 50x más rápidos para operaciones matemáticas debido a:</p>
+                        <p>- Operaciones vectorizadas (procesamiento en paralelo)</p>
+                        <p>- No necesitan verificar el tipo de cada elemento</p>
+                        <p>- Mejor uso del caché del procesador</p>
+                        <br>
+                        <p><strong>💾 Memoria:</strong> Usan menos memoria porque:</p>
+                        <p>- Solo almacenan los valores (no metadatos adicionales)</p>
+                        <p>- Ocupan posiciones contiguas (sin punteros entre elementos)</p>
+                    </div>
+                </section>
+
+                <!-- Sección 2: ¿Qué es una Matriz? -->
+                <section class="content-section">
+                    <h1>🔢 ¿Qué es una Matriz?</h1>
+                    
+                    <h2>Desde la Perspectiva de la Programación</h2>
+                    <p>Una <span class="highlight">matriz</span> es un array bidimensional (o multidimensional) que organiza los datos en filas y columnas. Es esencialmente un "array de arrays".</p>
+
+                    <div class="code-box">
+# Matriz 3x3 en Python con NumPy
+matriz = np.array([
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+])
+
+# Acceso: matriz[fila][columna]
+elemento = matriz[0][1]  # Devuelve 2
+                    </div>
+
+                    <h2>Desde la Perspectiva del Álgebra Lineal</h2>
+                    <p>En álgebra lineal, una matriz es una tabla rectangular de números, símbolos o expresiones, organizados en filas y columnas. Se utiliza para representar:</p>
+                    <p>• Sistemas de ecuaciones lineales</p>
+                    <p>• Transformaciones lineales</p>
+                    <p>• Datos estructurados en análisis estadístico</p>
+
+                    <div class="matrix-display">
+                        <strong>Matriz A (3×3):</strong><br><br>
+                        ⎡ a₁₁  a₁₂  a₁₃ ⎤<br>
+                        ⎢ a₂₁  a₂₂  a₂₃ ⎥<br>
+                        ⎣ a₃₁  a₃₂  a₃₃ ⎦
+                    </div>
+
+                    <h2>¿Cómo se representa una Matriz en Memoria?</h2>
+                    <div class="example-box">
+                        <h3>Dos formas principales:</h3>
+                        <p><strong>1. Row-major (por filas):</strong> Usado por NumPy y C</p>
+                        <div class="code-box">
+# Matriz 2x3: [[1,2,3], [4,5,6]]
+# Memoria: [1, 2, 3, 4, 5, 6]
+                        </div>
+                        
+                        <p><strong>2. Column-major (por columnas):</strong> Usado por Fortran y MATLAB</p>
+                        <div class="code-box">
+# Matriz 2x3: [[1,2,3], [4,5,6]]
+# Memoria: [1, 4, 2, 5, 3, 6]
+                        </div>
+                    </div>
+
+                    <h2>Diferencia entre Matriz y Array Bidimensional</h2>
+                    <p>En programación, los términos suelen usarse indistintamente, pero existe una diferencia conceptual:</p>
+                    <p>• <strong>Array bidimensional:</strong> Estructura de datos general para almacenar información en 2D</p>
+                    <p>• <strong>Matriz:</strong> Array bidimensional con operaciones matemáticas definidas (suma, multiplicación, determinante, inversa, etc.)</p>
+                    <p>Una matriz es un array bidimensional con <span class="highlight">álgebra matricial</span> implementada.</p>
+                </section>
+
+                <!-- Sección 3: Nuestro Problema -->
+                <section class="content-section">
+                    <h1>🎯 Nuestro Problema: Sistema de Ecuaciones</h1>
+                    
+                    <p>Vamos a resolver el siguiente sistema de ecuaciones lineales que modela variables ambientales del aire:</p>
+
+                    <div class="matrix-display">
+                        <strong>Sistema de Ecuaciones:</strong><br><br>
+                        2x + y + z = 10<br>
+                        x - 3y + 2z = 5<br>
+                        3x + 2y + 4z = 20
+                    </div>
+
+                    <h2>📋 Significado de las Variables</h2>
+                    <div class="example-box">
+                        <p><strong>x:</strong> Nivel de contaminación del aire</p>
+                        <p><strong>y:</strong> Cobertura vegetal o aérea verde</p>
+                        <p><strong>z:</strong> Temperatura ambiental promedio diaria</p>
+                    </div>
+
+                    <h2>🔍 ¿Por qué usar Arrays y Matrices?</h2>
+                    <p>Este sistema se puede representar en forma matricial como <strong>Ax = b</strong>, donde:</p>
+                    <p>• <strong>A</strong> es la matriz de coeficientes (3×3)</p>
+                    <p>• <strong>x</strong> es el array de incógnitas (3×1)</p>
+                    <p>• <strong>b</strong> es el array de términos independientes (3×1)</p>
+
+                    <div class="matrix-display">
+                        <strong>Representación Matricial:</strong><br><br>
+                        ⎡ 2   1   1 ⎤   ⎡ x ⎤   ⎡ 10 ⎤<br>
+                        ⎢ 1  -3   2 ⎥ × ⎢ y ⎥ = ⎢  5 ⎥<br>
+                        ⎣ 3   2   4 ⎦   ⎣ z ⎦   ⎣ 20 ⎦
+                    </div>
+
+                    <p>Esta representación nos permite usar herramientas del álgebra lineal, como el <span class="highlight">Método de Cramer</span>, para encontrar la solución.</p>
+                </section>
+
+                <!-- Sección 4: Creando la Matriz -->
+                <section class="content-section">
+                    <h1>🧮 Creando la Matriz de Coeficientes</h1>
+                    
+                    <h2>Paso 1: Identificar los Coeficientes</h2>
+                    <p>De nuestro sistema de ecuaciones, extraemos los coeficientes de cada variable:</p>
+
+                    <div class="example-box">
+                        <p>Ecuación 1: <strong>2</strong>x + <strong>1</strong>y + <strong>1</strong>z = 10</p>
+                        <p>Ecuación 2: <strong>1</strong>x + <strong>(-3)</strong>y + <strong>2</strong>z = 5</p>
+                        <p>Ecuación 3: <strong>3</strong>x + <strong>2</strong>y + <strong>4</strong>z = 20</p>
+                    </div>
+
+                    <h2>Paso 2: Crear la Matriz en Python</h2>
+                    <div class="code-box">
+import numpy as np
+
+# Matriz A: coeficientes del sistema
+A = np.array([
+    [2,  1,  1],   # Coeficientes de la ecuación 1
+    [1, -3,  2],   # Coeficientes de la ecuación 2
+    [3,  2,  4]    # Coeficientes de la ecuación 3
+])
+
+print("Matriz de coeficientes A:")
+print(A)
+# [[2  1  1]
+#  [1 -3  2]
+#  [3  2  4]]
+                    </div>
+
+                    <h2>Paso 3: Accediendo a los Elementos</h2>
+                    <div class="code-box">
+# Acceso por índice [fila, columna] (comienza en 0)
+coef_x_eq1 = A[0, 0]  # 2 (fila 0, columna 0)
+coef_y_eq2 = A[1, 1]  # -3 (fila 1, columna 1)
+coef_z_eq3 = A[2, 2]  # 4 (fila 2, columna 2)
+
+# Acceder a una fila completa
+ecuacion_1 = A[0, :]  # [2, 1, 1]
+
+# Acceder a una columna completa
+coeficientes_de_y = A[:, 1]  # [1, -3, 2]
+                    </div>
+
+                    <h2>🎯 Propiedades de Nuestra Matriz</h2>
+                    <div class="example-box">
+                        <p><strong>Dimensión:</strong> 3×3 (3 filas, 3 columnas)</p>
+                        <p><strong>Tipo:</strong> Matriz cuadrada</p>
+                        <p><strong>Tipo de datos:</strong> int64 (enteros de 64 bits)</p>
+                        <p><strong>Tamaño en memoria:</strong> 9 elementos × 8 bytes = 72 bytes</p>
+                    </div>
+                </section>
+
+                <!-- Sección 5: Creando el Array -->
+                <section class="content-section">
+                    <h1>📝 Creando el Array de Términos Independientes</h1>
+                    
+                    <h2>Paso 1: Identificar los Términos Independientes</h2>
+                    <p>Los términos independientes son los valores del lado derecho de cada ecuación:</p>
+
+                    <div class="example-box">
+                        <p>Ecuación 1: 2x + y + z = <strong>10</strong></p>
+                        <p>Ecuación 2: x - 3y + 2z = <strong>5</strong></p>
+                        <p>Ecuación 3: 3x + 2y + 4z = <strong>20</strong></p>
+                    </div>
+
+                    <h2>Paso 2: Crear el Array en Python</h2>
+                    <div class="code-box">
+# Array b: términos independientes
+b = np.array([10, 5, 20])
+
+print("Array de términos independientes b:")
+print(b)
+# [10  5 20]
+
+print(f"\nDimensión: {b.shape}")  # (3,)
+print(f"Tamaño: {b.size} elementos")  # 3
+                    </div>
+
+                    <h2>Paso 3: ¿Por qué un Array Unidimensional?</h2>
+                    <p>Un array unidimensional es perfecto para almacenar una secuencia simple de valores. En nuestro caso:</p>
+                    <div class="example-box">
+                        <p><strong>Ventajas:</strong></p>
+                        <p>• Acceso directo por índice: <code>b[0]</code> → 10</p>
+                        <p>• Memoria eficiente: solo 24 bytes (3 × 8 bytes)</p>
+                        <p>• Compatible con operaciones vectorizadas</p>
+                        <p>• Se puede expandir a columna cuando sea necesario</p>
+                    </div>
+
+                    <h2>Paso 4: Accediendo a los Elementos</h2>
+                    <div class="code-box">
+# Acceso individual
+termino_eq1 = b[0]  # 10
+termino_eq2 = b[1]  # 5
+termino_eq3 = b[2]  # 20
+
+# Slicing (rodajas)
+primeros_dos = b[:2]   # [10, 5]
+ultimos_dos = b[1:]    # [5, 20]
+
+# Modificación
+b_copia = b.copy()
+b_copia[1] = 15  # Cambiar el segundo elemento
+                    </div>
+
+                    <h2>🔍 Array vs Lista de Python</h2>
+                    <div class="code-box">
+# Lista de Python
+lista_python = [10, 5, 20]
+lista_python.append(25)  # ✅ Puede crecer
+
+# Array de NumPy
+array_numpy = np.array([10, 5, 20])
+# array_numpy.append(25)  # ❌ Error!
+# Debe crear uno nuevo:
+array_nuevo = np.append(array_numpy, 25)  # [10  5 20 25]
+                    </div>
+                </section>
+
+                <!-- Sección 6: Operaciones Básicas -->
+                <section class="content-section">
+                    <h1>🔄 Operaciones Básicas con Arrays y Matrices</h1>
+                    
+                    <h2>Operaciones entre Arrays del Mismo Tamaño</h2>
+                    <p>Cuando dos arrays tienen las mismas dimensiones, podemos realizar operaciones <span class="highlight">elemento a elemento</span>:</p>
+
+                    <div class="code-box">
+# Crear dos arrays del mismo tamaño
+a1 = np.array([1, 2, 3])
+a2 = np.array([4, 5, 6])
+
+# Suma elemento a elemento
+suma = a1 + a2  # [5, 7, 9]
+
+# Resta elemento a elemento
+resta = a1 - a2  # [-3, -3, -3]
+
+# Multiplicación elemento a elemento
+producto = a1 * a2  # [4, 10, 18]
+
+# División elemento a elemento
+division = a2 / a1  # [4.0, 2.5, 2.0]
+
+# Potencia elemento a elemento
+potencia = a1 ** 2  # [1, 4, 9]
+                    </div>
+
+                    <h2>Ejemplo con Nuestros Datos</h2>
+                    <p>Supongamos que queremos crear un segundo escenario con diferentes términos independientes:</p>
+
+                    <div class="code-box">
+# Términos independientes del escenario 1
+b1 = np.array([10, 5, 20])
+
+# Términos independientes del escenario 2
+b2 = np.array([15, 10, 25])
+
+# Diferencia entre escenarios
+diferencia = b2 - b1  # [5, 5, 5]
+
+# Promedio de ambos escenarios
+promedio = (b1 + b2) / 2  # [12.5, 7.5, 22.5]
+                    </div>
+
+                    <h2>Operaciones entre Matrices del Mismo Tamaño</h2>
+                    <div class="code-box">
+# Dos matrices 2×2
+M1 = np.array([[1, 2], [3, 4]])
+M2 = np.array([[5, 6], [7, 8]])
+
+# Suma de matrices
+suma_matrices = M1 + M2
+# [[ 6  8]
+#  [10 12]]
+
+# Multiplicación elemento a elemento (NO es producto matricial)
+mult_elemento = M1 * M2
+# [[ 5 12]
+#  [21 32]]
+                    </div>
+
+                    <h2>¿Qué sucede si operamos un Array con una Matriz?</h2>
+                    <div class="example-box">
+                        <p><strong>¿Es posible?</strong> Sí, bajo ciertas condiciones, gracias al <span class="highlight">broadcasting</span> de NumPy.</p>
+                        <p><strong>Broadcasting:</strong> NumPy automáticamente expande las dimensiones del array más pequeño para que coincidan.</p>
+                    </div>
+
+                    <div class="code-box">
+# Matriz 3×3
+A = np.array([[2, 1, 1], [1, -3, 2], [3, 2, 4]])
+
+# Array 1D
+v = np.array([1, 2, 3])
+
+# Suma: el array se suma a cada fila
+resultado = A + v
+# [[3 3 4]
+#  [2 -1 5]
+#  [4 4 7]]
+
+# Multiplicación elemento a elemento
+resultado2 = A * v
+# [[2 2 3]
+#  [1 -6 6]
+#  [3 4 12]]
+                    </div>
+
+                    <h2>⚠️ Condiciones para Broadcasting</h2>
+                    <div class="example-box">
+                        <p>Las dimensiones son compatibles cuando:</p>
+                        <p>1. Son iguales, o</p>
+                        <p>2. Una de ellas es 1</p>
+                        <br>
+                        <p>Ejemplos válidos:</p>
+                        <p>• (3,
+                </section>
+
+                <!-- Sección 7+1: Transpuesta -->
+                <section class="content-section">
+                    <h1>🔀 Transpuesta</h1>
+                    <p>La <span class="highlight">transpuesta</span> de una matriz A, denotada Aᵀ, se obtiene intercambiando filas por columnas.</p>
+                    <div class="code-box">
+# Ejemplo con NumPy
+import numpy as np
+A = np.array([[1, 2, 3], [4, 5, 6]])
+AT = A.T
+# AT = [[1, 4], [2, 5], [3, 6]]
+                    </div>
+                </section>
+
+                <!-- Sección 7+2: Producto Matricial -->
+                <section class="content-section">
+                    <h1>✖️ Producto Matricial</h1>
+                    <p>El producto de matrices (A·B) está definido cuando las columnas de A coinciden con las filas de B.</p>
+                    <div class="code-box">
+# Producto matricial con NumPy
+import numpy as np
+A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+C = A @ B
+# C = [[19, 22], [43, 50]]
+                    </div>
+                </section>
+
+                <!-- Sección 7+3: Método de Cramer -->
+                <section class="content-section">
+                    <h1>🎓 Método de Cramer</h1>
+                    <p>Para sistemas cuadrados Ax=b con det(A)≠0, cada incógnita se obtiene reemplazando su columna por b y dividiendo por det(A).</p>
+                    <div class="code-box">
+# Cramer con NumPy
+import numpy as np
+A = np.array([[2,1,1],[1,-3,2],[3,2,4]])
+b = np.array([10,5,20])
+detA = np.linalg.det(A)
+x = np.linalg.solve(A, b)  # Solución equivalente
+print(x)
+                    </div>
+                </section>
+
+                <!-- Sección 7+4: Conclusiones -->
+                <section class="content-section">
+                    <h1>✅ Conclusiones</h1>
+                    <p>Repasamos arrays y matrices, operaciones clave y un caso práctico de resolución de sistemas lineales.</p>
+                </section>
+            
+        <!-- Highlight.js library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>
+            function showSection(index) {
+                var sections = document.querySelectorAll('.content-section');
+                var menuItems = document.querySelectorAll('.menu-item');
+
+                if (!sections.length || index < 0 || index >= sections.length) {
+                    return;
+                }
+
+                sections.forEach(function (s) { s.classList.remove('active'); });
+                menuItems.forEach(function (m) { m.classList.remove('active'); });
+
+                sections[index].classList.add('active');
+                if (menuItems[index]) {
+                    menuItems[index].classList.add('active');
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function toggleMenu() {
+                var sidebar = document.getElementById('sidebar');
+                var main = document.getElementById('mainContent');
+                sidebar.classList.toggle('collapsed');
+                main.classList.toggle('expanded');
+            }
+
+            // Transform existing .code-box blocks into highlighted Python code blocks
+            (function () {
+                var boxes = document.querySelectorAll('.code-box');
+                boxes.forEach(function (box) {
+                    var codeText = box.textContent.trim();
+                    var pre = document.createElement('pre');
+                    var code = document.createElement('code');
+                    code.className = 'language-python';
+                    code.textContent = codeText;
+                    pre.appendChild(code);
+                    box.innerHTML = '';
+                    box.appendChild(pre);
+                });
+                if (window.hljs && typeof window.hljs.highlightAll === 'function') {
+                    window.hljs.highlightAll();
+                }
+            })();
+        </script>
+        <script>
+            // Initialize Vanta WAVES background (green over white)
+            (function () {
+                if (window.VANTA && window.VANTA.WAVES) {
+                    window.VANTA.WAVES({
+                        el: "#vanta-bg",
+                        color: 0x0b5e2a,           // verde oscuro similar a la imagen
+                        shininess: 35,
+                        waveHeight: 20,
+                        waveSpeed: 0.75,
+                        zoom: 1.0,
+                        backgroundColor: 0xffffff  // blanco
+                    });
+
+                    // Banner del menú (sidebar header)
+                    window.VANTA.WAVES({
+                        el: "#menu-banner",
+                        color: 0x0b5e2a,
+                        shininess: 30,
+                        waveHeight: 12,
+                        waveSpeed: 0.6,
+                        zoom: 1.0,
+                        backgroundColor: 0x1b1f23  // se ignora detrás, el contenedor es transparente
+                    });
+                }
+            })();
+        </script>
