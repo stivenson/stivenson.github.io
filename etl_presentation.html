@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETL Foros, Consentimientos y Mapas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-320px);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: none;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .sidebar-header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .sidebar-header p {
+            color: white;
+        }
+
+        .menu-items {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+            border-left-color: #667eea;
+        }
+
+        .menu-item.active {
+            background: rgba(102, 126, 234, 0.15);
+            border-left-color: #667eea;
+            font-weight: 600;
+        }
+
+        .menu-item .icon {
+            font-size: 1.3rem;
+            min-width: 25px;
+        }
+
+        .menu-item .text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            margin-left: 320px;
+            transition: margin-left 0.3s ease;
+            padding: 20px;
+            overflow-x: hidden;
+            max-width: calc(100vw - 320px);
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+            max-width: 100vw;
+        }
+
+        /* Toggle button */
+        .menu-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Content panel */
+        .content-panel {
+            background: rgba(255, 255, 255, 0.76);
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            padding-bottom: 110px;
+        }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s ease; }
+
+        #inicio-section { text-align: center; }
+        #inicio-section h1,
+        #inicio-section p,
+        #inicio-section .example-box { margin-left: auto; margin-right: auto; }
+        #inicio-section .hero-meta { justify-content: center; margin-left: auto; margin-right: auto; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { color: #667eea; margin-bottom: 20px; font-size: 2rem; }
+        h2 { color: #764ba2; margin-top: 30px; margin-bottom: 15px; font-size: 1.5rem; }
+        h3 { color: #667eea; margin-top: 20px; margin-bottom: 10px; font-size: 1.2rem; }
+        p { line-height: 1.8; color: #333; margin-bottom: 15px; }
+
+        .example-box {
+            background: rgba(248, 249, 250, 0.78);
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+
+        .matrix-display {
+            font-family: monospace;
+            background: rgba(248, 249, 250, 0.78);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 20px 0; }
+        .badge { background: rgba(102, 126, 234, 0.12); color: #3f51b5; border: 1px solid #667eea; padding: 8px 14px; border-radius: 999px; font-weight: 600; letter-spacing: 0.2px; }
+        .badge-alt { background: rgba(118, 75, 162, 0.12); color: #764ba2; border-color: #764ba2; }
+        .integrantes-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 12px; }
+        .badge-integrante { background: rgba(76, 175, 80, 0.15); color: #2e7d32; border: 2px solid #4caf50; padding: 10px 18px; border-radius: 12px; font-weight: 600; font-size: 1rem; box-shadow: 0 2px 8px rgba(76, 175, 80, 0.2); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .badge-integrante:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); }
+
+        .highlight { background: #fff3cd; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+
+        /* Quiz styles */
+        .quiz-option { padding: 8px 10px; border-radius: 8px; }
+        .quiz-option.correct { background: rgba(76, 175, 80, 0.15); border-left: 4px solid #4caf50; }
+        .quiz-option.incorrect { background: rgba(244, 67, 54, 0.15); border-left: 4px solid #f44336; }
+        .quiz-score { margin: 18px auto 0 auto; background: rgba(255, 215, 64, 0.30); border: 2px solid #f1c40f; color: #6b5d00; padding: 20px 28px; border-radius: 16px; font-weight: 800; font-size: 1.25rem; display: block; width: fit-content; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        #quiz-result { text-align: center; }
+        .timer-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 193, 7, 0.18); border: 1px solid #ffca2c; color: #8a6d00; padding: 8px 12px; border-radius: 10px; font-weight: 700; }
+        #quiz-section button:disabled { opacity: 0.6; cursor: not-allowed; filter: saturate(0.7); }
+        .quiz-modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .quiz-modal { background: white; border-radius: 16px; padding: 32px; max-width: 460px; width: 90%; box-shadow: 0 16px 48px rgba(0,0,0,0.25); text-align: center; }
+        .quiz-modal h3 { color: #667eea; font-size: 1.5rem; margin-bottom: 14px; }
+        .quiz-modal p { color: #333; margin-bottom: 24px; font-size: 1.05rem; }
+        .quiz-modal button { padding: 14px 24px; border-radius: 10px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 700; font-size: 1.05rem; cursor: pointer; }
+
+        /* Footer dentro del panel de contenido */
+        .global-panel-footer {
+            position: absolute;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        .global-panel-footer img { height: 42px; }
+
+        /* Footer al final del menú lateral */
+        .sidebar-footer { background: rgba(255, 255, 255, 0.85); border-radius: 12px; padding: 12px 10px; margin: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+        .sidebar-footer img { height: 36px; }
+
+        /* Fullscreen animated background container (Vanta.js) */
+        #vanta-bg { position: fixed; inset: 0; z-index: -1; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { width: 100vw; max-width: 100vw; }
+            .sidebar { transform: translateX(-320px); }
+            .sidebar.collapsed { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; max-width: 100vw !important; width: 100vw; padding: 15px; }
+            .main-content.expanded { margin-left: 0 !important; max-width: 100vw !important; width: 100vw; }
+            .menu-toggle { display: flex; }
+            .content-panel { padding: 20px; padding-bottom: 140px; max-width: 100%; width: 100%; margin: 0; box-sizing: border-box; }
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 1.3rem; }
+        }
+    </style>
+    <!-- Highlight.js styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        .hljs-comment, .hljs-quote { color: #b0b0b0; }
+    </style>
+    <!-- three.js + Vanta.js WAVES for animated background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+</head>
+<body>
+    <div id="vanta-bg"></div>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header" id="menu-banner">
+                <h2>📚 Navegación</h2>
+                <p style="font-size: 0.9rem; margin-top: 5px;">ETL Foros, Consentimientos y Mapas</p>
+            </div>
+            <nav class="menu-items">
+                <div class="menu-item active" onclick="showSection(0)"><span class="icon">🏠</span><span class="text">Inicio</span></div>
+                <div class="menu-item" onclick="showSection(1)"><span class="icon">🎯</span><span class="text">Objetivo y Contexto</span></div>
+                <div class="menu-item" onclick="showSection(2)"><span class="icon">📥</span><span class="text">Extracción de Datos</span></div>
+                <div class="menu-item" onclick="showSection(3)"><span class="icon">✅</span><span class="text">Validación de Esquemas</span></div>
+                <div class="menu-item" onclick="showSection(4)"><span class="icon">🧹</span><span class="text">Limpieza y Normalización</span></div>
+                <div class="menu-item" onclick="showSection(5)"><span class="icon">🔐</span><span class="text">Pseudoanonimización</span></div>
+                <div class="menu-item" onclick="showSection(6)"><span class="icon">🧾</span><span class="text">Filtrado por Consentimiento</span></div>
+                <div class="menu-item" onclick="showSection(7)"><span class="icon">🗄️</span><span class="text">Carga a DuckDB</span></div>
+                <div class="menu-item" onclick="showSection(8)"><span class="icon">📍</span><span class="text">Colegios y Coordenadas</span></div>
+                <div class="menu-item" onclick="showSection(9)"><span class="icon">🔎</span><span class="text">Verificación y Logs</span></div>
+                <div class="menu-item" onclick="showSection(10)"><span class="icon">📊</span><span class="text">Consultas y Análisis</span></div>
+                <div class="menu-item quiz-highlight" onclick="showSection(11)"><span class="icon">🎮</span><span class="text">Juego/Evaluación</span></div>
+                <div class="menu-item" onclick="showSection(12)"><span class="icon">✅</span><span class="text">Conclusiones</span></div>
+            </nav>
+            <div class="sidebar-footer">
+                <img src="https://www.unisimon.edu.co/cucuta/recursos/img/unisimon-logo-50-year.png" alt="Logo Universidad Simón Bolívar">
+            </div>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+            <div class="content-panel">
+                <div class="global-panel-footer" aria-label="Universidad Simón Bolívar">
+                    <img src="https://www.unisimon.edu.co/cucuta/recursos/img/unisimon-logo-50-year.png" alt="Logo Universidad Simón Bolívar">
+                </div>
+
+                <!-- Sección 0: Inicio / Portada -->
+                <section class="content-section active" id="inicio-section">
+                    <h1>Proceso ETL:<br>Foros, Consentimientos y Mapas</h1>
+                    <p style="margin-bottom: 25px;">Presentación basada en el notebook/proceso ETL</p>
+                    <div class="hero-meta">
+                        <span class="badge">Introducción a la ingeniería de datos e inteligencia artificial</span>
+                        <span class="badge badge-alt">Profesor: Antonio</span>
+                    </div>
+                    <div class="example-box" style="max-width: 620px;">
+                        <h3>Integrantes</h3>
+                        <div class="integrantes-container">
+                            <span class="badge-integrante">Jefferson</span>
+                            <span class="badge-integrante">Manuel</span>
+                            <span class="badge-integrante">Mauricio</span>
+                            <span class="badge-integrante">Stivenson</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Sección 1: Objetivo y Contexto -->
+                <section class="content-section">
+                    <h1>🎯 Objetivo y Contexto</h1>
+                    <p><span class="highlight">Objetivo:</span> construir un pipeline ETL para integrar comentarios de foros (.docx), consentimientos (.csv/.xlsx) y datos de mapas, dejándolos listos para análisis y visualización.</p>
+                    <div class="example-box">
+                        <p><strong>¿Qué significa ETL?</strong></p>
+                        <p>• <strong>Extract (Extraer):</strong> leer datos desde S3 (LocalStack)</p>
+                        <p>• <strong>Transform (Transformar):</strong> limpiar, normalizar, pseudoanonimizar y filtrar por consentimiento</p>
+                        <p>• <strong>Load (Cargar):</strong> guardar datos estructurados y seguros en DuckDB</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip: Data Lake vs Data Warehouse</strong></p>
+                        <p>• <strong>Data Lake:</strong> guarda datos crudos en su formato original (ej. S3/LocalStack).</p>
+                        <p>• <strong>Data Warehouse:</strong> tablas estructuradas para análisis (ej. DuckDB).</p>
+                        <p><strong>LocalStack:</strong> emula S3 en local para desarrollar sin depender de la nube.</p>
+                    </div>
+                    <h2>Configuración inicial</h2>
+                    <div class="code-box">
+# Variables de entorno y cliente S3
+import os, boto3
+from dotenv import load_dotenv
+
+env_path = '../.env'
+if os.path.isfile(env_path):
+    load_dotenv(dotenv_path=env_path)
+else:
+    raise FileNotFoundError(f"No se encontró {env_path}")
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+S3_ENDPOINT_URL = os.environ.get('S3_ENDPOINT_URL')
+S3_BUCKET_NAME = os.environ.get('AWS_S3_BUCKET')
+DUCKDB_PATH = os.environ.get('DUCKDB_PATH')
+
+if not all([AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_ENDPOINT_URL, S3_BUCKET_NAME, DUCKDB_PATH]):
+    raise ValueError("Faltan variables de entorno requeridas")
+else:
+    print("✅ Variables de entorno cargadas.")
+
+s3 = boto3.client('s3',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    endpoint_url=S3_ENDPOINT_URL)
+print("Cliente S3 inicializado.")
+                    </div>
+                </section>
+
+                <!-- Sección 2: Extracción de Datos -->
+                <section class="content-section">
+                    <h1>📥 Extracción de Datos</h1>
+                    <p>Leemos archivos del lake en S3: foros (.docx), consentimientos (.csv/.xlsx) y mapas.</p>
+                    <div class="example-box">
+                        <p><strong>Idea clave:</strong> traer los datos tal cual están para luego transformarlos.</p>
+                        <p><strong>Foros:</strong> abrir .docx, unir párrafos y extraer comentarios con una expresión regular.</p>
+                        <p><strong>Consentimientos:</strong> leer varios archivos y combinarlos en un único DataFrame.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip: Regex y robustez</strong></p>
+                        <p>• Los .docx pueden variar; la regex ayuda a aislar los comentarios.</p>
+                        <p>• Usa <code>try/except</code> y logs para detectar archivos vacíos o corruptos sin detener el ETL.</p>
+                    </div>
+                    <div class="code-box">
+# Leer bytes desde S3
+def read_s3_file(s3_key):
+    try:
+        obj = s3.get_object(Bucket=S3_BUCKET_NAME, Key=s3_key)
+        return obj['Body'].read()
+    except Exception as e:
+        print(f"Error leyendo {s3_key}: {e}")
+        return None
+
+# Listar y extraer comentarios de foros
+from docx import Document
+import io, re
+
+forums_prefix = "lake/forums/"
+response_forums = s3.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=forums_prefix)
+forum_comments = []
+if 'Contents' in response_forums:
+    for obj in response_forums['Contents']:
+        if obj['Key'].endswith('.docx'):
+            content = read_s3_file(obj['Key'])
+            if content:
+                doc = Document(io.BytesIO(content))
+                full_text = "\n".join(p.text for p in doc.paragraphs)
+                comment_pattern = re.compile(r"de\s.+?-.+?\n(.*?)\nCalificación máxima.*?", re.DOTALL | re.IGNORECASE)
+                extracted = comment_pattern.findall(full_text)
+                forum_comments.extend([c.strip() for c in extracted if c.strip()])
+print(f"Se extrajeron {len(forum_comments)} comentarios de foros.")
+                    </div>
+                    <div class="example-box">
+                        <p><strong>¿Por qué regex?</strong> Para aislar solo el texto del comentario entre marcas que aparecen en el documento (autor/fecha y "Calificación máxima").</p>
+                    </div>
+                    <div class="code-box">
+# Consentimientos (.csv/.xlsx)
+import pandas as pd
+
+consents_prefix = "lake/consents/"
+response_consents = s3.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=consents_prefix)
+dfs = []
+if 'Contents' in response_consents:
+    for obj in response_consents['Contents']:
+        content = read_s3_file(obj['Key'])
+        if content:
+            if obj['Key'].endswith('.csv'):
+                dfs.append(pd.read_csv(io.BytesIO(content)))
+            elif obj['Key'].endswith('.xlsx'):
+                dfs.append(pd.read_excel(io.BytesIO(content)))
+consent_df = pd.concat(dfs, ignore_index=True) if dfs else pd.DataFrame()
+print(f"Se extrajeron {len(consent_df)} registros de consentimiento.")
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Nota:</strong> concatenamos todos los consentimientos para trabajar con una sola tabla de entrada.</p>
+                    </div>
+                </section>
+
+                <!-- Sección 3: Validación de Esquemas -->
+                <section class="content-section">
+                    <h1>✅ Validación de Esquemas</h1>
+                    <p>Comprobamos columnas esperadas y tipos básicos antes de transformar.</p>
+                    <div class="example-box">
+                        <p><strong>¿Por qué?</strong> Prevenir errores posteriores (por ejemplo, si falta una columna o tiene un tipo inesperado).</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip: Schema drift</strong></p>
+                        <p>• Los proveedores pueden cambiar nombres/tipos de columnas.</p>
+                        <p>• Detecta y registra diferencias para ajustar transformaciones a tiempo.</p>
+                    </div>
+                    <div class="code-box">
+expected_consent_columns = {
+    'columna_esperada_1': 'object',
+    'columna_esperada_2': 'int64',
+    'fecha_esperada': 'datetime64[ns]'
+}
+
+if not consent_df.empty:
+    missing = set(expected_consent_columns) - set(consent_df.columns)
+    print("Faltan:", missing)
+    print(consent_df.dtypes)
+                    </div>
+                </section>
+
+                <!-- Sección 4: Limpieza y Normalización -->
+                <section class="content-section">
+                    <h1>🧹 Limpieza y Normalización</h1>
+                    <p>Normalizamos textos (minúsculas, sin acentos, sin símbolos) y quitamos duplicados.</p>
+                    <h2>¿Por qué limpiamos y normalizamos?</h2>
+                    <div class="example-box">
+                        <p><strong>• Comparabilidad:</strong> “Cúcuta”, “cucuta” y “C facuta” deben considerarse lo mismo para análisis y cruces.</p>
+                        <p><strong>• Búsquedas y agrupaciones más precisas:</strong> al homogeneizar formato, evitamos contar lo mismo varias veces por diferencias de acentos o mayúsculas.</p>
+                        <p><strong>• Enlaces entre fuentes:</strong> mejora el matching entre <span class="highlight">consentimientos</span> y <span class="highlight">colegios.xlsx</span> (por nombre de establecimiento).</p>
+                        <p><strong>• Calidad y consistencia:</strong> eliminar duplicados reduce ruido y resultados engañosos.</p>
+                    </div>
+                    <h2>¿Qué hacemos exactamente?</h2>
+                    <div class="example-box">
+                        <p>1) Convertimos a <strong>minúsculas</strong></p>
+                        <p>2) Quitamos <strong>acentos</strong> y marcas diacríticas</p>
+                        <p>3) Removemos <strong>símbolos no alfanuméricos</strong> (dejamos letras, números y espacios)</p>
+                        <p>4) Aplicamos <strong>strip()</strong> (sin espacios al inicio/fin)</p>
+                        <p>5) Eliminamos <strong>duplicados</strong> exactos en el DataFrame</p>
+                        <p style="margin-top:10px;"><em>Nota:</em> Para fines éticos/legales, los datos originales permanecen en el <strong>data lake</strong>; las tablas analíticas usan la versión normalizada y/o anonimizada.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip:</strong> si necesitas emparejar por email, quizá te convenga <strong>preservar '@'</strong> antes de limpiar, y removerlo después del join.</p>
+                    </div>
+                    <div class="code-box">
+import unicodedata, re
+
+def clean_text_data(data):
+    if not isinstance(data, str):
+        return data
+    text = ''.join(c for c in unicodedata.normalize('NFD', data)
+                   if unicodedata.category(c) != 'Mn')
+    text = text.lower().strip()
+    text = re.sub(r'[^a-z0-9\s]', '', text)
+    return text
+
+consent_df_cleaned = consent_df.copy()
+for col in consent_df_cleaned.select_dtypes(include=['object']).columns:
+    consent_df_cleaned[col] = consent_df_cleaned[col].apply(clean_text_data)
+consent_df_cleaned.drop_duplicates(inplace=True)
+                    </div>
+                    <h2>Ejemplos antes/después</h2>
+                    <div class="code-box">
+# Ejemplos rápidos de normalización
+print(clean_text_data("  Cúcuta  "))            # "cucuta"
+print(clean_text_data("GlAdYs BayAl"))          # "gladys bayal"
+print(clean_text_data("correo@ejemplo.com"))    # "correoejemplocom" (sin símbolos)
+
+# Impacto en matching de nombres de colegio
+raw = "Colegio  Julio Pérez Ferrero"
+norm = clean_text_data(raw)
+print(raw, "->", norm)                           # "colegio  julio perez ferrero" -> "colegio  julio perez ferrero"
+                    </div>
+                </section>
+
+                <!-- Sección 5: Pseudoanonimización -->
+                <section class="content-section">
+                    <h1>🔐 Pseudoanonimización</h1>
+                    <p>Protegemos PII (nombres, apellidos, documento, teléfono, email) con funciones determinísticas (SHA256 + salt) preservando formato básico.</p>
+                    <div class="example-box">
+                        <p><strong>Objetivo:</strong> ocultar la identidad real sin romper los análisis.</p>
+                        <p><strong>Propiedades:</strong> determinístico (mismo input → mismo output), no reversible, conserva longitud/formato.</p>
+                    </div>
+                    <h2>¿Qué significa "no reversible" aquí?</h2>
+                    <div class="example-box">
+                        <p>Que <strong>no es posible recuperar el dato original</strong> a partir del valor pseudoanonimizado.</p>
+                        <p>Usamos <strong>hash (SHA256) + salt</strong>: el resultado parece aleatorio y no existe una “llave” para volver al original (a diferencia de un cifrado).</p>
+                        <p>Esto es distinto a <em>enmascarar</em> (por ejemplo, mostrar solo los últimos 4 dígitos), que sí puede ser reversible si se guarda el original.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip:</strong> <strong>Determinístico vs aleatorio</strong>: lo determinístico ayuda a hacer joins consistentes. El <strong>salt</strong> debe ser estable dentro del dataset; si lo cambias, cambiarán los resultados.</p>
+                    </div>
+                    <div class="code-box">
+import hashlib, string
+
+def safe_hex_to_int(hex_chunk, base=16):
+    try:
+        return int(hex_chunk, base)
+    except ValueError:
+        return sum(ord(c) for c in hex_chunk) % (26 if base==16 else 10)
+
+def pseudoanonymize_name(name, salt="educacion_data_2025"):
+    if pd.isna(name) or name=='': return name
+    h = hashlib.sha256(f"{name}_{salt}".encode()).hexdigest()
+    out = ''.join(string.ascii_lowercase[safe_hex_to_int(h[i*2:(i*2)+2]) % 26] for i in range(len(name)))
+    return out.capitalize() if name and name[0].isupper() else out
+
+def pseudoanonymize_document(doc_number, salt="educacion_data_2025"):
+    if pd.isna(doc_number) or doc_number=='': return doc_number
+    s = str(doc_number)
+    h = hashlib.sha256(f"{s}_{salt}".encode()).hexdigest()
+    return int(''.join(str(safe_hex_to_int(h[i*2:(i*2)+2]) % 10) for i in range(len(s))))
+
+def pseudoanonymize_phone(phone, salt="educacion_data_2025"):
+    if pd.isna(phone) or phone=='': return phone
+    s = str(phone)
+    h = hashlib.sha256(f"{s}_{salt}".encode()).hexdigest()
+    return int(''.join(str(safe_hex_to_int(h[i*2:(i*2)+2]) % 10) for i in range(len(s))))
+
+def pseudoanonymize_email(email, salt="educacion_data_2025"):
+    if pd.isna(email) or email=='': return email
+    if '@' not in email: return email
+    local, _ = email.split('@', 1)
+    h = hashlib.sha256(f"{local}_{salt}".encode()).hexdigest()
+    pseudo_local = ''.join(string.ascii_lowercase[safe_hex_to_int(h[i*2:(i*2)+2]) % 26] for i in range(min(len(local), 8)))
+    return f"{pseudo_local}@pseudoanonymized.edu.co"
+
+# Aplicación por mapeo de columnas sensibles (simplificado)
+consent_df_anonymized = consent_df_cleaned.copy()
+column_mapping = {}
+for col in consent_df_anonymized.columns:
+    cl = col.lower()
+    if 'establecimiento' in cl or 'educativo' in cl: continue
+    if 'nombre' in cl and 'apellido' not in cl: column_mapping[col] = 'nombres'
+    elif 'apellido' in cl: column_mapping[col] = 'apellidos'
+    elif 'documento' in cl or 'identificacion' in cl: column_mapping[col] = 'documento'
+    elif 'telefono' in cl: column_mapping[col] = 'telefono'
+    elif 'email' in cl or 'correo' in cl: column_mapping[col] = 'email'
+
+for original_col, kind in column_mapping.items():
+    if kind in ('nombres','apellidos'):
+        consent_df_anonymized[original_col] = consent_df_anonymized[original_col].apply(pseudoanonymize_name)
+    elif kind=='documento':
+        consent_df_anonymized[original_col] = consent_df_anonymized[original_col].apply(pseudoanonymize_document)
+    elif kind=='telefono':
+        consent_df_anonymized[original_col] = consent_df_anonymized[original_col].apply(pseudoanonymize_phone)
+    elif kind=='email':
+        consent_df_anonymized[original_col] = consent_df_anonymized[original_col].apply(pseudoanonymize_email)
+                    </div>
+                </section>
+
+                <!-- Sección 6: Filtrado por Consentimiento -->
+                <section class="content-section">
+                    <h1>🧾 Filtrado por Consentimiento</h1>
+                    <p>Solo procesamos comentarios de profesores con consentimiento válido, vinculados por un <strong>profesor_id</strong> generado.</p>
+                    <div class="example-box">
+                        <p><strong>Paso 1:</strong> generamos un <code>profesor_id</code> único por registro de consentimiento.</p>
+                        <p><strong>Paso 2:</strong> vinculamos comentarios con esos IDs (en el notebook se simula la asignación por falta de autor en .docx).</p>
+                        <p><strong>Resultado:</strong> solo cargamos comentarios autorizados.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip: Trazabilidad legal</strong></p>
+                        <p>• Registra la <strong>fecha</strong> y la <strong>versión</strong> del consentimiento usado para cada carga.</p>
+                    </div>
+                    <div class="code-box">
+import datetime, random
+
+def solicitar_id_profesor():
+    return f"P{datetime.datetime.now().year}_{random.randint(100000, 9999999)}"
+
+consent_df_anonymized['profesor_id'] = [solicitar_id_profesor() for _ in range(len(consent_df_anonymized))]
+
+# Simulación de asignación de comentarios a profesor_id con consentimiento
+profesores = consent_df_anonymized['profesor_id'].tolist()
+forum_comments_cleaned = [clean_text_data(c) for c in forum_comments]
+
+forums_with_consent = []
+if forum_comments_cleaned and profesores:
+    c_per = len(forum_comments_cleaned) // len(profesores)
+    rem = len(forum_comments_cleaned) % len(profesores)
+    idx = 0
+    for i, pid in enumerate(profesores):
+        n = c_per + (1 if i < rem else 0)
+        for _ in range(n):
+            if idx < len(forum_comments_cleaned):
+                forums_with_consent.append({'comentario': forum_comments_cleaned[idx], 'profesor_id': pid})
+                idx += 1
+
+forums_authorized_df = pd.DataFrame(forums_with_consent)
+print(f"🔒 Comentarios autorizados: {len(forums_authorized_df)} / {len(forum_comments_cleaned)}")
+                    </div>
+                </section>
+
+                <!-- Sección 7: Carga a DuckDB -->
+                <section class="content-section">
+                    <h1>🗄️ Carga a DuckDB</h1>
+                    <p>Creamos esquemas y tablas de destino (solo datos anonimizados) y cargamos los DataFrames finales.</p>
+                    <div class="example-box">
+                        <p><strong>Estructuras:</strong> <code>etl.consents</code>, <code>etl.forums</code>, <code>etl.maps</code>, <code>etl.logs</code>.</p>
+                        <p><strong>Regla:</strong> las tablas finales no guardan PII original, solo versiones anonimizadas.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip:</strong> <strong>DuckDB es una base de datos relacional (SQL)</strong> embebida: permite crear esquemas/tablas y ejecutar consultas SQL completas en local, ideal para análisis.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip:</strong> Registrar DataFrames + INSERT es práctico en notebooks; en producción puedes usar <strong>COPY</strong> a Parquet o ingestion directa para mayor rendimiento.</p>
+                        <p>Recrear tablas (DROP/CREATE) garantiza esquemas limpios; en sistemas vivos, preferir <strong>ALTER</strong> o migraciones controladas.</p>
+                    </div>
+                    <div class="code-box">
+import duckdb
+con = duckdb.connect(DUCKDB_PATH)
+
+con.execute("CREATE SCHEMA IF NOT EXISTS etl;")
+con.execute("DROP TABLE IF EXISTS etl.forums; CREATE TABLE etl.forums (id INTEGER, comentario VARCHAR, fecha DATE, foro_nombre VARCHAR, profesor_id VARCHAR);")
+con.execute("DROP TABLE IF EXISTS etl.consents; CREATE TABLE etl.consents (id INTEGER, nombres VARCHAR, apellidos VARCHAR, profesor_id VARCHAR, establecimiento_educativo VARCHAR);")
+con.execute("DROP TABLE IF EXISTS etl.maps; CREATE TABLE etl.maps (id INTEGER, municipio VARCHAR, latitud DOUBLE, longitud DOUBLE, geojson VARCHAR, establecimiento_educativo VARCHAR, edad INTEGER, tipo_establecimiento VARCHAR, rol VARCHAR, nivel_educacion VARCHAR, nivel_formacion VARCHAR, tipo_profesional VARCHAR, codigo VARCHAR);")
+con.execute("DROP TABLE IF EXISTS etl.logs; CREATE TABLE etl.logs (timestamp TIMESTAMP, level VARCHAR, message VARCHAR);")
+
+# Cargar consents (anonimizados)
+establecimiento_col = next((c for c in consent_df_anonymized.columns if 'establecimiento' in c.lower() or 'educativo' in c.lower()), None)
+col_map = {
+    consent_df_anonymized.columns[1]: 'nombres',
+    consent_df_anonymized.columns[2]: 'apellidos',
+    'profesor_id': 'profesor_id',
+    establecimiento_col: 'establecimiento_educativo'
+}
+consents_final_df = consent_df_anonymized.rename(columns=col_map)[list(col_map.values())]
+consents_final_df.insert(0, 'id', range(1, 1 + len(consents_final_df)))
+con.register('consents_final_df', consents_final_df)
+con.execute("INSERT INTO etl.consents SELECT * FROM consents_final_df")
+
+# Cargar foros (autorizados)
+if not forums_authorized_df.empty:
+    forums_final_df = forums_authorized_df.copy()
+    forums_final_df.insert(0, 'id', range(1, 1 + len(forums_final_df)))
+    forums_final_df['fecha'] = datetime.date.today()
+    forums_final_df['foro_nombre'] = 'Foro General'
+    forums_final_df = forums_final_df[['id','comentario','fecha','foro_nombre','profesor_id']]
+    con.register('forums_final_df', forums_final_df)
+    con.execute("INSERT INTO etl.forums SELECT * FROM forums_final_df")
+                    </div>
+                </section>
+
+                <!-- Sección 8: Colegios y Coordenadas -->
+                <section class="content-section">
+                    <h1>📍 Carga de Coordenadas (colegios.xlsx)</h1>
+                    <p>Leemos coordenadas, las parseamos y vinculamos con establecimientos de los consentimientos.</p>
+                    <div class="example-box">
+                        <p><strong>Flujo:</strong> leer Excel → parsear "lat,lon" → normalizar nombres → hacer <em>join</em> por nombre normalizado → insertar/actualizar en <code>etl.maps</code>.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip:</strong> si los nombres difieren, considera <strong>fuzzy matching</strong> con umbrales para evitar falsos positivos. Valida rangos: lat ∈ [-90, 90], lon ∈ [-180, 180].</p>
+                    </div>
+                    <div class="code-box">
+colegios_content = read_s3_file("lake/maps/colegios.xlsx")
+colegios_df = pd.read_excel(io.BytesIO(colegios_content))
+
+def parsear_coordenadas(s):
+    s = str(s).strip()
+    if ',' in s:
+        a,b = s.split(','); return float(a), float(b)
+    if ' ' in s:
+        a,b = s.split(); return float(a), float(b)
+    return None, None
+
+colegios_df[['latitud','longitud']] = colegios_df['coordenadas colegios'].apply(lambda x: pd.Series(parsear_coordenadas(x)))
+colegios_df = colegios_df[colegios_df['latitud'].notna() & colegios_df['longitud'].notna()]
+
+colegios_df['nombre_normalizado'] = colegios_df['(NEE) Nombre del Establecimiento Educativo'].apply(clean_text_data)
+est_df = con.execute("SELECT DISTINCT establecimiento_educativo FROM etl.consents WHERE establecimiento_educativo IS NOT NULL").fetchdf()
+est_df['nombre_normalizado'] = est_df['establecimiento_educativo'].apply(clean_text_data)
+vinculados = colegios_df.merge(est_df, on='nombre_normalizado', how='inner')
+                    </div>
+                </section>
+
+                <!-- Sección 9: Verificación y Logs -->
+                <section class="content-section">
+                    <h1>🔎 Verificación y Auditoría</h1>
+                    <p>Validamos integridad (nulos, duplicados, referencial entre foros y consentimientos) y registramos logs en S3 y DuckDB.</p>
+                    <div class="example-box">
+                        <p><strong>¿Qué verificamos?</strong></p>
+                        <p>• Conteos esperados • duplicados en <code>profesor_id</code> • comentarios sin consentimiento • muestras de datos.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip: Niveles de log</strong> (INFO/WARN/ERROR) ayudan a clasificar hallazgos. Automatiza chequeos en CI para detectar violaciones a integridad referencial o cambios de esquema.</p>
+                    </div>
+                    <div class="code-box">
+# Ejemplos de verificaciones
+consents_count = con.execute("SELECT COUNT(*) FROM etl.consents").fetchone()[0]
+duplicates = con.execute("SELECT COUNT(*) FROM (SELECT profesor_id, COUNT(*) c FROM etl.consents GROUP BY profesor_id HAVING COUNT(*)>1)").fetchone()[0]
+orphan_forums = con.execute("SELECT COUNT(*) FROM etl.forums f LEFT JOIN etl.consents c ON f.profesor_id=c.profesor_id WHERE c.profesor_id IS NULL").fetchone()[0]
+print(consents_count, duplicates, orphan_forums)
+                    </div>
+                </section>
+
+                <!-- Sección 10: Consultas y Análisis -->
+                <section class="content-section">
+                    <h1>📊 Consultas y Análisis</h1>
+                    <p>Ejemplos de consultas sobre datos ya cargados en DuckDB.</p>
+                    <div class="example-box">
+                        <p><strong>Nota:</strong> son consultas de muestra para explorar rápidamente la calidad y estructura de los datos.</p>
+                    </div>
+                    <div class="example-box">
+                        <p><strong>Tip:</strong> combina <strong>muestras (LIMIT)</strong> con <strong>agregados</strong> (COUNT, DISTINCT) para validar calidad. Con conjuntos grandes, ejecutar SQL directo en DuckDB suele ser más eficiente que materializar DataFrames grandes en memoria.</p>
+                    </div>
+                    <div class="code-box">
+con = duckdb.connect(DUCKDB_PATH)
+con.execute("SELECT * FROM etl.consents LIMIT 5").fetchdf()
+con.execute("SELECT * FROM etl.forums LIMIT 5").fetchdf()
+con.execute("SELECT establecimiento_educativo, latitud, longitud FROM etl.maps WHERE establecimiento_educativo IS NOT NULL LIMIT 5").fetchdf()
+con.close()
+                    </div>
+                </section>
+
+                <!-- Sección 11: Juego/Evaluación -->
+                <section class="content-section" id="quiz-section">
+                    <div id="quiz-modal-overlay" class="quiz-modal-overlay">
+                        <div class="quiz-modal">
+                            <h3>⏱️ Tiempo Límite</h3>
+                            <p>Tienes 2 minutos para responder estas diez preguntas sobre el ETL.</p>
+                            <button onclick="closeQuizModal()">🚀 Empezar</button>
+                        </div>
+                    </div>
+                    <h1>🎮 Juego/Evaluación</h1>
+                    <p>Responde 10 preguntas aleatorias sobre conceptos del ETL explicados en esta presentación.</p>
+                    <div style="display:flex; gap:10px; margin:10px 0 20px 0; align-items:center;">
+                        <button onclick="generateQuiz()" style="padding:10px 14px; border-radius:8px; border:1px solid #667eea; background:#fff; color:#3f51b5; cursor:pointer;">🔁 Nuevas preguntas</button>
+                        <div id="quiz-timer" class="timer-badge" aria-live="polite">⏳ 120 s</div>
+                    </div>
+                    <div id="quiz-container" class="example-box" style="background: rgba(248, 249, 250, 0.78);"></div>
+                    <div id="quiz-result" style="margin-top:12px; font-weight:600;"></div>
+                </section>
+
+                <!-- Sección 12: Conclusiones -->
+                <section class="content-section">
+                    <h1>✅ Conclusiones</h1>
+                    <div class="example-box">
+                        <p>• Se integraron fuentes heterogéneas (foros, consentimientos, mapas) en un esquema analítico.</p>
+                        <p>• Se aplicó <strong>pseudoanonimización</strong> y <strong>filtrado por consentimiento</strong> para cumplir principios éticos y legales.</p>
+                        <p>• Los datos quedaron listos en DuckDB, con verificaciones de integridad y logs para auditoría.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Highlight.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        var QUIZ_INDEX = 11; // índice de la sección Juego/Evaluación
+        function showSection(index) {
+            var sections = document.querySelectorAll('.content-section');
+            var menuItems = document.querySelectorAll('.menu-item');
+            if (!sections.length || index < 0 || index >= sections.length) return;
+            sections.forEach(function (s) { s.classList.remove('active'); });
+            menuItems.forEach(function (m) { m.classList.remove('active'); });
+            sections[index].classList.add('active');
+            if (menuItems[index]) menuItems[index].classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (window.innerWidth <= 768) {
+                var sidebar = document.getElementById('sidebar');
+                var main = document.getElementById('mainContent');
+                if (sidebar && sidebar.classList.contains('collapsed')) {
+                    sidebar.classList.remove('collapsed');
+                    main.classList.remove('expanded');
+                }
+            }
+            if (index === QUIZ_INDEX) {
+                generateQuiz(false);
+                showQuizModal();
+            }
+        }
+
+        function toggleMenu() {
+            var sidebar = document.getElementById('sidebar');
+            var main = document.getElementById('mainContent');
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('expanded');
+        }
+
+        // Transform existing .code-box blocks into highlighted Python code blocks
+        (function () {
+            var boxes = document.querySelectorAll('.code-box');
+            boxes.forEach(function (box) {
+                var codeText = box.textContent.trim();
+                var pre = document.createElement('pre');
+                var code = document.createElement('code');
+                code.className = 'language-python';
+                code.textContent = codeText;
+                pre.appendChild(code);
+                box.innerHTML = '';
+                box.appendChild(pre);
+            });
+            if (window.hljs && typeof window.hljs.highlightAll === 'function') {
+                window.hljs.highlightAll();
+            }
+        })();
+    </script>
+    <script>
+        // ================== QUIZ ENGINE (ETL) ==================
+        var QUESTION_BANK = [
+            { q: 'Orden correcto de ETL:', a: ['Extract → Transform → Load', 'Transform → Load → Extract', 'Load → Extract → Transform', 'Load → Transform → Extract'], i: 0 },
+            { q: '¿Qué asegura la validación de esquemas?', a: ['Tipos/columnas esperadas antes de transformar', 'Más velocidad de red', 'Siempre crea nuevas tablas', 'Impide leer .xlsx'], i: 0 },
+            { q: 'Objetivo de limpieza/normalización:', a: ['Homogeneizar texto para comparaciones y joins', 'Hacer texto más largo', 'Agregar emojis', 'Romper acentos'], i: 0 },
+            { q: 'Quitar acentos y minúsculas ayuda a:', a: ['Mejor matching entre fuentes', 'Usar menos RAM siempre', 'Eliminar filas', 'Crear índices'], i: 0 },
+            { q: 'Regex en foros (.docx) se usa para:', a: ['Extraer solo el texto del comentario', 'Contar columnas', 'Conectar a S3', 'Hacer hashing'], i: 0 },
+            { q: 'Pseudoanonimización con hash + salt es:', a: ['Determinística y no reversible', 'Reversible con la clave', 'Aleatoria cada vez', 'Obligatoria para imágenes'], i: 0 },
+            { q: 'No se pseudoanonimiza el establecimiento porque:', a: ['Se usa para vincular coordenadas', 'Es PII sensible', 'No aparece en archivos', 'Es un ID secreto'], i: 0 },
+            { q: 'Filtrado por consentimiento garantiza:', a: ['Solo comentarios autorizados se cargan', 'Todos los foros se descartan', 'Se duplican registros', 'Se elimina el profesor_id'], i: 0 },
+            { q: 'DuckDB almacena:', a: ['Tablas estructuradas para análisis local', 'Archivos .docx', 'Solo JSON', 'Código Python'], i: 0 },
+            { q: 'Tabla de logs se usa para:', a: ['Trazabilidad de acciones ETL', 'Guardar imágenes', 'Cifrar columnas', 'Borrar duplicados'], i: 0 },
+            { q: 'Integridad referencial entre foros y consents:', a: ['Todos los foros tienen profesor_id válido', 'Se aceptan foros huérfanos', 'profesor_id puede ser NULL', 'No aplica'], i: 0 },
+            { q: 'LocalStack en este proyecto sirve para:', a: ['Simular S3 localmente', 'Correr DuckDB en la nube', 'Reemplazar pandas', 'Crear HTML'], i: 0 },
+            { q: 'Eliminar duplicados en consents:', a: ['Reduce ruido y sobreconteo', 'Aumenta filas', 'Cambia tipos', 'Evita joins'], i: 0 },
+            { q: '¿Qué se conserva en correos pseudoanonimizados?', a: ['Estructura usuario@dominio (dominio genérico)', 'Dominio real siempre', 'Solo mayúsculas', 'Tamaño 20 fijo'], i: 0 },
+            { q: 'Para coordenadas de colegios.xlsx se hace:', a: ['Parseo lat,lon y join por nombre normalizado', 'Cifrado AES', 'Pivot por columnas', 'Conversión a binario'], i: 0 },
+            { q: '¿Cuándo generar profesor_id?', a: ['Al limpiar consents para relacionar entidades', 'Al final, después de cargar', 'Solo si hay foros', 'Nunca'], i: 0 },
+            { q: '¿Por qué no guardar PII original en tablas finales?', a: ['Cumplir ética y normativas', 'Para ocupar más disco', 'Para fallar joins', 'Para no usar logs'], i: 0 },
+            { q: '¿Qué hace DROP TABLE IF EXISTS ... CREATE TABLE ...?', a: ['Recrea tabla con esquema esperado', 'Inserta filas nuevas', 'Exporta a CSV', 'Crea índices únicos'], i: 0 },
+            { q: '¿Qué se registra en etl.logs?', a: ['timestamp, level, message', 'Solo IDs', 'Imágenes', 'GeoJSON'], i: 0 },
+            { q: '¿Qué mide la verificación de orfandad en foros?', a: ['Foros sin profesor en consents', 'Doble hashing', 'Uso de memoria', 'Schema drift'], i: 0 }
+        ];
+
+        var currentQuiz = [];
+        var quizTimerId = null;
+        var quizTimeLeft = 0;
+        var quizSubmitted = false;
+
+        function pickRandom(arr, k) {
+            var copy = arr.slice();
+            for (var i = copy.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var t = copy[i]; copy[i] = copy[j]; copy[j] = t;
+            }
+            return copy.slice(0, k);
+        }
+
+        function updateTimerBadge() {
+            var badge = document.getElementById('quiz-timer');
+            if (!badge) return;
+            if (quizTimeLeft < 0) quizTimeLeft = 0;
+            badge.textContent = '⏳ ' + quizTimeLeft + ' s';
+        }
+
+        function startQuizTimer() {
+            clearInterval(quizTimerId);
+            quizTimeLeft = 120;
+            updateTimerBadge();
+            quizTimerId = setInterval(function () {
+                quizTimeLeft -= 1;
+                updateTimerBadge();
+                if (quizTimeLeft <= 0) {
+                    clearInterval(quizTimerId);
+                    submitQuiz(true);
+                }
+            }, 1000);
+        }
+
+        function closeQuizModal() {
+            var modal = document.getElementById('quiz-modal-overlay');
+            if (modal) { modal.style.display = 'none'; }
+            startQuizTimer();
+        }
+
+        function showQuizModal() {
+            var modal = document.getElementById('quiz-modal-overlay');
+            if (modal) { modal.style.display = 'flex'; }
+        }
+
+        function generateQuiz(startTimer) {
+            currentQuiz = pickRandom(QUESTION_BANK, 10);
+            var container = document.getElementById('quiz-container');
+            var result = document.getElementById('quiz-result');
+            result.textContent = '';
+            quizSubmitted = false;
+            if (startTimer !== false) {
+                var modal = document.getElementById('quiz-modal-overlay');
+                if (modal) modal.style.display = 'none';
+                startQuizTimer();
+            }
+            var html = '';
+            currentQuiz.forEach(function(item, idx) {
+                html += '<div style="margin-bottom:14px;">';
+                html += '<strong>' + (idx + 1) + '. ' + item.q + '</strong>';
+                html += '<div style="margin-top:8px; display:grid; gap:6px;">';
+                item.a.forEach(function(opt, oi) {
+                    var name = 'q' + idx;
+                    html += '<label class="quiz-option" style="display:flex; gap:8px; align-items:center;">';
+                    html += '<input type="radio" name="' + name + '" value="' + oi + '">';
+                    html += '<span>' + opt + '</span>';
+                    html += '</label>';
+                });
+                html += '</div></div>';
+            });
+            html += '<div style="margin-top:16px;">' +
+                    '<button id="quiz-submit" onclick="submitQuiz()" style="padding:12px 16px; border-radius:10px; border:1px solid #764ba2; background:#fff; color:#764ba2; cursor:pointer; font-weight:600;">✅ Enviar respuestas</button>' +
+                    '</div>';
+            container.innerHTML = html;
+            var submitBtn = document.getElementById('quiz-submit');
+            if (submitBtn) submitBtn.disabled = false;
+        }
+
+        function submitQuiz(auto) {
+            if (quizSubmitted) return;
+            quizSubmitted = true;
+            clearInterval(quizTimerId);
+            if (!currentQuiz.length) { generateQuiz(); }
+            var correct = 0;
+            for (var i = 0; i < currentQuiz.length; i++) {
+                var radios = document.getElementsByName('q' + i);
+                for (var r = 0; r < radios.length; r++) {
+                    if (radios[r].checked) {
+                        if (parseInt(radios[r].value, 10) === currentQuiz[i].i) correct++;
+                        break;
+                    }
+                }
+            }
+            // Marcar correctas/incorrectas y deshabilitar
+            for (var i2 = 0; i2 < currentQuiz.length; i2++) {
+                var radios2 = document.getElementsByName('q' + i2);
+                for (var r2 = 0; r2 < radios2.length; r2++) {
+                    var label = radios2[r2].parentElement;
+                    label.classList.remove('correct', 'incorrect');
+                    if (parseInt(radios2[r2].value, 10) === currentQuiz[i2].i) { label.classList.add('correct'); }
+                    if (radios2[r2].checked && parseInt(radios2[r2].value, 10) !== currentQuiz[i2].i) { label.classList.add('incorrect'); }
+                    radios2[r2].disabled = true;
+                }
+            }
+            var result = document.getElementById('quiz-result');
+            result.innerHTML = '<span class="quiz-score">Puntaje: ' + correct + ' / ' + currentQuiz.length + '</span>';
+            setTimeout(function () { result.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 50);
+            var submitBtn = document.getElementById('quiz-submit');
+            if (submitBtn) submitBtn.disabled = true;
+        }
+    </script>
+    <script>
+        // Initialize Vanta WAVES background (green over white)
+        (function () {
+            if (window.VANTA && window.VANTA.WAVES) {
+                window.VANTA.WAVES({
+                    el: "#vanta-bg",
+                    color: 0x0b5e2a,
+                    shininess: 35,
+                    waveHeight: 20,
+                    waveSpeed: 0.75,
+                    zoom: 1.0,
+                    backgroundColor: 0xffffff
+                });
+                window.VANTA.WAVES({
+                    el: "#menu-banner",
+                    color: 0x0b5e2a,
+                    shininess: 30,
+                    waveHeight: 12,
+                    waveSpeed: 0.6,
+                    zoom: 1.0,
+                    backgroundColor: 0x1b1f23
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
+
