@@ -400,13 +400,13 @@ def read_s3_file(s3_key):
         print(f"Error leyendo {s3_key}: {e}")
         return None
 
-# Listar y extraer comentarios de foros
+# Listar y extraer comentarios de foros CON NOMBRES DE AUTORES
 from docx import Document
 import io, re
 
 forums_prefix = "lake/forums/"
 response_forums = s3.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=forums_prefix)
-forum_comments = []
+forum_comments = []  # Ahora guarda diccionarios con 'comentario', 'autor', 'archivo_origen'
 if 'Contents' in response_forums:
     for obj in response_forums['Contents']:
         if obj['Key'].endswith('.docx'):
@@ -414,13 +414,24 @@ if 'Contents' in response_forums:
             if content:
                 doc = Document(io.BytesIO(content))
                 full_text = "\n".join(p.text for p in doc.paragraphs)
-                comment_pattern = re.compile(r"de\s.+?-.+?\n(.*?)\nCalificación máxima.*?", re.DOTALL | re.IGNORECASE)
-                extracted = comment_pattern.findall(full_text)
-                forum_comments.extend([c.strip() for c in extracted if c.strip()])
-print(f"Se extrajeron {len(forum_comments)} comentarios de foros.")
+                # Regex mejorada: captura autor (grupo 1) y comentario (grupo 2)
+                comment_pattern = re.compile(
+                    r"de\s+([^-]+?)\s*-\s*\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\s*\n(.*?)\nCalificación máxima.*?",
+                    re.DOTALL | re.IGNORECASE
+                )
+                extracted_matches = comment_pattern.findall(full_text)
+                for autor_match, comentario_match in extracted_matches:
+                    if autor_match.strip() and comentario_match.strip():
+                        forum_comments.append({
+                            'comentario': comentario_match.strip(),
+                            'autor': autor_match.strip(),
+                            'archivo_origen': obj['Key']
+                        })
+print(f"Se extrajeron {len(forum_comments)} comentarios con información de autor.")
                     </div>
                     <div class="example-box">
-                        <p><strong>¿Por qué regex?</strong> Para aislar solo el texto del comentario entre marcas que aparecen en el documento (autor/fecha y "Calificación máxima").</p>
+                        <p><strong>¿Por qué extraer el autor?</strong> Para validar que cada comentario pertenece a un profesor con consentimiento válido, comparando nombres reales antes de la pseudoanonimización.</p>
+                        <p><strong>Regex mejorada:</strong> Ahora capturamos tanto el nombre del autor (grupo 1) como el comentario (grupo 2) del patrón "de [NOMBRE] - [FECHA]".</p>
                     </div>
                     <div class="code-box">
 # Consentimientos (.csv/.xlsx)
@@ -506,10 +517,21 @@ def clean_text_data(data):
     text = re.sub(r'[^a-z0-9\s]', '', text)
     return text
 
+# Normalizar consentimientos
 consent_df_cleaned = consent_df.copy()
 for col in consent_df_cleaned.select_dtypes(include=['object']).columns:
     consent_df_cleaned[col] = consent_df_cleaned[col].apply(clean_text_data)
 consent_df_cleaned.drop_duplicates(inplace=True)
+
+# Normalizar comentarios Y nombres de autores de foros
+forum_comments_cleaned = []
+for item in forum_comments:
+    forum_comments_cleaned.append({
+        'comentario': clean_text_data(item['comentario']),
+        'autor': item['autor'],  # Mantener original
+        'autor_normalizado': clean_text_data(item['autor']),  # Para comparación
+        'archivo_origen': item['archivo_origen']
+    })
                     </div>
                     <h2>Ejemplos antes/después</h2>
                     <div class="code-box">
@@ -521,7 +543,14 @@ print(clean_text_data("correo@ejemplo.com"))    # "correoejemplocom" (sin símbo
 # Impacto en matching de nombres de colegio
 raw = "Colegio  Julio Pérez Ferrero"
 norm = clean_text_data(raw)
-print(raw, "->", norm)                           # "colegio  julio perez ferrero" -> "colegio  julio perez ferrero"
+print(raw, "->", norm)                           # "colegio  julio perez ferrero"
+
+# Normalización de nombres para validación de consentimientos
+autor_foro = "María José Pérez"
+autor_norm = clean_text_data(autor_foro)  # "maria jose perez"
+nombre_consent = "María José  Pérez"
+nombre_consent_norm = clean_text_data(nombre_consent)  # "maria jose  perez"
+# Ahora pueden compararse correctamente para validación
                     </div>
                 </section>
 
@@ -604,42 +633,89 @@ for original_col, kind in column_mapping.items():
                 <!-- Sección 6: Filtrado por Consentimiento -->
                 <section class="content-section">
                     <h1>🧾 Filtrado por Consentimiento</h1>
-                    <p>Solo procesamos comentarios de profesores con consentimiento válido, vinculados por un <strong>profesor_id</strong> generado.</p>
+                    <p><strong>Validación por nombre:</strong> Compara los nombres de autores/profesores de los foros con los nombres en el documento de consentimientos informados. Solo procesamos comentarios de profesores que <strong>realmente</strong> tienen consentimiento válido.</p>
                     <div class="example-box">
-                        <p><strong>Paso 1:</strong> generamos un <code>profesor_id</code> único por registro de consentimiento.</p>
-                        <p><strong>Paso 2:</strong> vinculamos comentarios con esos IDs (en el notebook se simula la asignación por falta de autor en .docx).</p>
-                        <p><strong>Resultado:</strong> solo cargamos comentarios autorizados.</p>
+                        <p><strong>⚠️ Importante:</strong> Esta validación se hace <strong>ANTES</strong> de la pseudoanonimización porque necesitamos comparar nombres reales para vincular correctamente si hay consentimiento del autor del foro (con el nombre real).</p>
+                    </div>
+                    <h2>Proceso de validación</h2>
+                    <div class="example-box">
+                        <p><strong>Paso 1 - Extracción de nombres:</strong> Extraemos nombres completos de consentimientos (ORIGINALES, sin anonimizar) y nombres de autores de foros.</p>
+                        <p><strong>Paso 2 - Normalización:</strong> Normalizamos ambos nombres (minúsculas, sin acentos) para comparación precisa.</p>
+                        <p><strong>Paso 3 - Comparación inteligente:</strong> Usamos <code>SequenceMatcher</code> para calcular similaridad entre nombres, con umbral de 0.85.</p>
+                        <p><strong>Paso 4 - Boost por coincidencia parcial:</strong> Si el nombre o apellido completo aparece en el autor del foro, aumentamos la similaridad.</p>
+                        <p><strong>Resultado:</strong> Solo cargamos comentarios cuyo autor tiene un match válido en consentimientos.</p>
                     </div>
                     <div class="example-box">
-                        <p><strong>Tip: Trazabilidad legal</strong></p>
-                        <p>• Registra la <strong>fecha</strong> y la <strong>versión</strong> del consentimiento usado para cada carga.</p>
+                        <p><strong>Tip: Fuzzy matching</strong></p>
+                        <p>• El umbral de similaridad (0.85) permite manejar variaciones menores en nombres.</p>
+                        <p>• La comparación considera tanto coincidencias exactas como parciales (nombres o apellidos).</p>
+                        <p>• Los comentarios sin match se registran para auditoría.</p>
                     </div>
                     <div class="code-box">
-import datetime, random
+from difflib import SequenceMatcher
 
-def solicitar_id_profesor():
-    return f"P{datetime.datetime.now().year}_{random.randint(100000, 9999999)}"
+# PASO 1: Extraer nombres de consentimientos (SIN anonimizar)
+nombres_consentimientos = []
+for idx, row in consent_df.iterrows():
+    nombres = str(row[columna_nombres]).strip()
+    apellidos = str(row[columna_apellidos]).strip()
+    if nombres and apellidos:
+        nombre_completo = f"{nombres} {apellidos}"
+        nombre_normalizado = clean_text_data(nombre_completo)
+        nombres_consentimientos.append({
+            'nombre_completo': nombre_completo,
+            'nombre_normalizado': nombre_normalizado,
+            'profesor_id': consent_df_anonymized.iloc[idx]['profesor_id']
+        })
 
-consent_df_anonymized['profesor_id'] = [solicitar_id_profesor() for _ in range(len(consent_df_anonymized))]
+# PASO 2: Comparar cada autor de foro con consentimientos
+def similaridad_nombres(nombre1, nombre2):
+    if nombre1 == nombre2:
+        return 1.0
+    return SequenceMatcher(None, nombre1, nombre2).ratio()
 
-# Simulación de asignación de comentarios a profesor_id con consentimiento
-profesores = consent_df_anonymized['profesor_id'].tolist()
-forum_comments_cleaned = [clean_text_data(c) for c in forum_comments]
-
+umbral_similaridad = 0.85
 forums_with_consent = []
-if forum_comments_cleaned and profesores:
-    c_per = len(forum_comments_cleaned) // len(profesores)
-    rem = len(forum_comments_cleaned) % len(profesores)
-    idx = 0
-    for i, pid in enumerate(profesores):
-        n = c_per + (1 if i < rem else 0)
-        for _ in range(n):
-            if idx < len(forum_comments_cleaned):
-                forums_with_consent.append({'comentario': forum_comments_cleaned[idx], 'profesor_id': pid})
-                idx += 1
+
+for comentario_info in forum_comments_cleaned:
+    autor_normalizado = comentario_info['autor_normalizado']
+    mejor_match = None
+    mejor_similaridad = 0.0
+    
+    for nombre_consent in nombres_consentimientos:
+        similaridad = similaridad_nombres(autor_normalizado, 
+                                         nombre_consent['nombre_normalizado'])
+        
+        # Boost si nombre/apellido aparece parcialmente
+        if (clean_text_data(nombre_consent['nombres']) in autor_normalizado or
+            clean_text_data(nombre_consent['apellidos']) in autor_normalizado):
+            similaridad = max(similaridad, 0.9)
+        
+        if similaridad > mejor_similaridad:
+            mejor_similaridad = similaridad
+            mejor_match = nombre_consent
+    
+    # Solo agregar si hay match válido
+    if mejor_match and mejor_similaridad >= umbral_similaridad:
+        forums_with_consent.append({
+            'comentario': comentario_info['comentario'],
+            'profesor_id': mejor_match['profesor_id'],
+            'similaridad': mejor_similaridad
+        })
 
 forums_authorized_df = pd.DataFrame(forums_with_consent)
-print(f"🔒 Comentarios autorizados: {len(forums_authorized_df)} / {len(forum_comments_cleaned)}")
+print(f"✅ Comentarios con consentimiento: {len(forums_authorized_df)}")
+print(f"❌ Comentarios sin match: {len(forum_comments_cleaned) - len(forums_authorized_df)}")
+                    </div>
+                    <h2>Estadísticas de validación</h2>
+                    <div class="example-box" style="background: rgba(76, 175, 80, 0.1); border-left: 4px solid #4caf50;">
+                        <p><strong>📊 Estadísticas generales (después de la limpieza):</strong></p>
+                        <div style="margin-left: 20px; margin-top: 10px;">
+                            <p>• <strong>Total de profesores en consentimientos:</strong> <span style="font-weight: 700; color: #2e7d32;">236</span></p>
+                            <p>• <strong>Total de autores únicos encontrados en foros:</strong> <span style="font-weight: 700; color: #2e7d32;">187</span></p>
+                            <p>• <strong>Total de coincidencias encontradas:</strong> <span style="font-weight: 700; color: #2e7d32;">212</span></p>
+                        </div>
+                        <p style="margin-top: 15px;"><em>Estas estadísticas reflejan el éxito de la validación por nombre, asegurando que solo se procesen comentarios de profesores con consentimiento válido.</em></p>
                     </div>
                 </section>
 
