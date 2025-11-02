@@ -558,14 +558,18 @@
                     <span class="text">Producto Matricial</span>
                 </div>
                 <div class="menu-item" onclick="showSection(10)">
+                    <span class="icon">↩️</span>
+                    <span class="text">Matriz Inversa</span>
+                </div>
+                <div class="menu-item" onclick="showSection(11)">
                     <span class="icon">🎓</span>
                     <span class="text">Método de Cramer</span>
                 </div>
-                <div class="menu-item quiz-highlight" onclick="showSection(11)">
+                <div class="menu-item quiz-highlight" onclick="showSection(12)">
                     <span class="icon">🎮</span>
                     <span class="text">Juego/Evaluación</span>
                 </div>
-                <div class="menu-item" onclick="showSection(12)">
+                <div class="menu-item" onclick="showSection(13)">
                     <span class="icon">✅</span>
                     <span class="text">Conclusiones</span>
                 </div>
@@ -997,6 +1001,109 @@ C = A @ B
                     </div>
                 </section>
 
+                <!-- Sección 7+2.5: Matriz Inversa -->
+                <section class="content-section">
+                    <h1>↩️ Matriz Inversa</h1>
+                    <p>La <span class="highlight">matriz inversa</span> de A, denotada A⁻¹, es la matriz que cumple: A × A⁻¹ = A⁻¹ × A = I (matriz identidad).</p>
+                    
+                    <div class="example-box">
+                        <h3>Ejemplo Práctico:</h3>
+                        <div class="matrix-display">
+                            <strong>Matriz A:</strong><br><br>
+                            [2  1]<br>
+                            [1  1]<br><br>
+                            
+                            <strong>Su inversa A⁻¹ es:</strong><br><br>
+                            [ 1  -1]<br>
+                            [-1   2]<br><br>
+                            
+                            <strong>Verificación: A × A⁻¹ = I (matriz identidad)</strong><br><br>
+                            [1  0]<br>
+                            [0  1]
+                        </div>
+                    </div>
+
+                    <div class="example-box" style="background: rgba(255, 248, 220, 0.5); border-left: 4px solid #ffc107; margin-top: 30px;">
+                        <h3>🧮 Cómo se Realiza la Multiplicación: A × A⁻¹</h3>
+                        <p>Veamos paso a paso cómo multiplicar las matrices para verificar que obtenemos la matriz identidad:</p>
+                        
+                        <div class="matrix-display" style="margin: 15px 0;">
+                            <strong>Paso 1: Definir las matrices</strong><br><br>
+                            A = [2  1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A⁻¹ = [ 1  -1]<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;[1  1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[-1   2]
+                        </div>
+
+                        <div class="matrix-display" style="margin: 15px 0;">
+                            <strong>Paso 2: Multiplicación elemento por elemento</strong><br><br>
+                            <strong>Elemento (1,1):</strong><br>
+                            (2 × 1) + (1 × -1) = 2 + (-1) = <strong>1</strong><br><br>
+                            
+                            <strong>Elemento (1,2):</strong><br>
+                            (2 × -1) + (1 × 2) = -2 + 2 = <strong>0</strong><br><br>
+                            
+                            <strong>Elemento (2,1):</strong><br>
+                            (1 × 1) + (1 × -1) = 1 + (-1) = <strong>0</strong><br><br>
+                            
+                            <strong>Elemento (2,2):</strong><br>
+                            (1 × -1) + (1 × 2) = -1 + 2 = <strong>1</strong>
+                        </div>
+
+                        <div class="matrix-display" style="margin: 15px 0; background: rgba(76, 175, 80, 0.1); border: 2px solid #4caf50;">
+                            <strong>✅ Resultado Final: A × A⁻¹ = I</strong><br><br>
+                            [1  0]<br>
+                            [0  1]<br><br>
+                            <em>¡Perfecto! Hemos obtenido la matriz identidad, confirmando que A⁻¹ es correcta.</em>
+                        </div>
+
+                        <div style="margin-top: 20px; padding: 15px; background: rgba(102, 126, 234, 0.1); border-radius: 8px;">
+                            <p><strong>💡 Recuerda:</strong> En el producto matricial:</p>
+                            <ul style="margin-top: 10px;">
+                                <li>Multiplicas cada <strong>fila</strong> de la primera matriz por cada <strong>columna</strong> de la segunda</li>
+                                <li>Sumas los productos: (fila₁ × columna₁) + (fila₂ × columna₂) + ...</li>
+                                <li>El resultado va en la posición correspondiente (fila, columna)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h2>📋 Propiedades Importantes</h2>
+                    <div class="example-box">
+                        <p><strong>• Solo matrices cuadradas</strong> pueden tener inversa (m×n donde m = n)</p>
+                        <p><strong>• Condición necesaria:</strong> det(A) ≠ 0 (el determinante debe ser distinto de cero)</p>
+                        <p><strong>• Si det(A) = 0:</strong> La matriz NO tiene inversa (se llama matriz singular)</p>
+                        <p><strong>• Propiedad:</strong> (A⁻¹)⁻¹ = A (la inversa de la inversa es la matriz original)</p>
+                    </div>
+
+                    <h2>💻 En NumPy</h2>
+                    <div class="code-box">
+# Calcular la inversa de una matriz
+import numpy as np
+A = np.array([[2, 1], [1, 1]])
+A_inv = np.linalg.inv(A)
+print("Inversa de A:")
+print(A_inv)
+# [[ 1. -1.]
+#  [-1.  2.]]
+
+# Verificar: A × A⁻¹ = I
+verificacion = A @ A_inv
+print("\nVerificación (A × A⁻¹):")
+print(verificacion)
+# Debería dar la matriz identidad:
+# [[1. 0.]
+#  [0. 1.]]
+                    </div>
+
+                    <h2>🎯 Aplicación: Resolver Sistemas de Ecuaciones</h2>
+                    <p>La matriz inversa se puede usar para resolver Ax = b, donde x = A⁻¹ × b. Sin embargo, en la práctica es más eficiente usar:</p>
+                    <div class="code-box">
+# Opción 1: Usar la inversa (menos eficiente)
+x = A_inv @ b
+
+# Opción 2: Usar solve (más eficiente - RECOMENDADO)
+x = np.linalg.solve(A, b)
+                    </div>
+                </section>
+
                 <!-- Sección 7+3: Método de Cramer -->
                 <section class="content-section">
                     <h1>🎓 Método de Cramer</h1>
@@ -1040,7 +1147,7 @@ print(x)
         <!-- Highlight.js library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
         <script>
-            var QUIZ_INDEX = 11; // índice del menú para Juego/Evaluación
+            var QUIZ_INDEX = 12; // índice del menú para Juego/Evaluación
             function showSection(index) {
                 var sections = document.querySelectorAll('.content-section');
                 var menuItems = document.querySelectorAll('.menu-item');
