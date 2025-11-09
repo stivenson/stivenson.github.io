@@ -24,7 +24,7 @@
 /* Estilos para recursos */
 .resources-section{margin:60px 0}.resources-section h2{color:#4A2880;font-weight:bold}.resource-button-large{display:block;background:linear-gradient(135deg,var(--purple-dark),var(--purple-dark));color:var(--gold);padding:20px 30px;border-radius:15px;text-decoration:none;font-weight:bold;font-size:1.1em;text-align:center;margin:15px 0;transition:all .3s;border:2px solid var(--gold)}.resource-button-large:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(138,86,224,.4)}
 /* Estilos para siguientes pasos */
-.next-steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin:30px 0}.next-step-card{background:linear-gradient(135deg,rgba(138,86,224,.12),rgba(106,63,176,.1));padding:25px;border-radius:15px;border:2px solid var(--purple-light);transition:all .3s}.next-step-card:hover{transform:translateY(-5px);box-shadow:0 10px 35px rgba(138,86,224,.4);border-color:var(--gold)}
+.next-steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin:30px 0}.next-step-card{background:linear-gradient(135deg,rgba(138,86,224,.12),rgba(106,63,176,.1));padding:25px;border-radius:15px;border:2px solid var(--purple-light);transition:all .3s}.next-step-card:hover{transform:translateY(-5px);box-shadow:0 10px 35px rgba(138,86,224,.4);border-color:var(--gold)}.tool-badge{display:inline-block;background:rgba(74,40,128,.9);color:#fbbf24;padding:4px 10px;border-radius:12px;font-size:.75em;font-weight:600;margin-left:10px;border:1px solid rgba(251,191,36,.3);box-shadow:0 2px 6px rgba(0,0,0,.2)}.tool-badge a{color:#fbbf24;text-decoration:none;cursor:pointer;transition:all .2s}.tool-badge a:hover{opacity:.8;transform:scale(1.05)}
 </style>
 </head>
 <body>
@@ -205,7 +205,7 @@
 </ul>
 </div>
 <div class="content-section">
-<div class="section-header">Ejercicios Prácticos</div>
+<div class="section-header">Ejercicios Prácticos <span class="tool-badge"><a href="https://aistudio.google.com/apps" target="_blank">Google AI Studio - App - Gemini 2.5 Pro</a></span></div>
 <div class="prompt-example prompt-bad" style="padding-left:50px;padding-right:50px;padding-top:40px">
 <button class="copy-button" onclick="copyPrompt(this, 'Crea una página de inicio')">📋 Copiar</button>
 "Crea una página de inicio"
@@ -220,10 +220,10 @@
 </div>
 </div>
 <div class="content-section">
-<div class="section-header">Ejercicios Prácticos Guiados</div>
+<div class="section-header">Ejercicios Prácticos Guiados <span class="tool-badge"><a href="https://aistudio.google.com/apps" target="_blank">Google AI Studio - App - Gemini 2.5 Pro</a></span></div>
 <div class="exercise-card">
 <h4>Ejercicio 1: Tu Primer Prompt (10 min)</h4>
-<p style="margin-bottom:15px;color:rgba(255,255,255,0.85)">Caso práctico: Card de producto e-commerce. Usa la plantilla abajo y completa cada sección con información específica.</p>
+<p style="margin-bottom:15px;color:rgba(255,255,255,0.85)">Caso práctico: Card de producto e-commerce. Usarás una App de Google AI Studio configurada para generación de imágenes con control de aspect ratio. Usa la plantilla abajo y completa cada sección con información específica para generar la imagen del card.</p>
 <button onclick="copyPromptTemplate('exercise1')" class="prep-link-button" style="border:none;cursor:pointer;margin-bottom:10px">📋 Copiar Template</button>
 <textarea class="exercise-textarea" id="exercise1-prompt" placeholder="Copia y pega aquí tu prompt completo..."></textarea>
 <p style="margin-top:10px;color:#4A2880;font-weight:bold">Checklist de elementos a incluir:</p>
@@ -231,34 +231,75 @@
 <li>✓ Contexto: ¿Qué tipo de producto es? ¿Para qué público?</li>
 <li>✓ Especificaciones técnicas: Tecnologías, colores, tipografía</li>
 <li>✓ Elementos visuales: Imagen, precio, botón, badge de descuento</li>
+<li>✓ Aspect ratio: Especificar dimensiones para la imagen generada (ej: [ASPECT_RATIO: 16:9] o [DIMENSIONS: 400x600])</li>
 <li>✓ Interacciones: Hover effects, animaciones</li>
 <li>✓ Responsive: Breakpoints específicos</li>
 </ul>
-<a href="https://v0.dev/" target="_blank" class="prep-link-button" style="margin-top:10px;display:inline-block">Abrir v0.dev y usar el prompt de arriba</a>
+<a href="https://aistudio.google.com/apps" target="_blank" class="prep-link-button" style="margin-top:10px;display:inline-block">Abrir Google AI Studio Apps y usar el prompt de arriba</a>
+</div>
+<!-- Sección de Proceso de Despliegue -->
+<div class="highlight-box" style="margin:40px 0;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-dark) 100%);border:3px solid var(--gold);box-shadow:0 10px 40px rgba(138,86,224,.5);animation:pulse 3s ease-in-out infinite">
+<h3 style="color:var(--gold);font-size:2em;margin-bottom:25px;text-shadow:0 2px 4px rgba(0,0,0,.5);font-weight:bold;display:flex;align-items:center;gap:15px">🚀 Proceso de Despliegue <span style="color:#FFFFFF;font-weight:normal">(Atención al instructor)</span></h3>
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;align-items:flex-start;gap:15px;padding:20px;background:rgba(74,40,128,.3);border-radius:12px;border-left:4px solid var(--gold)">
+<div style="font-size:2em;flex-shrink:0">1️⃣</div>
+<div style="flex:1">
+<p style="font-size:1.2em;line-height:1.8;color:rgba(255,255,255,0.9);margin:0;font-weight:500"><strong style="color:var(--gold)">Desarrollar la aplicación en Google AI Studio:</strong> Crea y prueba la app en AI Studio.</p>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:15px;padding:20px;background:rgba(74,40,128,.3);border-radius:12px;border-left:4px solid var(--gold)">
+<div style="font-size:2em;flex-shrink:0">2️⃣</div>
+<div style="flex:1">
+<p style="font-size:1.2em;line-height:1.8;color:rgba(255,255,255,0.9);margin:0;font-weight:500"><strong style="color:var(--gold)">Seleccionar "Deploy to Cloud Run":</strong> Botón en la parte superior de AI Studio.</p>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:15px;padding:20px;background:rgba(74,40,128,.3);border-radius:12px;border-left:4px solid var(--gold)">
+<div style="font-size:2em;flex-shrink:0">3️⃣</div>
+<div style="flex:1">
+<p style="font-size:1.2em;line-height:1.8;color:rgba(255,255,255,0.9);margin:0;font-weight:500"><strong style="color:var(--gold)">Configurar el proyecto de Google Cloud:</strong></p>
+<ul style="margin:10px 0 0 0;padding-left:25px;color:rgba(255,255,255,0.85);line-height:2">
+<li>Seleccionar un proyecto existente o crear uno nuevo</li>
+<li><strong style="color:var(--gold)">Requisito:</strong> El proyecto debe tener facturación habilitada</li>
+</ul>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:15px;padding:20px;background:rgba(74,40,128,.3);border-radius:12px;border-left:4px solid var(--gold)">
+<div style="font-size:2em;flex-shrink:0">4️⃣</div>
+<div style="flex:1">
+<p style="font-size:1.2em;line-height:1.8;color:rgba(255,255,255,0.9);margin:0;font-weight:500"><strong style="color:var(--gold)">Iniciar el despliegue:</strong> Clic en "Deploy to Google Cloud".</p>
+</div>
+</div>
+<div style="display:flex;align-items:flex-start;gap:15px;padding:20px;background:rgba(74,40,128,.3);border-radius:12px;border-left:4px solid var(--gold)">
+<div style="font-size:2em;flex-shrink:0">5️⃣</div>
+<div style="flex:1">
+<p style="font-size:1.2em;line-height:1.8;color:rgba(255,255,255,0.9);margin:0;font-weight:500"><strong style="color:var(--gold)">Acceder a la aplicación:</strong> Al finalizar, AI Studio proporciona una URL pública.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="exercise-card">
-<h4>Ejercicio 2: Refinamiento Iterativo (7 min)</h4>
-<p style="margin-bottom:15px;color:#0f172a">Prompt inicial proporcionado. Escribe 2 iteraciones mejorando el prompt en los espacios abajo.</p>
+<h4>Ejercicio 2: Refinamiento Iterativo (7 min) <span class="tool-badge"><a href="https://aistudio.google.com/apps" target="_blank">Google AI Studio - App - Gemini 2.5 Pro</a></span></h4>
+<p style="margin-bottom:15px;color:#0f172a">Usarás la App de Google AI Studio para refinar una imagen existente o analizar un diseño. Prompt inicial proporcionado. Escribe 2 iteraciones mejorando el prompt con comandos de edición de imagen y análisis de diseño.</p>
 <div class="prompt-example" style="margin-bottom:20px">
-<button class="copy-button" onclick="copyPrompt(this, 'Crea un formulario de contacto con campos: nombre, email, mensaje y botón enviar.')">📋 Copiar</button>
-<strong>Prompt Inicial:</strong> "Crea un formulario de contacto con campos: nombre, email, mensaje y botón enviar."
+<button class="copy-button" onclick="copyPrompt(this, 'Edita esta imagen de card de producto para mejorar el contraste de colores y hacer el botón más prominente.')">📋 Copiar</button>
+<strong>Prompt Inicial:</strong> "Edita esta imagen de card de producto para mejorar el contraste de colores y hacer el botón más prominente."
 </div>
 <div class="comparison-wrapper">
 <div>
 <p style="color:#4A2880;font-weight:bold;margin-bottom:10px">Iteración 1:</p>
-<textarea class="exercise-textarea" placeholder="Agrega validaciones, estados de error, estilo visual, animaciones..."></textarea>
+<textarea class="exercise-textarea" placeholder="Agrega comandos de edición: [EDIT: cambiar fondo], [EDIT: ajustar colores], [ANALYZE: jerarquía visual], [EDIT: mejorar contraste]..."></textarea>
 </div>
 <div>
 <p style="color:#4A2880;font-weight:bold;margin-bottom:10px">Iteración 2 (Final):</p>
-<textarea class="exercise-textarea" placeholder="Especifica responsive, accesibilidad y optimizaciones finales..."></textarea>
+<textarea class="exercise-textarea" placeholder="Refinamientos visuales avanzados: [EDIT: aplicar sombras], [ANALYZE: accesibilidad visual], [EDIT: optimizar tipografía], [ANALYZE: balance de colores]..."></textarea>
 </div>
 </div>
 </div>
 <div class="exercise-card">
-<h4>Ejercicio 3: Prompt para Accesibilidad (3 min)</h4>
-<p style="margin-bottom:15px;color:#0f172a">Template específico con requisitos WCAG 2.1 AA. Incluye todos los elementos de accesibilidad.</p>
-<textarea class="exercise-textarea" id="exercise3-prompt" placeholder="Actúa como experto en accesibilidad web. Crea [componente] que cumpla con WCAG 2.1 AA. Incluye: contraste de colores mínimo 4.5:1, navegación por teclado, aria-labels, focus visible, texto alternativo para imágenes..."></textarea>
-<button onclick="copyPromptTemplate('exercise3')" class="prep-link-button" style="border:none;cursor:pointer;margin-top:10px">📋 Copiar Template de Accesibilidad</button>
+<h4>Ejercicio 3: Prompt para Accesibilidad (3 min) <span class="tool-badge"><a href="https://aistudio.google.com/apps" target="_blank">Google AI Studio - App - Gemini 2.5 Pro</a></span></h4>
+<p style="margin-bottom:15px;color:#0f172a">Usarás la App de Google AI Studio para analizar imágenes y verificar cumplimiento de WCAG 2.1 AA. Template específico con comandos de análisis de accesibilidad. Incluye todos los elementos de accesibilidad.</p>
+<button onclick="copyPromptTemplate('exercise3')" class="prep-link-button" style="border:none;cursor:pointer;margin-bottom:10px">📋 Copiar Template de Accesibilidad</button>
+<textarea class="exercise-textarea" id="exercise3-prompt" placeholder="[ANALYZE_ACCESSIBILITY: image_id, WCAG_2.1_AA] [CHECK_CONTRAST: image_id] [GENERATE_ALT_TEXT: image_id, context] [SUGGEST_IMPROVEMENTS: image_id, accessibility_focus]"></textarea>
 </div>
 </div>
 <div class="content-section">
@@ -294,7 +335,7 @@
 </div>
 <div class="checklist-item" data-item="1-5">
 <input type="checkbox" id="check-1-5" onchange="updateChecklist('1', this)">
-<label for="check-1-5">Probé al menos un prompt en v0.dev o Google AI Studio</label>
+<label for="check-1-5">Probé al menos un prompt en Google AI Studio App (Gemini 2.5 Pro)</label>
 </div>
 <div class="checklist-progress">
 <div class="checklist-progress-bar">
@@ -788,9 +829,9 @@ window.copyPrompt = function(button, text) {
 window.copyPromptTemplate = function(type) {
   let template = '';
   if (type === 'exercise1') {
-    template = 'Actúa como diseñador frontend experto. Crea un card de producto e-commerce para [tipo de producto]. Incluye: imagen del producto (aspect ratio 1:1), nombre del producto, precio (formato moneda), badge de descuento si aplica, botón "Agregar al carrito", rating con estrellas. Colores: primario [especificar], secundario [especificar]. Tipografía: [especificar]. Hover: scale 1.02, sombra aumentada. Responsive: mobile stack vertical, desktop grid. Código: React + Tailwind CSS.';
+    template = 'Genera una imagen de un card de producto e-commerce para [tipo de producto] usando la App de generación de imágenes. [ASPECT_RATIO: 16:9] o [DIMENSIONS: 400x600]. Incluye en la imagen: producto visible, nombre del producto, precio (formato moneda), badge de descuento si aplica, botón "Agregar al carrito", rating con estrellas. Colores: primario [especificar], secundario [especificar]. Tipografía: [especificar]. Estilo: moderno, limpio, con sombras sutiles. La imagen debe representar visualmente un card de producto completo.';
   } else if (type === 'exercise3') {
-    template = 'Actúa como experto en accesibilidad web. Crea [componente] que cumpla con WCAG 2.1 AA. Incluye: contraste de colores mínimo 4.5:1 para texto normal, 3:1 para texto grande, navegación completa por teclado (Tab, Enter, Esc), aria-labels descriptivos, focus visible con outline de 2px, texto alternativo para todas las imágenes, estructura semántica HTML5 (header, nav, main, footer), roles ARIA apropiados. Código: React + Tailwind CSS.';
+    template = 'Analiza esta imagen para verificar cumplimiento de WCAG 2.1 AA usando la App de análisis de accesibilidad. [ANALYZE_ACCESSIBILITY: image_id, WCAG_2.1_AA] [CHECK_CONTRAST: image_id] Verifica: contraste de colores mínimo 4.5:1 para texto normal, 3:1 para texto grande. [GENERATE_ALT_TEXT: image_id, context] Genera texto alternativo descriptivo. [SUGGEST_IMPROVEMENTS: image_id, accessibility_focus] Sugiere mejoras específicas para accesibilidad visual.';
   }
   
   if (template) {
