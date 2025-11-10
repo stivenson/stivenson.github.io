@@ -222,7 +222,7 @@
 <div class="content-section">
 <div class="section-header">Ejercicios Prácticos Guiados <span class="tool-badge"><a href="https://aistudio.google.com/apps" target="_blank">Google AI Studio - App - Gemini 2.5 Pro</a></span></div>
 <div class="exercise-card">
-<h4>Ejercicio 1: Tu Primer Prompt (10 min)</h4>
+<h4>Ejercicio 1: Tu Primer Prompt de un Generador (10 min)</h4>
 <p style="margin-bottom:15px;color:rgba(255,255,255,0.85)">Caso práctico: Card de producto e-commerce. Usarás una App de Google AI Studio configurada para generación de imágenes con control de aspect ratio. Usa la plantilla abajo y completa cada sección con información específica para generar la imagen del card.</p>
 <button onclick="copyPromptTemplate('exercise1')" class="prep-link-button" style="border:none;cursor:pointer;margin-bottom:10px">📋 Copiar Template</button>
 <textarea class="exercise-textarea" id="exercise1-prompt" placeholder="Copia y pega aquí tu prompt completo..."></textarea>
@@ -829,7 +829,7 @@ window.copyPrompt = function(button, text) {
 window.copyPromptTemplate = function(type) {
   let template = '';
   if (type === 'exercise1') {
-    template = 'Genera una imagen de un card de producto e-commerce para [tipo de producto] usando la App de generación de imágenes. [ASPECT_RATIO: 16:9] o [DIMENSIONS: 400x600]. Incluye en la imagen: producto visible, nombre del producto, precio (formato moneda), badge de descuento si aplica, botón "Agregar al carrito", rating con estrellas. Colores: primario [especificar], secundario [especificar]. Tipografía: [especificar]. Estilo: moderno, limpio, con sombras sutiles. La imagen debe representar visualmente un card de producto completo.';
+    template = 'Genera una app generadora de imagenes de un card de producto e-commerce para [tipo de producto] usando la App de generación de imágenes. [ASPECT_RATIO: 16:9] o [DIMENSIONS: 400x600]. Incluye en la imagen: producto visible, nombre del producto, precio (formato moneda), badge de descuento si aplica, botón "Agregar al carrito", rating con estrellas. Colores: primario [especificar], secundario [especificar]. Tipografía: [especificar]. Estilo: moderno, limpio, con sombras sutiles. La imagen debe representar visualmente un card de producto completo.';
   } else if (type === 'exercise3') {
     template = 'Analiza esta imagen para verificar cumplimiento de WCAG 2.1 AA usando la App de análisis de accesibilidad. [ANALYZE_ACCESSIBILITY: image_id, WCAG_2.1_AA] [CHECK_CONTRAST: image_id] Verifica: contraste de colores mínimo 4.5:1 para texto normal, 3:1 para texto grande. [GENERATE_ALT_TEXT: image_id, context] Genera texto alternativo descriptivo. [SUGGEST_IMPROVEMENTS: image_id, accessibility_focus] Sugiere mejoras específicas para accesibilidad visual.';
   }
