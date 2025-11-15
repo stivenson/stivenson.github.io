@@ -50,6 +50,19 @@
             opacity: 0.9;
         }
 
+        .header-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+        }
+
         .masonry {
             column-count: 4;
             column-gap: 20px;
@@ -727,8 +740,9 @@
 <body>
     <div class="container">
         <header>
+            <div class="header-badge">✨ Inteligencia Artificial</div>
             <h1>🤖 Directorio de Interfaces - LLMs</h1>
-            <p>Explora diferentes alternativas de chat y dashboards de modelos de lenguaje</p>
+            <p>Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje</p>
         </header>
 
         <div class="masonry" id="masonryContainer">
@@ -886,7 +900,7 @@
                 description: "Asistente conversacional multimodal de Alibaba con capacidades avanzadas de procesamiento de lenguaje natural.",
                 url: "https://chat.qwen.ai",
                 badges: ["chat", "multimodal"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "GLM-4",
