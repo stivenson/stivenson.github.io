@@ -154,6 +154,14 @@
             display: none;
         }
 
+        .new-tab-notice {
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-align: center;
+            font-style: italic;
+        }
+
         .badge {
             display: inline-block;
             padding: 4px 10px;
@@ -444,7 +452,9 @@
             z-index: 10;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             padding: 0 20px;
+            position: relative;
         }
 
         .modal-close {
@@ -466,6 +476,34 @@
         .modal-close:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: scale(1.1);
+        }
+
+        .modal-open-tab {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .modal-open-tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-50%) translateY(-1px);
+        }
+
+        .modal-open-tab::before {
+            content: "🔗";
+            font-size: 16px;
         }
 
         .modal-iframe-container {
@@ -652,6 +690,7 @@
         <div class="modal-container">
             <div class="modal-header">
                 <button class="modal-close" id="modalClose" aria-label="Cerrar modal">×</button>
+                <button class="modal-open-tab" id="modalOpenTab" aria-label="Abrir en nueva pestaña">Abrir en pestaña</button>
             </div>
             <div class="modal-iframe-container">
                 <div class="modal-loading" id="modalLoading">
@@ -707,7 +746,7 @@
                 description: "Modelo de lenguaje multimodal de Google que se integra con herramientas como Google Docs y Gmail. Ofrece acceso a información en tiempo real y capacidades avanzadas.",
                 url: "https://gemini.google.com",
                 badges: ["chat", "multimodal", "texto"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "Perplexity AI",
@@ -731,7 +770,7 @@
                 description: "Asistente de IA integrado en aplicaciones de Microsoft como Word, Excel y PowerPoint. Ayuda en la creación de contenidos y automatiza tareas repetitivas.",
                 url: "https://copilot.microsoft.com",
                 badges: ["chat", "productividad", "codigo"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "Grok",
@@ -747,7 +786,7 @@
                 description: "Plataforma que combina un buscador con IA conversacional. Permite chatear con modelos como GPT-4 o Claude, generar código y crear imágenes con IA en una sola plataforma.",
                 url: "https://you.com",
                 badges: ["chat", "busqueda", "multimodal"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "DeepSeek Chat",
@@ -779,7 +818,7 @@
                 description: "Modelo de lenguaje avanzado con interfaz de chat pública. Ofrece capacidades de conversación y generación de texto de alta calidad.",
                 url: "https://chat.z.ai/",
                 badges: ["chat", "llm"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "Doubao Chat",
@@ -811,7 +850,7 @@
                 description: "Plataforma de chat con inferencia de alta velocidad y respuestas en tiempo real. Enfocada en baja latencia y rendimiento optimizado para modelos como Llama 3.1, Mixtral y Gemma.",
                 url: "https://groq.com/chat",
                 badges: ["chat", "velocidad", "texto"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "Abacus.AI ChatLLM",
@@ -819,7 +858,7 @@
                 description: "Plataforma de chat con integración para equipos y Slack. Incluye agentes especializados para tareas de codificación y generales, ideal para entornos empresariales.",
                 url: "https://chatllm.abacus.ai",
                 badges: ["chat", "productividad", "agentes"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "Pi AI",
@@ -843,7 +882,7 @@
                 description: "IA compañera diseñada para construir relaciones a largo plazo. Enfocada en apoyo emocional y salud mental, con integración en aplicaciones móviles.",
                 url: "https://replika.com",
                 badges: ["chat", "compania", "salud"],
-                openInNewTab: false
+                openInNewTab: true
             },
             // ===== OTROS SERVICIOS (NO CHAT) =====
             {
@@ -900,7 +939,7 @@
                 description: "Plataforma low-code para crear workflows con nodos conectados. Permite integrar múltiples LLMs, usar OpenRouter y automatizar procesos con lógica y memoria.",
                 url: "https://n8n.io",
                 badges: ["automatizacion", "workflow", "productividad"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "n8n Copilot",
@@ -908,7 +947,7 @@
                 description: "Genera automáticamente workflows de n8n a partir de instrucciones en lenguaje natural, conectando nodos y modelos de IA de forma inteligente.",
                 url: "https://n8n.io",
                 badges: ["automatizacion", "workflow", "ia"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "LangWatch",
@@ -924,7 +963,7 @@
                 description: "Observabilidad para LLMs, agentes y vectores; maneja prompts, métricas y analítica de costos en dashboard unificado para GenAI engineering.",
                 url: "https://openlit.io/",
                 badges: ["observabilidad", "monitoreo", "analitica"],
-                openInNewTab: false
+                openInNewTab: true
             }
         ];
 
@@ -1010,6 +1049,7 @@
                         <span class="normal-text">Visitar ${service.name} →</span>
                         <span class="loading-text">Cargando...</span>
                     </a>
+                    ${service.openInNewTab ? '<p class="new-tab-notice">* Se abrirá en una nueva pestaña</p>' : ''}
                 </div>
                 `;
                 
@@ -1021,7 +1061,11 @@
         const modalOverlay = document.getElementById('modalOverlay');
         const modalIframe = document.getElementById('modalIframe');
         const modalClose = document.getElementById('modalClose');
+        const modalOpenTab = document.getElementById('modalOpenTab');
         const modalLoading = document.getElementById('modalLoading');
+        
+        // Store current modal URL
+        let currentModalUrl = '';
 
         // Function to open modal
         async function openModal(url, linkElement = null) {
@@ -1047,6 +1091,9 @@
             
             // Store the link element for later restoration
             currentLoadingLink = linkElement;
+            
+            // Store the current modal URL
+            currentModalUrl = url;
             
             // Show loading indicator
             modalLoading.classList.remove('hidden');
@@ -1335,6 +1382,13 @@
 
         // Close modal when clicking the close button
         modalClose.addEventListener('click', closeModal);
+        
+        // Open current modal URL in new tab
+        modalOpenTab.addEventListener('click', function() {
+            if (currentModalUrl) {
+                window.open(currentModalUrl, '_blank', 'noopener,noreferrer');
+            }
+        });
 
         // Close modal when clicking outside the modal container
         modalOverlay.addEventListener('click', function(e) {
