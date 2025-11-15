@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio de Chats y Dashboards de LLMs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .masonry {
+            column-count: 4;
+            column-gap: 20px;
+            padding: 0 10px;
+        }
+
+        .card {
+            display: inline-block;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            break-inside: avoid;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .card-header .provider {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-body p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .card-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            width: 100%;
+        }
+
+        .card-link:hover {
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            margin-right: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Badge Colors - Each type gets a unique light color */
+        .badge.badge-chat {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge.badge-documentos {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .badge.badge-presentaciones {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .badge.badge-imagenes {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .badge.badge-imagen {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .badge.badge-video {
+            background: #fff9c4;
+            color: #f57f17;
+        }
+
+        .badge.badge-diseño {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .badge.badge-multimodal {
+            background: #fff8e1;
+            color: #f9a825;
+        }
+
+        .badge.badge-texto {
+            background: #f1f8e9;
+            color: #558b2f;
+        }
+
+        .badge.badge-text-to-image {
+            background: #fce4ec;
+            color: #ad1457;
+        }
+
+        .badge.badge-image-to-image {
+            background: #f8bbd0;
+            color: #880e4f;
+        }
+
+        .badge.badge-codigo {
+            background: #e0f2f1;
+            color: #00695c;
+        }
+
+        .badge.badge-razonamiento {
+            background: #ede7f6;
+            color: #512da8;
+        }
+
+        .badge.badge-llm {
+            background: #e8eaf6;
+            color: #303f9f;
+        }
+
+        .badge.badge-audio {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .badge.badge-voz {
+            background: #fbe9e7;
+            color: #d84315;
+        }
+
+        .badge.badge-cognitivo {
+            background: #e0f7fa;
+            color: #00838f;
+        }
+
+        .badge.badge-visual {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        .badge.badge-playground {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge.badge-busqueda {
+            background: #e8eaf6;
+            color: #5c6bc0;
+        }
+
+        .badge.badge-productividad {
+            background: #f1f8e9;
+            color: #689f38;
+        }
+
+        .badge.badge-open-source {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .modal-container {
+            position: relative;
+            width: 95%;
+            height: 95%;
+            max-width: 1600px;
+            max-height: 95vh;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            flex-shrink: 0;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .modal-iframe-container {
+            flex: 1;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .modal-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            z-index: 5;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e9ecef;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: #667eea;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Footer Styles */
+        footer {
+            margin-top: 60px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        footer p {
+            font-size: 1rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        footer a:hover {
+            opacity: 1;
+            border-bottom-color: #667eea;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        footer .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        footer .github-icon {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 1200px) {
+            .masonry {
+                column-count: 3;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .masonry {
+                column-count: 2;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .masonry {
+                column-count: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Directorio de LLMs</h1>
+            <p>Explora diferentes alternativas de chat y dashboards de modelos de lenguaje</p>
+        </header>
+
+        <div class="masonry">
+            <!-- Kimi AI -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Kimi AI</h2>
+                    <div class="provider">Moonshot AI</div>
+                </div>
+                <div class="card-body">
+                    <p>Asistente conversacional y generador de documentos y presentaciones (PPT) de China, conocido por su gran ventana de contexto.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-documentos">Documentos</span>
+                    <span class="badge badge-presentaciones">Presentaciones</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://kimi.com/es" class="card-link">Visitar Kimi AI →</a>
+                </div>
+            </div>
+
+            <!-- RoboNeo -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>RoboNeo</h2>
+                    <div class="provider">Creative AI Agent</div>
+                </div>
+                <div class="card-body">
+                    <p>Agente creativo de IA que transforma instrucciones de lenguaje natural en diseño de imágenes y producción de vídeo profesional.</p>
+                    <span class="badge badge-imagenes">Imágenes</span>
+                    <span class="badge badge-video">Vídeo</span>
+                    <span class="badge badge-diseño">Diseño</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://www.roboneo.com/home" class="card-link">Visitar RoboNeo →</a>
+                </div>
+            </div>
+
+            <!-- ERNIE Bot -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>ERNIE Bot</h2>
+                    <div class="provider">Baidu</div>
+                </div>
+                <div class="card-body">
+                    <p>Chatbot multimodal (texto, imagen, vídeo) que rivaliza con GPT. Es el núcleo del ecosistema de IA de Baidu.</p>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                    <span class="badge badge-texto">Texto</span>
+                    <span class="badge badge-imagen">Imagen</span>
+                    <span class="badge badge-video">Vídeo</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://ernie.baidu.com" class="card-link">Visitar ERNIE Bot →</a>
+                </div>
+            </div>
+
+            <!-- Hunyuan Image -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Hunyuan Image</h2>
+                    <div class="provider">Tencent</div>
+                </div>
+                <div class="card-body">
+                    <p>Generador de imágenes a partir de texto o imágenes de Tencent. Destaca por su alta calidad y comprensión del idioma chino.</p>
+                    <span class="badge badge-imagenes">Imágenes</span>
+                    <span class="badge badge-text-to-image">Text-to-Image</span>
+                    <span class="badge badge-image-to-image">Image-to-Image</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://hunyuan-image.com/image-to-image" class="card-link">Visitar Hunyuan Image →</a>
+                </div>
+            </div>
+
+            <!-- Qwen Chat -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Qwen Chat</h2>
+                    <div class="provider">Alibaba</div>
+                </div>
+                <div class="card-body">
+                    <p>Asistente conversacional multimodal de Alibaba con capacidades avanzadas de procesamiento de lenguaje natural.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://chat.qwen.ai" class="card-link">Visitar Qwen Chat →</a>
+                </div>
+            </div>
+
+            <!-- DeepSeek Chat -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>DeepSeek Chat</h2>
+                    <div class="provider">DeepSeek</div>
+                </div>
+                <div class="card-body">
+                    <p>Chat oficial del modelo DeepSeek, conocido por su excelente rendimiento en tareas de código y razonamiento.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-codigo">Código</span>
+                    <span class="badge badge-razonamiento">Razonamiento</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://chat.deepseek.com" class="card-link">Visitar DeepSeek Chat →</a>
+                </div>
+            </div>
+
+            <!-- GLM-4 (Zhipu) -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>GLM-4</h2>
+                    <div class="provider">Zhipu AI</div>
+                </div>
+                <div class="card-body">
+                    <p>Modelo de lenguaje avanzado con interfaz de chat pública. Ofrece capacidades de conversación y generación de texto de alta calidad.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-llm">LLM</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://chat.z.ai/" class="card-link">Visitar GLM-4 →</a>
+                </div>
+            </div>
+
+            <!-- Doubao Chat -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Doubao Chat</h2>
+                    <div class="provider">ByteDance</div>
+                </div>
+                <div class="card-body">
+                    <p>Asistente conversacional multimodal de ByteDance, líder en China con capacidades de texto, imagen y audio.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                    <span class="badge badge-audio">Audio</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://www.doubao.com/chat/" class="card-link">Visitar Doubao Chat →</a>
+                </div>
+            </div>
+
+            <!-- Xinghuo (iFlytek) -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Xinghuo</h2>
+                    <div class="provider">iFlytek</div>
+                </div>
+                <div class="card-body">
+                    <p>Asistente cognitivo multimodal de iFlytek con capacidades avanzadas en reconocimiento de voz y tareas inteligentes.</p>
+                    <span class="badge badge-voz">Voz</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                    <span class="badge badge-cognitivo">Cognitivo</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://xinghuo.xfyun.cn/" class="card-link">Visitar Xinghuo →</a>
+                </div>
+            </div>
+
+            <!-- SenseTime Chat -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>SenseTime Chat</h2>
+                    <div class="provider">SenseTime</div>
+                </div>
+                <div class="card-body">
+                    <p>Chatbot multimodal de SenseTime, enfocado en comprensión visual y lingüística con capacidades avanzadas de procesamiento.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-visual">Visual</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://chat.sensetime.com/" class="card-link">Visitar SenseTime Chat →</a>
+                </div>
+            </div>
+
+            <!-- Baichuan AI -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Baichuan AI</h2>
+                    <div class="provider">Baichuan</div>
+                </div>
+                <div class="card-body">
+                    <p>Plataforma de IA de Baichuan con modelos de lenguaje para generación de texto y código. Playground interactivo para experimentación.</p>
+                    <span class="badge badge-playground">Playground</span>
+                    <span class="badge badge-texto">Texto</span>
+                    <span class="badge badge-codigo">Código</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://platform.baichuan-ai.com/playground" class="card-link">Visitar Baichuan AI →</a>
+                </div>
+            </div>
+
+            <!-- ChatGPT -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>ChatGPT</h2>
+                    <div class="provider">OpenAI</div>
+                </div>
+                <div class="card-body">
+                    <p>Modelo de lenguaje desarrollado por OpenAI que permite mantener conversaciones coherentes y contextuales. Líder en el mercado de IA conversacional.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                    <span class="badge badge-codigo">Código</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://chat.openai.com" class="card-link">Visitar ChatGPT →</a>
+                </div>
+            </div>
+
+            <!-- Claude -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Claude</h2>
+                    <div class="provider">Anthropic</div>
+                </div>
+                <div class="card-body">
+                    <p>Asistente de IA desarrollado por Anthropic, diseñado para ser útil, honesto e inofensivo. Destaca por su capacidad de razonamiento y manejo de contextos largos.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                    <span class="badge badge-razonamiento">Razonamiento</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://claude.ai" class="card-link">Visitar Claude →</a>
+                </div>
+            </div>
+
+            <!-- Google Gemini -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Google Gemini</h2>
+                    <div class="provider">Google</div>
+                </div>
+                <div class="card-body">
+                    <p>Modelo de lenguaje multimodal de Google que se integra con herramientas como Google Docs y Gmail. Ofrece acceso a información en tiempo real y capacidades avanzadas.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                    <span class="badge badge-texto">Texto</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://gemini.google.com" class="card-link">Visitar Google Gemini →</a>
+                </div>
+            </div>
+
+            <!-- Perplexity AI -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Perplexity AI</h2>
+                    <div class="provider">Perplexity</div>
+                </div>
+                <div class="card-body">
+                    <p>Motor de búsqueda conversacional que combina modelos de lenguaje con la web actual. Proporciona respuestas precisas con citas de fuentes en tiempo real.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-busqueda">Búsqueda</span>
+                    <span class="badge badge-texto">Texto</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://www.perplexity.ai" class="card-link">Visitar Perplexity AI →</a>
+                </div>
+            </div>
+
+            <!-- Poe -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Poe</h2>
+                    <div class="provider">Quora</div>
+                </div>
+                <div class="card-body">
+                    <p>Plataforma de Quora que permite chatear con múltiples modelos de IA en una sola aplicación, incluyendo GPT-4, Claude, Mistral y otros modelos emergentes.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://poe.com" class="card-link">Visitar Poe →</a>
+                </div>
+            </div>
+
+            <!-- Mistral Le Chat -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Mistral Le Chat</h2>
+                    <div class="provider">Mistral AI</div>
+                </div>
+                <div class="card-body">
+                    <p>Alternativa a ChatGPT desarrollada por la startup francesa Mistral AI. Ofrece rapidez, confidencialidad y una base de código abierto con procesamiento nativo en múltiples idiomas.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-open-source">Open Source</span>
+                    <span class="badge badge-codigo">Código</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://chat.mistral.ai" class="card-link">Visitar Mistral Le Chat →</a>
+                </div>
+            </div>
+
+            <!-- Microsoft Copilot -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Microsoft Copilot</h2>
+                    <div class="provider">Microsoft</div>
+                </div>
+                <div class="card-body">
+                    <p>Asistente de IA integrado en aplicaciones de Microsoft como Word, Excel y PowerPoint. Ayuda en la creación de contenidos y automatiza tareas repetitivas.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-productividad">Productividad</span>
+                    <span class="badge badge-codigo">Código</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://copilot.microsoft.com" class="card-link">Visitar Microsoft Copilot →</a>
+                </div>
+            </div>
+
+            <!-- Grok -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Grok</h2>
+                    <div class="provider">xAI</div>
+                </div>
+                <div class="card-body">
+                    <p>Chatbot de inteligencia artificial desarrollado por xAI, la empresa de Elon Musk. Ofrece respuestas rápidas con humor y acceso a datos en tiempo real desde la plataforma X.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-texto">Texto</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://x.ai" class="card-link">Visitar Grok →</a>
+                </div>
+            </div>
+
+            <!-- HuggingChat -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>HuggingChat</h2>
+                    <div class="provider">Hugging Face</div>
+                </div>
+                <div class="card-body">
+                    <p>Plataforma de chat abierta que permite interactuar con diversos modelos de lenguaje alojados en Hugging Face. Ofrece acceso gratuito a múltiples modelos de código abierto.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-open-source">Open Source</span>
+                    <span class="badge badge-playground">Playground</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://huggingface.co/chat" class="card-link">Visitar HuggingChat →</a>
+                </div>
+            </div>
+
+            <!-- You.com -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>You.com</h2>
+                    <div class="provider">You.com</div>
+                </div>
+                <div class="card-body">
+                    <p>Plataforma que combina un buscador con IA conversacional. Permite chatear con modelos como GPT-4 o Claude, generar código y crear imágenes con IA en una sola plataforma.</p>
+                    <span class="badge badge-chat">Chat</span>
+                    <span class="badge badge-busqueda">Búsqueda</span>
+                    <span class="badge badge-multimodal">Multimodal</span>
+                </div>
+                <div class="card-footer">
+                    <a href="#" data-url="https://you.com" class="card-link">Visitar You.com →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>
+                © 2024 Directorio de LLMs. Creado con ❤️ por 
+                <a href="https://github.com/stivenson" target="_blank" rel="noopener noreferrer" class="github-link">
+                    <span class="github-icon">🐙</span>
+                    <span>@stivenson</span>
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <button class="modal-close" id="modalClose" aria-label="Cerrar modal">×</button>
+            </div>
+            <div class="modal-iframe-container">
+                <div class="modal-loading" id="modalLoading">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Cargando...</div>
+                </div>
+                <iframe id="modalIframe" class="modal-iframe" allow="fullscreen"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get modal elements
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalIframe = document.getElementById('modalIframe');
+        const modalClose = document.getElementById('modalClose');
+        const modalLoading = document.getElementById('modalLoading');
+        const cardLinks = document.querySelectorAll('.card-link[data-url]');
+
+        // Function to open modal
+        function openModal(url) {
+            // Show loading indicator
+            modalLoading.classList.remove('hidden');
+            // Open modal
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            // Set iframe source (this will trigger loading)
+            modalIframe.src = url;
+        }
+
+        // Function to close modal
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+            modalIframe.src = ''; // Clear iframe source
+            modalLoading.classList.remove('hidden'); // Show loading for next time
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Hide loading indicator when iframe loads
+        modalIframe.addEventListener('load', function() {
+            modalLoading.classList.add('hidden');
+        });
+
+        // Add click event listeners to all card links
+        cardLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.getAttribute('data-url');
+                if (url) {
+                    openModal(url);
+                }
+            });
+        });
+
+        // Close modal when clicking the close button
+        modalClose.addEventListener('click', closeModal);
+
+        // Close modal when clicking outside the modal container
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
