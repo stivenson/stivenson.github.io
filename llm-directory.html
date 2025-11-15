@@ -625,7 +625,7 @@
             font-size: 1.2rem;
         }
 
-        .visitor-counter {
+        .visitor-counter-table {
             margin-top: 20px;
             padding-top: 20px;
             border-top: 1px solid #e0e0e0;
@@ -633,13 +633,72 @@
             color: #666;
         }
 
-        .visitor-counter .counter-label {
-            margin-right: 8px;
+        .visitor-counter-table td {
+            padding: 10px;
         }
 
-        .visitor-counter .counter-value {
-            font-weight: 600;
-            color: #667eea;
+        /* Centrar el widget completo de GeoContador */
+        .geocontador-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .geocontador-container .counter-label {
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .geocontador-container img {
+            border: none !important;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .geocontador-container a {
+            display: block;
+            text-align: center;
+            margin: 0 auto;
+        }
+        
+        /* Asegurar que el widget de GeoContador se centre */
+        .geocontador-container > * {
+            margin: 0 auto;
+        }
+        
+        /* Centrar cualquier elemento que el script de GeoContador pueda insertar dinámicamente */
+        .geocontador-container > div[id*="geocontador"],
+        .geocontador-container > div[class*="geocontador"] {
+            margin: 0 auto !important;
+            display: block !important;
+            text-align: center !important;
+        }
+        
+        /* Centrar el widget completo si se inserta dentro del contenedor */
+        .geocontador-container div {
+            margin-left: auto !important;
+            margin-right: auto !important;
+        }
+        
+        /* Ocultar cualquier widget de GeoContador que se inserte fuera del contenedor (como el que aparece abajo a la izquierda) */
+        body > div[id*="geocontador"],
+        body > div[class*="geocontador"],
+        body > div[style*="position: fixed"],
+        body > div[style*="position:absolute"],
+        body > div[style*="position: fixed"],
+        body > div[style*="position: absolute"],
+        div[id*="geocontador"]:not(.geocontador-container),
+        div[class*="geocontador"]:not(.geocontador-container) {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            width: 0 !important;
+            overflow: hidden !important;
         }
 
         @media (max-width: 1200px) {
@@ -679,16 +738,26 @@
         <!-- Footer -->
         <footer>
             <p>
-                © 2024 Directorio de Interfaces - LLMs. Creado con ❤️ por 
+                © 2025 Directorio de Interfaces - LLMs. Creado con ❤️ por 
                 <a href="https://github.com/stivenson?tab=overview&from=2019-12-01&to=2019-12-31" target="_blank" rel="noopener noreferrer" class="github-link">
-                    <span class="github-icon">🐙</span>
+    
                     <span>@stivenson</span>
                 </a>
             </p>
-            <div class="visitor-counter">
-                <span class="counter-label">Visitas:</span>
-                <span class="counter-value" id="visitCounter">Cargando...</span>
-            </div>
+            <table class="visitor-counter-table" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 33.33%; text-align: center; vertical-align: middle; color: #999;">--</td>
+                    <td style="width: 33.33%; text-align: center; vertical-align: middle;">
+                        <div class="geocontador-container">
+                            <span class="counter-label">Visitas:</span>
+                            <a href="https://geo2.geocontador.com/?c=99f236b4fa8d835108d30178f5e0d8a7" target="_blank" rel="noopener noreferrer">
+                                <img src="https://geo2.statistic.ovh/private/geocontador.php?c=99f236b4fa8d835108d30178f5e0d8a7" alt="contador de visitas para web" title="contador de visitas para web" border="0">
+                            </a>
+                        </div>
+                    </td>
+                    <td style="width: 33.33%; text-align: center; vertical-align: middle; color: #999;">--</td>
+                </tr>
+            </table>
         </footer>
     </div>
 
@@ -1384,7 +1453,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             generatePanels();
             setupCardLinks();
-            updateVisitorCounter();
+            // GeoContador script handles visitor counter automatically
         });
 
         // Close modal when clicking the close button
@@ -1411,26 +1480,193 @@
             }
         });
 
-        // Visitor Counter using countapi.xyz (free, no registration required)
-        function updateVisitorCounter() {
-            const counterElement = document.getElementById('visitCounter');
-            const namespace = 'llm-directory-stivenson';
-            const key = 'visits';
+        // GeoContador is now handling the visitor counter
+        // No need for updateVisitorCounter function
+        
+        // Función para ocultar widgets de GeoContador fuera del contenedor
+        function hideExternalGeoContadorWidgets() {
+            // Buscar todos los divs que puedan ser widgets de GeoContador
+            const allDivs = document.querySelectorAll('body > div');
+            const container = document.querySelector('.geocontador-container');
             
-            // Use hit endpoint which automatically creates if doesn't exist and increments
-            fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.value !== undefined) {
-                        counterElement.textContent = data.value.toLocaleString('es-ES');
-                    } else {
-                        counterElement.textContent = 'N/A';
+            allDivs.forEach(div => {
+                // Verificar que no esté dentro del contenedor permitido
+                const isInContainer = div.closest('.geocontador-container') || 
+                                     div.closest('.visitor-counter-table') ||
+                                     div.closest('footer') ||
+                                     div === container ||
+                                     container && container.contains(div);
+                
+                // Si NO está en el contenedor, verificar si es un widget de GeoContador
+                if (!isInContainer) {
+                    // Buscar características de widget de GeoContador
+                    const hasGeoContadorId = div.id && (div.id.toLowerCase().includes('geocontador') || div.id.toLowerCase().includes('geo'));
+                    const hasGeoContadorClass = div.className && (div.className.toString().toLowerCase().includes('geocontador') || div.className.toString().toLowerCase().includes('geo'));
+                    const hasFixedPosition = div.getAttribute('style') && (div.getAttribute('style').includes('position: fixed') || div.getAttribute('style').includes('position:absolute') || div.getAttribute('style').includes('position:fixed'));
+                    const hasGeoContadorContent = div.innerHTML && (div.innerHTML.includes('Online') || div.innerHTML.includes('Total') || div.innerHTML.includes('Colombia'));
+                    
+                    // Si tiene alguna de estas características, ocultarlo
+                    if (hasGeoContadorId || hasGeoContadorClass || (hasFixedPosition && hasGeoContadorContent)) {
+                        div.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; height: 0 !important; width: 0 !important; overflow: hidden !important; pointer-events: none !important;';
+                        div.remove(); // Intentar remover del DOM también
                     }
-                })
-                .catch(error => {
-                    console.error('Error updating visitor counter:', error);
-                    counterElement.textContent = 'N/A';
+                }
+            });
+        }
+        
+        // Ejecutar inmediatamente
+        hideExternalGeoContadorWidgets();
+        
+        // Observar cambios en el DOM para ocultar widgets que se inserten dinámicamente
+        const geoContadorObserver = new MutationObserver(function(mutations) {
+            hideExternalGeoContadorWidgets();
+        });
+        
+        // Iniciar observación cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.body) {
+                geoContadorObserver.observe(document.body, {
+                    childList: true,
+                    subtree: true
                 });
+            }
+            
+            // Ejecutar también después de un delay para asegurar que el script de GeoContador haya cargado
+            setTimeout(hideExternalGeoContadorWidgets, 1000);
+            setTimeout(hideExternalGeoContadorWidgets, 2000);
+            setTimeout(hideExternalGeoContadorWidgets, 3000);
+        });
+    </script>
+    
+    <!-- GeoContador Script -->
+    <script src="https://geo2.statistic.ovh/private/js.js?c=99f236b4fa8d835108d30178f5e0d8a7"></script>
+    
+    <!-- Script adicional para ocultar widgets después de que GeoContador cargue -->
+    <script>
+        // Función mejorada para eliminar widgets externos de forma más agresiva
+        function removeExternalGeoContadorWidgets() {
+            const container = document.querySelector('.geocontador-container');
+            const footer = document.querySelector('footer');
+            
+            // Buscar TODOS los elementos hijos directos del body (divs, imágenes, enlaces, etc.)
+            const allBodyChildren = document.querySelectorAll('body > *');
+            
+            allBodyChildren.forEach(element => {
+                // Verificar si está dentro del contenedor permitido
+                const isInContainer = (container && container.contains(element)) ||
+                                     (footer && footer.contains(element)) ||
+                                     element.closest('.geocontador-container') || 
+                                     element.closest('.visitor-counter-table') ||
+                                     element.closest('footer') ||
+                                     element.closest('.container') ||
+                                     element === container ||
+                                     element.id === 'modalOverlay';
+                
+                if (!isInContainer) {
+                    // Verificar contenido del widget
+                    const innerHTML = element.innerHTML || '';
+                    const hasGeoContent = innerHTML.includes('Online') || 
+                                         innerHTML.includes('Total') || 
+                                         innerHTML.includes('Colombia') ||
+                                         innerHTML.includes('geocontador') ||
+                                         innerHTML.includes('geo2') ||
+                                         innerHTML.includes('statistic.ovh');
+                    
+                    // Verificar ID y clase
+                    const id = (element.id || '').toLowerCase();
+                    const className = (element.className || '').toString().toLowerCase();
+                    const hasGeoId = id.includes('geocontador') || id.includes('geo');
+                    const hasGeoClass = className.includes('geocontador') || className.includes('geo');
+                    
+                    // Verificar src o href para imágenes y enlaces (GeoContador inserta img y a directamente)
+                    const src = (element.src || element.getAttribute('src') || '').toLowerCase();
+                    const href = (element.href || element.getAttribute('href') || '').toLowerCase();
+                    const hasGeoUrl = src.includes('statistic.ovh') || 
+                                     src.includes('geocontador') ||
+                                     src.includes('geo2') ||
+                                     src.includes('pointeur') ||
+                                     href.includes('statistic.ovh') ||
+                                     href.includes('geocontador') ||
+                                     href.includes('geo2');
+                    
+                    // Verificar posición
+                    const style = element.getAttribute('style') || '';
+                    const computedStyle = window.getComputedStyle(element);
+                    const hasFixedPos = style.includes('position: fixed') || 
+                                      style.includes('position:absolute') ||
+                                      style.includes('position:fixed') ||
+                                      computedStyle.position === 'fixed' ||
+                                      computedStyle.position === 'absolute';
+                    
+                    // Verificar si está en la esquina inferior izquierda
+                    const rect = element.getBoundingClientRect();
+                    const isBottomLeft = rect.bottom > window.innerHeight - 200 && rect.left < 300;
+                    
+                    // Si cumple alguna condición, eliminarlo
+                    if (hasGeoUrl || 
+                        (hasGeoContent && (hasFixedPos || isBottomLeft)) || 
+                        (hasGeoId && !isInContainer) || 
+                        (hasGeoClass && !isInContainer && hasFixedPos)) {
+                        element.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; height: 0 !important; width: 0 !important; overflow: hidden !important; pointer-events: none !important; position: absolute !important; left: -9999px !important;';
+                        try {
+                            element.remove();
+                        } catch(e) {
+                            if (element.parentNode) {
+                                element.parentNode.removeChild(element);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Ejecutar continuamente con un intervalo
+        let cleanupInterval = null;
+        
+        function startCleanup() {
+            if (cleanupInterval) return;
+            
+            // Ejecutar inmediatamente
+            removeExternalGeoContadorWidgets();
+            
+            // Ejecutar cada 500ms durante los primeros 10 segundos
+            let count = 0;
+            cleanupInterval = setInterval(function() {
+                removeExternalGeoContadorWidgets();
+                count++;
+                if (count >= 20) { // 20 * 500ms = 10 segundos
+                    clearInterval(cleanupInterval);
+                    cleanupInterval = null;
+                }
+            }, 500);
+        }
+        
+        // Iniciar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startCleanup);
+        } else {
+            startCleanup();
+        }
+        
+        // También iniciar cuando la página cargue completamente
+        window.addEventListener('load', function() {
+            startCleanup();
+            setTimeout(removeExternalGeoContadorWidgets, 100);
+            setTimeout(removeExternalGeoContadorWidgets, 500);
+            setTimeout(removeExternalGeoContadorWidgets, 1000);
+            setTimeout(removeExternalGeoContadorWidgets, 2000);
+        });
+        
+        // Observar cambios en el DOM (usar el observer existente si está disponible)
+        const geoContadorCleanupObserver = new MutationObserver(function() {
+            removeExternalGeoContadorWidgets();
+        });
+        
+        if (document.body) {
+            geoContadorCleanupObserver.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
         }
     </script>
 </body>
