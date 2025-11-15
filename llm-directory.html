@@ -430,6 +430,11 @@
             color: #d84315;
         }
 
+        .badge.badge-ia-local {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             display: none;
@@ -1054,6 +1059,38 @@
                 url: "https://openlit.io/",
                 badges: ["observabilidad", "monitoreo", "analitica"],
                 openInNewTab: true
+            },
+            {
+                name: "Stitch",
+                provider: "Google",
+                description: "Herramienta de IA para diseñar interfaces de usuario y generar código HTML/CSS a partir de descripciones en lenguaje natural o imágenes. Utiliza modelos Gemini 2.5 Pro y Gemini 2.5 Flash.",
+                url: "https://stitch.withgoogle.com",
+                badges: ["diseño", "herramienta", "codigo", "ia"],
+                openInNewTab: true
+            },
+            {
+                name: "Relevance AI",
+                provider: "Relevance AI",
+                description: "Plataforma de IA que facilita la implementación de soluciones de inteligencia artificial para análisis de datos, automatización de procesos y construcción de agentes de IA. Ofrece herramientas para desarrollo y despliegue de aplicaciones con IA.",
+                url: "https://app.relevanceai.com/",
+                badges: ["herramienta", "agentes", "automatizacion", "analitica", "ia"],
+                openInNewTab: true
+            },
+            {
+                name: "NotebookLM",
+                provider: "Google",
+                description: "Herramienta de investigación y toma de notas con IA desarrollada por Google Labs. Utiliza Google Gemini para ayudar a interactuar con documentos, generar resúmenes, explicaciones y mapas conceptuales. Soporta documentos, sitios web y presentaciones.",
+                url: "https://notebooklm.google.com",
+                badges: ["herramienta", "productividad", "documentos", "asistente", "ia"],
+                openInNewTab: true
+            },
+            {
+                name: "LM Studio",
+                provider: "LM Studio",
+                description: "Aplicación para ejecutar modelos de lenguaje localmente en tu computadora de forma privada y gratuita. Soporta modelos como gpt-oss, Qwen3, Gemma3, DeepSeek y muchos más. Incluye SDKs para JavaScript y Python.",
+                url: "https://lmstudio.ai/",
+                badges: ["ia-local", "herramienta", "playground", "codigo", "open-source"],
+                openInNewTab: true
             }
         ];
 
@@ -1117,7 +1154,8 @@
                         'sistema': 'Sistema',
                         'optimizacion': 'Optimización',
                         'visualizacion': 'Visualización',
-                        'ia': 'IA'
+                        'ia': 'IA',
+                        'ia-local': 'IA Local'
                     };
                     
                     const badgeText = badgeTextMap[badge] || badge;
