@@ -238,6 +238,46 @@
             color: #f57c00;
         }
 
+        .badge.badge-comparacion {
+            background: #e1bee7;
+            color: #7b1fa2;
+        }
+
+        .badge.badge-velocidad {
+            background: #b2dfdb;
+            color: #00695c;
+        }
+
+        .badge.badge-agentes {
+            background: #c5e1a5;
+            color: #558b2f;
+        }
+
+        .badge.badge-asistente {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .badge.badge-rol {
+            background: #f8bbd0;
+            color: #c2185b;
+        }
+
+        .badge.badge-personajes {
+            background: #ce93d8;
+            color: #7b1fa2;
+        }
+
+        .badge.badge-compania {
+            background: #b39ddb;
+            color: #512da8;
+        }
+
+        .badge.badge-salud {
+            background: #ffccbc;
+            color: #d84315;
+        }
+
         /* Modal Styles */
         .modal-overlay {
             display: none;
@@ -648,6 +688,54 @@
                 url: "https://you.com",
                 badges: ["chat", "busqueda", "multimodal"],
                 openInNewTab: false
+            },
+            {
+                name: "Chatbot Arena",
+                provider: "LMSYS",
+                description: "Plataforma educativa para comparar y evaluar modelos de lenguaje. Permite chatear con múltiples modelos de forma ciega y votar por el mejor. Herramienta ideal para entender las diferencias entre LLMs.",
+                url: "https://chat.lmsys.org",
+                badges: ["chat", "playground", "comparacion"],
+                openInNewTab: false
+            },
+            {
+                name: "Groq Chat",
+                provider: "Groq",
+                description: "Plataforma de chat con inferencia de alta velocidad y respuestas en tiempo real. Enfocada en baja latencia y rendimiento optimizado para modelos como Llama 3.1, Mixtral y Gemma.",
+                url: "https://groq.com/chat",
+                badges: ["chat", "velocidad", "texto"],
+                openInNewTab: false
+            },
+            {
+                name: "Abacus.AI ChatLLM",
+                provider: "Abacus.AI",
+                description: "Plataforma de chat con integración para equipos y Slack. Incluye agentes especializados para tareas de codificación y generales, ideal para entornos empresariales.",
+                url: "https://chatllm.abacus.ai",
+                badges: ["chat", "productividad", "agentes"],
+                openInNewTab: false
+            },
+            {
+                name: "Pi AI",
+                provider: "Inflection",
+                description: "Asistente personal de IA enfocado en conversaciones empáticas y apoyo emocional. Diseñado para ser un compañero conversacional comprensivo y útil.",
+                url: "https://heypi.com/talk",
+                badges: ["chat", "asistente", "texto"],
+                openInNewTab: true
+            },
+            {
+                name: "Character AI",
+                provider: "Character.AI",
+                description: "Plataforma para chatear con personajes personalizados y realizar role-playing. Permite crear y compartir personajes con la comunidad, ideal para storytelling y entretenimiento.",
+                url: "https://beta.character.ai",
+                badges: ["chat", "rol", "personajes"],
+                openInNewTab: false
+            },
+            {
+                name: "Replika",
+                provider: "Replika",
+                description: "IA compañera diseñada para construir relaciones a largo plazo. Enfocada en apoyo emocional y salud mental, con integración en aplicaciones móviles.",
+                url: "https://replika.com",
+                badges: ["chat", "compania", "salud"],
+                openInNewTab: false
             }
         ];
 
@@ -686,7 +774,15 @@
                         'visual': 'Visual',
                         'playground': 'Playground',
                         'busqueda': 'Búsqueda',
-                        'productividad': 'Productividad'
+                        'productividad': 'Productividad',
+                        'comparacion': 'Comparación',
+                        'velocidad': 'Velocidad',
+                        'agentes': 'Agentes',
+                        'asistente': 'Asistente',
+                        'rol': 'Rol',
+                        'personajes': 'Personajes',
+                        'compania': 'Compañía',
+                        'salud': 'Salud'
                     };
                     
                     const badgeText = badgeTextMap[badge] || badge;
