@@ -989,7 +989,7 @@
                 description: "Chatbot multimodal (texto, imagen, vídeo) que rivaliza con GPT. Es el núcleo del ecosistema de IA de Baidu.",
                 url: "https://ernie.baidu.com",
                 badges: ["multimodal", "texto", "imagen", "video"],
-                openInNewTab: false
+                openInNewTab: true
             },
             {
                 name: "Hunyuan Image",
@@ -1197,6 +1197,26 @@
             // Track if we've already opened in new tab to prevent duplicate opens
             let openedInNewTab = false;
             
+            // Timeout: If modal is still loading after 5 seconds, open in new tab
+            const loadingTimeout = setTimeout(() => {
+                // Only act if modal is still open and we haven't already opened in new tab
+                if (modalOverlay.classList.contains('active') && !openedInNewTab) {
+                    openedInNewTab = true;
+                    clearTimeout(immediateCheck);
+                    restoreButtonState(linkElement);
+                    // Open in new tab FIRST, then close modal
+                    const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+                    // Only close modal if window.open succeeded
+                    if (newWindow) {
+                        closeModal();
+                    } else {
+                        // If popup was blocked, keep modal open and show alert
+                        openedInNewTab = false; // Reset flag so user can try again
+                        alert('No se pudo abrir la nueva pestaña. Por favor, permite las ventanas emergentes para este sitio.');
+                    }
+                }
+            }, 5000); // 5 seconds timeout
+            
             // Check immediately if iframe is blocked (e.g., by X-Frame-Options)
             // This happens when the page loads but is blocked from displaying in iframe
             // GitHub and many sites block iframes for security
@@ -1279,6 +1299,7 @@
                 
                 if (isBlocked && !openedInNewTab) {
                     openedInNewTab = true;
+                    clearTimeout(loadingTimeout); // Clear the 5-second timeout
                     restoreButtonState(linkElement);
                     closeModal();
                     window.open(url, '_blank', 'noopener,noreferrer');
@@ -1372,6 +1393,7 @@
                 
                 if (shouldOpenInNewTab && !openedInNewTab) {
                     openedInNewTab = true;
+                    clearTimeout(loadingTimeout); // Clear the 5-second timeout
                     restoreButtonState(linkElement);
                     closeModal();
                     window.open(url, '_blank', 'noopener,noreferrer');
@@ -1384,6 +1406,7 @@
             // Handle iframe load event
             const loadHandler = () => {
                 clearTimeout(immediateCheck);
+                clearTimeout(loadingTimeout); // Clear the 5-second timeout since iframe loaded
                 iframeLoadHandler();
                 
                 // Restore button state when iframe loads successfully
@@ -1399,6 +1422,7 @@
                 if (!openedInNewTab && modalOverlay.classList.contains('active')) {
                     openedInNewTab = true;
                     clearTimeout(immediateCheck);
+                    clearTimeout(loadingTimeout); // Clear the 5-second timeout
                     restoreButtonState(linkElement);
                     closeModal();
                     window.open(url, '_blank', 'noopener,noreferrer');
