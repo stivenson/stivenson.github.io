@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,6 +68,7 @@
             0% {
                 transform: translateX(-100%);
             }
+
             100% {
                 transform: translateX(100%);
             }
@@ -151,10 +153,12 @@
                 width: 0%;
                 margin-left: 0%;
             }
+
             50% {
                 width: 70%;
                 margin-left: 15%;
             }
+
             100% {
                 width: 0%;
                 margin-left: 100%;
@@ -165,6 +169,7 @@
             0% {
                 transform: translateX(-100%);
             }
+
             100% {
                 transform: translateX(100%);
             }
@@ -187,7 +192,7 @@
         header h1 {
             font-size: 3rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         header p {
@@ -220,7 +225,7 @@
             background: white;
             border-radius: 16px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             overflow: hidden;
             break-inside: avoid;
@@ -228,7 +233,7 @@
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
         }
 
         .card-header {
@@ -302,6 +307,7 @@
             0% {
                 left: -100%;
             }
+
             100% {
                 left: 100%;
             }
@@ -330,7 +336,7 @@
         .badge {
             display: inline-block;
             padding: 4px 10px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             font-size: 0.75rem;
             margin-top: 5px;
@@ -726,14 +732,20 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -744,6 +756,7 @@
                 transform: scale(0.9);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -827,33 +840,33 @@
             text-align: center;
             margin: 0 auto;
         }
-        
+
         /* Asegurar que el widget de GeoContador se centre */
-        .geocontador-container > * {
+        .geocontador-container>* {
             margin: 0 auto;
         }
-        
+
         /* Centrar cualquier elemento que el script de GeoContador pueda insertar dinámicamente */
-        .geocontador-container > div[id*="geocontador"],
-        .geocontador-container > div[class*="geocontador"] {
+        .geocontador-container>div[id*="geocontador"],
+        .geocontador-container>div[class*="geocontador"] {
             margin: 0 auto !important;
             display: block !important;
             text-align: center !important;
         }
-        
+
         /* Centrar el widget completo si se inserta dentro del contenedor */
         .geocontador-container div {
             margin-left: auto !important;
             margin-right: auto !important;
         }
-        
+
         /* Ocultar cualquier widget de GeoContador que se inserte fuera del contenedor (como el que aparece abajo a la izquierda) */
-        body > div[id*="geocontador"],
-        body > div[class*="geocontador"],
-        body > div[style*="position: fixed"],
-        body > div[style*="position:absolute"],
-        body > div[style*="position: fixed"],
-        body > div[style*="position: absolute"],
+        body>div[id*="geocontador"],
+        body>div[class*="geocontador"],
+        body>div[style*="position: fixed"],
+        body>div[style*="position:absolute"],
+        body>div[style*="position: fixed"],
+        body>div[style*="position: absolute"],
         div[id*="geocontador"]:not(.geocontador-container),
         div[class*="geocontador"]:not(.geocontador-container) {
             display: none !important;
@@ -874,7 +887,7 @@
             .masonry {
                 column-count: 2;
             }
-            
+
             header h1 {
                 font-size: 2rem;
             }
@@ -887,6 +900,7 @@
         }
     </style>
 </head>
+
 <body class="loading">
     <!-- Page Loading Progress Bar (top) -->
     <div class="page-loading-progress" id="pageLoadingProgress">
@@ -907,7 +921,8 @@
         <header>
             <div class="header-badge">✨ Inteligencia Artificial</div>
             <h1>🤖 Directorio de Interfaces - LLMs</h1>
-            <p>Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje</p>
+            <p>Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y
+                herramientas de modelos de lenguaje</p>
         </header>
 
         <div class="masonry" id="masonryContainer">
@@ -917,9 +932,10 @@
         <!-- Footer -->
         <footer>
             <p>
-                © 2025 Directorio de Interfaces - LLMs. Creado con ❤️ por 
-                <a href="https://github.com/stivenson?tab=overview&from=2019-12-01&to=2019-12-31" target="_blank" rel="noopener noreferrer" class="github-link">
-    
+                © 2025 Directorio de Interfaces - LLMs. Creado con ❤️ por
+                <a href="https://github.com/stivenson?tab=overview&from=2019-12-01&to=2019-12-31" target="_blank"
+                    rel="noopener noreferrer" class="github-link">
+
                     <span>@stivenson</span>
                 </a>
             </p>
@@ -929,8 +945,10 @@
                     <td style="width: 33.33%; text-align: center; vertical-align: middle;">
                         <div class="geocontador-container">
                             <span class="counter-label">Visitas:</span>
-                            <a href="https://geo2.geocontador.com/?c=99f236b4fa8d835108d30178f5e0d8a7" target="_blank" rel="noopener noreferrer">
-                                <img src="https://geo2.statistic.ovh/private/geocontador.php?c=99f236b4fa8d835108d30178f5e0d8a7" alt="contador de visitas para web" title="contador de visitas para web" border="0">
+                            <a href="https://geo2.geocontador.com/?c=99f236b4fa8d835108d30178f5e0d8a7" target="_blank"
+                                rel="noopener noreferrer">
+                                <img src="https://geo2.statistic.ovh/private/geocontador.php?c=99f236b4fa8d835108d30178f5e0d8a7"
+                                    alt="contador de visitas para web" title="contador de visitas para web" border="0">
                             </a>
                         </div>
                     </td>
@@ -945,7 +963,8 @@
         <div class="modal-container">
             <div class="modal-header">
                 <button class="modal-close" id="modalClose" aria-label="Cerrar modal">×</button>
-                <button class="modal-open-tab" id="modalOpenTab" aria-label="Abrir en nueva pestaña">Abrir en pestaña</button>
+                <button class="modal-open-tab" id="modalOpenTab" aria-label="Abrir en nueva pestaña">Abrir en
+                    pestaña</button>
             </div>
             <div class="modal-iframe-container">
                 <div class="modal-loading" id="modalLoading">
@@ -1274,12 +1293,12 @@
         function generatePanels() {
             const container = document.getElementById('masonryContainer');
             container.innerHTML = ''; // Clear container
-            
+
             llmServices.forEach((service, index) => {
                 // Create card element
                 const card = document.createElement('div');
                 card.className = 'card';
-                
+
                 // Generate badges HTML
                 const badgesHTML = service.badges.map(badge => {
                     // Map badge names to display text
@@ -1333,11 +1352,11 @@
                         'ia': 'IA',
                         'ia-local': 'IA Local'
                     };
-                    
+
                     const badgeText = badgeTextMap[badge] || badge;
                     return `<span class="badge badge-${badge}">${badgeText}</span>`;
                 }).join('\n                    ');
-                
+
                 // Set card HTML
                 card.innerHTML = `
                 <div class="card-header">
@@ -1356,7 +1375,7 @@
                     ${service.openInNewTab ? '<p class="new-tab-notice">* Se abrirá en una nueva pestaña</p>' : ''}
                 </div>
                 `;
-                
+
                 container.appendChild(card);
             });
         }
@@ -1367,7 +1386,7 @@
         const modalClose = document.getElementById('modalClose');
         const modalOpenTab = document.getElementById('modalOpenTab');
         const modalLoading = document.getElementById('modalLoading');
-        
+
         // Store current modal URL
         let currentModalUrl = '';
 
@@ -1380,7 +1399,7 @@
                     redirect: 'manual', // Don't follow redirects automatically
                     credentials: 'omit'
                 });
-                
+
                 // Check if status is 3xx (redirect) - especially 308
                 if (response.status >= 300 && response.status < 400) {
                     // It's a redirect, open in new tab instead
@@ -1392,25 +1411,25 @@
                 // CORS error is expected for external sites - continue with modal
                 // The iframe will handle the redirect if it happens
             }
-            
+
             // Store the link element for later restoration
             currentLoadingLink = linkElement;
-            
+
             // Store the current modal URL
             currentModalUrl = url;
-            
+
             // Show loading indicator
             modalLoading.classList.remove('hidden');
             // Open modal
             modalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
-            
+
             // Set iframe source
             modalIframe.src = url;
-            
+
             // Track if we've already opened in new tab to prevent duplicate opens
             let openedInNewTab = false;
-            
+
             // Timeout: If modal is still loading after 5 seconds, open in new tab
             const loadingTimeout = setTimeout(() => {
                 // Only act if modal is still open and we haven't already opened in new tab
@@ -1429,8 +1448,8 @@
                         alert('No se pudo abrir la nueva pestaña. Por favor, permite las ventanas emergentes para este sitio.');
                     }
                 }
-            }, 5000); // 5 seconds timeout
-            
+            }, 7000); // 7 seconds timeout
+
             // Check immediately if iframe is blocked (e.g., by X-Frame-Options)
             // This happens when the page loads but is blocked from displaying in iframe
             // GitHub and many sites block iframes for security
@@ -1439,20 +1458,20 @@
                 if (!modalOverlay.classList.contains('active')) {
                     return;
                 }
-                
+
                 let isBlocked = false;
-                
+
                 try {
                     // Try to access iframe content
                     const iframeWindow = modalIframe.contentWindow;
-                    
+
                     if (!iframeWindow) {
                         isBlocked = true;
                     } else {
                         // Try to access document - this will throw if blocked by X-Frame-Options
                         try {
                             const iframeDoc = modalIframe.contentDocument || iframeWindow.document;
-                            
+
                             if (!iframeDoc) {
                                 isBlocked = true;
                             } else {
@@ -1510,7 +1529,7 @@
                         isBlocked = true;
                     }
                 }
-                
+
                 if (isBlocked && !openedInNewTab) {
                     openedInNewTab = true;
                     clearTimeout(loadingTimeout); // Clear the 5-second timeout
@@ -1519,25 +1538,25 @@
                     window.open(url, '_blank', 'noopener,noreferrer');
                 }
             }, 2000); // Increased to 2 seconds to give iframe more time to load
-            
+
             // Monitor iframe for redirects and content loading failures
             const iframeLoadHandler = async () => {
                 // Only check if modal is still open
                 if (!modalOverlay.classList.contains('active')) {
                     return;
                 }
-                
+
                 // Clear the immediate check timeout since iframe loaded
                 clearTimeout(immediateCheck);
-                
+
                 let shouldOpenInNewTab = false;
-                
+
                 try {
                     // Try to check if the iframe content indicates a redirect
                     // Note: This may fail due to CORS for external sites
                     const iframeWindow = modalIframe.contentWindow;
                     const currentUrl = iframeWindow.location.href;
-                    
+
                     // If the iframe URL changed from what we set, it might be a redirect
                     if (currentUrl !== url && currentUrl !== 'about:blank') {
                         // Check the final URL with a fetch request
@@ -1546,7 +1565,7 @@
                                 method: 'HEAD',
                                 redirect: 'manual'
                             });
-                            
+
                             if (response.status >= 300 && response.status < 400) {
                                 // Still redirecting, open in new tab
                                 shouldOpenInNewTab = true;
@@ -1555,17 +1574,17 @@
                             // Can't check due to CORS - this is normal for cross-origin
                         }
                     }
-                    
+
                     // Try to access iframe content to verify it loaded successfully
                     // Only check for same-origin or if we can actually verify blocking
                     try {
                         const urlObj = new URL(url);
                         const isSameOrigin = urlObj.origin === window.location.origin;
-                        
+
                         if (isSameOrigin) {
                             // For same-origin, we should be able to access content
                             const iframeDoc = modalIframe.contentDocument || modalIframe.contentWindow.document;
-                            
+
                             if (!iframeDoc || !iframeDoc.body || iframeDoc.body.innerHTML.trim() === '') {
                                 // Same origin but no content - blocked or failed
                                 shouldOpenInNewTab = true;
@@ -1595,7 +1614,7 @@
                             method: 'HEAD',
                             redirect: 'manual'
                         });
-                        
+
                         if (response.status >= 300 && response.status < 400) {
                             shouldOpenInNewTab = true;
                         }
@@ -1604,7 +1623,7 @@
                         // Can't verify, but for cross-origin assume it's working
                     }
                 }
-                
+
                 if (shouldOpenInNewTab && !openedInNewTab) {
                     openedInNewTab = true;
                     clearTimeout(loadingTimeout); // Clear the 5-second timeout
@@ -1616,13 +1635,13 @@
                     restoreButtonState(linkElement);
                 }
             };
-            
+
             // Handle iframe load event
             const loadHandler = () => {
                 clearTimeout(immediateCheck);
                 clearTimeout(loadingTimeout); // Clear the 5-second timeout since iframe loaded
                 iframeLoadHandler();
-                
+
                 // Restore button state when iframe loads successfully
                 // Small delay to ensure content is visible
                 setTimeout(() => {
@@ -1630,7 +1649,7 @@
                 }, 500);
             };
             modalIframe.addEventListener('load', loadHandler, { once: true });
-            
+
             // Handle iframe error event - if iframe fails to load, open in new tab
             const iframeErrorHandler = () => {
                 if (!openedInNewTab && modalOverlay.classList.contains('active')) {
@@ -1642,7 +1661,7 @@
                     window.open(url, '_blank', 'noopener,noreferrer');
                 }
             };
-            
+
             modalIframe.addEventListener('error', iframeErrorHandler, { once: true });
         }
 
@@ -1655,7 +1674,7 @@
             modalIframe.src = ''; // Clear iframe source
             modalLoading.classList.remove('hidden'); // Show loading for next time
             document.body.style.overflow = ''; // Restore scrolling
-            
+
             // Restore button state
             if (currentLoadingLink) {
                 restoreButtonState(currentLoadingLink);
@@ -1664,20 +1683,20 @@
         }
 
         // Hide loading indicator when iframe loads
-        modalIframe.addEventListener('load', function() {
+        modalIframe.addEventListener('load', function () {
             modalLoading.classList.add('hidden');
         });
 
         // Function to handle card link clicks
         function setupCardLinks() {
             const cardLinks = document.querySelectorAll('.card-link[data-url]');
-            
+
             cardLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
+                link.addEventListener('click', function (e) {
                     e.preventDefault();
                     const url = this.getAttribute('data-url');
                     const openInNewTab = this.getAttribute('data-open-in-new-tab') === 'true';
-                    
+
                     if (url) {
                         if (openInNewTab) {
                             // Open in new tab
@@ -1685,7 +1704,7 @@
                         } else {
                             // Show loading state on button
                             this.classList.add('loading');
-                            
+
                             // Open in modal
                             openModal(url, this); // Pass the link element to restore state later
                         }
@@ -1702,11 +1721,11 @@
         }
 
         // Initialize: Generate panels, setup event listeners, and visitor counter
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Get progress bars
             let progressBar = document.getElementById('pageLoadingProgress');
             const centerLoadingOverlay = document.getElementById('centerLoadingOverlay');
-            
+
             if (!progressBar) {
                 // Fallback: create if not exists
                 progressBar = document.createElement('div');
@@ -1715,16 +1734,16 @@
                 progressBar.innerHTML = '<div class="page-loading-progress-bar"></div>';
                 document.body.insertBefore(progressBar, document.body.firstChild);
             }
-            
+
             const progressBarInner = progressBar.querySelector('.page-loading-progress-bar');
-            
+
             // Start with visible progress
             let currentWidth = parseFloat(progressBarInner.style.width) || 5;
             if (currentWidth < 10) {
                 progressBarInner.style.width = '10%';
                 currentWidth = 10;
             }
-            
+
             // Simulate progress
             let progress = currentWidth;
             const progressInterval = setInterval(() => {
@@ -1732,56 +1751,56 @@
                 if (progress > 85) progress = 85; // Don't complete until panels are generated
                 progressBarInner.style.width = progress + '%';
             }, 150);
-            
+
             // Generate panels
             generatePanels();
             setupCardLinks();
-            
+
             // Complete progress and hide after panels are generated and rendered
             // Use requestAnimationFrame to ensure DOM is updated
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
                     clearInterval(progressInterval);
                     progressBarInner.style.width = '100%';
-                    
+
                     // Hide center loading overlay first
                     if (centerLoadingOverlay) {
                         centerLoadingOverlay.classList.add('hidden');
                     }
-                    
+
                     // Show content
                     document.body.classList.remove('loading');
                     document.body.classList.add('loaded');
-                    
+
                     // Hide top progress bar after a short delay
                     setTimeout(() => {
                         progressBar.classList.add('hidden');
                     }, 500);
                 });
             });
-            
+
             // GeoContador script handles visitor counter automatically
         });
 
         // Close modal when clicking the close button
         modalClose.addEventListener('click', closeModal);
-        
+
         // Open current modal URL in new tab
-        modalOpenTab.addEventListener('click', function() {
+        modalOpenTab.addEventListener('click', function () {
             if (currentModalUrl) {
                 window.open(currentModalUrl, '_blank', 'noopener,noreferrer');
             }
         });
 
         // Close modal when clicking outside the modal container
-        modalOverlay.addEventListener('click', function(e) {
+        modalOverlay.addEventListener('click', function (e) {
             if (e.target === modalOverlay) {
                 closeModal();
             }
         });
 
         // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
                 closeModal();
             }
@@ -1789,21 +1808,21 @@
 
         // GeoContador is now handling the visitor counter
         // No need for updateVisitorCounter function
-        
+
         // Función para ocultar widgets de GeoContador fuera del contenedor
         function hideExternalGeoContadorWidgets() {
             // Buscar todos los divs que puedan ser widgets de GeoContador
             const allDivs = document.querySelectorAll('body > div');
             const container = document.querySelector('.geocontador-container');
-            
+
             allDivs.forEach(div => {
                 // Verificar que no esté dentro del contenedor permitido
-                const isInContainer = div.closest('.geocontador-container') || 
-                                     div.closest('.visitor-counter-table') ||
-                                     div.closest('footer') ||
-                                     div === container ||
-                                     container && container.contains(div);
-                
+                const isInContainer = div.closest('.geocontador-container') ||
+                    div.closest('.visitor-counter-table') ||
+                    div.closest('footer') ||
+                    div === container ||
+                    container && container.contains(div);
+
                 // Si NO está en el contenedor, verificar si es un widget de GeoContador
                 if (!isInContainer) {
                     // Buscar características de widget de GeoContador
@@ -1811,7 +1830,7 @@
                     const hasGeoContadorClass = div.className && (div.className.toString().toLowerCase().includes('geocontador') || div.className.toString().toLowerCase().includes('geo'));
                     const hasFixedPosition = div.getAttribute('style') && (div.getAttribute('style').includes('position: fixed') || div.getAttribute('style').includes('position:absolute') || div.getAttribute('style').includes('position:fixed'));
                     const hasGeoContadorContent = div.innerHTML && (div.innerHTML.includes('Online') || div.innerHTML.includes('Total') || div.innerHTML.includes('Colombia'));
-                    
+
                     // Si tiene alguna de estas características, ocultarlo
                     if (hasGeoContadorId || hasGeoContadorClass || (hasFixedPosition && hasGeoContadorContent)) {
                         div.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; height: 0 !important; width: 0 !important; overflow: hidden !important; pointer-events: none !important;';
@@ -1820,104 +1839,104 @@
                 }
             });
         }
-        
+
         // Ejecutar inmediatamente
         hideExternalGeoContadorWidgets();
-        
+
         // Observar cambios en el DOM para ocultar widgets que se inserten dinámicamente
-        const geoContadorObserver = new MutationObserver(function(mutations) {
+        const geoContadorObserver = new MutationObserver(function (mutations) {
             hideExternalGeoContadorWidgets();
         });
-        
+
         // Iniciar observación cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             if (document.body) {
                 geoContadorObserver.observe(document.body, {
                     childList: true,
                     subtree: true
                 });
             }
-            
+
             // Ejecutar también después de un delay para asegurar que el script de GeoContador haya cargado
             setTimeout(hideExternalGeoContadorWidgets, 1000);
             setTimeout(hideExternalGeoContadorWidgets, 2000);
             setTimeout(hideExternalGeoContadorWidgets, 3000);
         });
     </script>
-    
+
     <!-- GeoContador Script -->
     <script src="https://geo2.statistic.ovh/private/js.js?c=99f236b4fa8d835108d30178f5e0d8a7"></script>
-    
+
     <!-- Script adicional para ocultar widgets después de que GeoContador cargue -->
     <script>
         // Función mejorada para eliminar widgets externos de forma más agresiva
         function removeExternalGeoContadorWidgets() {
             const container = document.querySelector('.geocontador-container');
             const footer = document.querySelector('footer');
-            
+
             // Buscar TODOS los elementos hijos directos del body (divs, imágenes, enlaces, etc.)
             const allBodyChildren = document.querySelectorAll('body > *');
-            
+
             allBodyChildren.forEach(element => {
                 // Verificar si está dentro del contenedor permitido
                 const isInContainer = (container && container.contains(element)) ||
-                                     (footer && footer.contains(element)) ||
-                                     element.closest('.geocontador-container') || 
-                                     element.closest('.visitor-counter-table') ||
-                                     element.closest('footer') ||
-                                     element.closest('.container') ||
-                                     element === container ||
-                                     element.id === 'modalOverlay';
-                
+                    (footer && footer.contains(element)) ||
+                    element.closest('.geocontador-container') ||
+                    element.closest('.visitor-counter-table') ||
+                    element.closest('footer') ||
+                    element.closest('.container') ||
+                    element === container ||
+                    element.id === 'modalOverlay';
+
                 if (!isInContainer) {
                     // Verificar contenido del widget
                     const innerHTML = element.innerHTML || '';
-                    const hasGeoContent = innerHTML.includes('Online') || 
-                                         innerHTML.includes('Total') || 
-                                         innerHTML.includes('Colombia') ||
-                                         innerHTML.includes('geocontador') ||
-                                         innerHTML.includes('geo2') ||
-                                         innerHTML.includes('statistic.ovh');
-                    
+                    const hasGeoContent = innerHTML.includes('Online') ||
+                        innerHTML.includes('Total') ||
+                        innerHTML.includes('Colombia') ||
+                        innerHTML.includes('geocontador') ||
+                        innerHTML.includes('geo2') ||
+                        innerHTML.includes('statistic.ovh');
+
                     // Verificar ID y clase
                     const id = (element.id || '').toLowerCase();
                     const className = (element.className || '').toString().toLowerCase();
                     const hasGeoId = id.includes('geocontador') || id.includes('geo');
                     const hasGeoClass = className.includes('geocontador') || className.includes('geo');
-                    
+
                     // Verificar src o href para imágenes y enlaces (GeoContador inserta img y a directamente)
                     const src = (element.src || element.getAttribute('src') || '').toLowerCase();
                     const href = (element.href || element.getAttribute('href') || '').toLowerCase();
-                    const hasGeoUrl = src.includes('statistic.ovh') || 
-                                     src.includes('geocontador') ||
-                                     src.includes('geo2') ||
-                                     src.includes('pointeur') ||
-                                     href.includes('statistic.ovh') ||
-                                     href.includes('geocontador') ||
-                                     href.includes('geo2');
-                    
+                    const hasGeoUrl = src.includes('statistic.ovh') ||
+                        src.includes('geocontador') ||
+                        src.includes('geo2') ||
+                        src.includes('pointeur') ||
+                        href.includes('statistic.ovh') ||
+                        href.includes('geocontador') ||
+                        href.includes('geo2');
+
                     // Verificar posición
                     const style = element.getAttribute('style') || '';
                     const computedStyle = window.getComputedStyle(element);
-                    const hasFixedPos = style.includes('position: fixed') || 
-                                      style.includes('position:absolute') ||
-                                      style.includes('position:fixed') ||
-                                      computedStyle.position === 'fixed' ||
-                                      computedStyle.position === 'absolute';
-                    
+                    const hasFixedPos = style.includes('position: fixed') ||
+                        style.includes('position:absolute') ||
+                        style.includes('position:fixed') ||
+                        computedStyle.position === 'fixed' ||
+                        computedStyle.position === 'absolute';
+
                     // Verificar si está en la esquina inferior izquierda
                     const rect = element.getBoundingClientRect();
                     const isBottomLeft = rect.bottom > window.innerHeight - 200 && rect.left < 300;
-                    
+
                     // Si cumple alguna condición, eliminarlo
-                    if (hasGeoUrl || 
-                        (hasGeoContent && (hasFixedPos || isBottomLeft)) || 
-                        (hasGeoId && !isInContainer) || 
+                    if (hasGeoUrl ||
+                        (hasGeoContent && (hasFixedPos || isBottomLeft)) ||
+                        (hasGeoId && !isInContainer) ||
                         (hasGeoClass && !isInContainer && hasFixedPos)) {
                         element.style.cssText = 'display: none !important; visibility: hidden !important; opacity: 0 !important; height: 0 !important; width: 0 !important; overflow: hidden !important; pointer-events: none !important; position: absolute !important; left: -9999px !important;';
                         try {
                             element.remove();
-                        } catch(e) {
+                        } catch (e) {
                             if (element.parentNode) {
                                 element.parentNode.removeChild(element);
                             }
@@ -1926,19 +1945,19 @@
                 }
             });
         }
-        
+
         // Ejecutar continuamente con un intervalo
         let cleanupInterval = null;
-        
+
         function startCleanup() {
             if (cleanupInterval) return;
-            
+
             // Ejecutar inmediatamente
             removeExternalGeoContadorWidgets();
-            
+
             // Ejecutar cada 500ms durante los primeros 10 segundos
             let count = 0;
-            cleanupInterval = setInterval(function() {
+            cleanupInterval = setInterval(function () {
                 removeExternalGeoContadorWidgets();
                 count++;
                 if (count >= 20) { // 20 * 500ms = 10 segundos
@@ -1947,28 +1966,28 @@
                 }
             }, 500);
         }
-        
+
         // Iniciar cuando el DOM esté listo
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', startCleanup);
         } else {
             startCleanup();
         }
-        
+
         // También iniciar cuando la página cargue completamente
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             startCleanup();
             setTimeout(removeExternalGeoContadorWidgets, 100);
             setTimeout(removeExternalGeoContadorWidgets, 500);
             setTimeout(removeExternalGeoContadorWidgets, 1000);
             setTimeout(removeExternalGeoContadorWidgets, 2000);
         });
-        
+
         // Observar cambios en el DOM (usar el observer existente si está disponible)
-        const geoContadorCleanupObserver = new MutationObserver(function() {
+        const geoContadorCleanupObserver = new MutationObserver(function () {
             removeExternalGeoContadorWidgets();
         });
-        
+
         if (document.body) {
             geoContadorCleanupObserver.observe(document.body, {
                 childList: true,
@@ -1977,4 +1996,5 @@
         }
     </script>
 </body>
+
 </html>
