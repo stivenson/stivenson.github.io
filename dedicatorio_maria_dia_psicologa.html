@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Día de la Psicóloga</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(20px, -30px) rotate(5deg);
+            }
+
+            50% {
+                transform: translate(-10px, 10px) rotate(-5deg);
+            }
+
+            75% {
+                transform: translate(15px, -20px) rotate(3deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.2;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes bounce-slow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes panel-float {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.1;
+            }
+
+            50% {
+                transform: translateY(-15px) scale(1.1);
+                opacity: 0.35;
+            }
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0) rotate(-45deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            20% {
+                transform: translateX(-300px) translateY(300px) rotate(-45deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(-300px) translateY(300px) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-float {
+            animation-timing-function: ease-in-out;
+        }
+
+        .animate-twinkle {
+            animation-timing-function: ease-in-out;
+        }
+
+        .animate-bounce-slow {
+            animation: bounce-slow 3s infinite ease-in-out;
+        }
+
+        .animate-panel-float {
+            animation-name: panel-float;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(-45deg);
+            animation: shoot 6s infinite linear;
+            opacity: 0;
+        }
+
+        /* Utility classes for JS toggling */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-rose-950 min-h-screen w-full relative overflow-hidden flex items-center justify-center font-sans selection:bg-rose-300 selection:text-rose-950">
+
+    <!-- --- Fondo Animado --- -->
+    <div id="background-container" class="absolute inset-0 z-0">
+        <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-rose-900 via-fuchsia-900 to-purple-950">
+        </div>
+
+        <!-- Orbes de luz -->
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-rose-600 rounded-full mix-blend-screen filter blur-[100px] opacity-40 animate-pulse"
+            style="animation-duration: 4s;"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-fuchsia-600 rounded-full mix-blend-screen filter blur-[100px] opacity-40 animate-pulse"
+            style="animation-duration: 5s;"></div>
+        <div class="absolute top-[40%] left-[40%] w-64 h-64 bg-purple-500 rounded-full mix-blend-screen filter blur-[80px] opacity-20 animate-pulse"
+            style="animation-duration: 3s;"></div>
+
+        <!-- Estrellas fugaces -->
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="shooting-star" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+            <div class="shooting-star" style="top: 30%; left: 50%; animation-delay: 2s;"></div>
+            <div class="shooting-star" style="top: 70%; left: 10%; animation-delay: 4s;"></div>
+        </div>
+
+        <!-- Particles and Stars will be injected here by JS -->
+    </div>
+
+    <!-- --- Tarjeta Principal --- -->
+    <div id="main-card"
+        class="relative z-10 w-full max-w-2xl mx-4 transition-all duration-700 ease-out transform opacity-0 translate-y-10">
+        <div
+            class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl overflow-hidden relative">
+
+            <!-- Barra superior decorativa -->
+            <div class="h-2 w-full bg-gradient-to-r from-rose-400 via-fuchsia-400 to-purple-500"></div>
+
+            <div class="p-8 md:p-12 text-center relative">
+
+                <!-- Elementos decorativos de fondo -->
+                <!-- Brain Icon -->
+                <svg class="absolute top-4 left-4 text-white/5 w-24 h-24 rotate-[-15deg] animate-pulse"
+                    style="animation-duration: 3s;" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" />
+                    <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" />
+                    <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" />
+                </svg>
+                <!-- Heart Icon -->
+                <svg class="absolute bottom-4 right-4 text-white/5 w-24 h-24 rotate-[15deg] animate-pulse"
+                    style="animation-duration: 4s;" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path
+                        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                </svg>
+
+                <!-- Encabezado -->
+                <div class="mb-8">
+                    <div
+                        class="inline-flex items-center justify-center p-3 bg-white/10 rounded-full mb-6 ring-1 ring-white/30 shadow-[0_0_15px_rgba(255,255,255,0.3)] animate-bounce-slow">
+                        <span class="text-3xl font-serif text-rose-300">Ψ</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight drop-shadow-lg">
+                        Feliz Día de la Psicóloga
+                    </h1>
+                    <p class="text-xl text-rose-200 font-light">
+                        Para la Profe María Fernanda
+                    </p>
+                </div>
+
+                <!-- Contenido Interactivo -->
+                <div class="space-y-6">
+
+                    <!-- Botón Inicial -->
+                    <button id="btn-open"
+                        class="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-rose-500 to-fuchsia-600 rounded-xl text-white font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(244,63,94,0.6)] focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2 focus:ring-offset-rose-950 overflow-hidden">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <!-- Sparkles Icon -->
+                            <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+                                <path d="M5 3v4" />
+                                <path d="M9 3v4" />
+                                <path d="M3 5h4" />
+                                <path d="M3 9h4" />
+                            </svg>
+                            Ver Dedicatoria
+                        </span>
+                        <div
+                            class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        </div>
+                    </button>
+
+                    <!-- Panel de Dedicatoria (Oculto por defecto) -->
+                    <div id="dedication-panel" class="hidden animate-fadeIn">
+                        <div
+                            class="bg-white/5 rounded-2xl p-6 md:p-8 border border-white/10 text-left relative backdrop-blur-md overflow-hidden">
+
+                            <!-- Iconos flotantes del panel (Injected by JS) -->
+                            <div id="panel-icons-container"></div>
+
+                            <!-- Icono decorativo con animación (FIXED POSITION) -->
+                            <div class="absolute top-0 left-0 bg-rose-500 p-2 rounded-br-xl rounded-tl-2xl shadow-lg animate-bounce"
+                                style="animation-duration: 2s;">
+                                <!-- Lightbulb Icon -->
+                                <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M15 14c.2-1 .7-1.7 1.5-2.5 1-1 1.5-2.4 1.5-3.8 0-3.2-2.5-5.7-5.7-5.7C9 2 6.6 4.2 6.3 7c-.2 1.6.3 3.2 1.4 4.3.8.8 1.3 1.5 1.5 2.5" />
+                                    <path d="M9 18h6" />
+                                    <path d="M10 22h4" />
+                                </svg>
+                            </div>
+
+                            <p class="text-lg text-slate-100 leading-relaxed mb-6 font-light">
+                                <span class="text-2xl font-serif text-rose-300 block mb-2">Estimada María
+                                    Fernanda,</span>
+                                Aunque mi mundo en <strong class="text-rose-200 font-normal">Datos e IA</strong> se basa
+                                en lógica, modelos y algoritmos, tu invaluable <strong
+                                    class="text-rose-200 font-normal">guía y acompañamiento</strong> me han enseñado que
+                                las variables más importantes son las del corazón.
+                                <br /><br />
+                                Gracias por ayudarme a entrenar mi propia red neuronal emocional y por escucharme cuando
+                                mi código no compilaba. Admiro profundamente tu capacidad para transformar el caos en
+                                paz.
+                            </p>
+
+                            <div class="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-4">
+                            </div>
+
+                            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mt-4">
+                                <div class="flex gap-3 text-rose-200 text-sm">
+                                    <div class="flex items-center gap-1 hover:text-white transition-colors">
+                                        <!-- Database Icon -->
+                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <ellipse cx="12" cy="5" rx="9" ry="3" />
+                                            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                                            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                                        </svg>
+                                        <span>.</span>
+                                    </div>
+                                    <div class="flex items-center gap-1 hover:text-white transition-colors">
+                                        <!-- Heart Icon -->
+                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path
+                                                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                        </svg>
+                                        <span>.</span>
+                                    </div>
+                                    <div class="flex items-center gap-1 hover:text-white transition-colors">
+                                        <!-- BookOpen Icon -->
+                                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                        </svg>
+                                        <span>.</span>
+                                    </div>
+                                </div>
+                                <span class="text-white/60 text-sm italic">Con gran admiración.</span>
+                            </div>
+                        </div>
+
+                        <button id="btn-close"
+                            class="mt-6 text-sm text-rose-300 hover:text-white transition-colors underline underline-offset-4">
+                            Volver al inicio
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainCard = document.getElementById('main-card');
+            const bgContainer = document.getElementById('background-container');
+            const btnOpen = document.getElementById('btn-open');
+            const btnClose = document.getElementById('btn-close');
+            const dedicationPanel = document.getElementById('dedication-panel');
+            const panelIconsContainer = document.getElementById('panel-icons-container');
+
+            // Reveal Card
+            setTimeout(() => {
+                mainCard.classList.remove('opacity-0', 'translate-y-10');
+                mainCard.classList.add('opacity-100', 'translate-y-0');
+            }, 100);
+
+            // Generate Background Particles
+            for (let i = 0; i < 40; i++) {
+                const div = document.createElement('div');
+                div.className = 'absolute bg-white rounded-full animate-float';
+                div.style.left = `${Math.random() * 100}%`;
+                div.style.top = `${Math.random() * 100}%`;
+                div.style.width = `${Math.random() * 8 + 4}px`;
+                div.style.height = div.style.width;
+                div.style.opacity = Math.random() * 0.5 + 0.1;
+                div.style.animationDuration = `${5 + Math.random() * 10}s`;
+                div.style.animationDelay = `${Math.random() * 5}s`;
+                div.style.animation = `float ${div.style.animationDuration} infinite linear`;
+                bgContainer.appendChild(div);
+            }
+
+            // Generate Background Stars
+            for (let i = 0; i < 20; i++) {
+                const div = document.createElement('div');
+                div.className = 'absolute bg-rose-200 rounded-full animate-twinkle';
+                div.style.left = `${Math.random() * 100}%`;
+                div.style.top = `${Math.random() * 100}%`;
+                div.style.width = '3px';
+                div.style.height = '3px';
+                div.style.animationDuration = `${1 + Math.random() * 2}s`;
+                div.style.animationDelay = `${Math.random() * 2}s`;
+                div.style.animation = `twinkle ${div.style.animationDuration} infinite ease-in-out`;
+                bgContainer.appendChild(div);
+            }
+
+            // Generate Panel Floating Icons - All positioned at edges
+            const iconSvgs = [
+                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z" /><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z" /><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4" /></svg>', // Brain
+                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>', // Heart
+                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /></svg>', // Sparkle
+                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>' // Zap
+            ];
+
+            // All icons positioned at edges/corners with varied sizes
+            const allIconPositions = [
+                // Top edge
+                { icon: 2, left: '5%', top: '2%', size: 28, opacity: '/20', duration: '10s', delay: '0s' },
+                { icon: 3, left: '95%', top: '3%', size: 24, opacity: '/15', duration: '12s', delay: '1s' },
+
+                // Right edge
+                { icon: 1, left: '98%', top: '30%', size: 42, opacity: '/30', duration: '8s', delay: '0.5s' },
+                { icon: 0, left: '97%', top: '70%', size: 38, opacity: '/30', duration: '9s', delay: '2s' },
+
+                // Bottom edge
+                { icon: 2, left: '12%', top: '96%', size: 26, opacity: '/18', duration: '11s', delay: '3s' },
+                { icon: 3, left: '88%', top: '95%', size: 30, opacity: '/20', duration: '10.5s', delay: '1.5s' },
+
+                // Left edge
+                { icon: 0, left: '2%', top: '25%', size: 40, opacity: '/30', duration: '8.5s', delay: '2.5s' },
+                { icon: 1, left: '3%', top: '65%', size: 45, opacity: '/30', duration: '9.5s', delay: '3.5s' },
+
+                // Additional corner positions
+                { icon: 2, left: '15%', top: '5%', size: 22, opacity: '/15', duration: '13s', delay: '4s' },
+                { icon: 3, left: '85%', top: '8%', size: 25, opacity: '/18', duration: '11.5s', delay: '2.5s' },
+                { icon: 1, left: '10%', top: '92%', size: 32, opacity: '/22', duration: '10s', delay: '1s' },
+                { icon: 0, left: '90%', top: '93%', size: 35, opacity: '/25', duration: '9.5s', delay: '3s' }
+            ];
+
+            allIconPositions.forEach(pos => {
+                const div = document.createElement('div');
+                div.className = `absolute text-rose-300${pos.opacity} animate-panel-float pointer-events-none`;
+                div.innerHTML = iconSvgs[pos.icon];
+                div.style.left = pos.left;
+                div.style.top = pos.top;
+                div.style.width = `${pos.size}px`;
+                div.style.height = `${pos.size}px`;
+                div.style.animationDuration = pos.duration;
+                div.style.animationDelay = pos.delay;
+
+                const svg = div.querySelector('svg');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+
+                panelIconsContainer.appendChild(div);
+            });
+
+            // Toggle Modal
+            btnOpen.addEventListener('click', () => {
+                btnOpen.classList.add('hidden');
+                dedicationPanel.classList.remove('hidden');
+            });
+
+            btnClose.addEventListener('click', () => {
+                dedicationPanel.classList.add('hidden');
+                btnOpen.classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>
