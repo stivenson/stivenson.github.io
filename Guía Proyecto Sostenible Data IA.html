@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Machine Learning para Datos de Energía Solar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary: #059669;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --accent: #f59e0b;
+            --code-bg: #f1f5f9;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-main);
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin: 3rem 0 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h4 {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: var(--primary);
+        }
+
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
+
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .emoji {
+            font-size: 1.2em;
+        }
+
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 3rem 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid var(--accent);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .step {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid var(--primary-light);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        .info-box {
+            background: #ecfdf5;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .card {
+                padding: 1.25rem;
+            }
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>☀️ Guía de Machine Learning para Datos de Energía Solar</h1>
+            <p class="subtitle">Frontend Development Guide - Proyecto de Ingeniería Sostenible</p>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <section>
+            <h2>📚 Introducción</h2>
+            <div class="info-box">
+                <p>Esta guía explica cómo los estudiantes de Ingeniería de Datos e IA pueden limpiar y usar los datos de NASA POWER para entrenar modelos de machine learning con <strong>scikit-learn</strong> en Python, definiendo los datos de entrada y salida para hacer dashboards(frontend) que permitan interactuar con esta data y modelos de machine learning desde aplicaciones web.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>🎯 Casos de Uso Principales</h2>
+
+            <div class="card">
+                <h3>1. Predicción de Ahorro de Energía Eléctrica con Paneles Solares</h3>
+                <p>Predecir el ahorro económico en la factura eléctrica al instalar paneles solares, considerando la irradiancia solar, consumo eléctrico, tarifas y características del sistema fotovoltaico.</p>
+
+                <h4>📥 Variables de Entrada (Input)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Rango/Formato</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>DAY_OF_YEAR</strong></td><td>int</td><td>1-365</td><td>Día juliano del año</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>MONTH</strong></td><td>int</td><td>1-12</td><td>Mes del año</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>PSC</strong></td><td>float</td><td>38.6-41.4 kPa</td><td>Presión atmosférica corregida</td><td>NASA POWER Colombia</td></tr>
+                            <tr><td><strong>SIN_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente sinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
+                            <tr><td><strong>COS_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente cosinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
+                            <tr><td><strong>IRRADIANCIA_GLOBAL</strong></td><td>float</td><td>1.8-5.2 kWh/m²/día</td><td>Irradiancia solar global estimada</td><td>Conversión UVA→GHI (factor ×12)</td></tr>
+                            <tr><td><strong>AREA_PANELES</strong></td><td>float</td><td>10-30 m²</td><td>Área total de paneles solares</td><td>Sistemas residenciales Colombia</td></tr>
+                            <tr><td><strong>EFICIENCIA_PANEL</strong></td><td>float</td><td>0.15-0.22 (15-22%)</td><td>Eficiencia de conversión del panel</td><td>Mercado 2024</td></tr>
+                            <tr><td><strong>FACTOR_PERDIDAS</strong></td><td>float</td><td>0.10-0.20 (10-20%)</td><td>Factor de pérdidas del sistema</td><td>Estándar industria fotovoltaica</td></tr>
+                            <tr><td><strong>CONSUMO_DIARIO_PROMEDIO</strong></td><td>float</td><td>5-20 kWh/día</td><td>Consumo eléctrico diario del hogar</td><td>Hogares típicos Colombia</td></tr>
+                            <tr><td><strong>TARIFA_ELECTRICA</strong></td><td>float</td><td>400-800 COP/kWh</td><td>Precio de la electricidad</td><td>Mercado regulado Colombia 2024</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>📤 Variables de Salida (Output)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Rango/Formato</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>AHORRO_DIARIO</strong></td><td>float</td><td>1,000-10,000 COP/día</td><td>Ahorro económico diario predicho</td><td>Cálculo basado en generación × tarifa</td></tr>
+                            <tr><td><strong>AHORRO_MENSUAL</strong></td><td>float</td><td>30,000-300,000 COP/mes</td><td>Ahorro económico mensual</td><td>Proyección ahorro diario × 30 días</td></tr>
+                            <tr><td><strong>AHORRO_ANUAL</strong></td><td>float</td><td>365,000-3,650,000 COP/año</td><td>Ahorro económico anual</td><td>Proyección ahorro diario × 365 días</td></tr>
+                            <tr><td><strong>AUTOSUFICIENCIA_%</strong></td><td>float</td><td>0-100%</td><td>Porcentaje de autosuficiencia energética</td><td>(Energía generada / Consumo) × 100</td></tr>
+                            <tr><td><strong>ROI_ANOS</strong></td><td>float</td><td>5-15 años</td><td>Tiempo de retorno de inversión</td><td>Costo instalación / Ahorro anual</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>💡 Interpretación de Resultados</h4>
+                <p>El modelo permite responder:</p>
+                <ol>
+                    <li><strong>¿Cuánto ahorraré al mes?</strong> → Predicción de ahorro mensual basado en irradiancia histórica</li>
+                    <li><strong>¿En cuánto tiempo recupero mi inversión?</strong> → Cálculo de ROI en años/meses</li>
+                    <li><strong>¿Qué porcentaje de mi consumo cubrirá el sistema?</strong> → Autosuficiencia energética</li>
+                    <li><strong>¿Cuál es el mejor tamaño de sistema para mi caso?</strong> → Simulación de escenarios</li>
+                    <li><strong>¿Cómo varía el ahorro a lo largo del año?</strong> → Predicciones mensuales</li>
+                </ol>
+
+                <h4>📊 Datos Adicionales Necesarios</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dato</th>
+                                <th>Fuente</th>
+                                <th>Propósito</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Consumo eléctrico real</strong></td><td>Facturas de energía</td><td>Personalizar análisis por perfil de usuario</td></tr>
+                            <tr><td><strong>Tarifas diferenciadas</strong></td><td>Empresa de energía</td><td>Considerar tarifas por horario</td></tr>
+                            <tr><td><strong>Temperatura ambiente</strong></td><td>NASA POWER</td><td>Ajustar eficiencia del panel por temperatura</td></tr>
+                            <tr><td><strong>Irradiancia global (GHI)</strong></td><td>NASA POWER</td><td>Mejor estimación de generación</td></tr>
+                            <tr><td><strong>Costos de mantenimiento</strong></td><td>Proveedores</td><td>Análisis de costo total de propiedad</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="card">
+                <h3>2. Predicción de Irradiancia Solar (Regresión)</h3>
+                <p>Predecir la irradiancia UVA futura basada en patrones históricos y variables meteorológicas.</p>
+
+                <h4>📥 Variables de Entrada (Input)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Rango/Formato</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>DAY_OF_YEAR</strong></td><td>int</td><td>1-365</td><td>Día juliano del año</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>MONTH</strong></td><td>int</td><td>1-12</td><td>Mes del año</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>DAY</strong></td><td>int</td><td>1-31</td><td>Día del mes</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>PSC</strong></td><td>float</td><td>38.6-41.4 kPa</td><td>Presión atmosférica corregida</td><td>NASA POWER Colombia</td></tr>
+                            <tr><td><strong>SIN_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente sinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
+                            <tr><td><strong>COS_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente cosinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>📤 Variables de Salida (Output)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Rango/Formato</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>ALLSKY_SFC_UVA</strong></td><td>float</td><td>0.15-0.44 kW-hr/m²/día</td><td>Irradiancia UVA predicha</td><td>NASA POWER Colombia</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="card">
+                <h3>3. Clasificación de Potencial Solar (Clasificación)</h3>
+                <p>Clasificar días según su potencial de generación solar: <span class="badge">Bajo</span> <span class="badge">Medio</span> <span class="badge">Alto</span></p>
+
+                <h4>📥 Variables de Entrada (Input)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Rango/Formato</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>DAY_OF_YEAR</strong></td><td>int</td><td>1-365</td><td>Día juliano del año</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>MONTH</strong></td><td>int</td><td>1-12</td><td>Mes del año</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>DAY</strong></td><td>int</td><td>1-31</td><td>Día del mes</td><td>Estándar calendario gregoriano</td></tr>
+                            <tr><td><strong>PSC</strong></td><td>float</td><td>38.6-41.4 kPa</td><td>Presión atmosférica corregida</td><td>NASA POWER Colombia</td></tr>
+                            <tr><td><strong>SIN_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente sinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
+                            <tr><td><strong>COS_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente cosinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>📤 Variables de Salida (Output)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Valores Posibles</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>CATEGORIA</strong></td><td>str (categórico)</td><td>'Bajo', 'Medio', 'Alto'</td><td>Clasificación del potencial solar del día</td><td>Cuartiles de distribución ALLSKY_SFC_UVA</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="card">
+                <h3>4. Detección de Anomalías</h3>
+                <p>Identificar días con patrones atípicos que podrían indicar errores de sensores o eventos climáticos extremos.</p>
+
+                <h4>📥 Variables de Entrada (Input)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Rango/Formato</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>ALLSKY_SFC_UVA</strong></td><td>float</td><td>0.15-0.44 kW-hr/m²/día</td><td>Irradiancia UVA medida</td><td>NASA POWER Colombia</td></tr>
+                            <tr><td><strong>PSC</strong></td><td>float</td><td>38.6-41.4 kPa</td><td>Presión atmosférica corregida</td><td>NASA POWER Colombia</td></tr>
+                            <tr><td><strong>DAY_OF_YEAR</strong></td><td>int</td><td>1-365</td><td>Día juliano del año (para visualización)</td><td>Estándar calendario gregoriano</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>📤 Variables de Salida (Output)</h4>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Tipo</th>
+                                <th>Valores Posibles</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>ANOMALIA</strong></td><td>int</td><td>-1 (anomalía), 1 (normal)</td><td>Etiqueta de detección de anomalía</td><td>Algoritmo Isolation Forest (scikit-learn)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>🎓 Métricas de Evaluación</h2>
+
+            <div class="card">
+                <h3>Para Regresión</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Métrica</th>
+                                <th>Descripción</th>
+                                <th>Código Scikit-learn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>MAE</strong></td><td>Error absoluto medio</td><td><code>mean_absolute_error(y_true, y_pred)</code></td></tr>
+                            <tr><td><strong>MSE</strong></td><td>Error cuadrático medio</td><td><code>mean_squared_error(y_true, y_pred)</code></td></tr>
+                            <tr><td><strong>RMSE</strong></td><td>Raíz del error cuadrático medio</td><td><code>np.sqrt(mean_squared_error(y_true, y_pred))</code></td></tr>
+                            <tr><td><strong>R²</strong></td><td>Coeficiente de determinación</td><td><code>r2_score(y_true, y_pred)</code></td></tr>
+                            <tr><td><strong>MAPE</strong></td><td>Error porcentual absoluto medio</td><td><code>np.mean(np.abs((y_true - y_pred) / y_true)) * 100</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Para Clasificación</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Métrica</th>
+                                <th>Descripción</th>
+                                <th>Código Scikit-learn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Accuracy</strong></td><td>Precisión global</td><td><code>accuracy_score(y_true, y_pred)</code></td></tr>
+                            <tr><td><strong>Precision</strong></td><td>Precisión por clase</td><td><code>precision_score(y_true, y_pred, average='weighted')</code></td></tr>
+                            <tr><td><strong>Recall</strong></td><td>Sensibilidad</td><td><code>recall_score(y_true, y_pred, average='weighted')</code></td></tr>
+                            <tr><td><strong>F1-Score</strong></td><td>Media armónica de precisión y recall</td><td><code>f1_score(y_true, y_pred, average='weighted')</code></td></tr>
+                            <tr><td><strong>Confusion Matrix</strong></td><td>Matriz de confusión</td><td><code>confusion_matrix(y_true, y_pred)</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>🚀 Pasos de Implementación del Proyecto</h2>
+            <h3>Flujo de Trabajo para Estudiantes</h3>
+
+            <div class="step">
+                <h4>1️⃣ Análisis de Caso de Uso</h4>
+                <p>Cada estudiante:</p>
+                <ul>
+                    <li>Selecciona uno de los 4 casos de uso disponibles arriba.</li>
+                    <li>Analiza a profundidad las <strong>variables de entrada</strong> (inputs) de su caso</li>
+                    <li>Estudia las <strong>variables de salida</strong> (outputs) esperadas</li>
+                    <li>Comprende qué significa cada campo y para qué sirve en el contexto del problema</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h4>2️⃣ Diseño de Interfaz</h4>
+                <p>Diseñar una interfaz de usuario que permita:</p>
+                <ul>
+                    <li><strong>Ingresar</strong> los inputs del caso de uso seleccionado mediante formularios</li>
+                    <li><strong>Visualizar</strong> los outputs generados por el modelo de forma clara</li>
+                </ul>
+                <p>Considerar elementos visuales como:</p>
+                <ul>
+                    <li>Formularios intuitivos para captura de datos</li>
+                    <li>Gráficos y tablas para mostrar resultados</li>
+                    <li>Mapas (si aplica para ubicación geográfica)</li>
+                    <li>Indicadores visuales (medidores, barras de progreso, etc.)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h4>3️⃣ Generación de Aplicación Base con IA</h4>
+                <p>Utilizar <strong><a href="https://aistudio.google.com/apps" target="_blank">Google AI Studio - Apps</a></strong> para:</p>
+                <ul>
+                    <li>Generar la aplicación base mediante prompts bien estructurados</li>
+                    <li>Integrar componentes necesarios según el caso de uso:
+                        <ul>
+                            <li>Formularios HTML</li>
+                            <li>Google Maps (para visualización geográfica)</li>
+                            <li>Librerías de gráficos (Chart.js, Plotly, etc.)</li>
+                            <li>Otros servicios que consideren necesarios para inputs u outputs</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <p><strong>Ejemplo de prompt:</strong></p>
+                <pre><code>Crea una aplicación web para predecir ahorro de energía con paneles solares.
+Necesito un formulario con los siguientes campos: [lista de inputs].
+Los resultados deben mostrarse en tarjetas visuales con gráficos de ROI y ahorro mensual.
+Usa un diseño moderno y responsive.</code></pre>
+            </div>
+
+            <div class="step">
+                <h4>4️⃣ Iteración y Ajustes Visuales</h4>
+                <p>Refinar la interfaz mediante prompts adicionales en Google AI Studio - App</p>
+                <p>Mejorar:</p>
+                <ul>
+                    <li>Paleta de colores</li>
+                    <li>Espaciado y distribución</li>
+                    <li>Tipografía y legibilidad</li>
+                    <li>Responsividad para diferentes dispositivos</li>
+                    <li>Experiencia de usuario (UX)</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h4>5️⃣ Descarga y Configuración Local</h4>
+                <ul>
+                    <li>Descargar el código generado desde Google AI Studio</li>
+                    <li>Abrir el proyecto con:
+                        <ul>
+                            <li><strong>Visual Studio Code</strong> (VSCode), o</li>
+                            <li><strong>Google AntiGravity</strong></li>
+                        </ul>
+                    </li>
+                    <li>Revisar y entender la estructura del código generado</li>
+                </ul>
+            </div>
+
+            <div class="step">
+                <h4>6️⃣ Integración con Backend</h4>
+                <ul>
+                    <li>Conectar el frontend con el backend que provee los modelos ML</li>
+                    <li>Implementar peticiones HTTP para:
+                        <ul>
+                            <li>Enviar los inputs del usuario al servidor</li>
+                            <li>Recibir las predicciones (outputs) del modelo</li>
+                        </ul>
+                    </li>
+                    <li>Configurar endpoints y manejo de respuestas JSON</li>
+                    <li>Implementar manejo de errores y estados de carga</li>
+                </ul>
+
+                <p><strong>Ejemplo de integración:</strong></p>
+                <pre><code>// Enviar datos al backend
+const response = await fetch('http://backend-url/predict', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(inputData)
+});
+const predictions = await response.json();</code></pre>
+            </div>
+
+            <div class="step">
+                <h4>7️⃣ Pruebas y Validación</h4>
+                <p>Realizar <strong>pruebas manuales</strong> de:</p>
+                <ul>
+                    <li>Conectividad con el backend</li>
+                    <li>Envío correcto de datos</li>
+                    <li>Recepción y visualización de resultados</li>
+                    <li>Manejo de casos extremos y errores</li>
+                    <li>Usabilidad general de la interfaz</li>
+                </ul>
+            </div>
+
+            <div class="warning">
+                <h4>⚠️ Consideraciones Importantes</h4>
+                <ul>
+                    <li>💡 <strong>Flexibilidad</strong>: El proyecto está abierto a mejoras y aportes creativos</li>
+                    <li>🔧 <strong>Simplificación</strong>: Buscar siempre la forma más simple y efectiva de resolver problemas</li>
+                    <li>🤝 <strong>Colaboración</strong>: Compartir ideas y soluciones con compañeros</li>
+                    <li>📚 <strong>Documentación</strong>: Documentar decisiones de diseño y cambios realizados</li>
+                    <li>🎨 <strong>Creatividad</strong>: Experimentar con diferentes enfoques visuales y funcionales</li>
+                </ul>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>💡 Aplicaciones Prácticas</h2>
+            <div class="card">
+                <ol>
+                    <li><strong>Dimensionamiento de Sistemas Fotovoltaicos</strong>: Estimar la capacidad de paneles solares necesaria</li>
+                    <li><strong>Planificación de Mantenimiento</strong>: Predecir períodos de baja irradiancia</li>
+                    <li><strong>Optimización de Almacenamiento</strong>: Determinar capacidad de baterías necesaria</li>
+                    <li><strong>Evaluación de Viabilidad</strong>: Análisis costo-beneficio de proyectos solares</li>
+                    <li><strong>Alertas Tempranas</strong>: Detectar condiciones climáticas adversas</li>
+                </ol>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>📚 Recursos Adicionales</h2>
+            <div class="card">
+                <ul>
+                    <li><strong>Documentación Scikit-learn</strong>: <a href="https://scikit-learn.org/" target="_blank">https://scikit-learn.org/</a></li>
+                    <li><strong>NASA POWER Docs</strong>: <a href="https://power.larc.nasa.gov/docs/" target="_blank">https://power.larc.nasa.gov/docs/</a></li>
+                    <li><strong>Curso ML de Google</strong>: <a href="https://developers.google.com/machine-learning" target="_blank">https://developers.google.com/machine-learning</a></li>
+                    <li><strong>Kaggle Solar Energy</strong>: <a href="https://www.kaggle.com/datasets?search=solar+energy" target="_blank">https://www.kaggle.com/datasets?search=solar+energy</a></li>
+                </ul>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p><strong>Fecha de creación</strong>: 2025-11-21</p>
+        <p><strong>Autor</strong>: Guía para Frontends del proyecto.</p>
+        <p><strong>Versión</strong>: 1.0</p>
+    </footer>
+
+</body>
+</html>
