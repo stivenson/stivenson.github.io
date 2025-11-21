@@ -5,6 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Directorio de Chats y Dashboards de LLMs</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Directorio completo de chats, dashboards y herramientas de Inteligencia Artificial (LLMs). Encuentra las mejores alternativas a ChatGPT, modelos open-source y asistentes virtuales.">
+    <meta name="keywords"
+        content="LLM, Inteligencia Artificial, Chatbots, Directorio AI, ChatGPT, Claude, Gemini, Open Source, Modelos de Lenguaje">
+    <meta name="author" content="Stivenson">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stivenson.github.io/directorio_chats_llm/">
+    <meta property="og:title" content="Directorio de Chats y Dashboards de LLMs">
+    <meta property="og:description"
+        content="Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje.">
+    <meta property="og:image" content="https://stivenson.github.io/directorio_chats_llm/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://stivenson.github.io/directorio_chats_llm/">
+    <meta property="twitter:title" content="Directorio de Chats y Dashboards de LLMs">
+    <meta property="twitter:description"
+        content="Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje.">
+    <meta property="twitter:image" content="https://stivenson.github.io/directorio_chats_llm/og-image.png">
+
+    <link rel="canonical" href="https://stivenson.github.io/directorio_chats_llm/">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Directorio de Chats y Dashboards de LLMs",
+      "description": "Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje",
+      "url": "https://stivenson.github.io/directorio_chats_llm/",
+      "author": {
+        "@type": "Person",
+        "name": "Stivenson"
+      }
+    }
+    </script>
+
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -898,6 +938,36 @@
                 column-count: 1;
             }
         }
+
+        /* Accessibility Improvements */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #667eea;
+            color: white;
+            padding: 8px;
+            z-index: 100000;
+            transition: top 0.3s;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 
@@ -917,6 +987,8 @@
         </div>
     </div>
 
+    <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+
     <div class="container">
         <header>
             <div class="header-badge">✨ Inteligencia Artificial</div>
@@ -925,9 +997,11 @@
                 herramientas de modelos de lenguaje</p>
         </header>
 
-        <div class="masonry" id="masonryContainer">
-            <!-- Los paneles se generarán dinámicamente con JavaScript -->
-        </div>
+        <main id="main-content">
+            <div class="masonry" id="masonryContainer">
+                <!-- Los paneles se generarán dinámicamente con JavaScript -->
+            </div>
+        </main>
 
         <!-- Footer -->
         <footer>
@@ -963,9 +1037,12 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-container">
             <div class="modal-header">
+                <h2 id="modalTitle" class="sr-only"
+                    style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">
+                    Vista previa del sitio</h2>
                 <button class="modal-close" id="modalClose" aria-label="Cerrar modal">×</button>
                 <button class="modal-open-tab" id="modalOpenTab" aria-label="Abrir en nueva pestaña">Abrir en
                     pestaña</button>
@@ -1396,7 +1473,7 @@
                     ${badgesHTML}
                 </div>
                 <div class="card-footer">
-                    <a href="#" data-service-id="${index}" data-url="${service.url}" data-open-in-new-tab="${service.openInNewTab}" class="card-link">
+                    <a href="#" data-service-id="${index}" data-url="${service.url}" data-open-in-new-tab="${service.openInNewTab}" class="card-link" aria-label="Visitar ${service.name}">
                         <span class="normal-text">Visitar ${service.name} →</span>
                         <span class="loading-text">Cargando...</span>
                     </a>
@@ -1417,6 +1494,29 @@
 
         // Store current modal URL
         let currentModalUrl = '';
+        // Store the current link element that opened the modal
+        let currentLoadingLink = null;
+
+        // Focus Trap Logic
+        function handleTabKey(e) {
+            if (e.key === 'Tab') {
+                const focusableElements = modalOverlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (e.shiftKey) { // Shift + Tab
+                    if (document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    }
+                } else { // Tab
+                    if (document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            }
+        }
 
         // Function to open modal
         async function openModal(url, linkElement = null) {
@@ -1452,13 +1552,17 @@
             modalOverlay.classList.add('active');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
 
+            // Accessibility: Set focus to close button and trap focus
+            modalClose.focus();
+            document.addEventListener('keydown', handleTabKey);
+
             // Set iframe source
             modalIframe.src = url;
 
             // Track if we've already opened in new tab to prevent duplicate opens
             let openedInNewTab = false;
 
-            // Timeout: If modal is still loading after 5 seconds, open in new tab
+            // Timeout: If modal is still loading after 7 seconds, open in new tab
             const loadingTimeout = setTimeout(() => {
                 // Only act if modal is still open and we haven't already opened in new tab
                 if (modalOverlay.classList.contains('active') && !openedInNewTab) {
@@ -1560,7 +1664,7 @@
 
                 if (isBlocked && !openedInNewTab) {
                     openedInNewTab = true;
-                    clearTimeout(loadingTimeout); // Clear the 5-second timeout
+                    clearTimeout(loadingTimeout); // Clear the 7-second timeout
                     restoreButtonState(linkElement);
                     closeModal();
                     window.open(url, '_blank', 'noopener,noreferrer');
@@ -1654,7 +1758,7 @@
 
                 if (shouldOpenInNewTab && !openedInNewTab) {
                     openedInNewTab = true;
-                    clearTimeout(loadingTimeout); // Clear the 5-second timeout
+                    clearTimeout(loadingTimeout); // Clear the 7-second timeout
                     restoreButtonState(linkElement);
                     closeModal();
                     window.open(url, '_blank', 'noopener,noreferrer');
@@ -1667,7 +1771,7 @@
             // Handle iframe load event
             const loadHandler = () => {
                 clearTimeout(immediateCheck);
-                clearTimeout(loadingTimeout); // Clear the 5-second timeout since iframe loaded
+                clearTimeout(loadingTimeout); // Clear the 7-second timeout since iframe loaded
                 iframeLoadHandler();
 
                 // Restore button state when iframe loads successfully
@@ -1683,7 +1787,7 @@
                 if (!openedInNewTab && modalOverlay.classList.contains('active')) {
                     openedInNewTab = true;
                     clearTimeout(immediateCheck);
-                    clearTimeout(loadingTimeout); // Clear the 5-second timeout
+                    clearTimeout(loadingTimeout); // Clear the 7-second timeout
                     restoreButtonState(linkElement);
                     closeModal();
                     window.open(url, '_blank', 'noopener,noreferrer');
@@ -1693,9 +1797,6 @@
             modalIframe.addEventListener('error', iframeErrorHandler, { once: true });
         }
 
-        // Store the current link element that opened the modal
-        let currentLoadingLink = null;
-
         // Function to close modal
         function closeModal() {
             modalOverlay.classList.remove('active');
@@ -1703,9 +1804,13 @@
             modalLoading.classList.remove('hidden'); // Show loading for next time
             document.body.style.overflow = ''; // Restore scrolling
 
-            // Restore button state
+            // Accessibility: Remove focus trap
+            document.removeEventListener('keydown', handleTabKey);
+
+            // Restore button state and focus
             if (currentLoadingLink) {
                 restoreButtonState(currentLoadingLink);
+                currentLoadingLink.focus(); // Return focus to the link that opened the modal
                 currentLoadingLink = null;
             }
         }
@@ -1806,8 +1911,6 @@
                     }, 500);
                 });
             });
-
-            // GeoContador script handles visitor counter automatically
         });
 
         // Close modal when clicking the close button
@@ -1833,9 +1936,6 @@
                 closeModal();
             }
         });
-
-        // GeoContador is now handling the visitor counter
-        // No need for updateVisitorCounter function
 
         // Función para ocultar widgets de GeoContador fuera del contenedor
         function hideExternalGeoContadorWidgets() {
