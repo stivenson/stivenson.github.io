@@ -295,10 +295,17 @@
             <h2>🎯 Casos de Uso Principales</h2>
 
             <div class="card">
-                <h3>1. Predicción de Ahorro de Energía Eléctrica con Paneles Solares</h3>
-                <p>Predecir el ahorro económico en la factura eléctrica al instalar paneles solares, considerando la irradiancia solar, consumo eléctrico, tarifas y características del sistema fotovoltaico.</p>
+                <h3>1. Simulación de Rendimiento Instantáneo y Ahorro de CO₂ - Colector Semiparabólico</h3>
+                
+                <div class="warning">
+                    <p><strong>Nota:</strong> Este caso de uso ha sido modificado para enfocarse en la simulación de un colector solar semiparabólico (CPC) en Cúcuta.</p>
+                </div>
+
+                <p>Permitir al usuario seleccionar un momento del día (basado en cartas solares) para visualizar cómo la radiación disponible se convierte en energía térmica y ahorro de emisiones de CO₂, simulando el comportamiento de un colector semiparabólico real.</p>
 
                 <h4>📥 Variables de Entrada (Input)</h4>
+                
+                <h5>A. Datos del Usuario (UI)</h5>
                 <div class="table-wrapper">
                     <table>
                         <thead>
@@ -311,20 +318,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td><strong>DAY_OF_YEAR</strong></td><td>int</td><td>1-365</td><td>Día juliano del año</td><td>Estándar calendario gregoriano</td></tr>
-                            <tr><td><strong>MONTH</strong></td><td>int</td><td>1-12</td><td>Mes del año</td><td>Estándar calendario gregoriano</td></tr>
-                            <tr><td><strong>PSC</strong></td><td>float</td><td>38.6-41.4 kPa</td><td>Presión atmosférica corregida</td><td>NASA POWER Colombia</td></tr>
-                            <tr><td><strong>SIN_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente sinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
-                            <tr><td><strong>COS_DAY</strong></td><td>float</td><td>-1.0 a 1.0</td><td>Componente cosinusoidal de estacionalidad</td><td>Función trigonométrica</td></tr>
-                            <tr><td><strong>IRRADIANCIA_GLOBAL</strong></td><td>float</td><td>1.8-5.2 kWh/m²/día</td><td>Irradiancia solar global estimada</td><td>Conversión UVA→GHI (factor ×12)</td></tr>
-                            <tr><td><strong>AREA_PANELES</strong></td><td>float</td><td>10-30 m²</td><td>Área total de paneles solares</td><td>Sistemas residenciales Colombia</td></tr>
-                            <tr><td><strong>EFICIENCIA_PANEL</strong></td><td>float</td><td>0.15-0.22 (15-22%)</td><td>Eficiencia de conversión del panel</td><td>Mercado 2024</td></tr>
-                            <tr><td><strong>FACTOR_PERDIDAS</strong></td><td>float</td><td>0.10-0.20 (10-20%)</td><td>Factor de pérdidas del sistema</td><td>Estándar industria fotovoltaica</td></tr>
-                            <tr><td><strong>CONSUMO_DIARIO_PROMEDIO</strong></td><td>float</td><td>5-20 kWh/día</td><td>Consumo eléctrico diario del hogar</td><td>Hogares típicos Colombia</td></tr>
-                            <tr><td><strong>TARIFA_ELECTRICA</strong></td><td>float</td><td>400-800 COP/kWh</td><td>Precio de la electricidad</td><td>Mercado regulado Colombia 2024</td></tr>
+                            <tr><td><strong>FECHA_CARTA</strong></td><td>Date</td><td>YYYY-MM-DD</td><td>Fecha para seleccionar carta solar</td><td>Usuario (Default: 2025-03-20)</td></tr>
+                            <tr><td><strong>HORA_SELECCIONADA</strong></td><td>Time</td><td>HH:MM</td><td>Hora del día para simulación instantánea</td><td>Slider 06:00-18:00</td></tr>
+                            <tr><td><strong>AREA_COLECTOR</strong></td><td>Float</td><td>m²</td><td>Área de apertura del colector</td><td>Usuario (Default: 2.0 m²)</td></tr>
+                            <tr><td><strong>TEMP_AMBIENTE</strong></td><td>Float</td><td>°C</td><td>Temperatura ambiente promedio</td><td>Usuario (Default: 30°C)</td></tr>
                         </tbody>
                     </table>
                 </div>
+
+                <h5>B. Datos de Contexto (Constantes)</h5>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Valor</th>
+                                <th>Descripción</th>
+                                <th>Fuente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>UBICACION_LAT</strong></td><td>7.88° N</td><td>Latitud de Cúcuta</td><td>Carta solar / NASA POWER</td></tr>
+                            <tr><td><strong>RADIACION_DIARIA</strong></td><td>4.50 kWh/m²/día</td><td>Promedio diario</td><td>Mapa Emergente</td></tr>
+                            <tr><td><strong>FACTOR_EMISION</strong></td><td>0.126 kgCO₂/kWh</td><td>Factor red eléctrica Colombia</td><td>XM/UPME</td></tr>
+                            <tr><td><strong>EFICIENCIA_OPTICA</strong></td><td>0.75</td><td>Eficiencia geométrica CPC</td><td>Literatura CPC</td></tr>
+                            <tr><td><strong>EFICIENCIA_TERMICA</strong></td><td>0.60</td><td>Eficiencia de transferencia térmica</td><td>Ensayos CPC</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h5>C. Datos de Carta Solar (archivos <code>Cartas_Solares/*.json</code>)</h5>
+                <ul>
+                    <li><strong>ALTITUD_SOLAR (α)</strong>: Ángulo de elevación del sol para la hora seleccionada.</li>
+                    <li><strong>AZIMUT_SOLAR (A)</strong>: Ángulo de orientación del sol para la hora seleccionada.</li>
+                </ul>
 
                 <h4>📤 Variables de Salida (Output)</h4>
                 <div class="table-wrapper">
@@ -333,29 +360,52 @@
                             <tr>
                                 <th>Variable</th>
                                 <th>Tipo</th>
-                                <th>Rango/Formato</th>
+                                <th>Unidad</th>
                                 <th>Descripción</th>
-                                <th>Fuente</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td><strong>AHORRO_DIARIO</strong></td><td>float</td><td>1,000-10,000 COP/día</td><td>Ahorro económico diario predicho</td><td>Cálculo basado en generación × tarifa</td></tr>
-                            <tr><td><strong>AHORRO_MENSUAL</strong></td><td>float</td><td>30,000-300,000 COP/mes</td><td>Ahorro económico mensual</td><td>Proyección ahorro diario × 30 días</td></tr>
-                            <tr><td><strong>AHORRO_ANUAL</strong></td><td>float</td><td>365,000-3,650,000 COP/año</td><td>Ahorro económico anual</td><td>Proyección ahorro diario × 365 días</td></tr>
-                            <tr><td><strong>AUTOSUFICIENCIA_%</strong></td><td>float</td><td>0-100%</td><td>Porcentaje de autosuficiencia energética</td><td>(Energía generada / Consumo) × 100</td></tr>
-                            <tr><td><strong>ROI_ANOS</strong></td><td>float</td><td>5-15 años</td><td>Tiempo de retorno de inversión</td><td>Costo instalación / Ahorro anual</td></tr>
+                            <tr><td><strong>POTENCIA_TERMICA</strong></td><td>Float</td><td>kW</td><td>Potencia térmica instantánea generada</td></tr>
+                            <tr><td><strong>AHORRO_CO2_INSTANTANEO</strong></td><td>Float</td><td>gCO₂/h</td><td>Ahorro de emisiones de CO₂ por hora</td></tr>
+                            <tr><td><strong>TEMP_FLUIDO_SALIDA</strong></td><td>Float</td><td>°C</td><td>Temperatura estimada del fluido de salida</td></tr>
+                            <tr><td><strong>EFICIENCIA_ACTUAL</strong></td><td>Float</td><td>%</td><td>Eficiencia global del sistema (η_opt × η_term)</td></tr>
+                            <tr><td><strong>POSICION_SOLAR</strong></td><td>Object</td><td>Grados</td><td>Altitud y azimut solar para visualización</td></tr>
                         </tbody>
                     </table>
                 </div>
 
+                <h4>⚙️ Fórmulas Principales</h4>
+                <p>El sistema utiliza las siguientes ecuaciones físicas:</p>
+                <ol>
+                    <li><strong>Irradiancia instantánea (I_t)</strong>: Distribución sinusoidal basada en la radiación diaria.<br><code>I_t = I_max × sin(π × (t - t_am) / (t_pm - t_am))</code></li>
+                    <li><strong>Ángulo de incidencia (θ)</strong>: Geometría solar sobre el colector.<br><code>cos(θ) = cos(α) cos(A - A_colector) sin(β) + sin(α) cos(β)</code></li>
+                    <li><strong>Energía incidente (E_in)</strong>: Considera radiación directa, difusa y modificador de ángulo (IAM).<br><code>E_in = [I_dir × IAM(θ) + I_dif × f_CPC] × Area</code></li>
+                    <li><strong>Potencia útil (Q_util)</strong>: Energía térmica aprovechable.<br><code>Q_util = E_in × η_optica × η_termica</code></li>
+                    <li><strong>Ahorro CO₂</strong>: Emisiones evitadas por generación térmica.<br><code>Ah_CO2 (g/h) = Q_util (kW) × Factor_emision × 1000</code></li>
+                </ol>
+
+                <h4>🗺️ Contexto Geográfico: Cúcuta</h4>
+                <ul>
+                    <li><strong>Ubicación</strong>: Cúcuta, Norte de Santander (7.88°N, -72.50°W).</li>
+                    <li><strong>Radiación Base</strong>: 4.50 kWh/m²/día (Dato del Mapa Solar Emergente).</li>
+                    <li><strong>Integración Cartas Solares</strong>: El sistema busca archivos en la carpeta <code>Cartas_Solares/</code> con el formato <code>carta_solar_YYYYMMDD.json</code>.</li>
+                </ul>
+
+                <h4>🔄 Transición a Sensores Reales (Futuro)</h4>
+                <p>El dashboard está diseñado para operar en dos modos:</p>
+                <ol>
+                    <li><strong>Modo Simulación (Actual)</strong>: Usa cartas solares y radiación base histórica.</li>
+                    <li><strong>Modo Real (Futuro)</strong>: Sustituye los inputs simulados por telemetría en tiempo real vía MQTT/HTTP.</li>
+                </ol>
+
                 <h4>💡 Interpretación de Resultados</h4>
                 <p>El modelo permite responder:</p>
                 <ol>
-                    <li><strong>¿Cuánto ahorraré al mes?</strong> → Predicción de ahorro mensual basado en irradiancia histórica</li>
-                    <li><strong>¿En cuánto tiempo recupero mi inversión?</strong> → Cálculo de ROI en años/meses</li>
-                    <li><strong>¿Qué porcentaje de mi consumo cubrirá el sistema?</strong> → Autosuficiencia energética</li>
-                    <li><strong>¿Cuál es el mejor tamaño de sistema para mi caso?</strong> → Simulación de escenarios</li>
-                    <li><strong>¿Cómo varía el ahorro a lo largo del año?</strong> → Predicciones mensuales</li>
+                    <li><strong>¿Cuánta potencia térmica genera el colector en este momento?</strong> → Potencia instantánea basada en posición solar.</li>
+                    <li><strong>¿Cuánto CO₂ estoy ahorrando por hora?</strong> → Ahorro instantáneo de emisiones.</li>
+                    <li><strong>¿Qué temperatura alcanzará el fluido?</strong> → Temperatura estimada de salida.</li>
+                    <li><strong>¿Cómo varía el rendimiento a lo largo del día?</strong> → Simulación por horas.</li>
+                    <li><strong>¿Cuál es la mejor hora del día para máxima eficiencia?</strong> → Análisis de rendimiento horario.</li>
                 </ol>
 
                 <h4>📊 Datos Adicionales Necesarios</h4>
@@ -369,11 +419,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td><strong>Consumo eléctrico real</strong></td><td>Facturas de energía</td><td>Personalizar análisis por perfil de usuario</td></tr>
-                            <tr><td><strong>Tarifas diferenciadas</strong></td><td>Empresa de energía</td><td>Considerar tarifas por horario</td></tr>
-                            <tr><td><strong>Temperatura ambiente</strong></td><td>NASA POWER</td><td>Ajustar eficiencia del panel por temperatura</td></tr>
-                            <tr><td><strong>Irradiancia global (GHI)</strong></td><td>NASA POWER</td><td>Mejor estimación de generación</td></tr>
-                            <tr><td><strong>Costos de mantenimiento</strong></td><td>Proveedores</td><td>Análisis de costo total de propiedad</td></tr>
+                            <tr><td><strong>Cartas Solares</strong></td><td>Generador Python</td><td>Obtener posición solar precisa para Cúcuta</td></tr>
+                            <tr><td><strong>IAM (Incidence Angle Modifier)</strong></td><td>Fabricante/Literatura</td><td>Ajustar pérdidas por reflexión en ángulos bajos</td></tr>
+                            <tr><td><strong>Perfil de Demanda</strong></td><td>Usuario</td><td>Comparar generación vs necesidad de calor</td></tr>
                         </tbody>
                     </table>
                 </div>
