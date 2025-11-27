@@ -424,7 +424,7 @@ const llmServices = [
         name: "Mobirise AI Website Builder",
         provider: "Mobirise",
         description: "Constructor de sitios web con IA para descubrir herramientas y sitios web de IA.",
-        url: "https://ai.mobirise.com/sites/solutions-with-ai-directory-p_LVh5-FKwVGUVvJiFiXV.html",
+        url: "https://ai.mobirise.com/",
         badges: [],
         openInNewTab: true
     },
