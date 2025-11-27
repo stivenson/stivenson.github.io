@@ -427,10 +427,82 @@ const llmServices = [
         url: "https://ai.mobirise.com/sites/solutions-with-ai-directory-p_LVh5-FKwVGUVvJiFiXV.html",
         badges: [],
         openInNewTab: true
+    },
+    {
+        name: "Smart-2U",
+        provider: "Smart-2U",
+        description: "Plataforma ECP integral que combina marketing digital, automatización de ventas, gestión empresarial y herramientas de IA. Optimiza tu negocio con SIAP, Smart-Design, Store-2U y más.",
+        url: "https://smart-2u.com/",
+        badges: ["empresarial", "chat"],
+        openInNewTab: true
+    },
+    {
+        name: "Carson AI Agency",
+        provider: "Carson Agency",
+        description: "Potencia tu marca con IA para marketing y SEO experto en México. Somos tu agencia líder en estrategias digitales y resultados.",
+        url: "https://carsonagency.com.mx/",
+        badges: ["empresarial", "optimizacion"],
+        openInNewTab: true
+    },
+    {
+        name: "TopMediai Generador de Videos con IA",
+        provider: "TopMediai",
+        description: "Crea videos a partir de texto o imágenes con IA. Rápido, sencillo y creativo.",
+        url: "https://es.topmediai.com/ai-video-generator/",
+        badges: ["video", "texto", "imagenes", "imagen", "ia", "text-to-image", "image-to-image"],
+        openInNewTab: true
+    },
+    {
+        name: "Anima",
+        provider: "Anima App",
+        description: "Anima es una plataforma de IA centrada en el diseño que une la creatividad y el código. Genera aplicaciones reales, listas para producción, desde Figma, URLs o indicaciones.",
+        url: "https://www.animaapp.com/",
+        badges: ["diseño", "codigo", "automatizacion", "ia"],
+        openInNewTab: true
+    },
+    {
+        name: "Generador de Video con IA Gratis",
+        provider: "YesChat.ai",
+
+        description: "Explora el generador de video con IA gratuito de YesChat, con modelos como Grok Imagine, Veo 3.1 y Hailuo 2.3. Crea videos desde texto o imágenes y prueba una amplia gama de efectos de video con IA – todo en un solo lugar.",
+        url: "https://www.yeschat.ai/es/features/video",
+        badges: ["video", "texto", "imagenes", "text-to-image", "image-to-image"],
+        openInNewTab: true
+    },
+    {
+        name: "iStock",
+        provider: "Getty Images",
+        description: "Plataforma de vídeos e imágenes de stock. Incluye funcionalidades de IA generativa.",
+        url: "https://www.istockphoto.com/es/vídeos/industria-aeroespacial",
+        badges: ["imagenes", "video", "ia"],
+        openInNewTab: true
+    },
+    {
+        name: "1min.AI",
+        provider: "Dang.ai",
+        description: "Aplicación de IA todo en uno que ofrece una variedad de funciones de IA impulsadas por varios modelos de IA.",
+        url: "https://app.1min.ai/?aff=m8eB5",
+        badges: ["imagenes", "imagen", "ia"],
+        openInNewTab: true
+    },
+    {
+        name: "Stability AI",
+        provider: "Vibe Coding",
+        description: "Plataforma de IA generativa que ofrece modelos avanzados para la creación de imágenes, videos y audio.",
+        url: "https://www.vibecodingherramientas.com/herramientas/stability-ai/",
+        badges: ["imagenes", "imagen", "video", "audio", "ia"],
+        openInNewTab: true
+    },
+    {
+        name: "Agent AI",
+        provider: "Agent AI",
+        description: "Agent AI es una plataforma de IA generativa que ofrece modelos avanzados para la creación de imágenes, videos y audio.",
+        url: "https://agent.ai/",
+        badges: ["texto", "imagenes", "imagen", "multimodal"],
+        openInNewTab: true
     }
 ];
 
-// Function to generate panels dynamically
 function generatePanels() {
     const container = document.getElementById('masonryContainer');
     container.innerHTML = ''; // Clear container
