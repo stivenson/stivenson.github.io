@@ -557,14 +557,6 @@ const llmServices = [
         openInNewTab: true
     },
     {
-        name: "Same.new",
-        provider: "Same.dev",
-        description: "Genera aplicaciones full-stack Next.js + TypeScript con backend y base de datos preconfigurados. Se integra con Supabase y Clerk.",
-        url: "https://same.dev/",
-        badges: ["codigo", "herramienta", "ia", "web-builder"],
-        openInNewTab: true
-    },
-    {
         name: "Rocket.new",
         provider: "Rocket",
         description: "Construye aplicaciones web y móviles a partir de prompts o diseños de Figma. Soporta dashboards y landing pages con exportación de código.",
