@@ -463,7 +463,6 @@ const llmServices = [
     {
         name: "Generador de Video con IA Gratis",
         provider: "YesChat.ai",
-
         description: "Explora el generador de video con IA gratuito de YesChat, con modelos como Grok Imagine, Veo 3.1 y Hailuo 2.3. Crea videos desde texto o imágenes y prueba una amplia gama de efectos de video con IA – todo en un solo lugar.",
         url: "https://www.yeschat.ai/es/features/video",
         badges: ["video", "texto", "imagenes", "text-to-image", "image-to-image"],
@@ -499,6 +498,102 @@ const llmServices = [
         description: "Agent AI es una plataforma de IA generativa que ofrece modelos avanzados para la creación de imágenes, videos y audio.",
         url: "https://agent.ai/",
         badges: ["texto", "imagenes", "imagen", "multimodal"],
+        openInNewTab: true
+    },
+    {
+        name: "Code Wiki",
+        provider: "Google",
+        description: "Plataforma impulsada por IA de Google que genera y actualiza automáticamente la documentación de repositorios de código. Utiliza Gemini para mantener la documentación sincronizada con los cambios en el código.",
+        url: "https://codewiki.google/",
+        badges: ["documentos", "codigo", "ia", "automatizacion"],
+        openInNewTab: true
+    },
+    {
+        name: "Meku",
+        provider: "Meku",
+        description: "Constructor de aplicaciones web con IA para desarrolladores. Genera código React + Tailwind listo para producción a partir de prompts, con opción de exportación y despliegue.",
+        url: "https://meku.dev/",
+        badges: ["codigo", "herramienta", "ia", "web-builder"],
+        openInNewTab: true
+    },
+    {
+        name: "Bolt.new",
+        provider: "StackBlitz",
+        description: "Entorno de desarrollo en el navegador impulsado por IA. Genera y ejecuta aplicaciones full-stack directamente en el navegador sin configuración local.",
+        url: "https://bolt.new/",
+        badges: ["codigo", "herramienta", "ia", "web-builder", "playground"],
+        openInNewTab: true
+    },
+    {
+        name: "Replit",
+        provider: "Replit",
+        description: "IDE en la nube con agente de IA para construir, ejecutar y desplegar aplicaciones. Soporta múltiples lenguajes y colaboración en tiempo real.",
+        url: "https://replit.com/",
+        badges: ["codigo", "herramienta", "ia", "ide", "playground"],
+        openInNewTab: true
+    },
+    {
+        name: "GitHub Spark",
+        provider: "GitHub",
+        description: "Constructor de micro-aplicaciones impulsado por Copilot. Convierte prompts en 'Sparks' full-stack con vista previa en vivo y despliegue instantáneo.",
+        url: "https://github.com/spark",
+        badges: ["codigo", "herramienta", "ia", "web-builder"],
+        openInNewTab: true
+    },
+    {
+        name: "Trickle.so",
+        provider: "Trickle",
+        description: "Constructor con IA que combina generación por prompts con un editor visual 'Magic Canvas'. Ideal para crear herramientas y formularios rápidamente.",
+        url: "https://trickle.so/",
+        badges: ["codigo", "herramienta", "ia", "web-builder"],
+        openInNewTab: true
+    },
+    {
+        name: "Capacity.so",
+        provider: "Capacity",
+        description: "Genera aplicaciones Next.js + Tailwind + TypeScript a partir de prompts. Código limpio y listo para producción con autenticación y lógica API integrada.",
+        url: "https://capacity.so/",
+        badges: ["codigo", "herramienta", "ia", "web-builder"],
+        openInNewTab: true
+    },
+    {
+        name: "Same.new",
+        provider: "Same.dev",
+        description: "Genera aplicaciones full-stack Next.js + TypeScript con backend y base de datos preconfigurados. Se integra con Supabase y Clerk.",
+        url: "https://same.dev/",
+        badges: ["codigo", "herramienta", "ia", "web-builder"],
+        openInNewTab: true
+    },
+    {
+        name: "Rocket.new",
+        provider: "Rocket",
+        description: "Construye aplicaciones web y móviles a partir de prompts o diseños de Figma. Soporta dashboards y landing pages con exportación de código.",
+        url: "https://www.rocket.new/",
+        badges: ["codigo", "herramienta", "ia", "web-builder", "movil"],
+        openInNewTab: true
+    },
+    {
+        name: "Pythagora",
+        provider: "Pythagora AI",
+        description: "Plataforma de desarrollo con IA para aplicaciones full-stack. Genera frontend, backend, APIs y bases de datos, con herramientas de depuración.",
+        url: "https://www.pythagora.ai/",
+        badges: ["codigo", "herramienta", "ia", "web-builder"],
+        openInNewTab: true
+    },
+    {
+        name: "Softgen AI",
+        provider: "Softgen",
+        description: "Genera aplicaciones Next.js con autenticación, pagos y SEO integrados. Utiliza flujos de trabajo estructurados para la lógica de la aplicación.",
+        url: "https://softgen.ai/",
+        badges: ["codigo", "herramienta", "ia", "web-builder"],
+        openInNewTab: true
+    },
+    {
+        name: "FlexApp AI",
+        provider: "FlexApp",
+        description: "Genera aplicaciones móviles React Native para iOS y Android a partir de prompts. Vista previa en vivo y exportación de código.",
+        url: "https://flexapp.ai/",
+        badges: ["codigo", "herramienta", "ia", "movil"],
         openInNewTab: true
     }
 ];
@@ -563,7 +658,10 @@ function generatePanels() {
                 'optimizacion': 'Optimización',
                 'visualizacion': 'Visualización',
                 'ia': 'IA',
-                'ia-local': 'IA Local'
+                'ia-local': 'IA Local',
+                'web-builder': 'Web Builder',
+                'ide': 'IDE',
+                'movil': 'Móvil'
             };
 
             const badgeText = badgeTextMap[badge] || badge;
@@ -628,26 +726,6 @@ function handleTabKey(e) {
 
 // Function to open modal
 async function openModal(url, linkElement = null) {
-    // First, check if the URL returns a redirect (3xx status code, especially 308)
-    try {
-        const response = await fetch(url, {
-            method: 'HEAD',
-            redirect: 'manual', // Don't follow redirects automatically
-            credentials: 'omit'
-        });
-
-        // Check if status is 3xx (redirect) - especially 308
-        if (response.status >= 300 && response.status < 400) {
-            // It's a redirect, open in new tab instead
-            restoreButtonState(linkElement);
-            window.open(url, '_blank', 'noopener,noreferrer');
-            return; // Don't open modal
-        }
-    } catch (error) {
-        // CORS error is expected for external sites - continue with modal
-        // The iframe will handle the redirect if it happens
-    }
-
     // Store the link element for later restoration
     currentLoadingLink = linkElement;
 
@@ -669,6 +747,7 @@ async function openModal(url, linkElement = null) {
 
     // Track if we've already opened in new tab to prevent duplicate opens
     let openedInNewTab = false;
+    let shouldOpenInNewTab = false;
 
     // Timeout: If modal is still loading after 7 seconds, open in new tab
     const loadingTimeout = setTimeout(() => {
@@ -789,11 +868,9 @@ async function openModal(url, linkElement = null) {
         // Clear the immediate check timeout since iframe loaded
         clearTimeout(immediateCheck);
 
-        let shouldOpenInNewTab = false;
-
         try {
-            // Try to check if the iframe content indicates a redirect
-            // Note: This may fail due to CORS for external sites
+            // Check if we can access the iframe location
+            // This will throw for cross-origin iframes
             const iframeWindow = modalIframe.contentWindow;
             const currentUrl = iframeWindow.location.href;
 
@@ -1302,3 +1379,9 @@ if (document.body) {
     // Run check on load
     window.addEventListener('load', checkContentFreshness);
 })();
+
+// FIX for dynamic script loading: Dispatch DOMContentLoaded if DOM is already ready
+if (document.readyState !== 'loading') {
+    const event = new Event('DOMContentLoaded');
+    document.dispatchEvent(event);
+}

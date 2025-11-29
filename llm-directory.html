@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Cache Control Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Directorio de Chats y Dashboards de LLMs</title>
     <!-- SEO Meta Tags -->
     <meta name="description"
@@ -1133,11 +1138,16 @@
         </div>
     </div>
 
-    <!-- GeoContador Script -->
-    <script src="https://geo2.statistic.ovh/private/js.js?c=99f236b4fa8d835108d30178f5e0d8a7"></script>
+    <!-- GeoContador Script (Opcional - Descomentar cuando se necesite) -->
+    <!-- <script src="https://geo2.statistic.ovh/private/js.js?c=99f236b4fa8d835108d30178f5e0d8a7"></script> -->
 
-    <!-- Main Script -->
-    <script src="script.js"></script>
+    <!-- Main Script with Cache Busting -->
+    <script>
+        // Load script.js with timestamp to prevent caching
+        var script = document.createElement('script');
+        script.src = 'script.js?v=' + new Date().getTime();
+        document.body.appendChild(script);
+    </script>
 </body>
 
 </html>
