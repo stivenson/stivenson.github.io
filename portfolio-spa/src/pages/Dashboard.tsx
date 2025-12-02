@@ -8,6 +8,7 @@ export function Dashboard() {
   const allTechnologies = [
     ...skills.languages,
     ...skills.frontend,
+    ...(skills.ai || []),
     ...skills.cloud.slice(0, 5),
     ...skills.devops.slice(0, 3),
   ];
@@ -177,13 +178,14 @@ export function Dashboard() {
             width: '48px', 
             height: '48px', 
             borderRadius: '8px',
-            background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 100%)',
+            background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '24px'
+            fontSize: '24px',
+            boxShadow: 'var(--electric-shadow)'
           }}>
-            🏦
+            🤖
           </div>
           <div>
             <h3 style={{ fontSize: '16px', marginBottom: '4px', color: 'var(--electric-blue)' }}>

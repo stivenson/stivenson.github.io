@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Header, Sidebar } from './components';
 import { Dashboard, Resume, Portfolio, About } from './pages';
 import './styles/richfaces.css';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="rf-layout" style={{ flex: 1 }}>
@@ -39,7 +39,7 @@ function App() {
           </a>
         </footer>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
