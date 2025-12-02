@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { RichPanel, RichTabPanel, Timeline, TagList } from '../components';
 import profileData from '../data/profile.json';
 
@@ -80,6 +81,172 @@ export function Resume() {
             >
               {course}
             </div>
+          ))}
+        </div>
+      )
+    },
+    {
+      id: 'academic-projects',
+      label: 'Proyectos Académicos',
+      icon: '🤖',
+      content: (
+        <div>
+          <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px' }}>
+            Proyectos académicos desarrollados y/o apoyados utilizando herramientas de IA generativa 
+            (Cursor, AntiGravity, Google AI Studio) durante la Maestría en Inteligencia Artificial.
+          </p>
+          
+          {[
+            {
+              title: 'Guía Proyecto Sostenible Data IA',
+              url: 'https://stivenson.github.io/guia-proyecto-sostenible-data-ia.html',
+              tool: 'AntiGravity',
+              role: 'Desarrollo',
+              technologies: ['HTML', 'CSS', 'JavaScript', 'AI-Assisted']
+            },
+            {
+              title: 'Presentación ETL: Foros, Consentimientos y Mapas',
+              url: 'https://stivenson.github.io/etl_presentation.html',
+              tool: 'Cursor',
+              role: 'Desarrollo',
+              technologies: ['HTML', 'CSS', 'JavaScript', 'Python', 'DuckDB', 'AWS', 'ETL']
+            },
+            {
+              title: 'Python Basic Questions',
+              url: 'https://stivenson.github.io/python-basic-questions.html',
+              tool: 'Cursor',
+              role: 'Desarrollo',
+              technologies: ['HTML', 'CSS', 'JavaScript', 'Python']
+            },
+            {
+              title: 'Taller IA - Universidad Simón Bolívar',
+              url: 'https://stivenson.github.io/unisimon_ai_taller.html',
+              tool: 'Cursor',
+              role: 'Desarrollo',
+              technologies: ['HTML', 'CSS', 'JavaScript']
+            },
+            {
+              title: 'Arrays y Matrices - Presentación',
+              url: 'https://stivenson.github.io/arrays_matrices_presentation.html',
+              tool: 'Cursor',
+              role: 'Desarrollo',
+              technologies: ['HTML', 'CSS', 'JavaScript']
+            },
+            {
+              title: 'Generador de Ejercicios Básicos',
+              url: 'https://stivenson.github.io/generator_basic_exercises.html',
+              tool: 'Cursor',
+              role: 'Desarrollo',
+              technologies: ['HTML', 'CSS', 'JavaScript']
+            },
+            {
+              title: 'Dashboard - Simulación de Rendimiento',
+              url: 'https://dashboard-1-simulaci-n-de-rendimiento-instant-neo-952576018707.us-west1.run.app/',
+              tool: 'Google AI Studio',
+              role: 'Acompañamiento',
+              technologies: ['Python', 'Streamlit', 'Google Cloud', 'AI Studio', 'Machine Learning']
+            },
+            {
+              title: 'Dashboard - Predicción de Irradiancia Solar',
+              url: 'https://dashboard-2-predicci-n-de-irradiancia-solar-regre-952576018707.us-west1.run.app/',
+              tool: 'Google AI Studio',
+              role: 'Acompañamiento',
+              technologies: ['Python', 'Streamlit', 'Google Cloud', 'AI Studio', 'Regression', 'ML']
+            },
+            {
+              title: 'Dashboard - Clasificación de Potencial Solar',
+              url: 'https://dashboard-3-clasificaci-n-de-potencial-solar-clas-952576018707.us-west1.run.app/',
+              tool: 'Google AI Studio',
+              role: 'Acompañamiento',
+              technologies: ['Python', 'Streamlit', 'Google Cloud', 'AI Studio', 'Classification', 'ML']
+            }
+          ].map((project, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              style={{
+                padding: '16px',
+                marginBottom: '16px',
+                background: index % 2 === 0 ? 'var(--rf-table-row-even)' : 'var(--rf-table-row-odd)',
+                borderRadius: '6px',
+                border: '1px solid var(--rf-border)',
+                transition: 'all 0.2s ease'
+              }}
+              whileHover={{ 
+                boxShadow: '0 4px 12px rgba(0, 102, 255, 0.15)',
+                borderColor: 'var(--electric-blue)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ 
+                  width: '40px', 
+                  height: '40px', 
+                  borderRadius: '6px',
+                  background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '20px',
+                  flexShrink: 0
+                }}>
+                  {project.tool === 'Cursor' ? '⚡' : project.tool === 'AntiGravity' ? '🚀' : '🌐'}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ 
+                    fontSize: '14px', 
+                    marginBottom: '4px',
+                    color: 'var(--electric-blue)',
+                    fontWeight: 600
+                  }}>
+                    {project.title}
+                  </h4>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                    <span style={{ 
+                      fontSize: '11px',
+                      padding: '2px 8px',
+                      background: 'rgba(0, 102, 255, 0.1)',
+                      borderRadius: '4px',
+                      color: 'var(--electric-blue)',
+                      fontWeight: 500
+                    }}>
+                      {project.tool}
+                    </span>
+                    <span style={{ 
+                      fontSize: '11px',
+                      padding: '2px 8px',
+                      background: 'rgba(0, 229, 255, 0.1)',
+                      borderRadius: '4px',
+                      color: 'var(--electric-cyan)',
+                      fontWeight: 500
+                    }}>
+                      {project.role}
+                    </span>
+                  </div>
+                  <a 
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ 
+                      fontSize: '12px',
+                      color: 'var(--rf-link)',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
+                    onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
+                  >
+                    🔗 {project.url.length > 60 ? project.url.substring(0, 60) + '...' : project.url}
+                  </a>
+                </div>
+              </div>
+              <div style={{ marginTop: '12px' }}>
+                <TagList tags={project.technologies} electric />
+              </div>
+            </motion.div>
           ))}
         </div>
       )
