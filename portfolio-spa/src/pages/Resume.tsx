@@ -179,10 +179,12 @@ export function Resume() {
                 borderColor: 'var(--electric-blue)'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
                 <div style={{ 
                   width: '40px', 
-                  height: '40px', 
+                  height: '40px',
+                  minWidth: '35px',
+                  minHeight: '35px',
                   borderRadius: '6px',
                   background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
                   display: 'flex',
@@ -234,12 +236,14 @@ export function Resume() {
                       textDecoration: 'none',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '4px'
+                      gap: '4px',
+                      wordBreak: 'break-all',
+                      overflowWrap: 'break-word'
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
                     onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
                   >
-                    🔗 {project.url.length > 60 ? project.url.substring(0, 60) + '...' : project.url}
+                    🔗 <span style={{ fontSize: '11px' }}>{project.url.length > 50 ? project.url.substring(0, 50) + '...' : project.url}</span>
                   </a>
                 </div>
               </div>

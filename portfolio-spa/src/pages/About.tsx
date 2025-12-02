@@ -218,21 +218,24 @@ export function About() {
             animate={{ scale: 1, opacity: 1 }}
             style={{ 
               width: '100px', 
-              height: '100px', 
+              height: '100px',
+              minWidth: '70px',
+              minHeight: '70px',
               borderRadius: '50%',
               background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '42px',
-              boxShadow: 'var(--electric-shadow)'
+              boxShadow: 'var(--electric-shadow)',
+              flexShrink: 0
             }}
           >
             👨‍💻
           </motion.div>
-          <div style={{ flex: 1, minWidth: '280px' }}>
+          <div style={{ flex: 1, minWidth: '200px' }}>
             <h2 style={{ 
-              fontSize: '22px', 
+              fontSize: 'clamp(18px, 4vw, 22px)', 
               marginBottom: '8px',
               color: 'var(--electric-blue)'
             }}>
