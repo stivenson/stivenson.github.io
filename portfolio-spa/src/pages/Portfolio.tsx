@@ -127,7 +127,9 @@ export function Portfolio() {
             animate={{ scale: 1, opacity: 1 }}
             style={{ 
               width: '80px', 
-              height: '80px', 
+              height: '80px',
+              minWidth: '60px',
+              minHeight: '60px',
               borderRadius: '8px',
               background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
               display: 'flex',
@@ -140,7 +142,7 @@ export function Portfolio() {
           >
             🤖
           </motion.div>
-          <div style={{ flex: 1, minWidth: '280px' }}>
+          <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{ 
               fontSize: '16px', 
               marginBottom: '8px',
@@ -257,7 +259,7 @@ export function Portfolio() {
       <RichPanel title="Contribuciones Open Source" icon="🌟">
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
           gap: '16px',
           textAlign: 'center'
         }}>

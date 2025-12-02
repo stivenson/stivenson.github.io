@@ -6,7 +6,7 @@ export function Header() {
       <div className="rf-header-title">
         <span style={{ fontSize: '28px' }}>⚡</span>
         <span className="electric-text">Stivenson Rincón</span>
-        <span style={{ fontSize: '14px', fontWeight: 400, opacity: 0.8 }}>
+        <span className="header-subtitle" style={{ fontSize: '14px', fontWeight: 400, opacity: 0.8 }}>
           | Systems Engineer & Full Stack Developer
         </span>
       </div>

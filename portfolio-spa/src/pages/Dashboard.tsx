@@ -19,20 +19,23 @@ export function Dashboard() {
         <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <div style={{ 
             width: '120px', 
-            height: '120px', 
+            height: '120px',
+            minWidth: '80px',
+            minHeight: '80px',
             borderRadius: '8px',
             background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '48px',
-            boxShadow: 'var(--electric-shadow)'
+            boxShadow: 'var(--electric-shadow)',
+            flexShrink: 0
           }}>
             👨‍💻
           </div>
-          <div style={{ flex: 1, minWidth: '280px' }}>
+          <div style={{ flex: 1, minWidth: '200px' }}>
             <h2 style={{ 
-              fontSize: '24px', 
+              fontSize: 'clamp(18px, 4vw, 24px)', 
               marginBottom: '8px',
               background: 'linear-gradient(90deg, var(--electric-blue), var(--electric-cyan))',
               WebkitBackgroundClip: 'text',
@@ -61,10 +64,10 @@ export function Dashboard() {
         </div>
       </RichPanel>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
         {/* Quick Stats */}
         <RichPanel title="Resumen Rápido" icon="📊">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px' }}>
             <motion.div 
               whileHover={{ scale: 1.02 }}
               style={{ 

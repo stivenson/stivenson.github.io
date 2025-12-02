@@ -448,6 +448,11 @@ body {
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.rf-header-title .header-subtitle {
+  white-space: nowrap;
 }
 
 .rf-header-title .electric-text {
@@ -496,6 +501,11 @@ a:hover {
     width: 100%;
     border-right: none;
     border-bottom: 1px solid var(--rf-border);
+    padding: var(--space-sm);
+  }
+  
+  .rf-layout-main {
+    padding: var(--space-sm);
   }
   
   .rf-cards-grid {
@@ -504,13 +514,194 @@ a:hover {
   
   .rf-header-bar {
     flex-direction: column;
-    gap: var(--space-md);
+    gap: var(--space-sm);
     text-align: center;
+    padding: var(--space-sm) var(--space-md);
+  }
+  
+  .rf-header-title {
+    flex-direction: column;
+    gap: var(--space-xs);
+    font-size: var(--font-size-xl);
+  }
+  
+  .rf-header-title span:last-child {
+    font-size: var(--font-size-xs);
+    display: block;
+    margin-top: var(--space-xs);
   }
   
   .rf-header-nav {
     flex-wrap: wrap;
     justify-content: center;
+    gap: var(--space-xs);
+  }
+  
+  .rf-button {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-xs);
+  }
+  
+  .rf-panel {
+    margin-bottom: var(--space-md);
+  }
+  
+  .rf-panel-header {
+    font-size: var(--font-size-base);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .rf-panel-body {
+    padding: var(--space-sm);
+  }
+  
+  .rf-table {
+    font-size: var(--font-size-xs);
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .rf-table th,
+  .rf-table td {
+    padding: var(--space-xs) var(--space-sm);
+    white-space: nowrap;
+  }
+  
+  .rf-tabpanel-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+  }
+  
+  .rf-tab {
+    padding: var(--space-xs) var(--space-md);
+    font-size: var(--font-size-xs);
+    white-space: nowrap;
+  }
+  
+  .rf-timeline {
+    padding-left: var(--space-lg);
+  }
+  
+  .rf-timeline-item {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .rf-timeline-title {
+    font-size: var(--font-size-base);
+  }
+  
+  .rf-timeline-subtitle {
+    font-size: var(--font-size-sm);
+  }
+  
+  .rf-timeline-content {
+    font-size: var(--font-size-xs);
+  }
+  
+  .rf-card {
+    margin-bottom: var(--space-md);
+  }
+  
+  .rf-card-header {
+    font-size: var(--font-size-sm);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .rf-card-body {
+    padding: var(--space-sm);
+  }
+  
+  .rf-sidebar-header {
+    font-size: var(--font-size-base);
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .rf-tree-item {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .rf-layout-sidebar {
+    width: 180px;
+  }
+  
+  .rf-layout-main {
+    padding: var(--space-md);
+  }
+  
+  .rf-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .rf-header-title span:last-child {
+    display: none;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  body {
+    font-size: var(--font-size-sm);
+  }
+  
+  .rf-header-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .rf-header-title .electric-text {
+    display: block;
+  }
+  
+  .rf-panel-header {
+    font-size: var(--font-size-sm);
+  }
+  
+  .rf-table {
+    font-size: 10px;
+  }
+  
+  .rf-table th,
+  .rf-table td {
+    padding: 4px 6px;
+  }
+  
+  .rf-tag {
+    font-size: 10px;
+    padding: 1px 6px;
+  }
+  
+  .rf-button {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+  
+  .rf-panel-body a {
+    word-break: break-all;
+    overflow-wrap: break-word;
+    font-size: 11px;
+  }
+  
+  .rf-panel-body h2,
+  .rf-panel-body h3,
+  .rf-panel-body h4 {
+    font-size: clamp(14px, 4vw, 18px);
+  }
+  
+  .rf-panel-body p {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Viewport meta tag support */
+@supports (-webkit-touch-callout: none) {
+  /* iOS specific adjustments */
+  .rf-table {
+    -webkit-overflow-scrolling: touch;
   }
 }
 
