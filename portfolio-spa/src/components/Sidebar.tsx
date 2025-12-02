@@ -54,6 +54,16 @@ export function Sidebar() {
             <span className="rf-tree-icon">🔗</span>
             GitHub Profile
           </a>
+          <a 
+            href="https://stivenson.github.io/llm-directory.html" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="rf-tree-item"
+            style={{ fontSize: '12px' }}
+          >
+            <span className="rf-tree-icon">🤖</span>
+            Directorio LLMs
+          </a>
         </div>
       </div>
     </aside>

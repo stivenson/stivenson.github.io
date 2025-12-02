@@ -114,6 +114,84 @@ export function Portfolio() {
         </div>
       </RichPanel>
 
+      {/* LLM Directory Panel */}
+      <RichPanel title="Directorio de Interfaces - LLMs" icon="🤖" electric>
+        <div style={{ 
+          display: 'flex', 
+          gap: '16px', 
+          alignItems: 'flex-start',
+          flexWrap: 'wrap'
+        }}>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            style={{ 
+              width: '80px', 
+              height: '80px', 
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '36px',
+              boxShadow: 'var(--electric-shadow)',
+              flexShrink: 0
+            }}
+          >
+            🤖
+          </motion.div>
+          <div style={{ flex: 1, minWidth: '280px' }}>
+            <h3 style={{ 
+              fontSize: '16px', 
+              marginBottom: '8px',
+              color: 'var(--electric-blue)',
+              fontWeight: 600
+            }}>
+              Directorio de Interfaces de Inteligencia Artificial
+            </h3>
+            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.6' }}>
+              Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, 
+              dashboards y herramientas de modelos de lenguaje. Una recopilación cuidadosamente 
+              organizada de las mejores herramientas y plataformas de IA disponibles.
+            </p>
+            <motion.a
+              href="https://stivenson.github.io/llm-directory.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rf-button primary"
+              style={{ 
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                textDecoration: 'none'
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>🔗</span>
+              <span>Visitar Directorio de LLMs</span>
+            </motion.a>
+            <div style={{ 
+              marginTop: '12px',
+              padding: '10px',
+              background: 'rgba(0, 102, 255, 0.05)',
+              borderRadius: '6px',
+              borderLeft: '3px solid var(--electric-blue)'
+            }}>
+              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
+                <strong style={{ color: 'var(--electric-blue)' }}>✨ Características:</strong>
+                <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
+                  <li>Interfaces de chat conversacionales</li>
+                  <li>Dashboards de IA</li>
+                  <li>Herramientas de modelos de lenguaje</li>
+                  <li>Recursos organizados y actualizados</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </RichPanel>
+
       {/* Pinned Repos Table */}
       <RichPanel title="Repositorios Destacados" icon="📌">
         <RichTable 
