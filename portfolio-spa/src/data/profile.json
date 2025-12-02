@@ -9,6 +9,18 @@
   },
   "experience": [
     {
+      "company": "Independiente",
+      "role": "LLMOps",
+      "period": "Agosto 2025 - Actualidad",
+      "modality": "remoto",
+      "description": [
+        "Desarrollo y operación de sistemas de Machine Learning y Large Language Models",
+        "Arquitectura y despliegue de pipelines MLOps/LLMOps en cloud",
+        "Optimización y monitoreo de modelos de IA en producción"
+      ],
+      "technologies": ["Python", "LLMOps", "MLOps", "Machine Learning", "AWS", "GCP", "Docker", "Kubernetes"]
+    },
+    {
       "company": "Mo Technologies (Mastercard)",
       "role": "Full Stack - Senior Developer",
       "period": "Marzo 2021 - Julio 2025",
@@ -87,12 +99,13 @@
     "Curso Inglés en American School Way - En curso"
   ],
   "skills": {
-    "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js"],
+    "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js", "PHP"],
     "frontend": ["React", "React Native", "Prime React"],
     "backend": ["Spring Boot", "Hapi.js", "Express.js", "GraphQL", "REST"],
     "cloud": ["AWS", "GCP", "Lambda", "ECS", "S3", "DynamoDB", "Redshift", "CloudFormation"],
     "devops": ["Kubernetes", "Docker", "CI/CD", "Serverless"],
     "databases": ["DynamoDB", "Redshift", "SQL"],
+    "ai": ["Inteligencia Artificial", "Agentes IA", "Machine Learning"],
     "methodologies": ["Scrum", "Agile"]
   },
   "achievements": [

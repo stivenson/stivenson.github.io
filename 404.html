@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        // GitHub Pages 404 handler - redirect to index.html
+        // This allows direct URL access to SPA routes
+        var path = window.location.pathname;
+        var search = window.location.search;
+        var hash = window.location.hash;
+        
+        // If it's not already index.html, redirect
+        if (path !== '/' && !path.endsWith('index.html')) {
+            // Preserve hash if present, otherwise use path as hash
+            if (hash) {
+                window.location.replace('/index.html' + hash);
+            } else {
+                // Convert path to hash route
+                var hashRoute = path.replace(/^\//, '#/');
+                window.location.replace('/index.html' + hashRoute + search);
+            }
+        } else {
+            // Already on index.html, just ensure hash routing works
+            window.location.replace('/index.html' + hash);
+        }
+    </script>
+</head>
+<body>
+    <p>Redirecting...</p>
+</body>
+</html>
+
