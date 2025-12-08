@@ -143,9 +143,7 @@
   "courses": [
     "Curso Especial en Mantenimiento Preventivo y Correctivo del Hardware para Procesos de Soporte Técnico (SENA)",
     "Curso Especial en Microcontroladores I (SENA)",
-    "Curso Especial en Proyecto de Vida (SENA)",
-    "Curso Certificación Kubernetes (Fundación del Software Libre) - En curso",
-    "Curso Inglés en American School Way - En curso"
+    "Curso Especial en Proyecto de Vida (SENA)"
   ],
   "skills": {
     "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js", "PHP", "Ruby"],
