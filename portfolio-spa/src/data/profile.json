@@ -160,17 +160,25 @@
   },
   "references": [
     {
-      "name": "Adrian Arturo Carrascal Garcia",
+      "name": "Adrian Carrascal",
       "title": "Systems Engineer - Senior Developer at Python",
       "company": "MO Tecnologías LLC",
-      "phone": "+57 3112979410",
+      "social": {
+        "platform": "instagram",
+        "username": "admortx",
+        "url": "https://instagram.com/admortx"
+      },
       "country": "Colombia"
     },
     {
       "name": "Eduardo Fernández",
       "title": "Senior Developer - Developer at Golang and JS",
       "company": "Spartangeek.com",
-      "phone": "+52 5542548563",
+      "social": {
+        "platform": "telegram",
+        "username": "nobodi14",
+        "url": "https://t.me/nobodi14"
+      },
       "country": "México",
       "note": "Winner Platzi of Silicon Valley trip"
     }
