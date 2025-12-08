@@ -99,13 +99,13 @@
     "Curso Inglés en American School Way - En curso"
   ],
   "skills": {
-    "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js", "PHP"],
+    "languages": ["Python", "JavaScript", "Java", "Node.js", "PHP"],
     "frontend": ["React", "React Native", "Prime React"],
-    "backend": ["Spring Boot", "Hapi.js", "Express.js", "GraphQL", "REST"],
-    "cloud": ["AWS", "GCP", "Lambda", "ECS", "S3", "DynamoDB", "Redshift", "CloudFormation"],
+    "backend": ["Django", "Laravel", "Spring Boot", "Hapi.js", "Express.js", "GraphQL", "REST"],
+    "cloud": ["AWS", "GCP", "Lambda", "ECS", "S3", "DynamoDB", "Redshift", "Terraform"],
     "devops": ["Kubernetes", "Docker", "CI/CD", "Serverless"],
-    "databases": ["DynamoDB", "Redshift", "SQL"],
-    "ai": ["Inteligencia Artificial", "Agentes IA", "Machine Learning"],
+    "databases": ["Postgres", "Mysql", "Redis", "DynamoDB", "Redshift", "SQL"],
+    "ai": ["LLMs", "Machine Learning", "Agentes IA", "FastMCP", "LangChain"],
     "methodologies": ["Scrum", "Agile"]
   },
   "achievements": [
