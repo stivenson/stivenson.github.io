@@ -11,7 +11,7 @@
     {
       "company": "Independiente",
       "role": "LLMOps",
-      "period": "Agosto 2025 - Actualidad",
+      "period": "Agosto 2024 - Actualidad",
       "modality": "remoto",
       "description": [
         "Desarrollo y operación de sistemas de Machine Learning y Large Language Models",
@@ -21,9 +21,9 @@
       "technologies": ["Python", "LLMOps", "MLOps", "Machine Learning", "AWS", "GCP", "Docker", "Kubernetes"]
     },
     {
-      "company": "Mo Technologies (Mastercard)",
+      "company": "Mo Technologies (Mastercard - Start Path)",
       "role": "Full Stack - Senior Developer",
-      "period": "Marzo 2021 - Julio 2025",
+      "period": "Marzo 2021 - Julio 2024",
       "modality": "semi-presencial",
       "description": [
         "Desarrollo de productos bancarios en AWS y GCP usando Python, Serverless y otros servicios AWS",
@@ -69,13 +69,62 @@
         "Labores de líder técnico gestionando programadores junior usando metodologías Scrum"
       ],
       "technologies": ["Node.js", "Python", "GraphQL", "Kubernetes", "Docker", "React", "React Native", "AWS"]
+    },
+    {
+      "company": "Miora.co (ahora bewe.io)",
+      "role": "Desarrollo de software Full Stack",
+      "period": "Octubre 2016 - Enero 2017",
+      "modality": "presencial",
+      "description": [
+        "Desarrollo de la primera versión de la aplicación web para reserva de variados servicios de belleza",
+        "Trabajo colaborativo en startup con equipo de desarrollo"
+      ],
+      "technologies": ["PHP 7", "Phalcon 3", "Angular 1", "Mithril.js", "Blueprint.js", "Kahlan", "PHP Resque", "Phinx", "Redis", "Nginx", "Bugsnag", "Loggly", "Elasticsearch"]
+    },
+    {
+      "company": "Kubesoft",
+      "role": "Programador Web",
+      "period": "2015 - 2016 (esporádico)",
+      "modality": "presencial",
+      "description": [
+        "Desarrollo de aplicaciones monolíticas por proyecto freelance",
+        "Empresa de software cucuteña"
+      ],
+      "technologies": ["Laravel", "MySQL"]
+    },
+    {
+      "company": "Independiente",
+      "role": "Freelancer Full Stack",
+      "period": "Julio 2014 - Septiembre 2016",
+      "modality": "remoto",
+      "description": [
+        "Desarrollo de múltiples proyectos en Ruby (RoR básico), PHP (Laravel)",
+        "Frontend con AngularJS v1, Bootstrap, CSS3, HTML5, Bower",
+        "Backend con Node.js (Express.js) y aplicaciones móviles con Cordova (Ionic)",
+        "Bases de datos MySQL, PostgreSQL y MongoDB",
+        "Implementación de servidores web sobre VPS en DigitalOcean",
+        "Desarrollo sobre Fedora Linux con Git (Bitbucket y Github)"
+      ],
+      "technologies": ["Ruby", "Rails", "PHP", "Laravel", "AngularJS", "Bootstrap", "Node.js", "Express.js", "Cordova", "Ionic", "MySQL", "PostgreSQL", "MongoDB", "DigitalOcean"]
+    },
+    {
+      "company": "Universidad Simón Bolívar",
+      "role": "Programador",
+      "period": "Noviembre 2012 - Julio 2014",
+      "modality": "presencial",
+      "description": [
+        "Programación con JavaScript (jQuery) y Doctrine",
+        "Trabajo con bases de datos DB2 en servidor CentOS",
+        "Desarrollo de aplicaciones de escritorio con Java SE"
+      ],
+      "technologies": ["JavaScript", "jQuery", "Doctrine", "DB2", "CentOS", "Java SE"]
     }
   ],
   "education": [
     {
       "institution": "Universidad de los Andes",
       "degree": "Maestría en Inteligencia Artificial",
-      "period": "2024 - Actualidad",
+      "period": "Febrero 2024 - Actualidad",
       "description": "Enfoque en aplicar IA a problemas reales de la región"
     },
     {
@@ -99,15 +148,33 @@
     "Curso Inglés en American School Way - En curso"
   ],
   "skills": {
-    "languages": ["Python", "JavaScript", "Java", "Node.js", "PHP"],
-    "frontend": ["React", "React Native", "Prime React"],
-    "backend": ["Django", "Laravel", "Spring Boot", "Hapi.js", "Express.js", "GraphQL", "REST"],
-    "cloud": ["AWS", "GCP", "Lambda", "ECS", "S3", "DynamoDB", "Redshift", "Terraform"],
-    "devops": ["Kubernetes", "Docker", "CI/CD", "Serverless"],
-    "databases": ["Postgres", "Mysql", "Redis", "DynamoDB", "Redshift", "SQL"],
+    "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js", "PHP", "Ruby"],
+    "frontend": ["React", "React Native", "Prime React", "AngularJS", "Mithril.js", "Blueprint.js", "Bootstrap", "HTML5", "CSS3", "Cordova", "Ionic"],
+    "backend": ["Django", "Laravel", "Express.js", "Hapi.js", "GraphQL", "REST", "Phalcon", "Spring Boot", "Rails", "Protocol Buffer", "gRPC"],
+    "cloud": ["AWS", "GCP", "Lambda", "ECS", "S3", "Terraform", "CloudFormation", "DigitalOcean", "DynamoDB", "Redshift"],
+    "devops": ["Kubernetes", "Docker", "CI/CD", "Serverless", "GKE", "Nginx", "CentOS", "Fedora Linux"],
+    "databases": ["PostgreSQL", "MySQL", "Redis", "MongoDB", "DB2", "Elasticsearch"],
+    "tools": ["Git", "Github", "Bitbucket", "Bugsnag", "Loggly", "Doctrine", "Phinx", "PHP Resque", "Kahlan", "Bower"],
     "ai": ["LLMs", "Machine Learning", "Agentes IA", "FastMCP", "LangChain"],
     "methodologies": ["Scrum", "Agile"]
   },
+  "references": [
+    {
+      "name": "Adrian Arturo Carrascal Garcia",
+      "title": "Systems Engineer - Senior Developer at Python",
+      "company": "MO Tecnologías LLC",
+      "phone": "+57 3112979410",
+      "country": "Colombia"
+    },
+    {
+      "name": "Eduardo Fernández",
+      "title": "Senior Developer - Developer at Golang and JS",
+      "company": "Spartangeek.com",
+      "phone": "+52 5542548563",
+      "country": "México",
+      "note": "Winner Platzi of Silicon Valley trip"
+    }
+  ],
   "achievements": [
     {
       "title": "Exaltación Académica",
