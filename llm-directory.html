@@ -258,6 +258,203 @@
             letter-spacing: 0.5px;
         }
 
+        /* Badge Filter Styles */
+        .badge-filter-container {
+            margin: 20px 10px 25px 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .badge-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            max-width: 100%;
+        }
+
+        .badge-filter input[type="radio"] {
+            display: none;
+        }
+
+        .badge-filter label {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #555;
+            background: transparent;
+            border: 1px solid #e5e5e5;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Fondo base del label */
+        .badge-filter label::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: #f8f8f8;
+            z-index: -2;
+            border-radius: 18px;
+        }
+
+        /* Degradado visible por badge - lado izquierdo */
+        .badge-filter label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: transparent;
+            transition: background 0.2s ease;
+            border-radius: 18px 0 0 18px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Chat - naranja (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-chat + label::before { 
+            background: linear-gradient(to left, rgba(255, 243, 224, 1) 0%, rgba(255, 243, 224, 1) 5%, rgba(255, 243, 224, 1) 30%, rgba(239, 108, 0, 1) 100%); 
+        }
+        #filter-chat + label:hover::before { 
+            background: linear-gradient(to left, rgba(255, 243, 224, 1) 0%, rgba(255, 243, 224, 1) 5%, rgba(255, 243, 224, 1) 30%, rgba(239, 108, 0, 1) 100%); 
+        }
+
+        /* Imágenes - rosa (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-imagenes + label::before { 
+            background: linear-gradient(to left, rgba(252, 228, 236, 1) 0%, rgba(252, 228, 236, 1) 5%, rgba(252, 228, 236, 1) 30%, rgba(194, 24, 91, 1) 100%); 
+        }
+        #filter-imagenes + label:hover::before { 
+            background: linear-gradient(to left, rgba(252, 228, 236, 1) 0%, rgba(252, 228, 236, 1) 5%, rgba(252, 228, 236, 1) 30%, rgba(194, 24, 91, 1) 100%); 
+        }
+
+        /* Video - amarillo (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-video + label::before { 
+            background: linear-gradient(to left, rgba(255, 248, 225, 1) 0%, rgba(255, 248, 225, 1) 5%, rgba(255, 248, 225, 1) 30%, rgba(255, 143, 0, 1) 100%); 
+        }
+        #filter-video + label:hover::before { 
+            background: linear-gradient(to left, rgba(255, 248, 225, 1) 0%, rgba(255, 248, 225, 1) 5%, rgba(255, 248, 225, 1) 30%, rgba(255, 143, 0, 1) 100%); 
+        }
+
+        /* Audio - naranja oscuro (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-audio + label::before { 
+            background: linear-gradient(to left, rgba(251, 233, 231, 1) 0%, rgba(251, 233, 231, 1) 5%, rgba(251, 233, 231, 1) 30%, rgba(216, 67, 21, 1) 100%); 
+        }
+        #filter-audio + label:hover::before { 
+            background: linear-gradient(to left, rgba(251, 233, 231, 1) 0%, rgba(251, 233, 231, 1) 5%, rgba(251, 233, 231, 1) 30%, rgba(216, 67, 21, 1) 100%); 
+        }
+
+        /* Código - cyan (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-codigo + label::before { 
+            background: linear-gradient(to left, rgba(224, 247, 250, 1) 0%, rgba(224, 247, 250, 1) 5%, rgba(224, 247, 250, 1) 30%, rgba(0, 131, 143, 1) 100%); 
+        }
+        #filter-codigo + label:hover::before { 
+            background: linear-gradient(to left, rgba(224, 247, 250, 1) 0%, rgba(224, 247, 250, 1) 5%, rgba(224, 247, 250, 1) 30%, rgba(0, 131, 143, 1) 100%); 
+        }
+
+        /* Workflow - azul claro (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-workflow + label::before { 
+            background: linear-gradient(to left, rgba(225, 245, 254, 1) 0%, rgba(225, 245, 254, 1) 5%, rgba(225, 245, 254, 1) 30%, rgba(2, 119, 189, 1) 100%); 
+        }
+        #filter-workflow + label:hover::before { 
+            background: linear-gradient(to left, rgba(225, 245, 254, 1) 0%, rgba(225, 245, 254, 1) 5%, rgba(225, 245, 254, 1) 30%, rgba(2, 119, 189, 1) 100%); 
+        }
+
+        /* Agentes - verde claro (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-agentes + label::before { 
+            background: linear-gradient(to left, rgba(241, 248, 233, 1) 0%, rgba(241, 248, 233, 1) 5%, rgba(241, 248, 233, 1) 30%, rgba(85, 139, 47, 1) 100%); 
+        }
+        #filter-agentes + label:hover::before { 
+            background: linear-gradient(to left, rgba(241, 248, 233, 1) 0%, rgba(241, 248, 233, 1) 5%, rgba(241, 248, 233, 1) 30%, rgba(85, 139, 47, 1) 100%); 
+        }
+
+        /* Productividad - verde (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-productividad + label::before { 
+            background: linear-gradient(to left, rgba(220, 237, 200, 1) 0%, rgba(220, 237, 200, 1) 5%, rgba(220, 237, 200, 1) 30%, rgba(51, 105, 30, 1) 100%); 
+        }
+        #filter-productividad + label:hover::before { 
+            background: linear-gradient(to left, rgba(220, 237, 200, 1) 0%, rgba(220, 237, 200, 1) 5%, rgba(220, 237, 200, 1) 30%, rgba(51, 105, 30, 1) 100%); 
+        }
+
+        /* Diseño - púrpura (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-diseño + label::before { 
+            background: linear-gradient(to left, rgba(225, 190, 231, 1) 0%, rgba(225, 190, 231, 1) 5%, rgba(225, 190, 231, 1) 30%, rgba(74, 20, 140, 1) 100%); 
+        }
+        #filter-diseño + label:hover::before { 
+            background: linear-gradient(to left, rgba(225, 190, 231, 1) 0%, rgba(225, 190, 231, 1) 5%, rgba(225, 190, 231, 1) 30%, rgba(74, 20, 140, 1) 100%); 
+        }
+
+        /* Desarrollo - gris azulado (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-desarrollo + label::before { 
+            background: linear-gradient(to left, rgba(207, 216, 220, 1) 0%, rgba(207, 216, 220, 1) 5%, rgba(207, 216, 220, 1) 30%, rgba(55, 71, 79, 1) 100%); 
+        }
+        #filter-desarrollo + label:hover::before { 
+            background: linear-gradient(to left, rgba(207, 216, 220, 1) 0%, rgba(207, 216, 220, 1) 5%, rgba(207, 216, 220, 1) 30%, rgba(55, 71, 79, 1) 100%); 
+        }
+
+        /* Open Source - verde (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
+        #filter-open-source + label::before { 
+            background: linear-gradient(to left, rgba(232, 245, 233, 1) 0%, rgba(232, 245, 233, 1) 5%, rgba(232, 245, 233, 1) 30%, rgba(46, 125, 50, 1) 100%); 
+        }
+        #filter-open-source + label:hover::before { 
+            background: linear-gradient(to left, rgba(232, 245, 233, 1) 0%, rgba(232, 245, 233, 1) 5%, rgba(232, 245, 233, 1) 30%, rgba(46, 125, 50, 1) 100%); 
+        }
+
+        .badge-filter label:hover {
+            background: #eeeeee;
+            border-color: #d0d0d0;
+            transform: translateY(-1px);
+        }
+
+        .badge-filter input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            box-shadow: 0 2px 5px rgba(102, 126, 234, 0.25);
+        }
+
+        .badge-filter input[type="radio"]:checked + label::before {
+            background: linear-gradient(to left, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.4) 30%, rgba(255, 255, 255, 0.6) 60%, rgba(255, 255, 255, 0.4) 100%);
+        }
+
+        .badge-filter input[type="radio"]:checked + label:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3d8f 100%);
+        }
+
+        /* Hover específico para el filtro "Todos" - texto negro */
+        #filter-all:checked + label:hover {
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .badge-filter {
+                padding: 8px 10px;
+                gap: 5px;
+            }
+            
+            .badge-filter label {
+                padding: 4px 10px;
+                font-size: 0.7rem;
+            }
+        }
+
         .masonry {
             column-count: 4;
             column-gap: 20px;
@@ -390,252 +587,60 @@
             font-weight: 500;
         }
 
-        /* Badge Colors - Each type gets a unique light color */
-        .badge.badge-chat {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .badge.badge-documentos {
-            background: #f3e5f5;
-            color: #7b1fa2;
-        }
-
-        .badge.badge-presentaciones {
-            background: #fff3e0;
-            color: #e65100;
-        }
-
-        .badge.badge-imagenes {
-            background: #fce4ec;
-            color: #c2185b;
-        }
-
-        .badge.badge-imagen {
-            background: #fce4ec;
-            color: #c2185b;
-        }
-
-        .badge.badge-video {
-            background: #fff9c4;
-            color: #f57f17;
-        }
-
-        .badge.badge-diseño {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-
-        .badge.badge-multimodal {
-            background: #fff8e1;
-            color: #f9a825;
-        }
-
-        .badge.badge-texto {
-            background: #f1f8e9;
-            color: #558b2f;
-        }
-
-        .badge.badge-text-to-image {
-            background: #fce4ec;
-            color: #ad1457;
-        }
-
-        .badge.badge-image-to-image {
-            background: #f8bbd0;
-            color: #880e4f;
-        }
-
-        .badge.badge-codigo {
-            background: #e0f2f1;
-            color: #00695c;
-        }
-
-        .badge.badge-razonamiento {
-            background: #ede7f6;
-            color: #512da8;
-        }
-
-        .badge.badge-llm {
-            background: #e8eaf6;
-            color: #303f9f;
-        }
-
-        .badge.badge-audio {
-            background: #fff3e0;
-            color: #ef6c00;
-        }
-
-        .badge.badge-voz {
-            background: #fbe9e7;
-            color: #d84315;
-        }
-
-        .badge.badge-cognitivo {
-            background: #e0f7fa;
-            color: #00838f;
-        }
-
-        .badge.badge-visual {
-            background: #f3e5f5;
-            color: #6a1b9a;
-        }
-
-        .badge.badge-playground {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .badge.badge-busqueda {
-            background: #e8eaf6;
-            color: #5c6bc0;
-        }
-
-        .badge.badge-productividad {
-            background: #f1f8e9;
-            color: #689f38;
-        }
-
-        .badge.badge-open-source {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .badge.badge-comparacion {
-            background: #e1bee7;
-            color: #7b1fa2;
-        }
-
-        .badge.badge-velocidad {
-            background: #b2dfdb;
-            color: #00695c;
-        }
-
-        .badge.badge-agentes {
-            background: #c5e1a5;
-            color: #558b2f;
-        }
-
-        .badge.badge-asistente {
-            background: #ffe0b2;
-            color: #e65100;
-        }
-
-        .badge.badge-rol {
-            background: #f8bbd0;
-            color: #c2185b;
-        }
-
-        .badge.badge-personajes {
-            background: #ce93d8;
-            color: #7b1fa2;
-        }
-
-        .badge.badge-compania {
-            background: #b39ddb;
-            color: #512da8;
-        }
-
-        .badge.badge-salud {
-            background: #ffccbc;
-            color: #d84315;
-        }
-
-        .badge.badge-workflow {
-            background: #e0f2f1;
-            color: #00695c;
-        }
-
-        .badge.badge-orquestacion {
-            background: #f3e5f5;
-            color: #7b1fa2;
-        }
-
-        .badge.badge-observabilidad {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .badge.badge-multiagente {
-            background: #fff3e0;
-            color: #e65100;
-        }
-
-        .badge.badge-automatizacion {
-            background: #e1f5fe;
-            color: #0277bd;
-        }
-
-        .badge.badge-framework {
-            background: #fce4ec;
-            color: #c2185b;
-        }
-
-        .badge.badge-herramienta {
-            background: #f1f8e9;
-            color: #558b2f;
-        }
-
-        .badge.badge-procesos {
-            background: #ede7f6;
-            color: #512da8;
-        }
-
-        .badge.badge-empresarial {
-            background: #e8eaf6;
-            color: #3f51b5;
-        }
-
-        .badge.badge-organizacional {
-            background: #fff8e1;
-            color: #f57f17;
-        }
-
-        .badge.badge-distribuido {
-            background: #e0f7fa;
-            color: #00838f;
-        }
-
-        .badge.badge-monitoreo {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-
-        .badge.badge-analitica {
-            background: #f3e5f5;
-            color: #8e24aa;
-        }
-
-        .badge.badge-sistema {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .badge.badge-optimizacion {
-            background: #e1bee7;
-            color: #8e24aa;
-        }
-
-        .badge.badge-visualizacion {
-            background: #c5e1a5;
-            color: #689f38;
-        }
-
-        .badge.badge-ia {
-            background: #ffccbc;
-            color: #d84315;
-        }
-
-        .badge.badge-ia-local {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
+        /* Badge Colors - New Unified Palette */
         
-        .badge.badge-video editing {
-            background: hsl(85, 40%, 91%);
-            color: hsl(85, 66%, 22%);
-        }
+        /* Platform */
+        .badge.badge-web { background: #E3F2FD; color: #1565C0; }
+        .badge.badge-movil { background: #F3E5F5; color: #6A1B9A; }
+        .badge.badge-ambos { background: #E0F2F1; color: #00695C; }
+        .badge.badge-desktop { background: #F5F5F5; color: #424242; }
+        .badge.badge-ia-local { background: #EFEBE9; color: #4E342E; }
+        
+        /* License */
+        .badge.badge-open-source { background: #E8F5E9; color: #2E7D32; }
+        
+        /* Functionality */
+        .badge.badge-chat { background: #FFF3E0; color: #EF6C00; }
+        .badge.badge-generacion-imagenes { background: #FCE4EC; color: #C2185B; }
+        .badge.badge-generacion-video { background: #FFF8E1; color: #FF8F00; }
+        .badge.badge-generacion-audio { background: #FBE9E7; color: #D84315; }
+        .badge.badge-codigo { background: #E0F7FA; color: #00838F; }
+        .badge.badge-workflow { background: #E1F5FE; color: #0277BD; }
+        .badge.badge-agentes { background: #F1F8E9; color: #558B2F; }
+        .badge.badge-monitoreo { background: #EDE7F6; color: #4527A0; }
+        .badge.badge-playground { background: #C8E6C9; color: #1B5E20; }
+        .badge.badge-automatizacion { background: #B3E5FC; color: #01579B; }
+        
+        /* Modalities */
+        .badge.badge-multimodal { background: #FFFDE7; color: #F9A825; }
+        .badge.badge-texto { background: #F9FBE7; color: #827717; }
+        .badge.badge-visual { background: #E8EAF6; color: #283593; }
+        
+        /* Use Cases */
+        .badge.badge-productividad { background: #DCEDC8; color: #33691E; }
+        .badge.badge-diseño { background: #E1BEE7; color: #4A148C; }
+        .badge.badge-desarrollo { background: #CFD8DC; color: #37474F; }
+        .badge.badge-empresarial { background: #BBDEFB; color: #0D47A1; }
+        .badge.badge-educacion { background: #F0F4C3; color: #827717; }
+        .badge.badge-asistente { background: #FFCCBC; color: #BF360C; }
+        
+        /* Specialized */
+        .badge.badge-razonamiento { background: #D1C4E9; color: #311B92; }
+        .badge.badge-busqueda { background: #C5CAE9; color: #1A237E; }
+        .badge.badge-documentos { background: #D7CCC8; color: #3E2723; }
+        .badge.badge-presentaciones { background: #FFE0B2; color: #E65100; }
+        .badge.badge-analitica { background: #E1BEE7; color: #4A148C; }
+        .badge.badge-rol { background: #F8BBD0; color: #880E4F; }
+        .badge.badge-personajes { background: #E1BEE7; color: #4A148C; }
+        .badge.badge-compania { background: #D1C4E9; color: #311B92; }
+        .badge.badge-salud { background: #FFCDD2; color: #B71C1C; }
+        .badge.badge-comunidad { background: #B2DFDB; color: #004D40; }
+        .badge.badge-modelos { background: #B0BEC5; color: #263238; }
+        .badge.badge-comparacion { background: #D7CCC8; color: #3E2723; }
+        .badge.badge-velocidad { background: #FFF9C4; color: #F57F17; }
+        .badge.badge-ide { background: #CFD8DC; color: #37474F; }
+        .badge.badge-herramienta { background: #CFD8DC; color: #37474F; }
+        .badge.badge-ia { background: #E0E0E0; color: #212121; }
 
         /* Modal Styles */
         .modal-overlay {
@@ -816,10 +821,34 @@
 
         /* Footer Styles */
         footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
             margin-top: 60px;
-            padding: 40px 20px;
+            padding: 20px 20px;
             text-align: center;
             color: #333;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            min-height: auto;
+        }
+        
+        /* Fixed visitor counter container at the bottom */
+        .visitor-counter-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 10px 20px;
+            text-align: center;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+            border-top: 1px solid #e0e0e0;
+            max-height: 80px;
+            overflow: hidden;
         }
 
         footer p {
@@ -853,15 +882,16 @@
         }
 
         .visitor-counter-table {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
+            margin: 0;
+            padding: 0;
+            border: none;
             font-size: 0.9rem;
             color: #666;
+            width: 100%;
         }
 
         .visitor-counter-table td {
-            padding: 10px;
+            padding: 5px;
         }
 
         /* Centrar el widget completo de GeoContador */
@@ -1055,6 +1085,36 @@
         .update-notification-action:hover {
             opacity: 0.9;
         }
+
+        /* Lazy Loading Sentinel Styles */
+        #loading-sentinel {
+            width: 100%;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #loading-sentinel.visible {
+            opacity: 1;
+        }
+
+        #loading-sentinel .loading-spinner {
+            margin-bottom: 10px;
+        }
+
+        #loading-sentinel .loading-text {
+            color: #667eea;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -1084,9 +1144,43 @@
                 herramientas de modelos de lenguaje</p>
         </header>
 
-        <main id="main-content">
+        <main id="main-content" style="padding-bottom: 120px;">
+            <!-- Badge Filter -->
+            <div class="badge-filter-container">
+                <div class="badge-filter">
+                    <input type="radio" id="filter-all" name="badge-filter" value="all" checked>
+                    <label for="filter-all">Todos</label>
+                    <input type="radio" id="filter-chat" name="badge-filter" value="chat">
+                    <label for="filter-chat">Chat</label>
+                    <input type="radio" id="filter-imagenes" name="badge-filter" value="generacion-imagenes">
+                    <label for="filter-imagenes">Imágenes</label>
+                    <input type="radio" id="filter-video" name="badge-filter" value="generacion-video">
+                    <label for="filter-video">Video</label>
+                    <input type="radio" id="filter-audio" name="badge-filter" value="generacion-audio">
+                    <label for="filter-audio">Audio</label>
+                    <input type="radio" id="filter-codigo" name="badge-filter" value="codigo">
+                    <label for="filter-codigo">Código</label>
+                    <input type="radio" id="filter-workflow" name="badge-filter" value="workflow">
+                    <label for="filter-workflow">Workflow</label>
+                    <input type="radio" id="filter-agentes" name="badge-filter" value="agentes">
+                    <label for="filter-agentes">Agentes</label>
+                    <input type="radio" id="filter-productividad" name="badge-filter" value="productividad">
+                    <label for="filter-productividad">Productividad</label>
+                    <input type="radio" id="filter-diseño" name="badge-filter" value="diseño">
+                    <label for="filter-diseño">Diseño</label>
+                    <input type="radio" id="filter-desarrollo" name="badge-filter" value="desarrollo">
+                    <label for="filter-desarrollo">Desarrollo</label>
+                    <input type="radio" id="filter-open-source" name="badge-filter" value="open-source">
+                    <label for="filter-open-source">Open Source</label>
+                </div>
+            </div>
             <div class="masonry" id="masonryContainer">
                 <!-- Los paneles se generarán dinámicamente con JavaScript -->
+            </div>
+            <!-- Loading Sentinel for Lazy Loading -->
+            <div id="loading-sentinel">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Cargando más elementos...</div>
             </div>
         </main>
 
@@ -1104,12 +1198,17 @@
                     <span>stivenson.rpm@gmail.com</span>
                 </a>
             </p>
+        </footer>
+        
+        <!-- Fixed Visitor Counter at the bottom -->
+        <!--
+        <div class="visitor-counter-fixed">
             <table class="visitor-counter-table" style="width: 100%; border-collapse: collapse;">
                 <tr>
                     <td style="width: 33.33%; text-align: center; vertical-align: middle; color: #999;">--</td>
                     <td style="width: 33.33%; text-align: center; vertical-align: middle;">
                         <div class="geocontador-container">
-                            <span class="counter-label">Visitas</span>
+                            <span class="counter-label">Visitas:</span>
                             <a href="https://geo2.geocontador.com/?c=99f236b4fa8d835108d30178f5e0d8a7" target="_blank"
                                 rel="noopener noreferrer">
                                 <img src="https://geo2.statistic.ovh/private/geocontador.php?c=99f236b4fa8d835108d30178f5e0d8a7"
@@ -1120,7 +1219,8 @@
                     <td style="width: 33.33%; text-align: center; vertical-align: middle; color: #999;">--</td>
                 </tr>
             </table>
-        </footer>
+        </div>
+        -->
     </div>
 
     <!-- Modal -->
@@ -1147,14 +1247,17 @@
     <!-- GeoContador Script (Opcional - Descomentar cuando se necesite) -->
     <!-- <script src="https://geo2.statistic.ovh/private/js.js?c=99f236b4fa8d835108d30178f5e0d8a7"></script> -->
 
-    <!-- Protection Script -->
-    <script src="protection.js"></script>
-
     <!-- Main Script with Cache Busting -->
     <script>
-        // Load script.js with timestamp to prevent caching
+        // Load script.js (obfuscated version) with timestamp to prevent caching
         var script = document.createElement('script');
         script.src = 'script.js?v=' + new Date().getTime();
+        script.onerror = function() {
+            console.error('Error al cargar script.js');
+        };
+        script.onload = function() {
+            console.log('script.js cargado correctamente');
+        };
         document.body.appendChild(script);
     </script>
 </body>
