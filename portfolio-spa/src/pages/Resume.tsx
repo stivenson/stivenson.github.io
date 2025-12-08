@@ -3,7 +3,7 @@ import { RichPanel, RichTabPanel, Timeline, TagList } from '../components';
 import profileData from '../data/profile.json';
 
 export function Resume() {
-  const { experience, education, courses, skills } = profileData;
+  const { experience, education, courses, skills, references } = profileData;
 
   const experienceTimeline = experience.map(exp => ({
     date: exp.period,
@@ -287,10 +287,135 @@ export function Resume() {
           </div>
           <div>
             <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+              Bases de Datos
+            </h4>
+            <TagList tags={skills.databases} electric />
+          </div>
+          <div>
+            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+              Inteligencia Artificial
+            </h4>
+            <TagList tags={skills.ai} electric />
+          </div>
+          <div>
+            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+              Herramientas & Otros
+            </h4>
+            <TagList tags={skills.tools} electric />
+          </div>
+          <div>
+            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
               Metodologías
             </h4>
             <TagList tags={skills.methodologies} electric />
           </div>
+        </div>
+      )
+    },
+    {
+      id: 'references',
+      label: 'Referencias',
+      icon: '👥',
+      content: (
+        <div style={{ display: 'grid', gap: '16px' }}>
+          {references.map((ref, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              style={{
+                padding: '20px',
+                background: index % 2 === 0 ? 'var(--rf-table-row-even)' : 'var(--rf-table-row-odd)',
+                borderRadius: '8px',
+                border: '1px solid var(--rf-border)',
+                transition: 'all 0.2s ease'
+              }}
+              whileHover={{ 
+                boxShadow: '0 4px 12px rgba(0, 102, 255, 0.15)',
+                borderColor: 'var(--electric-blue)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+                <div style={{ 
+                  width: '50px', 
+                  height: '50px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  color: 'white',
+                  flexShrink: 0
+                }}>
+                  {ref.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ 
+                    fontSize: '15px', 
+                    marginBottom: '4px',
+                    color: 'var(--electric-blue)',
+                    fontWeight: 600
+                  }}>
+                    {ref.name}
+                  </h4>
+                  <p style={{ 
+                    fontSize: '13px', 
+                    color: 'var(--rf-text-muted)',
+                    marginBottom: '4px'
+                  }}>
+                    {ref.title}
+                  </p>
+                  <p style={{ 
+                    fontSize: '12px', 
+                    color: 'var(--rf-text-muted)',
+                    marginBottom: '8px',
+                    fontWeight: 500
+                  }}>
+                    {ref.company}
+                  </p>
+                  {'note' in ref && ref.note && (
+                    <p style={{ 
+                      fontSize: '11px', 
+                      color: 'var(--electric-cyan)',
+                      marginBottom: '8px',
+                      fontStyle: 'italic'
+                    }}>
+                      {ref.note}
+                    </p>
+                  )}
+                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: '8px' }}>
+                    <span style={{ 
+                      fontSize: '12px',
+                      padding: '4px 10px',
+                      background: 'rgba(0, 102, 255, 0.1)',
+                      borderRadius: '4px',
+                      color: 'var(--electric-blue)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      📞 {ref.phone}
+                    </span>
+                    <span style={{ 
+                      fontSize: '12px',
+                      padding: '4px 10px',
+                      background: 'rgba(0, 229, 255, 0.1)',
+                      borderRadius: '4px',
+                      color: 'var(--electric-cyan)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      🌍 {ref.country}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       )
     }
