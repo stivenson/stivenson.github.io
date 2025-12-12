@@ -1249,7 +1249,7 @@
 
     <!-- Main Script with Cache Busting -->
     <script>
-        // Load script.js (obfuscated version) with timestamp to prevent caching
+        // Load script.js with timestamp to prevent caching
         var script = document.createElement('script');
         script.src = 'script.js?v=' + new Date().getTime();
         script.onerror = function() {
