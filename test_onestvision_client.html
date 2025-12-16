@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Soporte en Crisis TOC - Emotion Game (Polling v2)</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        /* Chat Panel Styles */
+        #chat-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 380px;
+            max-height: 550px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        
+        #chat-header {
+            background: linear-gradient(135deg, #6c5ce7 0%, #5f4bd8 100%);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #connection-status {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.2);
+        }
+        #connection-status.connected { background: #27ae60; }
+        #connection-status.error { background: #e74c3c; }
+        
+        #selected-emotion {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            max-height: 380px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .chat-message {
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message { text-align: right; }
+        
+        .user-message .message-content {
+            display: inline-block;
+            background: #6c5ce7;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 15px 15px 5px 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .bot-message .message-content {
+            display: inline-block;
+            background: white;
+            color: #2d3436;
+            padding: 10px 15px;
+            border-radius: 15px 15px 15px 5px;
+            max-width: 85%;
+            word-wrap: break-word;
+            border: 1px solid #e0e0e0;
+            white-space: pre-wrap;
+        }
+        
+        .crisis-emergency .message-content {
+            border: 2px solid #e74c3c;
+            background: #ffebee;
+        }
+        
+        .crisis-high_distress .message-content {
+            border: 2px solid #f39c12;
+            background: #fff9e6;
+        }
+        
+        .message-time {
+            font-size: 10px;
+            color: #7f8c8d;
+            margin-top: 4px;
+        }
+        
+        /* Loading/Polling indicator */
+        #chat-loading {
+            display: none;
+            padding: 15px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            background: rgba(108, 92, 231, 0.05);
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #6c5ce7;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        #polling-status {
+            font-size: 11px;
+            color: #95a5a6;
+            margin-top: 5px;
+        }
+        
+        #chat-input-container {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #chat-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        #chat-input:focus { border-color: #6c5ce7; }
+        
+        #chat-send-btn {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.1s;
+        }
+        
+        #chat-send-btn:hover { background: #5f4bd8; }
+        #chat-send-btn:active { transform: scale(0.95); }
+        #chat-send-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        
+        /* Instructions banner */
+        #instructions {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            z-index: 999;
+        }
+        
+        #instructions h3 {
+            margin: 0 0 5px 0;
+            color: #6c5ce7;
+            font-size: 18px;
+        }
+        
+        #instructions p {
+            margin: 0;
+            color: #2d3436;
+            font-size: 14px;
+        }
+        
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            #chat-panel {
+                width: calc(100% - 40px);
+                max-height: 450px;
+            }
+            #instructions {
+                width: calc(100% - 40px);
+                top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Instructions Banner -->
+    <div id="instructions">
+        <h3>Soporte en Crisis TOC</h3>
+        <p>Selecciona una emocion o escribe un mensaje para recibir apoyo</p>
+    </div>
+    
+    <!-- Game Container -->
+    <div id="game-container"></div>
+    
+    <!-- Chat Panel -->
+    <div id="chat-panel">
+        <div id="chat-header">
+            Asistente TOC
+            <span id="selected-emotion"></span>
+            <span id="connection-status">Listo</span>
+        </div>
+        <div id="chat-messages">
+            <div class="chat-message bot-message">
+                <div class="message-content">Hola! Estoy aqui para apoyarte. Puedes seleccionar una emocion o escribirme directamente como te sientes.</div>
+            </div>
+        </div>
+        <div id="chat-loading">
+            <span class="loading-spinner"></span>
+            <span id="loading-text">Procesando tu mensaje...</span>
+            <div id="polling-status"></div>
+        </div>
+        <div id="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." />
+            <button id="chat-send-btn">Enviar</button>
+        </div>
+    </div>
+    
+    <script src="js/emotion_game.js"></script>
+</body>
+</html>
