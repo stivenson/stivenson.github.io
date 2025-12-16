@@ -509,8 +509,17 @@ class EmotionGameScene extends Phaser.Scene {
         // El usuario debe presionar "Enviar" para enviar el mensaje
         // Pre-rellenar el input si está vacío
         const chatInput = document.getElementById('chat-input');
-        if (chatInput && !chatInput.value.trim()) {
-            chatInput.placeholder = `Presiona Enviar para compartir que te sientes ${emotion.label}...`;
+        if (chatInput) {
+            const suggestedText = `Me siento ${emotion.label} (${emotion.description})`;
+            if (!chatInput.value.trim()) {
+                chatInput.placeholder = `Presiona Enviar para compartir que te sientes ${emotion.label}...`;
+            }
+            chatInput.value = suggestedText;
+            chatInput.classList.add('highlight-suggested');
+            chatInput.focus({ preventScroll: true });
+            setTimeout(() => {
+                chatInput.classList.remove('highlight-suggested');
+            }, 2200);
         }
     }
 
