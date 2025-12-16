@@ -190,6 +190,18 @@
             transition: border-color 0.3s;
         }
         
+        .highlight-suggested {
+            animation: pulseHighlight 2s ease-out;
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.25);
+        }
+
+        @keyframes pulseHighlight {
+            0% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.35); }
+            70% { box-shadow: 0 0 0 12px rgba(108, 92, 231, 0.0); }
+            100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0); }
+        }
+
         #chat-input:focus { border-color: #6c5ce7; }
         
         #chat-send-btn {
