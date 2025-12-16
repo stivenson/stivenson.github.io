@@ -471,7 +471,7 @@ class EmotionGameScene extends Phaser.Scene {
         this.setCharacterEmotion(emotion);
     }
 
-    async selectEmotion(emotion, cloudContainer) {
+    selectEmotion(emotion, cloudContainer) {
         this.currentEmotion = emotion;
         window.currentSelectedEmotion = emotion;
 
@@ -505,22 +505,12 @@ class EmotionGameScene extends Phaser.Scene {
             }
         });
 
-        // Enviar emocion a n8n
-        const message = `Me siento ${emotion.label} (${emotion.description})`;
-        displayUserMessage(message);
-        showLoading(true);
-        
-        const response = await sendToN8n({
-            message: message,
-            emotion: emotion
-        });
-        
-        showLoading(false);
-        
-        if (response.success && response.reply) {
-            displayBotResponse(response.reply, response.crisisLevel);
-        } else {
-            displayBotResponse(response.message || 'Error al procesar tu mensaje. Por favor, intenta de nuevo.', 'none');
+        // ACTUALIZADO: No enviar automáticamente, solo actualizar UI
+        // El usuario debe presionar "Enviar" para enviar el mensaje
+        // Pre-rellenar el input si está vacío
+        const chatInput = document.getElementById('chat-input');
+        if (chatInput && !chatInput.value.trim()) {
+            chatInput.placeholder = `Presiona Enviar para compartir que te sientes ${emotion.label}...`;
         }
     }
 
@@ -806,14 +796,21 @@ window.addEventListener('DOMContentLoaded', () => {
     const chatSendBtn = document.getElementById('chat-send-btn');
     
     async function sendChatMessage() {
-        const message = chatInput.value.trim();
+        let message = chatInput.value.trim();
+        const currentEmotion = window.currentSelectedEmotion || null;
+        
+        // Si no hay mensaje pero hay emoción seleccionada, construir mensaje automáticamente
+        if (!message && currentEmotion) {
+            message = `Me siento ${currentEmotion.label} (${currentEmotion.description})`;
+        }
+        
+        // Si aún no hay mensaje, no enviar
         if (!message) return;
         
         displayUserMessage(message);
         chatInput.value = '';
+        chatInput.placeholder = 'Escribe tu mensaje...'; // Restaurar placeholder
         showLoading(true);
-        
-        const currentEmotion = window.currentSelectedEmotion || null;
         
         // Construir mensaje con contexto del último mensaje del bot si existe
         let messageWithContext = message;
@@ -840,6 +837,8 @@ window.addEventListener('DOMContentLoaded', () => {
         } finally {
             // Siempre re-habilitar UI, incluso si hay error
             showLoading(false);
+            // Limpiar emoción seleccionada después de enviar
+            window.currentSelectedEmotion = null;
         }
     }
     
