@@ -33,8 +33,8 @@ const EMOTIONS = [
     { key: 'controlado', label: 'Controlado', color: 0x27ae60, description: 'Estabilidad, dominio' }
 ];
 
-// Variable global para guardar la última pregunta del bot
-let lastBotQuestion = null;
+// Variable global para guardar el último mensaje completo del bot
+let lastBotMessage = null;
 
 // ============================================
 // SESSION MANAGEMENT
@@ -147,29 +147,21 @@ function displayBotResponse(message, crisisLevel) {
     const chatMessages = document.getElementById('chat-messages');
     if (!chatMessages) return;
 
-    // Extraer y guardar la pregunta final del mensaje anterior del bot (si existe)
+    // Guardar el mensaje completo antes de procesar (para contexto futuro)
+    lastBotMessage = message;
+
+    // Eliminar pregunta final del mensaje anterior del bot en la UI (si existe)
     const previousBotMessages = chatMessages.querySelectorAll('.bot-message');
     if (previousBotMessages.length > 0) {
-        const lastBotMessage = previousBotMessages[previousBotMessages.length - 1];
-        const lastBotContent = lastBotMessage.querySelector('.message-content');
+        const lastBotMessageElement = previousBotMessages[previousBotMessages.length - 1];
+        const lastBotContent = lastBotMessageElement.querySelector('.message-content');
         
         if (lastBotContent) {
-            // Buscar la última pregunta entre ¿? al final del texto
+            // Buscar y eliminar la última pregunta entre ¿? al final del texto en la UI
             let currentHTML = lastBotContent.innerHTML;
-            // Extraer la pregunta (en HTML puede tener <br> y tags)
-            const questionMatch = currentHTML.match(/¿[^¿]*?\?(<br>)*\s*$/i);
-            
-            if (questionMatch) {
-                // Guardar la pregunta sin HTML tags para usar en el siguiente mensaje
-                const questionHTML = questionMatch[0];
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = questionHTML;
-                lastBotQuestion = tempDiv.textContent.trim();
-                
-                // Eliminar la pregunta del mensaje anterior en la UI
-                currentHTML = currentHTML.replace(/¿[^¿]*?\?(<br>)*\s*$/i, '');
-                lastBotContent.innerHTML = currentHTML;
-            }
+            // Eliminar pregunta que esté al final (antes de posibles <br> finales)
+            currentHTML = currentHTML.replace(/¿[^¿]*?\?(<br>)*\s*$/i, '');
+            lastBotContent.innerHTML = currentHTML;
         }
     }
 
@@ -823,12 +815,12 @@ window.addEventListener('DOMContentLoaded', () => {
         
         const currentEmotion = window.currentSelectedEmotion || null;
         
-        // Construir mensaje con contexto de pregunta anterior si existe
+        // Construir mensaje con contexto del último mensaje del bot si existe
         let messageWithContext = message;
-        if (lastBotQuestion) {
-            messageWithContext = `[Pregunta anterior del asistente: "${lastBotQuestion}"] ${message}`;
-            // Resetear la pregunta después de usarla
-            lastBotQuestion = null;
+        if (lastBotMessage) {
+            messageWithContext = `[Último mensaje del asistente: "${lastBotMessage}"]\n\nRespuesta del usuario: ${message}`;
+            // Resetear después de usar
+            lastBotMessage = null;
         }
         
         try {
