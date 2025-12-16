@@ -2,36 +2,21 @@
  * Emotion Game - Phaser.js based interactive emotion selector
  * Integrado con n8n webhook para soporte en crisis TOC
  * 
- * VERSION 2: Polling Pattern
- * - POST /web-client -> ACK inmediato con sessionId
- * - GET /web-client/status -> Polling hasta done/error
- * 
  * Features:
  * - Selector interactivo de emociones relacionadas con TOC
- * - Chat integrado para comunicación con asistente IA
- * - Conexión directa con workflow n8n de soporte en crisis
- * - Polling para respuestas async
+ * - Chat integrado para comunicacion con asistente IA
+ * - Conexion directa con workflow n8n de soporte en crisis
  */
 
 // ============================================
 // CONFIGURACION API
 // ============================================
 const API_CONFIG = {
-    // Base URL del webhook n8n (cambiar según ambiente)
+    // Base URL del webhook n8n (cambiar segun ambiente)
     BASE_URL: 'https://test-ai.bca-plugin.com',
     
-    // Endpoints
-    WEBHOOK_PATH: '/webhook/web-client',
-    STATUS_PATH: '/webhook/web-client/status',
-    
-    // Polling configuration
-    POLLING_INTERVAL_MS: 2000,      // Intervalo inicial entre polls
-    POLLING_MAX_ATTEMPTS: 45,       // Máximo ~90 segundos
-    POLLING_BACKOFF_FACTOR: 1.2,    // Backoff exponential suave
-    POLLING_MAX_INTERVAL_MS: 5000,  // Máximo intervalo entre polls
-    
-    // Timeout total para considerar error
-    TIMEOUT_MS: 90000
+    // Endpoint del webhook
+    WEBHOOK_PATH: '/webhook/web-client'
 };
 
 // ============================================
@@ -59,13 +44,13 @@ function getSessionId() {
 }
 
 // ============================================
-// API COMMUNICATION WITH POLLING
+// API COMMUNICATION (Sincrono)
 // ============================================
 
 /**
- * Envía mensaje al webhook n8n y maneja el polling
+ * Envia mensaje al webhook n8n y espera la respuesta
  * @param {Object} payload - { message, emotion }
- * @returns {Promise<Object>} - Respuesta final del bot
+ * @returns {Promise<Object>} - Respuesta del bot
  */
 async function sendToN8n(payload) {
     const sessionId = getSessionId();
@@ -80,157 +65,51 @@ async function sendToN8n(payload) {
     updateConnectionStatus('processing');
     
     try {
-        // 1. POST inicial - Recibir ACK inmediato
-        const ackResponse = await postMessage(requestBody);
-        
-        if (!ackResponse.success) {
-            throw new Error(ackResponse.message || 'Error al enviar mensaje');
+        const response = await fetch(API_CONFIG.BASE_URL + API_CONFIG.WEBHOOK_PATH, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Client': 'web'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
-        
-        // 2. Si el ACK indica processing, hacer polling
-        if (ackResponse.status === 'processing') {
-            updateLoadingText('Analizando tu mensaje...');
-            const finalResponse = await pollForResult(ackResponse.sessionId);
-            updateConnectionStatus('connected');
-            return finalResponse;
-        }
-        
-        // 3. Si ya viene con respuesta (fallback)
+
+        const data = await response.json();
         updateConnectionStatus('connected');
-        return ackResponse;
         
-    } catch (error) {
-        console.error('Error en comunicación con n8n:', error);
-        updateConnectionStatus('error');
-        return {
-            success: false,
-            error: 'communication_error',
-            message: 'No se pudo conectar con el servicio. Por favor, verifica tu conexión e intenta de nuevo.'
-        };
-    }
-}
-
-/**
- * POST inicial al webhook
- */
-async function postMessage(requestBody) {
-    const url = API_CONFIG.BASE_URL + API_CONFIG.WEBHOOK_PATH;
-    
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Client': 'web'
-        },
-        body: JSON.stringify(requestBody)
-    });
-
-    if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-    }
-
-    return await response.json();
-}
-
-/**
- * Polling para obtener resultado final
- * @param {string} sessionId 
- * @returns {Promise<Object>}
- */
-async function pollForResult(sessionId) {
-    const statusUrl = API_CONFIG.BASE_URL + API_CONFIG.STATUS_PATH + '?sessionId=' + encodeURIComponent(sessionId);
-    
-    let attempts = 0;
-    let interval = API_CONFIG.POLLING_INTERVAL_MS;
-    const startTime = Date.now();
-    
-    while (attempts < API_CONFIG.POLLING_MAX_ATTEMPTS) {
-        attempts++;
-        
-        // Actualizar UI de polling
-        updatePollingStatus(`Consultando... (${attempts})`);
-        
-        try {
-            const response = await fetch(statusUrl, {
-                method: 'GET',
-                headers: {
-                    'X-Client': 'web'
-                }
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            // Verificar estado
-            if (data.status === 'done') {
-                updatePollingStatus('');
-                return {
-                    success: true,
-                    reply: data.reply,
-                    crisisLevel: data.crisisLevel,
-                    channel: data.channel,
-                    sessionId: data.sessionId,
-                    timestamp: data.timestamp
-                };
-            }
-            
-            if (data.status === 'error') {
-                updatePollingStatus('');
-                return {
-                    success: false,
-                    error: 'processing_error',
-                    message: data.message || 'Ocurrió un error al procesar tu mensaje.'
-                };
-            }
-            
-            if (data.status === 'not_found') {
-                // Puede ser que aún no se haya guardado, seguir intentando un poco
-                if (attempts > 5) {
-                    updatePollingStatus('');
-                    return {
-                        success: false,
-                        error: 'not_found',
-                        message: 'No se encontró tu solicitud. Por favor, intenta de nuevo.'
-                    };
-                }
-            }
-            
-            // Aún processing, continuar polling
-            updateLoadingText(data.message || 'Generando respuesta...');
-            
-        } catch (error) {
-            console.warn(`Polling attempt ${attempts} failed:`, error);
-            // Continuar intentando en caso de errores de red temporales
-        }
-        
-        // Verificar timeout total
-        if (Date.now() - startTime > API_CONFIG.TIMEOUT_MS) {
-            updatePollingStatus('');
+        // Respuesta directa del workflow
+        if (data.success && data.reply) {
             return {
-                success: false,
-                error: 'timeout',
-                message: 'La solicitud tardó demasiado. Por favor, intenta de nuevo.'
+                success: true,
+                reply: data.reply,
+                crisisLevel: data.crisisLevel,
+                sessionId: data.sessionId,
+                timestamp: data.timestamp
             };
         }
         
-        // Esperar antes del próximo poll (con backoff)
-        await sleep(interval);
-        interval = Math.min(interval * API_CONFIG.POLLING_BACKOFF_FACTOR, API_CONFIG.POLLING_MAX_INTERVAL_MS);
+        // Error del workflow
+        if (data.error || data.message) {
+            return {
+                success: false,
+                message: data.message || data.response || 'Error al procesar el mensaje.'
+            };
+        }
+        
+        throw new Error('Respuesta inesperada del servidor');
+        
+    } catch (error) {
+        console.error('Error en comunicacion con n8n:', error);
+        updateConnectionStatus('error');
+        return {
+            success: false,
+            message: 'No se pudo conectar con el servicio. Verifica tu conexion e intenta de nuevo.'
+        };
     }
-    
-    updatePollingStatus('');
-    return {
-        success: false,
-        error: 'max_attempts',
-        message: 'Se agotaron los intentos. Por favor, intenta de nuevo.'
-    };
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // ============================================
@@ -259,16 +138,6 @@ function updateConnectionStatus(status) {
     }
 }
 
-function updateLoadingText(text) {
-    const el = document.getElementById('loading-text');
-    if (el) el.textContent = text;
-}
-
-function updatePollingStatus(text) {
-    const el = document.getElementById('polling-status');
-    if (el) el.textContent = text;
-}
-
 function displayBotResponse(message, crisisLevel) {
     const chatMessages = document.getElementById('chat-messages');
     if (!chatMessages) return;
@@ -280,7 +149,7 @@ function displayBotResponse(message, crisisLevel) {
         messageDiv.classList.add('crisis-' + crisisLevel);
     }
     
-    // Convertir markdown básico
+    // Convertir markdown basico
     let formattedMessage = message
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\n/g, '<br>');
@@ -322,11 +191,6 @@ function showLoading(show = true) {
     }
     if (chatInput) {
         chatInput.disabled = show;
-    }
-    
-    if (show) {
-        updateLoadingText('Procesando tu mensaje...');
-        updatePollingStatus('');
     }
 }
 
@@ -618,7 +482,7 @@ class EmotionGameScene extends Phaser.Scene {
             }
         });
 
-        // Enviar emoción a n8n con polling
+        // Enviar emocion a n8n
         const message = `Me siento ${emotion.label} (${emotion.description})`;
         displayUserMessage(message);
         showLoading(true);
