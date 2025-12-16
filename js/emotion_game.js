@@ -471,7 +471,7 @@ class EmotionGameScene extends Phaser.Scene {
         this.setCharacterEmotion(emotion);
     }
 
-    selectEmotion(emotion, cloudContainer) {
+    async selectEmotion(emotion, cloudContainer) {
         this.currentEmotion = emotion;
         window.currentSelectedEmotion = emotion;
 
@@ -494,33 +494,72 @@ class EmotionGameScene extends Phaser.Scene {
 
         this.setCharacterEmotion(emotion);
 
-        this.clouds.forEach(cloud => {
-            if (cloud !== cloudContainer) {
+        // Desactivar todas las nubes mientras se procesa
+        this.disableEmotionClouds();
+
+        // Enviar emoción a n8n inmediatamente
+        const message = `Me siento ${emotion.label} (${emotion.description})`;
+        displayUserMessage(message);
+        showLoading(true);
+        
+        try {
+            const response = await sendToN8n({
+                message: message,
+                emotion: emotion
+            });
+            
+            showLoading(false);
+            
+            if (response.success && response.reply) {
+                displayBotResponse(response.reply, response.crisisLevel);
+            } else {
+                displayBotResponse(response.message || 'Error al procesar tu mensaje. Por favor, intenta de nuevo.', 'none');
+            }
+        } catch (error) {
+            console.error('Error al enviar emoción:', error);
+            showLoading(false);
+            displayBotResponse('Ocurrió un error al procesar tu mensaje. Por favor, intenta de nuevo.', 'none');
+        } finally {
+            // Reactivar las nubes después de recibir respuesta
+            this.enableEmotionClouds();
+            
+            // Restaurar apariencia de todas las nubes
+            this.clouds.forEach(cloud => {
                 this.tweens.add({
                     targets: cloud,
-                    scale: 0.9,
-                    alpha: 0.7,
-                    duration: 200
+                    scale: 1,
+                    alpha: 1,
+                    duration: 300
                 });
+            });
+            
+            // Limpiar indicador de emoción seleccionada
+            if (indicator) {
+                indicator.style.display = 'none';
             }
-        });
-
-        // ACTUALIZADO: No enviar automáticamente, solo actualizar UI
-        // El usuario debe presionar "Enviar" para enviar el mensaje
-        // Pre-rellenar el input si está vacío
-        const chatInput = document.getElementById('chat-input');
-        if (chatInput) {
-            const suggestedText = `Me siento ${emotion.label} (${emotion.description})`;
-            if (!chatInput.value.trim()) {
-                chatInput.placeholder = `Presiona Enviar para compartir que te sientes ${emotion.label}...`;
-            }
-            chatInput.value = suggestedText;
-            chatInput.classList.add('highlight-suggested');
-            chatInput.focus({ preventScroll: true });
-            setTimeout(() => {
-                chatInput.classList.remove('highlight-suggested');
-            }, 2200);
         }
+    }
+
+    disableEmotionClouds() {
+        this.clouds.forEach(cloud => {
+            cloud.disableInteractive();
+            this.tweens.add({
+                targets: cloud,
+                alpha: 0.5,
+                duration: 200
+            });
+        });
+    }
+
+    enableEmotionClouds() {
+        this.clouds.forEach(cloud => {
+            cloud.setInteractive({ useHandCursor: true });
+            this.tweens.add({
+                targets: cloud,
+                alpha: 1,
+                duration: 200
+            });
+        });
     }
 
     setCharacterEmotion(emotion) {
@@ -805,20 +844,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const chatSendBtn = document.getElementById('chat-send-btn');
     
     async function sendChatMessage() {
-        let message = chatInput.value.trim();
-        const currentEmotion = window.currentSelectedEmotion || null;
+        const message = chatInput.value.trim();
         
-        // Si no hay mensaje pero hay emoción seleccionada, construir mensaje automáticamente
-        if (!message && currentEmotion) {
-            message = `Me siento ${currentEmotion.label} (${currentEmotion.description})`;
-        }
-        
-        // Si aún no hay mensaje, no enviar
+        // Si no hay mensaje, no enviar
         if (!message) return;
         
         displayUserMessage(message);
         chatInput.value = '';
-        chatInput.placeholder = 'Escribe tu mensaje...'; // Restaurar placeholder
         showLoading(true);
         
         // Construir mensaje con contexto del último mensaje del bot si existe
@@ -832,7 +864,7 @@ window.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await sendToN8n({
                 message: messageWithContext,
-                emotion: currentEmotion
+                emotion: null // Las emociones se envían directamente desde las nubes
             });
             
             if (response.success && response.reply) {
@@ -846,8 +878,6 @@ window.addEventListener('DOMContentLoaded', () => {
         } finally {
             // Siempre re-habilitar UI, incluso si hay error
             showLoading(false);
-            // Limpiar emoción seleccionada después de enviar
-            window.currentSelectedEmotion = null;
         }
     }
     
