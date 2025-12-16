@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Soporte en Crisis TOC - Emotion Game (Polling v2)</title>
+    <title>Soporte en Crisis TOC - Emotion Game</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
     <style>
         * {
@@ -133,7 +133,7 @@
             margin-top: 4px;
         }
         
-        /* Loading/Polling indicator */
+        /* Loading indicator */
         #chat-loading {
             display: none;
             padding: 15px;
@@ -158,12 +158,6 @@
         
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-        
-        #polling-status {
-            font-size: 11px;
-            color: #95a5a6;
-            margin-top: 5px;
         }
         
         #chat-input-container {
@@ -266,8 +260,7 @@
         </div>
         <div id="chat-loading">
             <span class="loading-spinner"></span>
-            <span id="loading-text">Procesando tu mensaje...</span>
-            <div id="polling-status"></div>
+            <span>Procesando tu mensaje...</span>
         </div>
         <div id="chat-input-container">
             <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." />
