@@ -33,6 +33,9 @@ const EMOTIONS = [
     { key: 'controlado', label: 'Controlado', color: 0x27ae60, description: 'Estabilidad, dominio' }
 ];
 
+// Variable global para guardar la última pregunta del bot
+let lastBotQuestion = null;
+
 // ============================================
 // SESSION MANAGEMENT
 // ============================================
@@ -143,6 +146,32 @@ function updateConnectionStatus(status) {
 function displayBotResponse(message, crisisLevel) {
     const chatMessages = document.getElementById('chat-messages');
     if (!chatMessages) return;
+
+    // Extraer y guardar la pregunta final del mensaje anterior del bot (si existe)
+    const previousBotMessages = chatMessages.querySelectorAll('.bot-message');
+    if (previousBotMessages.length > 0) {
+        const lastBotMessage = previousBotMessages[previousBotMessages.length - 1];
+        const lastBotContent = lastBotMessage.querySelector('.message-content');
+        
+        if (lastBotContent) {
+            // Buscar la última pregunta entre ¿? al final del texto
+            let currentHTML = lastBotContent.innerHTML;
+            // Extraer la pregunta (en HTML puede tener <br> y tags)
+            const questionMatch = currentHTML.match(/¿[^¿]*?\?(<br>)*\s*$/i);
+            
+            if (questionMatch) {
+                // Guardar la pregunta sin HTML tags para usar en el siguiente mensaje
+                const questionHTML = questionMatch[0];
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = questionHTML;
+                lastBotQuestion = tempDiv.textContent.trim();
+                
+                // Eliminar la pregunta del mensaje anterior en la UI
+                currentHTML = currentHTML.replace(/¿[^¿]*?\?(<br>)*\s*$/i, '');
+                lastBotContent.innerHTML = currentHTML;
+            }
+        }
+    }
 
     const messageDiv = document.createElement('div');
     messageDiv.className = 'chat-message bot-message';
@@ -794,17 +823,31 @@ window.addEventListener('DOMContentLoaded', () => {
         
         const currentEmotion = window.currentSelectedEmotion || null;
         
-        const response = await sendToN8n({
-            message: message,
-            emotion: currentEmotion
-        });
+        // Construir mensaje con contexto de pregunta anterior si existe
+        let messageWithContext = message;
+        if (lastBotQuestion) {
+            messageWithContext = `[Pregunta anterior del asistente: "${lastBotQuestion}"] ${message}`;
+            // Resetear la pregunta después de usarla
+            lastBotQuestion = null;
+        }
         
-        showLoading(false);
-        
-        if (response.success && response.reply) {
-            displayBotResponse(response.reply, response.crisisLevel);
-        } else {
-            displayBotResponse(response.message || 'Error al procesar tu mensaje.', 'none');
+        try {
+            const response = await sendToN8n({
+                message: messageWithContext,
+                emotion: currentEmotion
+            });
+            
+            if (response.success && response.reply) {
+                displayBotResponse(response.reply, response.crisisLevel);
+            } else {
+                displayBotResponse(response.message || 'Error al procesar tu mensaje.', 'none');
+            }
+        } catch (error) {
+            console.error('Error inesperado al enviar mensaje:', error);
+            displayBotResponse('Ocurrió un error inesperado. Por favor, intenta de nuevo.', 'none');
+        } finally {
+            // Siempre re-habilitar UI, incluso si hay error
+            showLoading(false);
         }
     }
     
