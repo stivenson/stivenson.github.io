@@ -16,9 +16,10 @@ const API_CONFIG = {
     BASE_URL: 'https://test-ai.bca-plugin.com',
     
     // Endpoint del webhook
-    // NOTA: Usamos /webhook-test para poder testear desde n8n sin activar el workflow
+    // NOTA: Usamos /webhook-test/{workflow-id} para poder testear desde n8n sin activar el workflow
+    // Workflow ID: y9BF7jFE7NxUb5V7
     // En produccion, cambiar a /webhook/web-client
-    WEBHOOK_PATH: '/webhook-test'
+    WEBHOOK_PATH: '/webhook-test/y9BF7jFE7NxUb5V7'
 };
 
 // ============================================
