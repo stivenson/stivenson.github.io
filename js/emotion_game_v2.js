@@ -40,8 +40,16 @@ function acceptPrivacy() {
     }
 }
 
-// Hacer la función global para que el HTML pueda llamarla
+// Hacer funciones globales para el HTML
 window.acceptPrivacy = acceptPrivacy;
+
+function toggleChat() {
+    const chatPanel = document.getElementById('chat-panel');
+    if (chatPanel) {
+        chatPanel.classList.toggle('minimized');
+    }
+}
+window.toggleChat = toggleChat;
 
 // ============================================
 // CONFIGURACION API
@@ -203,6 +211,22 @@ function displayBotResponse(message, crisisLevel) {
     const chatMessages = document.getElementById('chat-messages');
     if (!chatMessages) return;
 
+    // --- INTEGRACIÓN CON PHASER ---
+    if (window.phaserGame && window.phaserGame.scene.keys.EmotionGameScene) {
+        const scene = window.phaserGame.scene.keys.EmotionGameScene;
+        scene.reactToCrisis(crisisLevel);
+
+        // Activar respiración si se detecta alta angustia o emergencia
+        if (crisisLevel === 'emergency' || crisisLevel === 'high_distress') {
+            scene.startBreathingExercise();
+            // Detener después de 20 segundos (5 ciclos)
+            setTimeout(() => scene.stopBreathingExercise(), 20000);
+        } else {
+            scene.stopBreathingExercise();
+        }
+    }
+    // ------------------------------
+
     // Guardar el mensaje completo antes de procesar (para contexto futuro)
     lastBotMessage = message;
 
@@ -289,6 +313,11 @@ class EmotionGameScene extends Phaser.Scene {
         this.clouds = [];
         this.currentEmotion = null;
         this.characterParts = {};
+        this.ambientParticles = [];
+        this.backgroundGraphics = null;
+        this.breathingCircle = null;
+        this.isBreathingExerciseActive = false;
+        this.currentCrisisLevel = 'none';
     }
 
     create() {
@@ -299,20 +328,15 @@ class EmotionGameScene extends Phaser.Scene {
         this.createCharacter(centerX, centerY);
         this.createEmotionClouds(centerX, centerY);
         this.createAmbientParticles();
+        this.createBreathingOverlay(centerX, centerY);
     }
 
     createBackground() {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
-        const bg = this.add.graphics();
-        
-        for (let i = 0; i < 50; i++) {
-            const alpha = 0.02;
-            const radius = (50 - i) * 10;
-            bg.fillStyle(0x4a69bd, alpha);
-            bg.fillCircle(width / 2, height / 2, radius);
-        }
+        this.backgroundGraphics = this.add.graphics();
+        this.updateEnvironment('none'); // Initial state
 
         for (let i = 0; i < 30; i++) {
             const x = Phaser.Math.Between(0, width);
@@ -328,6 +352,56 @@ class EmotionGameScene extends Phaser.Scene {
                 ease: 'Sine.easeInOut'
             });
         }
+    }
+
+    updateEnvironment(level) {
+        const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
+        this.currentCrisisLevel = level;
+
+        let bgColor;
+        let particleSpeed;
+        let particleAlpha;
+
+        switch(level) {
+            case 'emergency':
+                bgColor = 0x4a1212; // Rojo oscuro
+                particleSpeed = 2000;
+                particleAlpha = 0.4;
+                break;
+            case 'high_distress':
+                bgColor = 0x3d1a4a; // Púrpura oscuro
+                particleSpeed = 4000;
+                particleAlpha = 0.3;
+                break;
+            case 'ocd_spike':
+                bgColor = 0x1a2e4a; // Azul intenso
+                particleSpeed = 6000;
+                particleAlpha = 0.2;
+                break;
+            default:
+                bgColor = 0x4a69bd; // Azul suave original
+                particleSpeed = 10000;
+                particleAlpha = 0.15;
+        }
+
+        // Animación suave del color de fondo
+        this.backgroundGraphics.clear();
+        for (let i = 0; i < 50; i++) {
+            const alpha = 0.02;
+            const radius = (50 - i) * 15;
+            this.backgroundGraphics.fillStyle(bgColor, alpha);
+            this.backgroundGraphics.fillCircle(width / 2, height / 2, radius);
+        }
+
+        // Actualizar partículas
+        this.ambientParticles.forEach(p => {
+            const tween = this.tweens.getTweensOf(p)[0];
+            if (tween) {
+                tween.updateTo('duration', Phaser.Math.Between(particleSpeed, particleSpeed * 2), true);
+                p.setAlpha(particleAlpha);
+            }
+        });
     }
 
     createCharacter(x, y) {
@@ -854,10 +928,12 @@ class EmotionGameScene extends Phaser.Scene {
     }
 
     createAmbientParticles() {
-        for (let i = 0; i < 15; i++) {
+        this.ambientParticles = [];
+        for (let i = 0; i < 20; i++) {
             const x = Phaser.Math.Between(0, this.cameras.main.width);
             const y = Phaser.Math.Between(0, this.cameras.main.height);
             const particle = this.add.circle(x, y, Phaser.Math.Between(2, 5), 0xffffff, 0.15);
+            this.ambientParticles.push(particle);
 
             this.tweens.add({
                 targets: particle,
@@ -873,7 +949,139 @@ class EmotionGameScene extends Phaser.Scene {
             });
         }
     }
-}
+
+    createBreathingOverlay(x, y) {
+        this.breathingCircle = this.add.container(x, y);
+        this.breathingCircle.setAlpha(0);
+
+        const outer = this.add.circle(0, 0, 100, 0x6c5ce7, 0.2);
+        outer.setStrokeStyle(4, 0x6c5ce7, 0.5);
+        
+        const inner = this.add.circle(0, 0, 40, 0x6c5ce7, 0.5);
+        
+        const text = this.add.text(0, 120, 'Inhala...', {
+            fontSize: '20px',
+            fontFamily: 'Segoe UI',
+            color: '#ffffff',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            padding: { x: 10, y: 5 }
+        }).setOrigin(0.5);
+
+        this.breathingCircle.add([outer, inner, text]);
+        this.breathingCircle.setData('inner', inner);
+        this.breathingCircle.setData('text', text);
+    }
+
+    startBreathingExercise() {
+        if (this.isBreathingExerciseActive) return;
+        this.isBreathingExerciseActive = true;
+
+        this.tweens.add({
+            targets: this.breathingCircle,
+            alpha: 1,
+            duration: 500
+        });
+
+        const inner = this.breathingCircle.getData('inner');
+        const text = this.breathingCircle.getData('text');
+
+        const breatheTimeline = this.tweens.createTimeline({
+            loop: -1
+        });
+
+        // Inhala (4s)
+        breatheTimeline.add({
+            targets: inner,
+            scale: 2.5,
+            duration: 4000,
+            ease: 'Sine.easeInOut',
+            onStart: () => text.setText('Inhala...')
+        });
+
+        // Sostén (4s)
+        breatheTimeline.add({
+            targets: inner,
+            scale: 2.5,
+            duration: 4000,
+            onStart: () => text.setText('Sostén...')
+        });
+
+        // Exhala (4s)
+        breatheTimeline.add({
+            targets: inner,
+            scale: 1,
+            duration: 4000,
+            ease: 'Sine.easeInOut',
+            onStart: () => text.setText('Exhala...')
+        });
+
+        // Sostén vacío (4s)
+        breatheTimeline.add({
+            targets: inner,
+            scale: 1,
+            duration: 4000,
+            onStart: () => text.setText('Pausa...')
+        });
+
+        breatheTimeline.play();
+        this.breathingCircle.setData('timeline', breatheTimeline);
+        
+        // El personaje adopta postura de guía
+        this.setGuidingExpression();
+    }
+
+    stopBreathingExercise() {
+        if (!this.isBreathingExerciseActive) return;
+        this.isBreathingExerciseActive = false;
+
+        const timeline = this.breathingCircle.getData('timeline');
+        if (timeline) timeline.stop();
+
+        this.tweens.add({
+            targets: this.breathingCircle,
+            alpha: 0,
+            duration: 500
+        });
+
+        this.setCharacterNeutral();
+    }
+
+    reactToCrisis(level) {
+        this.updateEnvironment(level);
+        
+        if (level === 'emergency' || level === 'high_distress') {
+            this.setListeningExpression();
+        } else if (level === 'none') {
+            this.setCalmExpression();
+        }
+    }
+
+    setListeningExpression() {
+        this.tweens.killTweensOf(this.character);
+        this.tweens.add({
+            targets: this.character,
+            y: this.character.y + 10,
+            scaleX: 1.05,
+            duration: 1000,
+            ease: 'Sine.easeOut'
+        });
+
+        this.characterParts.leftBrow.setAngle(10);
+        this.characterParts.rightBrow.setAngle(-10);
+    }
+
+    setGuidingExpression() {
+        this.tweens.killTweensOf([this.characterParts.leftArm, this.characterParts.rightArm]);
+        
+        this.tweens.add({
+            targets: [this.characterParts.leftArm, this.characterParts.rightArm],
+            angle: { from: 10, to: -20 },
+            duration: 4000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
+    }
 
 // ============================================
 // GAME INITIALIZATION
@@ -898,7 +1106,7 @@ function initEmotionGame(containerId = 'game-container', width = 500, height = 5
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', () => {
-    initEmotionGame();
+    window.phaserGame = initEmotionGame();
     
     // Setup chat functionality
     const chatInput = document.getElementById('chat-input');

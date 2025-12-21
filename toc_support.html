@@ -49,8 +49,14 @@
             overflow: hidden;
             backdrop-filter: blur(10px);
             z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), max-height 0.3s ease;
         }
-        
+
+        #chat-panel.minimized {
+            max-height: 50px;
+            cursor: pointer;
+        }
+
         #chat-header {
             background: linear-gradient(135deg, #6c5ce7 0%, #5f4bd8 100%);
             color: white;
@@ -60,6 +66,17 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
+        }
+
+        #chat-header .toggle-icon {
+            margin-left: 10px;
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        #chat-panel.minimized #chat-header .toggle-icon {
+            transform: rotate(180deg);
         }
         
         #connection-status {
@@ -376,10 +393,11 @@
     
     <!-- Chat Panel -->
     <div id="chat-panel">
-        <div id="chat-header">
+        <div id="chat-header" onclick="toggleChat()">
             Asistente TOC
             <span id="selected-emotion"></span>
             <span id="connection-status">Listo</span>
+            <span class="toggle-icon">▼</span>
         </div>
         <div id="chat-messages">
             <div class="chat-message bot-message">
