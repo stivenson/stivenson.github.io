@@ -1082,6 +1082,7 @@ class EmotionGameScene extends Phaser.Scene {
             ease: 'Sine.easeInOut'
         });
     }
+}
 
 // ============================================
 // GAME INITIALIZATION
