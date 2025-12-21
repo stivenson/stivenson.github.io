@@ -3,6 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Evitar cacheo del HTML -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Soporte en Crisis TOC - Emotion Game</title>
     <!-- Phaser.js desde CDN con fallback local -->
     <script src="https://unpkg.com/phaser@3.70.0/dist/phaser.min.js"></script>
@@ -414,9 +418,7 @@
         </div>
     </div>
     
-    <!-- Ruta del JS - ajustar según estructura en GitHub Pages -->
-    <!-- Si está en la raíz: emotion_game_v2.js -->
-    <!-- Si está en carpeta js: js/emotion_game_v2.js -->
-    <script src="js/emotion_game_v2.js"></script>
+    <!-- Ruta del JS con Cache Busting (v=timestamp/version) -->
+    <script src="js/emotion_game_v2.js?v=1.0.4"></script>
 </body>
 </html>
