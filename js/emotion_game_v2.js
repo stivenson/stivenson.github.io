@@ -211,18 +211,30 @@ function displayBotResponse(message, crisisLevel) {
     const chatMessages = document.getElementById('chat-messages');
     if (!chatMessages) return;
 
-    // --- INTEGRACIÓN CON PHASER ---
-    if (window.phaserGame && window.phaserGame.scene.keys.EmotionGameScene) {
-        const scene = window.phaserGame.scene.keys.EmotionGameScene;
-        scene.reactToCrisis(crisisLevel);
+    // --- INTEGRACIÓN CON PHASER (Mejorada) ---
+    const normalizedCrisisLevel = crisisLevel || 'none';
 
-        // Activar respiración si se detecta alta angustia o emergencia
-        if (crisisLevel === 'emergency' || crisisLevel === 'high_distress') {
-            scene.startBreathingExercise();
-            // Detener después de 20 segundos (5 ciclos)
-            setTimeout(() => scene.stopBreathingExercise(), 20000);
-        } else {
-            scene.stopBreathingExercise();
+    if (!window.phaserGame) {
+        console.warn('⚠️ Phaser game no está inicializado');
+    } else if (!window.phaserGame.scene || !window.phaserGame.scene.keys || !window.phaserGame.scene.keys.EmotionGameScene) {
+        console.warn('⚠️ Escena EmotionGameScene no está disponible');
+    } else {
+        try {
+            const scene = window.phaserGame.scene.keys.EmotionGameScene;
+            scene.reactToCrisis(normalizedCrisisLevel);
+
+            // Activar respiración si se detecta alta angustia o emergencia
+            if (normalizedCrisisLevel === 'emergency' || normalizedCrisisLevel === 'high_distress') {
+                scene.startBreathingExercise();
+                // Detener después de 20 segundos (5 ciclos)
+                setTimeout(() => {
+                    scene.stopBreathingExercise();
+                }, 20000);
+            } else {
+                scene.stopBreathingExercise();
+            }
+        } catch (error) {
+            console.error('❌ Error al interactuar con Phaser:', error);
         }
     }
     // ------------------------------
@@ -985,46 +997,41 @@ class EmotionGameScene extends Phaser.Scene {
         const inner = this.breathingCircle.getData('inner');
         const text = this.breathingCircle.getData('text');
 
-        const breatheTimeline = this.tweens.createTimeline({
-            loop: -1
-        });
-
-        // Inhala (4s)
-        breatheTimeline.add({
+        // Phaser 3.60+ usa tweens.chain para secuencias
+        const breatheChain = this.tweens.chain({
             targets: inner,
-            scale: 2.5,
-            duration: 4000,
-            ease: 'Sine.easeInOut',
-            onStart: () => text.setText('Inhala...')
+            loop: -1,
+            tweens: [
+                {
+                    // Inhala (4s)
+                    scale: 2.5,
+                    duration: 4000,
+                    ease: 'Sine.easeInOut',
+                    onStart: () => text.setText('Inhala...')
+                },
+                {
+                    // Sostén (4s)
+                    scale: 2.5,
+                    duration: 4000,
+                    onStart: () => text.setText('Sostén...')
+                },
+                {
+                    // Exhala (4s)
+                    scale: 1,
+                    duration: 4000,
+                    ease: 'Sine.easeInOut',
+                    onStart: () => text.setText('Exhala...')
+                },
+                {
+                    // Sostén vacío (4s)
+                    scale: 1,
+                    duration: 4000,
+                    onStart: () => text.setText('Pausa...')
+                }
+            ]
         });
 
-        // Sostén (4s)
-        breatheTimeline.add({
-            targets: inner,
-            scale: 2.5,
-            duration: 4000,
-            onStart: () => text.setText('Sostén...')
-        });
-
-        // Exhala (4s)
-        breatheTimeline.add({
-            targets: inner,
-            scale: 1,
-            duration: 4000,
-            ease: 'Sine.easeInOut',
-            onStart: () => text.setText('Exhala...')
-        });
-
-        // Sostén vacío (4s)
-        breatheTimeline.add({
-            targets: inner,
-            scale: 1,
-            duration: 4000,
-            onStart: () => text.setText('Pausa...')
-        });
-
-        breatheTimeline.play();
-        this.breathingCircle.setData('timeline', breatheTimeline);
+        this.breathingCircle.setData('chain', breatheChain);
         
         // El personaje adopta postura de guía
         this.setGuidingExpression();
@@ -1034,8 +1041,8 @@ class EmotionGameScene extends Phaser.Scene {
         if (!this.isBreathingExerciseActive) return;
         this.isBreathingExerciseActive = false;
 
-        const timeline = this.breathingCircle.getData('timeline');
-        if (timeline) timeline.stop();
+        const chain = this.breathingCircle.getData('chain');
+        if (chain) chain.stop();
 
         this.tweens.add({
             targets: this.breathingCircle,
