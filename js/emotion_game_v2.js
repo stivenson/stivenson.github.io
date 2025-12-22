@@ -161,6 +161,39 @@ function applyUITranslations() {
 window.addEventListener('DOMContentLoaded', detectUserContext);
 
 // ============================================
+// GESTIÓN DE MEMORIA IA (CHAT SUMMARY)
+// ============================================
+const SUMMARY_KEY = 'toc_chat_summary';
+
+/**
+ * Obtiene el resumen guardado de la conversación
+ */
+function getChatSummary() {
+    return localStorage.getItem(SUMMARY_KEY) || '';
+}
+
+/**
+ * Guarda el nuevo resumen generado por la IA
+ */
+function saveChatSummary(summary) {
+    if (summary) {
+        localStorage.setItem(SUMMARY_KEY, summary);
+        console.log('🧠 Memoria IA actualizada:', summary);
+    }
+}
+
+/**
+ * Borra la memoria de la sesión
+ */
+function clearChatMemory() {
+    localStorage.removeItem(SUMMARY_KEY);
+    console.log('🧹 Memoria IA borrada');
+}
+
+// Hacer global para depuración
+window.clearChatMemory = clearChatMemory;
+
+// ============================================
 // GESTIÓN DE PRIVACIDAD Y CONSENTIMIENTO
 // ============================================
 const PRIVACY_KEY = 'ocd_support_privacy_accepted';
@@ -266,6 +299,7 @@ function getSessionId() {
  */
 async function sendToN8n(payload) {
     const sessionId = getSessionId();
+    const chatSummary = getChatSummary();
     
     const requestBody = {
         sessionId: sessionId,
@@ -273,7 +307,8 @@ async function sendToN8n(payload) {
         emotion: payload.emotion || null,
         timestamp: new Date().toISOString(),
         countryCode: USER_CONTEXT.countryCode,
-        language: USER_CONTEXT.language
+        language: USER_CONTEXT.language,
+        chatSummary: chatSummary
     };
 
     updateConnectionStatus('processing');
@@ -290,7 +325,6 @@ async function sendToN8n(payload) {
 
         // Logging mejorado para debugging
         console.log('Response status:', response.status);
-        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
         
         if (!response.ok) {
             const errorText = await response.text();
@@ -300,16 +334,13 @@ async function sendToN8n(payload) {
 
         // Leer respuesta como texto primero para debugging
         const responseText = await response.text();
-        console.log('Response body (raw):', responseText);
         
         // Intentar parsear JSON
         let data;
         try {
             data = JSON.parse(responseText);
-            console.log('Response body (parsed):', data);
         } catch (parseError) {
             console.error('Error parsing JSON:', parseError);
-            console.error('Response was not valid JSON. Raw text:', responseText);
             throw new Error(`Respuesta no es JSON válido: ${responseText.substring(0, 200)}`);
         }
         
@@ -317,6 +348,11 @@ async function sendToN8n(payload) {
         
         // Respuesta directa del workflow
         if (data.success && data.reply) {
+            // GUARDAR EL NUEVO RESUMEN SI VIENE EN LA RESPUESTA
+            if (data.newChatSummary) {
+                saveChatSummary(data.newChatSummary);
+            }
+
             return {
                 success: true,
                 reply: data.reply,
