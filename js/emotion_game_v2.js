@@ -9,6 +9,158 @@
  */
 
 // ============================================
+// GESTIÓN DE LOCALIZACIÓN (I18N & GEO)
+// ============================================
+window.USER_CONTEXT = {
+    countryCode: 'ES', // Default
+    language: 'es',    // Default
+    isSpanishSpeaker: true
+};
+
+const TRANSLATIONS = {
+    es: {
+        privacy_title: '🔒 Privacidad y Seguridad',
+        privacy_warn: 'No compartas información personal identificable',
+        privacy_gdpr: 'Procesamos tu mensaje y emoción seleccionada para proporcionar técnicas de afrontamiento...',
+        privacy_emergency: 'No es un servicio de emergencias. Si estás en peligro inmediato, contacta: 112 (España) o 911 (EE.UU.).',
+        privacy_button: 'Entiendo y Acepto',
+        instructions_title: 'Soporte en Crisis TOC',
+        instructions_text: 'Selecciona una emoción o escribe un mensaje para recibir apoyo',
+        chat_header: 'Asistente TOC',
+        chat_status_ready: 'Listo',
+        chat_status_processing: 'Procesando...',
+        chat_status_error: 'Error',
+        chat_placeholder: 'Escribe tu mensaje...',
+        chat_send: 'Enviar',
+        chat_welcome: '¡Hola! Estoy aquí para apoyarte. Puedes seleccionar una emoción o escribirme directamente cómo te sientes.',
+        chat_error_connection: 'No se pudo conectar con el servicio. Verifica tu conexión e intenta de nuevo.',
+        chat_error_generic: 'Ocurrió un error al procesar tu mensaje. Por favor, intenta de nuevo.',
+        emotion_selected: 'Te sientes:',
+        breathing_inhale: 'Inhala...',
+        breathing_hold: 'Sostén...',
+        breathing_exhale: 'Exhala...',
+        breathing_pause: 'Pausa...',
+        emotions: {
+            ansioso: { label: 'Ansioso', desc: 'Nerviosismo, preocupación' },
+            obsesivo: { label: 'Obsesivo', desc: 'Pensamientos repetitivos' },
+            compulsivo: { label: 'Compulsivo', desc: 'Urgencia de actuar' },
+            calmado: { label: 'Calmado', desc: 'Tranquilidad, paz' },
+            abrumado: { label: 'Abrumado', desc: 'Sobrecarga, confusión' },
+            controlado: { label: 'Controlado', desc: 'Estabilidad, dominio' }
+        }
+    },
+    en: {
+        privacy_title: '🔒 Privacy & Security',
+        privacy_warn: 'Do not share personally identifiable information',
+        privacy_gdpr: 'We process your message and selected emotion to provide coping techniques...',
+        privacy_emergency: 'This is NOT an emergency service. If you are in immediate danger, call 911 (USA) or your local emergency number.',
+        privacy_button: 'I Understand & Accept',
+        instructions_title: 'OCD Crisis Support',
+        instructions_text: 'Select an emotion or write a message to receive support',
+        chat_header: 'OCD Assistant',
+        chat_status_ready: 'Ready',
+        chat_status_processing: 'Processing...',
+        chat_status_error: 'Error',
+        chat_placeholder: 'Type your message...',
+        chat_send: 'Send',
+        chat_welcome: 'Hello! I am here to support you. You can select an emotion or write directly how you feel.',
+        chat_error_connection: 'Could not connect to the service. Please check your connection and try again.',
+        chat_error_generic: 'An error occurred while processing your message. Please try again.',
+        emotion_selected: 'You feel:',
+        breathing_inhale: 'Inhale...',
+        breathing_hold: 'Hold...',
+        breathing_exhale: 'Exhale...',
+        breathing_pause: 'Pause...',
+        emotions: {
+            ansioso: { label: 'Anxious', desc: 'Nervousness, worry' },
+            obsesivo: { label: 'Obsessive', desc: 'Repetitive thoughts' },
+            compulsivo: { label: 'Compulsive', desc: 'Urge to act' },
+            calmado: { label: 'Calm', desc: 'Tranquility, peace' },
+            abrumado: { label: 'Overwhelmed', desc: 'Overload, confusion' },
+            controlado: { label: 'Controlled', desc: 'Stability, mastery' }
+        }
+    }
+};
+
+/**
+ * Detecta el contexto del usuario (país e idioma)
+ */
+async function detectUserContext() {
+    try {
+        // 1. Detectar idioma del navegador
+        const browserLang = (navigator.language || navigator.userLanguage).split('-')[0].toLowerCase();
+        
+        // 2. Intentar detectar país por IP (Servicio gratuito y rápido)
+        const response = await fetch('https://ipapi.co/json/').catch(() => null);
+        if (response && response.ok) {
+            const data = await response.json();
+            USER_CONTEXT.countryCode = data.country_code || 'ES';
+        }
+
+        // 3. Determinar si es hispanohablante
+        // Países donde el español es oficial o muy común
+        const spanishSpeakingCountries = ['ES', 'MX', 'CO', 'AR', 'PE', 'VE', 'CL', 'EC', 'GT', 'CU', 'BO', 'DO', 'HN', 'PY', 'SV', 'NI', 'CR', 'PR', 'UY', 'GQ'];
+        USER_CONTEXT.isSpanishSpeaker = spanishSpeakingCountries.includes(USER_CONTEXT.countryCode) || browserLang === 'es';
+        
+        // 4. Configurar idioma final
+        USER_CONTEXT.language = USER_CONTEXT.isSpanishSpeaker ? 'es' : 'en';
+        
+        console.log('User context detected:', USER_CONTEXT);
+        
+        // 5. Aplicar traducciones a la UI
+        applyUITranslations();
+    } catch (error) {
+        console.error('Error detecting user context:', error);
+    }
+}
+
+function t(key) {
+    const lang = USER_CONTEXT.language;
+    return TRANSLATIONS[lang][key] || TRANSLATIONS['es'][key] || key;
+}
+
+function applyUITranslations() {
+    // Banner Privacidad
+    const privacyTitle = document.querySelector('#privacy-banner h3');
+    if (privacyTitle) privacyTitle.textContent = t('privacy_title');
+    
+    const privacyBtn = document.querySelector('#privacy-banner button');
+    if (privacyBtn) privacyBtn.textContent = t('privacy_button');
+
+    // Instrucciones
+    const instrTitle = document.querySelector('#instructions h3');
+    if (instrTitle) instrTitle.textContent = t('instructions_title');
+    
+    const instrText = document.querySelector('#instructions p');
+    if (instrText) instrText.textContent = t('instructions_text');
+
+    // Chat
+    const chatHeader = document.getElementById('chat-header');
+    if (chatHeader) {
+        // Preservar los spans de status y toggle
+        const statusEl = document.getElementById('connection-status');
+        const emotionEl = document.getElementById('selected-emotion');
+        chatHeader.childNodes[0].textContent = t('chat_header') + ' ';
+    }
+
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) chatInput.placeholder = t('chat_placeholder');
+
+    const chatSend = document.getElementById('chat-send-btn');
+    if (chatSend) chatSend.textContent = t('chat_send');
+
+    // Mensaje de bienvenida si el chat está vacío o solo tiene el default
+    const chatMessages = document.getElementById('chat-messages');
+    if (chatMessages && chatMessages.children.length <= 1) {
+        const firstMsg = chatMessages.querySelector('.bot-message .message-content');
+        if (firstMsg) firstMsg.textContent = t('chat_welcome');
+    }
+}
+
+// Ejecutar detección al cargar
+window.addEventListener('DOMContentLoaded', detectUserContext);
+
+// ============================================
 // GESTIÓN DE PRIVACIDAD Y CONSENTIMIENTO
 // ============================================
 const PRIVACY_KEY = 'ocd_support_privacy_accepted';
@@ -68,7 +220,7 @@ const API_CONFIG = {
 // ============================================
 // EMOTION DEFINITIONS (TOC-specific)
 // ============================================
-const EMOTIONS = [
+let EMOTIONS = [
     { key: 'ansioso', label: 'Ansioso', color: 0xf39c12, description: 'Nerviosismo, preocupacion' },
     { key: 'obsesivo', label: 'Obsesivo', color: 0x9b59b6, description: 'Pensamientos repetitivos' },
     { key: 'compulsivo', label: 'Compulsivo', color: 0xe74c3c, description: 'Urgencia de actuar' },
@@ -76,6 +228,17 @@ const EMOTIONS = [
     { key: 'abrumado', label: 'Abrumado', color: 0xe67e22, description: 'Sobrecarga, confusion' },
     { key: 'controlado', label: 'Controlado', color: 0x27ae60, description: 'Estabilidad, dominio' }
 ];
+
+/**
+ * Traduce las emociones según el idioma detectado
+ */
+function translateEmotions() {
+    EMOTIONS = EMOTIONS.map(e => ({
+        ...e,
+        label: t('emotions')[e.key]?.label || e.label,
+        description: t('emotions')[e.key]?.desc || e.description
+    }));
+}
 
 // Variable global para guardar el último mensaje completo del bot
 let lastBotMessage = null;
@@ -108,7 +271,9 @@ async function sendToN8n(payload) {
         sessionId: sessionId,
         message: payload.message || '',
         emotion: payload.emotion || null,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        countryCode: USER_CONTEXT.countryCode,
+        language: USER_CONTEXT.language
     };
 
     updateConnectionStatus('processing');
@@ -176,7 +341,7 @@ async function sendToN8n(payload) {
         updateConnectionStatus('error');
         return {
             success: false,
-            message: 'No se pudo conectar con el servicio. Verifica tu conexion e intenta de nuevo.'
+            message: t('chat_error_connection')
         };
     }
 }
@@ -192,18 +357,18 @@ function updateConnectionStatus(status) {
     el.className = '';
     switch(status) {
         case 'connected':
-            el.textContent = 'Listo';
+            el.textContent = t('chat_status_ready');
             el.classList.add('connected');
             break;
         case 'processing':
-            el.textContent = 'Procesando...';
+            el.textContent = t('chat_status_processing');
             break;
         case 'error':
-            el.textContent = 'Error';
+            el.textContent = t('chat_status_error');
             el.classList.add('error');
             break;
         default:
-            el.textContent = 'Listo';
+            el.textContent = t('chat_status_ready');
     }
 }
 
@@ -276,7 +441,7 @@ function displayBotResponse(message, crisisLevel) {
     
     messageDiv.innerHTML = `
         <div class="message-content">${formattedMessage}</div>
-        <div class="message-time">${new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</div>
+        <div class="message-time">${new Date().toLocaleTimeString(USER_CONTEXT.language, { hour: '2-digit', minute: '2-digit' })}</div>
     `;
     
     chatMessages.appendChild(messageDiv);
@@ -291,7 +456,7 @@ function displayUserMessage(message) {
     messageDiv.className = 'chat-message user-message';
     messageDiv.innerHTML = `
         <div class="message-content">${message}</div>
-        <div class="message-time">${new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</div>
+        <div class="message-time">${new Date().toLocaleTimeString(USER_CONTEXT.language, { hour: '2-digit', minute: '2-digit' })}</div>
     `;
     
     chatMessages.appendChild(messageDiv);
@@ -635,7 +800,7 @@ class EmotionGameScene extends Phaser.Scene {
 
         const indicator = document.getElementById('selected-emotion');
         if (indicator) {
-            indicator.textContent = `Te sientes: ${emotion.label}`;
+            indicator.textContent = `${t('emotion_selected')} ${emotion.label}`;
             indicator.style.display = 'block';
         }
 
@@ -660,12 +825,12 @@ class EmotionGameScene extends Phaser.Scene {
             if (response.success && response.reply) {
                 displayBotResponse(response.reply, response.crisisLevel);
             } else {
-                displayBotResponse(response.message || 'Error al procesar tu mensaje. Por favor, intenta de nuevo.', 'none');
+                displayBotResponse(response.message || t('chat_error_generic'), 'none');
             }
         } catch (error) {
             console.error('Error al enviar emoción:', error);
             showLoading(false);
-            displayBotResponse('Ocurrió un error al procesar tu mensaje. Por favor, intenta de nuevo.', 'none');
+            displayBotResponse(t('chat_error_generic'), 'none');
         } finally {
             // Reactivar las nubes después de recibir respuesta
             this.enableEmotionClouds();
@@ -971,7 +1136,7 @@ class EmotionGameScene extends Phaser.Scene {
         
         const inner = this.add.circle(0, 0, 40, 0x6c5ce7, 0.5);
         
-        const text = this.add.text(0, 120, 'Inhala...', {
+        const text = this.add.text(0, 120, t('breathing_inhale'), {
             fontSize: '20px',
             fontFamily: 'Segoe UI',
             color: '#ffffff',
@@ -1007,26 +1172,26 @@ class EmotionGameScene extends Phaser.Scene {
                     scale: 2.5,
                     duration: 4000,
                     ease: 'Sine.easeInOut',
-                    onStart: () => text.setText('Inhala...')
+                    onStart: () => text.setText(t('breathing_inhale'))
                 },
                 {
                     // Sostén (4s)
                     scale: 2.5,
                     duration: 4000,
-                    onStart: () => text.setText('Sostén...')
+                    onStart: () => text.setText(t('breathing_hold'))
                 },
                 {
                     // Exhala (4s)
                     scale: 1,
                     duration: 4000,
                     ease: 'Sine.easeInOut',
-                    onStart: () => text.setText('Exhala...')
+                    onStart: () => text.setText(t('breathing_exhale'))
                 },
                 {
                     // Sostén vacío (4s)
                     scale: 1,
                     duration: 4000,
-                    onStart: () => text.setText('Pausa...')
+                    onStart: () => text.setText(t('breathing_pause'))
                 }
             ]
         });
@@ -1113,7 +1278,14 @@ function initEmotionGame(containerId = 'game-container', width = 500, height = 5
 }
 
 // Initialize on page load
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+    // 1. Detectar contexto (país e idioma)
+    await detectUserContext();
+    
+    // 2. Traducir emociones antes de iniciar Phaser
+    translateEmotions();
+
+    // 3. Iniciar el juego
     window.phaserGame = initEmotionGame();
     
     // Setup chat functionality
@@ -1147,11 +1319,11 @@ window.addEventListener('DOMContentLoaded', () => {
             if (response.success && response.reply) {
                 displayBotResponse(response.reply, response.crisisLevel);
             } else {
-                displayBotResponse(response.message || 'Error al procesar tu mensaje.', 'none');
+                displayBotResponse(response.message || t('chat_error_generic'), 'none');
             }
         } catch (error) {
             console.error('Error inesperado al enviar mensaje:', error);
-            displayBotResponse('Ocurrió un error inesperado. Por favor, intenta de nuevo.', 'none');
+            displayBotResponse(t('chat_error_generic'), 'none');
         } finally {
             // Siempre re-habilitar UI, incluso si hay error
             showLoading(false);
