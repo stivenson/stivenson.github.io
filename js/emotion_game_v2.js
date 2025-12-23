@@ -221,7 +221,7 @@ function showPrivacyBanner() {
     const banner = document.getElementById('privacy-banner');
     if (overlay && banner) {
         overlay.style.display = 'block';
-        banner.style.display = 'block';
+        banner.style.display = 'flex';
     }
 }
 

@@ -485,25 +485,33 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(255, 255, 255, 0.98);
-            padding: 25px 30px;
+            padding: 20px;
             border-radius: 15px;
             box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4);
             z-index: 2000;
             max-width: 600px;
+            max-height: 85vh;
             backdrop-filter: blur(10px);
+            flex-direction: column;
+        }
+        
+        #privacy-banner .privacy-content {
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 5px;
         }
         
         #privacy-banner h3 {
-            margin: 0 0 15px 0;
+            margin: 0 0 12px 0;
             color: #6c5ce7;
-            font-size: 20px;
+            font-size: 18px;
         }
         
         #privacy-banner p {
-            margin: 10px 0;
+            margin: 8px 0;
             color: #2d3436;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.5;
         }
         
         #privacy-banner strong {
@@ -516,7 +524,7 @@
         }
         
         #privacy-banner button {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 12px 30px;
             background: #6c5ce7;
             color: white;
@@ -526,10 +534,37 @@
             font-size: 16px;
             font-weight: 600;
             transition: background 0.3s;
+            flex-shrink: 0;
+            width: 100%;
         }
         
         #privacy-banner button:hover {
             background: #5f4bd8;
+        }
+        
+        @media (max-width: 480px) {
+            #privacy-banner {
+                width: calc(100% - 30px);
+                max-height: 90vh;
+                padding: 15px;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+            
+            #privacy-banner h3 {
+                font-size: 16px;
+            }
+            
+            #privacy-banner p {
+                font-size: 12px;
+                margin: 6px 0;
+            }
+            
+            #privacy-banner button {
+                margin-top: 12px;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
         }
         
         #privacy-overlay {
@@ -548,36 +583,26 @@
     <!-- Privacy Banner -->
     <div id="privacy-overlay"></div>
     <div id="privacy-banner">
-        <h3>🔒 Privacidad y Seguridad</h3>
-        <p>
-            <span class="warning-icon">⚠️</span>
-            <strong>No compartas información personal identificable</strong> 
-            (nombre completo, dirección, teléfono, email, DNI).
-        </p>
-        <p>
-            <span class="warning-icon">🔒</span>
-            <strong>GDPR (UE):</strong> Procesamos tu mensaje y emoción seleccionada 
-            para proporcionar técnicas de afrontamiento. Los datos se retienen por máximo 30 días 
-            y se envían a servicios de IA (Hugging Face Inference API) para generar respuestas. 
-            Tienes derecho a acceso, supresión y portabilidad de tus datos.
-        </p>
-        <p>
-            <span class="warning-icon">🚨</span>
-            <strong>No es un servicio de emergencias.</strong> 
-            Si estás en peligro inmediato, contacta:
-            <br>• España: <strong>112</strong> o Teléfono de la Esperanza: <strong>717 003 717</strong>
-            <br>• EE.UU.: <strong>911</strong> o 988 Suicide & Crisis Lifeline
-        </p>
-        <p>
-            <span class="warning-icon">⚕️</span>
-            <strong>NO apto para HIPAA (EE.UU.):</strong> Este servicio NO cumple con HIPAA 
-            (Health Insurance Portability and Accountability Act). NO usar en contextos médicos 
-            de EE.UU. que requieran cumplimiento HIPAA. No procesar PHI (Protected Health Information).
-        </p>
-        <p style="font-size: 12px; color: #7f8c8d; margin-top: 15px;">
-            Al usar este servicio, aceptas el procesamiento de tus datos según lo descrito. 
-            Para más información, contacta al administrador del sistema.
-        </p>
+        <div class="privacy-content">
+            <h3>🔒 Privacidad y Seguridad</h3>
+            <p>
+                <span class="warning-icon">⚠️</span>
+                <strong>No compartas información personal</strong> como nombre completo, dirección, teléfono o email.
+            </p>
+            <p>
+                <span class="warning-icon">🔒</span>
+                Tus mensajes se procesan con IA para ayudarte. Los datos se guardan máximo 30 días. 
+                Tienes derecho a acceder, eliminar o exportar tus datos.
+            </p>
+            <p>
+                <span class="warning-icon">🚨</span>
+                <strong>No es un servicio de emergencias.</strong> 
+                Si estás en peligro inmediato, contacta servicios de emergencia (112/911).
+            </p>
+            <p style="font-size: 11px; color: #7f8c8d; margin-top: 10px;">
+                Al usar este servicio, aceptas el procesamiento de tus datos según lo descrito.
+            </p>
+        </div>
         <button onclick="acceptPrivacy()">Entiendo y Acepto</button>
     </div>
     
