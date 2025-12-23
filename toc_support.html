@@ -578,6 +578,54 @@
             background: rgba(0, 0, 0, 0.7);
             z-index: 1999;
         }
+        
+        /* Footer / Pie de página */
+        #footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #2d3436;
+            backdrop-filter: blur(10px);
+            z-index: 997;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            transition: bottom 0.3s ease;
+        }
+        
+        #footer a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        #footer a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        #footer .footer-line {
+            margin: 2px 0;
+            line-height: 1.3;
+        }
+        
+        #footer .footer-line:first-child {
+            margin-bottom: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            #footer {
+                font-size: 11px;
+                padding: 6px 15px;
+            }
+            
+            #footer .footer-line {
+                margin: 1px 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -639,7 +687,70 @@
         </div>
     </div>
     
+    <!-- Footer / Pie de página -->
+    <footer id="footer">
+        <div class="footer-line">
+            © 2025 Soporte en Crisis TOC - LLMs. Creado con ❤️ por <a href="https://stivenson.github.io/" target="_blank" rel="noopener noreferrer">@stivenson</a>
+        </div>
+        <div class="footer-line">
+            <a href="mailto:stivenson.rpm@gmail.com">stivenson.rpm@gmail.com</a>
+        </div>
+    </footer>
+    
     <!-- Ruta del JS con Cache Busting (v=timestamp/version) -->
     <script src="js/emotion_game_v2.js?v=1.0.4"></script>
+    
+    <!-- Script para ajustar posición del footer -->
+    <script>
+        function adjustFooterPosition() {
+            const footer = document.getElementById('footer');
+            const chatPanel = document.getElementById('chat-panel');
+            
+            if (!footer || !chatPanel) return;
+            
+            // Por defecto, mantener el footer en la parte inferior
+            footer.style.bottom = '0px';
+            
+            // Solo ajustar en móvil donde el chat puede superponerse
+            if (window.innerWidth <= 768) {
+                if (!chatPanel.classList.contains('minimized')) {
+                    // Chat expandido, mover footer debajo del chat con mucho espacio
+                    const chatBottom = chatPanel.getBoundingClientRect().bottom;
+                    const footerHeight = footer.offsetHeight;
+                    const viewportHeight = window.innerHeight;
+                    
+                    // Calcular posición: debajo del chat con mucho espacio, pero siempre cerca del final
+                    // Si el chat está muy arriba, el footer va al final de la pantalla
+                    const spaceFromChat = 400; // Mucho espacio entre chat y footer
+                    const newBottom = viewportHeight - chatBottom - footerHeight - spaceFromChat;
+                    
+                    // Solo ajustar si el cálculo da un valor positivo, sino dejarlo al final
+                    if (newBottom > 0 && newBottom < viewportHeight - footerHeight - 50) {
+                        footer.style.bottom = newBottom + 'px';
+                    } else {
+                        // Si no cabe con el espacio, ponerlo al final con un pequeño margen
+                        footer.style.bottom = '10px';
+                    }
+                }
+            }
+        }
+        
+        // Ajustar al cargar y al redimensionar
+        window.addEventListener('load', adjustFooterPosition);
+        window.addEventListener('resize', adjustFooterPosition);
+        
+        // Observar cambios en el chat panel
+        const chatPanel = document.getElementById('chat-panel');
+        if (chatPanel) {
+            const observer = new MutationObserver(adjustFooterPosition);
+            observer.observe(chatPanel, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+        
+        // Ajustar después de un pequeño delay para asegurar que todo esté renderizado
+        setTimeout(adjustFooterPosition, 100);
+    </script>
 </body>
 </html>
