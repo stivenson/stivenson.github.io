@@ -31,6 +31,8 @@ const TRANSLATIONS = {
         chat_status_processing: 'Procesando...',
         chat_status_error: 'Error',
         chat_placeholder: 'Escribe tu mensaje...',
+        chat_listening: 'Estoy aca para escucharte',
+        chat_analyzing: 'analizando...',
         chat_send: 'Enviar',
         chat_welcome: '¡Hola! Estoy aquí para apoyarte. Puedes seleccionar una emoción o escribirme directamente cómo te sientes.',
         chat_error_connection: 'No se pudo conectar con el servicio. Verifica tu conexión e intenta de nuevo.',
@@ -65,6 +67,8 @@ const TRANSLATIONS = {
         chat_status_processing: 'Processing...',
         chat_status_error: 'Error',
         chat_placeholder: 'Type your message...',
+        chat_listening: "I'm here to listen",
+        chat_analyzing: 'analyzing...',
         chat_send: 'Send',
         chat_welcome: 'Hello! I am here to support you. You can select an emotion or write directly how you feel.',
         chat_error_connection: 'Could not connect to the service. Please check your connection and try again.',
@@ -422,6 +426,13 @@ function displayBotResponse(message, crisisLevel) {
         // ... existing DOM logic if we want to keep a history hidden or for debug ...
     }
 
+    // --- FILTRAR DISCLAIMER RESIDUAL DEL BACKEND ---
+    // El disclaimer ahora es permanente en la UI, así que lo removemos de las respuestas
+    let cleanedMessage = message;
+    // Remover patrones comunes de disclaimer
+    cleanedMessage = cleanedMessage.replace(/\*\*IMPORTANTE\*\*:.*?(112\/911|emergencia|busca ayuda profesional)[^.]*\.?/gi, '').trim();
+    cleanedMessage = cleanedMessage.replace(/\n\n\s*$/g, '').trim();
+
     // --- INTEGRACIÓN CON PHASER (Nubes de conversación) ---
     const normalizedCrisisLevel = crisisLevel || 'none';
 
@@ -432,10 +443,10 @@ function displayBotResponse(message, crisisLevel) {
             const scene = window.phaserGame.scene.keys.EmotionGameScene;
             scene.reactToCrisis(normalizedCrisisLevel);
 
-            // Guardar en historial
+            // Guardar en historial (mensaje limpio sin disclaimer)
             scene.chatHistory.push({
                 sender: 'bot',
-                message: message,
+                message: cleanedMessage,
                 timestamp: new Date().toISOString(),
                 crisisLevel: normalizedCrisisLevel
             });
@@ -444,7 +455,7 @@ function displayBotResponse(message, crisisLevel) {
             const centerX = scene.cameras.main.width / 2;
             const inputY = scene.cameras.main.height - 80; // Posición del input
             const bubbleY = inputY - 60; // Reducido a 60px para estar más cerca del input
-            scene.createSpeechBubble(centerX, bubbleY, message, false);
+            scene.createSpeechBubble(centerX, bubbleY, cleanedMessage, false);
 
             // Activar respiración si se detecta alta angustia o emergencia
             if (normalizedCrisisLevel === 'emergency' || normalizedCrisisLevel === 'high_distress') {
@@ -461,8 +472,8 @@ function displayBotResponse(message, crisisLevel) {
     }
     // -------------------------------------------------------
 
-    // Guardar el mensaje completo antes de procesar (para contexto futuro)
-    lastBotMessage = message;
+    // Guardar el mensaje limpio para contexto futuro
+    lastBotMessage = cleanedMessage;
 
     // ... resto de la lógica de limpieza de DOM anterior si es necesaria ...
 }
@@ -496,6 +507,18 @@ function showLoading(show = true) {
     if (chatInput) {
         chatInput.disabled = show;
     }
+    
+    // Actualizar estado de loading en Phaser (barra de progreso, placeholder, botón)
+    if (window.phaserGame) {
+        try {
+            const scene = window.phaserGame.scene.keys.EmotionGameScene;
+            if (scene && scene.setLoadingState) {
+                scene.setLoadingState(show);
+            }
+        } catch (error) {
+            console.warn('No se pudo actualizar estado de loading en Phaser:', error);
+        }
+    }
 }
 
 // ============================================
@@ -519,6 +542,8 @@ class EmotionGameScene extends Phaser.Scene {
         this.chatHistory = [];
         this.historyModal = null;
         this.disclaimerBubble = null;
+        this.loadingProgressBar = null;
+        this.isLoading = false;
     }
 
     create() {
@@ -1199,13 +1224,9 @@ class EmotionGameScene extends Phaser.Scene {
     }
 
     createDisclaimerBubble() {
-        const padding = 20;
-        const maxWidth = 280;
-        const x = padding;
-        const y = padding;
-
-        // Crear contenedor
-        this.disclaimerBubble = this.add.container(x, y);
+        const screenWidth = this.cameras.main.width;
+        const maxWidth = 320;
+        const y = 40; // Parte superior de la pantalla
 
         // Números de emergencia por país (basado en workflow_latest.json)
         const emergencyNumbers = {
@@ -1241,6 +1262,12 @@ class EmotionGameScene extends Phaser.Scene {
         const bubbleHeight = textHeight + 20;
         const bubbleWidth = Math.min(textWidth + 30, maxWidth);
         
+        // Posición inicial centrada
+        const startX = (screenWidth - bubbleWidth) / 2;
+        
+        // Crear contenedor en la parte superior centrado
+        this.disclaimerBubble = this.add.container(startX, y);
+        
         const bg = this.add.graphics();
         bg.fillStyle(0xfff8dc, 0.95); // Color crema/amarillo suave
         bg.lineStyle(2, 0xe74c3c, 1); // Borde rojo para advertencia
@@ -1257,17 +1284,24 @@ class EmotionGameScene extends Phaser.Scene {
         });
 
         this.disclaimerBubble.add([bg, disclaimerTextObj]);
-        this.disclaimerBubble.setAlpha(0.85);
+        this.disclaimerBubble.setAlpha(0.9);
         this.disclaimerBubble.setDepth(50); // Por encima de otros elementos
 
-        // Animación de flotación suave
+        // Calcular rango de movimiento (20% a 80% de la pantalla)
+        const leftBound = screenWidth * 0.15;
+        const rightBound = screenWidth * 0.85 - bubbleWidth;
+        
+        // Animación de movimiento suave de lado a lado
         this.tweens.add({
             targets: this.disclaimerBubble,
-            y: y + 5,
-            duration: 2000,
+            x: rightBound,
+            duration: 8000,
             yoyo: true,
             repeat: -1,
-            ease: 'Sine.easeInOut'
+            ease: 'Sine.easeInOut',
+            onStart: () => {
+                this.disclaimerBubble.x = leftBound;
+            }
         });
     }
 
@@ -1418,12 +1452,19 @@ class EmotionGameScene extends Phaser.Scene {
         const centerX = this.cameras.main.width / 2;
         const centerY = this.cameras.main.height - 80;
 
-        // Crear el elemento DOM para el input con botón de historial
+        // Crear el elemento DOM para el input con botón de historial y barra de progreso
         const html = `
-            <div class="phaser-input-container">
-                <button class="phaser-history-btn" title="Ver historial">📜</button>
-                <input type="text" class="phaser-chat-input" placeholder="${t('chat_placeholder')}" />
-                <button class="phaser-send-btn">${t('chat_send')}</button>
+            <div class="phaser-input-wrapper">
+                <div class="phaser-loading-bar" style="display: none;">
+                    <div class="phaser-loading-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <div class="phaser-input-container">
+                    <button class="phaser-history-btn" title="Ver historial">📜</button>
+                    <input type="text" class="phaser-chat-input" placeholder="${t('chat_listening')}" />
+                    <button class="phaser-send-btn">${t('chat_send')}</button>
+                </div>
             </div>
         `;
 
@@ -1454,6 +1495,50 @@ class EmotionGameScene extends Phaser.Scene {
 
         // Focus the input
         setTimeout(() => input.focus(), 100);
+    }
+
+    /**
+     * Controla el estado de carga del input de chat
+     * @param {boolean} show - true para mostrar loading, false para ocultar
+     */
+    setLoadingState(show) {
+        if (!this.userInputContainer) return;
+        
+        this.isLoading = show;
+        const containerNode = this.userInputContainer.node;
+        const input = containerNode.querySelector('.phaser-chat-input');
+        const btn = containerNode.querySelector('.phaser-send-btn');
+        const loadingBar = containerNode.querySelector('.phaser-loading-bar');
+        
+        if (show) {
+            // Mostrar barra de progreso
+            if (loadingBar) loadingBar.style.display = 'flex';
+            // Cambiar placeholder
+            if (input) {
+                input.placeholder = t('chat_analyzing');
+                input.disabled = true;
+            }
+            // Desactivar botón
+            if (btn) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+            }
+        } else {
+            // Ocultar barra de progreso
+            if (loadingBar) loadingBar.style.display = 'none';
+            // Restaurar placeholder
+            if (input) {
+                input.placeholder = t('chat_listening');
+                input.disabled = false;
+            }
+            // Reactivar botón
+            if (btn) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+            }
+        }
     }
 
     handleUserChat(message) {
