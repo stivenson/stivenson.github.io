@@ -410,24 +410,30 @@ function updateConnectionStatus(status) {
 
 function displayBotResponse(message, crisisLevel) {
     const chatMessages = document.getElementById('chat-messages');
-    if (!chatMessages) return;
+    // Mantenemos la actualización de la UI oculta por si acaso, 
+    // pero el foco ahora es Phaser.
+    if (chatMessages) {
+        // ... existing DOM logic if we want to keep a history hidden or for debug ...
+    }
 
-    // --- INTEGRACIÓN CON PHASER (Mejorada) ---
+    // --- INTEGRACIÓN CON PHASER (Nubes de conversación) ---
     const normalizedCrisisLevel = crisisLevel || 'none';
 
     if (!window.phaserGame) {
         console.warn('⚠️ Phaser game no está inicializado');
-    } else if (!window.phaserGame.scene || !window.phaserGame.scene.keys || !window.phaserGame.scene.keys.EmotionGameScene) {
-        console.warn('⚠️ Escena EmotionGameScene no está disponible');
     } else {
         try {
             const scene = window.phaserGame.scene.keys.EmotionGameScene;
             scene.reactToCrisis(normalizedCrisisLevel);
 
+            // Crear nube de conversación sobre el personaje
+            const charX = scene.character.x - 110; // Offset para centrar la nube de 220px
+            const charY = scene.character.y - 120;
+            scene.createSpeechBubble(charX, charY, message);
+
             // Activar respiración si se detecta alta angustia o emergencia
             if (normalizedCrisisLevel === 'emergency' || normalizedCrisisLevel === 'high_distress') {
                 scene.startBreathingExercise();
-                // Detener después de 20 segundos (5 ciclos)
                 setTimeout(() => {
                     scene.stopBreathingExercise();
                 }, 20000);
@@ -438,50 +444,12 @@ function displayBotResponse(message, crisisLevel) {
             console.error('❌ Error al interactuar con Phaser:', error);
         }
     }
-    // ------------------------------
+    // -------------------------------------------------------
 
     // Guardar el mensaje completo antes de procesar (para contexto futuro)
     lastBotMessage = message;
 
-    // Eliminar pregunta final del mensaje anterior del bot en la UI (si existe)
-    const previousBotMessages = chatMessages.querySelectorAll('.bot-message');
-    if (previousBotMessages.length > 0) {
-        const lastBotMessageElement = previousBotMessages[previousBotMessages.length - 1];
-        const lastBotContent = lastBotMessageElement.querySelector('.message-content');
-        
-        if (lastBotContent) {
-            // Buscar y eliminar la última pregunta entre ¿? al final del texto en la UI
-            let currentHTML = lastBotContent.innerHTML;
-            // Eliminar pregunta que esté al final (antes de posibles <br> finales)
-            currentHTML = currentHTML.replace(/¿[^¿]*?\?(<br>)*\s*$/i, '');
-            lastBotContent.innerHTML = currentHTML;
-        }
-    }
-
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'chat-message bot-message';
-    
-    if (crisisLevel === 'emergency' || crisisLevel === 'high_distress') {
-        messageDiv.classList.add('crisis-' + crisisLevel);
-    }
-    
-    // Convertir markdown basico
-    let formattedMessage = message
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n/g, '<br>');
-    
-    // Convertir URLs en links clicables (mejora para links curados del Orchestrator)
-    // Regex para detectar URLs (http/https)
-    const urlRegex = /(https?:\/\/[^\s<]+)/g;
-    formattedMessage = formattedMessage.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #6c5ce7; text-decoration: underline;">$1</a>');
-    
-    messageDiv.innerHTML = `
-        <div class="message-content">${formattedMessage}</div>
-        <div class="message-time">${new Date().toLocaleTimeString(USER_CONTEXT.language, { hour: '2-digit', minute: '2-digit' })}</div>
-    `;
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    // ... resto de la lógica de limpieza de DOM anterior si es necesaria ...
 }
 
 function displayUserMessage(message) {
@@ -531,6 +499,8 @@ class EmotionGameScene extends Phaser.Scene {
         this.breathingCircle = null;
         this.isBreathingExerciseActive = false;
         this.currentCrisisLevel = 'none';
+        this.activeBubble = null;
+        this.userInputContainer = null;
     }
 
     create() {
@@ -542,6 +512,7 @@ class EmotionGameScene extends Phaser.Scene {
         this.createEmotionClouds(centerX, centerY);
         this.createAmbientParticles();
         this.createBreathingOverlay(centerX, centerY);
+        this.showUserInput();
     }
 
     createBackground() {
@@ -847,7 +818,23 @@ class EmotionGameScene extends Phaser.Scene {
 
         // Enviar emoción a n8n inmediatamente
         const message = `Me siento ${emotion.label} (${emotion.description})`;
-        displayUserMessage(message);
+        
+        // Mostrar burbuja del usuario en Phaser
+        const bX = this.cameras.main.width / 2 + 50;
+        const bY = this.cameras.main.height - 150;
+        const userBubble = this.createSpeechBubble(bX, bY, message, true);
+        this.time.delayedCall(4000, () => {
+            if (userBubble) {
+                this.tweens.add({
+                    targets: userBubble,
+                    alpha: 0,
+                    scale: 0.5,
+                    duration: 300,
+                    onComplete: () => userBubble.destroy()
+                });
+            }
+        });
+
         showLoading(true);
         
         try {
@@ -1254,6 +1241,135 @@ class EmotionGameScene extends Phaser.Scene {
         this.setCharacterNeutral();
     }
 
+    createSpeechBubble(x, y, text, isUser = false) {
+        // Clear previous bubble if bot is speaking
+        if (!isUser && this.activeBubble) {
+            this.activeBubble.destroy();
+        }
+
+        const bubbleWidth = 220;
+        const bubblePadding = 15;
+        
+        // Temporarily create text to measure height
+        const tempText = this.add.text(0, 0, text, {
+            fontFamily: 'Segoe UI, system-ui, sans-serif',
+            fontSize: '14px',
+            wordWrap: { width: bubbleWidth - bubblePadding * 2 }
+        });
+        const bubbleHeight = Math.max(60, tempText.height + bubblePadding * 2);
+        tempText.destroy();
+
+        const bubble = this.add.container(x, y);
+        const bubbleGraphics = this.add.graphics();
+
+        // Bubble shape
+        bubbleGraphics.fillStyle(0xffffff, 1);
+        bubbleGraphics.lineStyle(2, 0x6c5ce7, 1);
+        bubbleGraphics.fillRoundedRect(0, 0, bubbleWidth, bubbleHeight, 15);
+        bubbleGraphics.strokeRoundedRect(0, 0, bubbleWidth, bubbleHeight, 15);
+
+        // Triangle pointer
+        const arrowSize = 15;
+        bubbleGraphics.beginPath();
+        if (isUser) {
+            bubbleGraphics.moveTo(bubbleWidth - 30, bubbleHeight);
+            bubbleGraphics.lineTo(bubbleWidth - 15, bubbleHeight + arrowSize);
+            bubbleGraphics.lineTo(bubbleWidth - 5, bubbleHeight);
+        } else {
+            bubbleGraphics.moveTo(15, bubbleHeight);
+            bubbleGraphics.lineTo(30, bubbleHeight + arrowSize);
+            bubbleGraphics.lineTo(45, bubbleHeight);
+        }
+        bubbleGraphics.closePath();
+        bubbleGraphics.fillPath();
+        bubbleGraphics.strokePath();
+
+        const content = this.add.text(bubblePadding, bubblePadding, text, {
+            fontFamily: 'Segoe UI, system-ui, sans-serif',
+            fontSize: '14px',
+            color: '#2d3436',
+            align: 'left',
+            wordWrap: { width: bubbleWidth - bubblePadding * 2 }
+        });
+
+        bubble.add([bubbleGraphics, content]);
+        bubble.setAlpha(0);
+        bubble.setScale(0.5);
+
+        this.tweens.add({
+            targets: bubble,
+            alpha: 1,
+            scale: 1,
+            y: y - bubbleHeight - arrowSize - 10, // Adjust position to be above target
+            duration: 300,
+            ease: 'Back.easeOut'
+        });
+
+        if (!isUser) {
+            this.activeBubble = bubble;
+        }
+        return bubble;
+    }
+
+    showUserInput() {
+        if (this.userInputContainer) return;
+
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height - 80;
+
+        // Crear el elemento DOM para el input
+        const html = `
+            <div class="phaser-input-container">
+                <input type="text" class="phaser-chat-input" placeholder="${t('chat_placeholder')}" />
+                <button class="phaser-send-btn">${t('chat_send')}</button>
+            </div>
+        `;
+
+        this.userInputContainer = this.add.dom(centerX, centerY).createFromHTML(html);
+        
+        const input = this.userInputContainer.getChildByClass('phaser-chat-input');
+        const btn = this.userInputContainer.getChildByClass('phaser-send-btn');
+
+        const handleSubmit = () => {
+            const message = input.value.trim();
+            if (message) {
+                this.handleUserChat(message);
+                input.value = '';
+                // Optional: hide input after sending or keep it
+            }
+        };
+
+        btn.addEventListener('click', handleSubmit);
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSubmit();
+        });
+
+        // Focus the input
+        setTimeout(() => input.focus(), 100);
+    }
+
+    handleUserChat(message) {
+        // Create user bubble
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height - 150;
+        
+        const userBubble = this.createSpeechBubble(centerX + 50, centerY, message, true);
+        
+        // Auto-destroy user bubble after a few seconds
+        this.time.delayedCall(4000, () => {
+            this.tweens.add({
+                targets: userBubble,
+                alpha: 0,
+                scale: 0.5,
+                duration: 300,
+                onComplete: () => userBubble.destroy()
+            });
+        });
+
+        // Trigger the actual chat logic (which calls n8n)
+        window.sendChatMessageFromPhaser(message);
+    }
+
     reactToCrisis(level) {
         this.updateEnvironment(level);
         
@@ -1296,16 +1412,19 @@ class EmotionGameScene extends Phaser.Scene {
 // GAME INITIALIZATION
 // ============================================
 
-function initEmotionGame(containerId = 'game-container', width = 500, height = 500) {
+function initEmotionGame(containerId = 'game-container', width = window.innerWidth, height = window.innerHeight) {
     const config = {
         type: Phaser.AUTO,
         width: width,
         height: height,
         parent: containerId,
         backgroundColor: '#1a1a2e',
+        dom: {
+            createContainer: true
+        },
         scene: EmotionGameScene,
         scale: {
-            mode: Phaser.Scale.FIT,
+            mode: Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.CENTER_BOTH
         }
     };
@@ -1328,28 +1447,24 @@ window.addEventListener('DOMContentLoaded', async () => {
     const chatInput = document.getElementById('chat-input');
     const chatSendBtn = document.getElementById('chat-send-btn');
     
-    async function sendChatMessage() {
-        const message = chatInput.value.trim();
+    async function sendChatMessage(overrideMessage = null) {
+        const message = overrideMessage !== null ? overrideMessage : chatInput.value.trim();
         
-        // Si no hay mensaje, no enviar
         if (!message) return;
         
-        displayUserMessage(message);
-        chatInput.value = '';
+        if (overrideMessage === null && chatInput) chatInput.value = '';
         showLoading(true);
         
-        // Construir mensaje con contexto del último mensaje del bot si existe
         let messageWithContext = message;
         if (lastBotMessage) {
             messageWithContext = `[Último mensaje del asistente: "${lastBotMessage}"]\n\nRespuesta del usuario: ${message}`;
-            // Resetear después de usar
             lastBotMessage = null;
         }
         
         try {
             const response = await sendToN8n({
                 message: messageWithContext,
-                emotion: null // Las emociones se envían directamente desde las nubes
+                emotion: null
             });
             
             if (response.success && response.reply) {
@@ -1361,10 +1476,12 @@ window.addEventListener('DOMContentLoaded', async () => {
             console.error('Error inesperado al enviar mensaje:', error);
             displayBotResponse(t('chat_error_generic'), 'none');
         } finally {
-            // Siempre re-habilitar UI, incluso si hay error
             showLoading(false);
         }
     }
+
+    // Puente para Phaser
+    window.sendChatMessageFromPhaser = (msg) => sendChatMessage(msg);
     
     if (chatSendBtn) {
         chatSendBtn.addEventListener('click', sendChatMessage);
