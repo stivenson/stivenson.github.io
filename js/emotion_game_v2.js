@@ -441,7 +441,7 @@ function displayBotResponse(message, crisisLevel) {
             // Crear nube de conversación sobre el input (abajo) - AJUSTADO: más cerca
             const centerX = scene.cameras.main.width / 2;
             const inputY = scene.cameras.main.height - 80; // Posición del input
-            const bubbleY = inputY - 100; // Reducido de 150 a 100 (más cerca del input)
+            const bubbleY = inputY - 60; // Reducido a 60px para estar más cerca del input
             scene.createSpeechBubble(centerX, bubbleY, message, false);
 
             // Activar respiración si se detecta alta angustia o emergencia
@@ -834,10 +834,17 @@ class EmotionGameScene extends Phaser.Scene {
         // Enviar emoción a n8n inmediatamente
         const message = `Me siento ${emotion.label} (${emotion.description})`;
         
-        // Mostrar burbuja del usuario en Phaser
-        const bX = this.cameras.main.width / 2 + 50;
-        const bY = this.cameras.main.height - 150;
-        const userBubble = this.createSpeechBubble(bX, bY, message, true);
+        // Guardar en historial
+        this.chatHistory.push({
+            sender: 'user',
+            message: message,
+            timestamp: new Date().toISOString()
+        });
+        
+        // Mostrar burbuja del usuario en Phaser - misma posición que handleUserChat
+        const charX = this.character.x - 130; // A la izquierda del personaje
+        const charY = this.character.y - 60; // Más cerca verticalmente
+        const userBubble = this.createSpeechBubble(charX, charY, message, true);
         this.time.delayedCall(4000, () => {
             if (userBubble) {
                 this.tweens.add({
@@ -1287,13 +1294,15 @@ class EmotionGameScene extends Phaser.Scene {
         const arrowSize = 15;
         bubbleGraphics.beginPath();
         if (isUser) {
+            // Usuario: flecha a la derecha (apuntando hacia el personaje)
             bubbleGraphics.moveTo(bubbleWidth - 30, bubbleHeight);
             bubbleGraphics.lineTo(bubbleWidth - 15, bubbleHeight + arrowSize);
             bubbleGraphics.lineTo(bubbleWidth - 5, bubbleHeight);
         } else {
-            bubbleGraphics.moveTo(15, bubbleHeight);
-            bubbleGraphics.lineTo(30, bubbleHeight + arrowSize);
-            bubbleGraphics.lineTo(45, bubbleHeight);
+            // Bot: flecha al centro
+            bubbleGraphics.moveTo(bubbleWidth / 2 - 15, bubbleHeight);
+            bubbleGraphics.lineTo(bubbleWidth / 2, bubbleHeight + arrowSize);
+            bubbleGraphics.lineTo(bubbleWidth / 2 + 15, bubbleHeight);
         }
         bubbleGraphics.closePath();
         bubbleGraphics.fillPath();
@@ -1378,9 +1387,9 @@ class EmotionGameScene extends Phaser.Scene {
             timestamp: new Date().toISOString()
         });
 
-        // Create user bubble cerca del personaje (arriba) - AJUSTADO: más cerca
-        const charX = this.character.x + 60; // Reducido de 110 a 60
-        const charY = this.character.y - 80; // Reducido de 120 a 80
+        // Create user bubble cerca del personaje (arriba) - A la izquierda
+        const charX = this.character.x - 130; // A la izquierda del personaje
+        const charY = this.character.y - 60; // Más cerca verticalmente
         
         const userBubble = this.createSpeechBubble(charX, charY, message, true);
         
