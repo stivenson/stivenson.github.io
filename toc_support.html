@@ -266,6 +266,42 @@
             color: #2d3436;
             font-size: 14px;
         }
+
+        /* Ocultar UI antigua para transición a Phaser UI */
+        .hidden-ui {
+            display: none !important;
+        }
+
+        /* Estilos para el Input de Phaser DOM */
+        .phaser-input-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 300px;
+            border: 2px solid #6c5ce7;
+        }
+
+        .phaser-chat-input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-family: inherit;
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .phaser-send-btn {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
         
         /* Mobile responsive */
             @media (max-width: 768px) {
@@ -387,7 +423,7 @@
     </div>
     
     <!-- Instructions Banner -->
-    <div id="instructions">
+    <div id="instructions" class="hidden-ui">
         <h3>Soporte en Crisis TOC</h3>
         <p>Selecciona una emocion o escribe un mensaje para recibir apoyo</p>
     </div>
@@ -396,7 +432,7 @@
     <div id="game-container"></div>
     
     <!-- Chat Panel -->
-    <div id="chat-panel">
+    <div id="chat-panel" class="hidden-ui">
         <div id="chat-header" onclick="toggleChat()">
             Asistente TOC
             <span id="selected-emotion"></span>
