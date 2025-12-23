@@ -38,6 +38,7 @@ const TRANSLATIONS = {
         emotion_selected: 'Te sientes:',
         history_title: 'Historial de Conversación',
         history_close: 'Cerrar',
+        disclaimer_base: '⚠️ No soy un profesional de salud mental. Si estás en peligro inmediato o tienes pensamientos de autolesión, contacta servicios de emergencia ({emergency}) o busca ayuda profesional inmediatamente.',
         breathing_inhale: 'Inhala...',
         breathing_hold: 'Sostén...',
         breathing_exhale: 'Exhala...',
@@ -71,6 +72,7 @@ const TRANSLATIONS = {
         emotion_selected: 'You feel:',
         history_title: 'Conversation History',
         history_close: 'Close',
+        disclaimer_base: '⚠️ I am not a mental health professional. If you are in immediate danger or have thoughts of self-harm, contact emergency services ({emergency}) or seek professional help immediately.',
         breathing_inhale: 'Inhale...',
         breathing_hold: 'Hold...',
         breathing_exhale: 'Exhale...',
@@ -516,6 +518,7 @@ class EmotionGameScene extends Phaser.Scene {
         this.userInputContainer = null;
         this.chatHistory = [];
         this.historyModal = null;
+        this.disclaimerBubble = null;
     }
 
     create() {
@@ -527,6 +530,7 @@ class EmotionGameScene extends Phaser.Scene {
         this.createEmotionClouds(centerX, centerY);
         this.createAmbientParticles();
         this.createBreathingOverlay(centerX, centerY);
+        this.createDisclaimerBubble();
         this.showUserInput();
     }
 
@@ -1192,6 +1196,79 @@ class EmotionGameScene extends Phaser.Scene {
         this.breathingCircle.add([outer, inner, text]);
         this.breathingCircle.setData('inner', inner);
         this.breathingCircle.setData('text', text);
+    }
+
+    createDisclaimerBubble() {
+        const padding = 20;
+        const maxWidth = 280;
+        const x = padding;
+        const y = padding;
+
+        // Crear contenedor
+        this.disclaimerBubble = this.add.container(x, y);
+
+        // Números de emergencia por país (basado en workflow_latest.json)
+        const emergencyNumbers = {
+            ES: '112',
+            MX: '911',
+            US: '911',
+            CO: '123',
+            AR: '911',
+            PE: '105',
+            CL: '131'
+        };
+
+        // Obtener número de emergencia según el país detectado
+        const countryCode = USER_CONTEXT.countryCode || 'ES';
+        const emergencyNumber = emergencyNumbers[countryCode] || '112/911';
+
+        // Texto del disclaimer con número dinámico
+        const disclaimerText = t('disclaimer_base').replace('{emergency}', emergencyNumber);
+        
+        // Crear texto temporal para medir
+        const tempText = this.add.text(0, 0, disclaimerText, {
+            fontFamily: 'Segoe UI, system-ui, sans-serif',
+            fontSize: '11px',
+            color: '#2d3436',
+            wordWrap: { width: maxWidth - 30 },
+            lineSpacing: 3
+        });
+        const textHeight = tempText.height;
+        const textWidth = tempText.width;
+        tempText.destroy();
+
+        // Fondo de la burbuja
+        const bubbleHeight = textHeight + 20;
+        const bubbleWidth = Math.min(textWidth + 30, maxWidth);
+        
+        const bg = this.add.graphics();
+        bg.fillStyle(0xfff8dc, 0.95); // Color crema/amarillo suave
+        bg.lineStyle(2, 0xe74c3c, 1); // Borde rojo para advertencia
+        bg.fillRoundedRect(0, 0, bubbleWidth, bubbleHeight, 12);
+        bg.strokeRoundedRect(0, 0, bubbleWidth, bubbleHeight, 12);
+
+        // Texto del disclaimer
+        const disclaimerTextObj = this.add.text(15, 10, disclaimerText, {
+            fontFamily: 'Segoe UI, system-ui, sans-serif',
+            fontSize: '11px',
+            color: '#2d3436',
+            wordWrap: { width: bubbleWidth - 30 },
+            lineSpacing: 3
+        });
+
+        this.disclaimerBubble.add([bg, disclaimerTextObj]);
+        this.disclaimerBubble.setAlpha(0.85);
+        this.disclaimerBubble.setDepth(50); // Por encima de otros elementos
+
+        // Animación de flotación suave
+        this.tweens.add({
+            targets: this.disclaimerBubble,
+            y: y + 5,
+            duration: 2000,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut'
+        });
     }
 
     startBreathingExercise() {
