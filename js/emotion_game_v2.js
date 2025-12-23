@@ -36,6 +36,8 @@ const TRANSLATIONS = {
         chat_error_connection: 'No se pudo conectar con el servicio. Verifica tu conexión e intenta de nuevo.',
         chat_error_generic: 'Ocurrió un error al procesar tu mensaje. Por favor, intenta de nuevo.',
         emotion_selected: 'Te sientes:',
+        history_title: 'Historial de Conversación',
+        history_close: 'Cerrar',
         breathing_inhale: 'Inhala...',
         breathing_hold: 'Sostén...',
         breathing_exhale: 'Exhala...',
@@ -67,6 +69,8 @@ const TRANSLATIONS = {
         chat_error_connection: 'Could not connect to the service. Please check your connection and try again.',
         chat_error_generic: 'An error occurred while processing your message. Please try again.',
         emotion_selected: 'You feel:',
+        history_title: 'Conversation History',
+        history_close: 'Close',
         breathing_inhale: 'Inhale...',
         breathing_hold: 'Hold...',
         breathing_exhale: 'Exhale...',
@@ -426,10 +430,19 @@ function displayBotResponse(message, crisisLevel) {
             const scene = window.phaserGame.scene.keys.EmotionGameScene;
             scene.reactToCrisis(normalizedCrisisLevel);
 
-            // Crear nube de conversación sobre el personaje
-            const charX = scene.character.x - 110; // Offset para centrar la nube de 220px
-            const charY = scene.character.y - 120;
-            scene.createSpeechBubble(charX, charY, message);
+            // Guardar en historial
+            scene.chatHistory.push({
+                sender: 'bot',
+                message: message,
+                timestamp: new Date().toISOString(),
+                crisisLevel: normalizedCrisisLevel
+            });
+
+            // Crear nube de conversación sobre el input (abajo)
+            const centerX = scene.cameras.main.width / 2;
+            const inputY = scene.cameras.main.height - 80; // Posición del input
+            const bubbleY = inputY - 150; // 150px arriba del input
+            scene.createSpeechBubble(centerX, bubbleY, message, false);
 
             // Activar respiración si se detecta alta angustia o emergencia
             if (normalizedCrisisLevel === 'emergency' || normalizedCrisisLevel === 'high_distress') {
@@ -501,6 +514,8 @@ class EmotionGameScene extends Phaser.Scene {
         this.currentCrisisLevel = 'none';
         this.activeBubble = null;
         this.userInputContainer = null;
+        this.chatHistory = [];
+        this.historyModal = null;
     }
 
     create() {
@@ -1317,9 +1332,10 @@ class EmotionGameScene extends Phaser.Scene {
         const centerX = this.cameras.main.width / 2;
         const centerY = this.cameras.main.height - 80;
 
-        // Crear el elemento DOM para el input
+        // Crear el elemento DOM para el input con botón de historial
         const html = `
             <div class="phaser-input-container">
+                <button class="phaser-history-btn" title="Ver historial">📜</button>
                 <input type="text" class="phaser-chat-input" placeholder="${t('chat_placeholder')}" />
                 <button class="phaser-send-btn">${t('chat_send')}</button>
             </div>
@@ -1331,6 +1347,7 @@ class EmotionGameScene extends Phaser.Scene {
         const containerNode = this.userInputContainer.node;
         const input = containerNode.querySelector('.phaser-chat-input');
         const btn = containerNode.querySelector('.phaser-send-btn');
+        const historyBtn = containerNode.querySelector('.phaser-history-btn');
 
         const handleSubmit = () => {
             const message = input.value.trim();
@@ -1345,16 +1362,27 @@ class EmotionGameScene extends Phaser.Scene {
             if (e.key === 'Enter') handleSubmit();
         });
 
+        historyBtn.addEventListener('click', () => {
+            this.showHistoryModal();
+        });
+
         // Focus the input
         setTimeout(() => input.focus(), 100);
     }
 
     handleUserChat(message) {
-        // Create user bubble
-        const centerX = this.cameras.main.width / 2;
-        const centerY = this.cameras.main.height - 150;
+        // Guardar en historial
+        this.chatHistory.push({
+            sender: 'user',
+            message: message,
+            timestamp: new Date().toISOString()
+        });
+
+        // Create user bubble cerca del personaje (arriba)
+        const charX = this.character.x + 110; // Offset a la derecha del personaje
+        const charY = this.character.y - 120; // Arriba del personaje
         
-        const userBubble = this.createSpeechBubble(centerX + 50, centerY, message, true);
+        const userBubble = this.createSpeechBubble(charX, charY, message, true);
         
         // Auto-destroy user bubble after a few seconds
         this.time.delayedCall(4000, () => {
@@ -1406,6 +1434,135 @@ class EmotionGameScene extends Phaser.Scene {
             repeat: -1,
             ease: 'Sine.easeInOut'
         });
+    }
+
+    showHistoryModal() {
+        // Si ya hay un modal abierto, no abrir otro
+        if (this.historyModal) return;
+
+        const centerX = this.cameras.main.width / 2;
+        const centerY = this.cameras.main.height / 2;
+        const modalWidth = 400;
+        const modalHeight = 500;
+
+        // Crear contenedor del modal
+        this.historyModal = this.add.container(centerX, centerY);
+
+        // Overlay semitransparente
+        const overlay = this.add.graphics();
+        overlay.fillStyle(0x000000, 0.7);
+        overlay.fillRect(-this.cameras.main.width / 2, -this.cameras.main.height / 2, 
+                         this.cameras.main.width, this.cameras.main.height);
+        overlay.setInteractive(new Phaser.Geom.Rectangle(
+            -this.cameras.main.width / 2, -this.cameras.main.height / 2,
+            this.cameras.main.width, this.cameras.main.height
+        ), Phaser.Geom.Rectangle.Contains);
+
+        // Fondo del modal
+        const modalBg = this.add.graphics();
+        modalBg.fillStyle(0xffffff, 1);
+        modalBg.lineStyle(3, 0x6c5ce7, 1);
+        modalBg.fillRoundedRect(-modalWidth / 2, -modalHeight / 2, modalWidth, modalHeight, 20);
+        modalBg.strokeRoundedRect(-modalWidth / 2, -modalHeight / 2, modalWidth, modalHeight, 20);
+
+        // Título
+        const title = this.add.text(0, -modalHeight / 2 + 25, t('history_title') || 'Historial de Conversación', {
+            fontFamily: 'Segoe UI, system-ui, sans-serif',
+            fontSize: '20px',
+            fontStyle: 'bold',
+            color: '#6c5ce7',
+            align: 'center'
+        });
+        title.setOrigin(0.5);
+
+        // Contenedor scrollable con DOM
+        const historyHTML = this.generateHistoryHTML();
+        const historyContainer = this.add.dom(0, 20).createFromHTML(`
+            <div class="phaser-history-content">
+                ${historyHTML}
+            </div>
+        `);
+
+        // Botón de cerrar
+        const closeBtn = this.add.text(0, modalHeight / 2 - 40, t('history_close') || 'Cerrar', {
+            fontFamily: 'Segoe UI, system-ui, sans-serif',
+            fontSize: '16px',
+            color: '#ffffff',
+            backgroundColor: '#6c5ce7',
+            padding: { x: 20, y: 10 }
+        });
+        closeBtn.setOrigin(0.5);
+        closeBtn.setInteractive({ useHandCursor: true });
+        closeBtn.on('pointerdown', () => {
+            this.closeHistoryModal();
+        });
+        closeBtn.on('pointerover', () => {
+            closeBtn.setStyle({ backgroundColor: '#5a4bc7' });
+        });
+        closeBtn.on('pointerout', () => {
+            closeBtn.setStyle({ backgroundColor: '#6c5ce7' });
+        });
+
+        // Agregar elementos al contenedor
+        this.historyModal.add([overlay, modalBg, title, historyContainer, closeBtn]);
+
+        // Animación de entrada
+        this.historyModal.setAlpha(0);
+        this.historyModal.setScale(0.8);
+        this.tweens.add({
+            targets: this.historyModal,
+            alpha: 1,
+            scale: 1,
+            duration: 300,
+            ease: 'Back.easeOut'
+        });
+    }
+
+    closeHistoryModal() {
+        if (!this.historyModal) return;
+
+        this.tweens.add({
+            targets: this.historyModal,
+            alpha: 0,
+            scale: 0.8,
+            duration: 200,
+            ease: 'Back.easeIn',
+            onComplete: () => {
+                this.historyModal.destroy();
+                this.historyModal = null;
+            }
+        });
+    }
+
+    generateHistoryHTML() {
+        if (this.chatHistory.length === 0) {
+            return `<p style="text-align: center; color: #999; padding: 20px;">No hay mensajes todavía</p>`;
+        }
+
+        let html = '';
+        this.chatHistory.forEach((entry, index) => {
+            const time = new Date(entry.timestamp).toLocaleTimeString(USER_CONTEXT.language, { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            const sender = entry.sender === 'user' ? 'Tú' : 'Asistente';
+            const senderClass = entry.sender === 'user' ? 'history-user' : 'history-bot';
+            const crisisIndicator = entry.crisisLevel && entry.crisisLevel !== 'none' 
+                ? `<span class="crisis-tag">${entry.crisisLevel}</span>` 
+                : '';
+            
+            html += `
+                <div class="history-entry ${senderClass}">
+                    <div class="history-header">
+                        <strong>${sender}</strong> ${crisisIndicator}
+                        <span class="history-time">${time}</span>
+                    </div>
+                    <div class="history-message">${entry.message}</div>
+                </div>
+            `;
+        });
+
+        return html;
     }
 }
 
