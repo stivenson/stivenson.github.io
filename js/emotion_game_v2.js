@@ -438,10 +438,10 @@ function displayBotResponse(message, crisisLevel) {
                 crisisLevel: normalizedCrisisLevel
             });
 
-            // Crear nube de conversación sobre el input (abajo)
+            // Crear nube de conversación sobre el input (abajo) - AJUSTADO: más cerca
             const centerX = scene.cameras.main.width / 2;
             const inputY = scene.cameras.main.height - 80; // Posición del input
-            const bubbleY = inputY - 150; // 150px arriba del input
+            const bubbleY = inputY - 100; // Reducido de 150 a 100 (más cerca del input)
             scene.createSpeechBubble(centerX, bubbleY, message, false);
 
             // Activar respiración si se detecta alta angustia o emergencia
@@ -1315,7 +1315,7 @@ class EmotionGameScene extends Phaser.Scene {
             targets: bubble,
             alpha: 1,
             scale: 1,
-            y: y - bubbleHeight - arrowSize - 10, // Adjust position to be above target
+            y: y - bubbleHeight - arrowSize - 5, // Reducido de 10 a 5 para acercar más
             duration: 300,
             ease: 'Back.easeOut'
         });
@@ -1378,9 +1378,9 @@ class EmotionGameScene extends Phaser.Scene {
             timestamp: new Date().toISOString()
         });
 
-        // Create user bubble cerca del personaje (arriba)
-        const charX = this.character.x + 110; // Offset a la derecha del personaje
-        const charY = this.character.y - 120; // Arriba del personaje
+        // Create user bubble cerca del personaje (arriba) - AJUSTADO: más cerca
+        const charX = this.character.x + 60; // Reducido de 110 a 60
+        const charY = this.character.y - 80; // Reducido de 120 a 80
         
         const userBubble = this.createSpeechBubble(charX, charY, message, true);
         
