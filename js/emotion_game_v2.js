@@ -443,6 +443,29 @@ function displayBotResponse(message, crisisLevel) {
             const scene = window.phaserGame.scene.keys.EmotionGameScene;
             scene.reactToCrisis(normalizedCrisisLevel);
 
+            // Destruir burbuja del usuario si existe (antes de mostrar respuesta del bot)
+            if (scene.activeUserBubble) {
+                // Detener animación de "analizando..." si existe
+                if (scene.analyzingAnimation) {
+                    scene.analyzingAnimation.stop();
+                    scene.analyzingAnimation = null;
+                }
+                
+                // Destruir la burbuja con animación suave
+                scene.tweens.add({
+                    targets: scene.activeUserBubble,
+                    alpha: 0,
+                    scale: 0.5,
+                    duration: 200,
+                    onComplete: () => {
+                        if (scene.activeUserBubble) {
+                            scene.activeUserBubble.destroy();
+                            scene.activeUserBubble = null;
+                        }
+                    }
+                });
+            }
+
             // Guardar en historial (mensaje limpio sin disclaimer)
             scene.chatHistory.push({
                 sender: 'bot',
@@ -455,7 +478,7 @@ function displayBotResponse(message, crisisLevel) {
             const centerX = scene.cameras.main.width / 2;
             const inputY = scene.cameras.main.height - 80; // Posición del input
             const bubbleY = inputY - 60; // Reducido a 60px para estar más cerca del input
-            scene.createSpeechBubble(centerX, bubbleY, cleanedMessage, false);
+            const { bubble: botBubble } = scene.createSpeechBubble(centerX, bubbleY, cleanedMessage, false);
 
             // Activar respiración si se detecta alta angustia o emergencia
             if (normalizedCrisisLevel === 'emergency' || normalizedCrisisLevel === 'high_distress') {
@@ -542,6 +565,8 @@ class EmotionGameScene extends Phaser.Scene {
         this.chatHistory = [];
         this.historyModal = null;
         this.disclaimerBubble = null;
+        this.activeUserBubble = null;
+        this.analyzingAnimation = null;
         this.loadingProgressBar = null;
         this.isLoading = false;
     }
@@ -870,21 +895,18 @@ class EmotionGameScene extends Phaser.Scene {
             timestamp: new Date().toISOString()
         });
         
-        // Mostrar burbuja del usuario en Phaser - misma posición que handleUserChat
+        // Mostrar burbuja del usuario en Phaser - misma posición que handleUserChat con "analizando..."
         const charX = this.character.x - 130; // A la izquierda del personaje
         const charY = this.character.y - 60; // Más cerca verticalmente
-        const userBubble = this.createSpeechBubble(charX, charY, message, true);
-        this.time.delayedCall(4000, () => {
-            if (userBubble) {
-                this.tweens.add({
-                    targets: userBubble,
-                    alpha: 0,
-                    scale: 0.5,
-                    duration: 300,
-                    onComplete: () => userBubble.destroy()
-                });
-            }
-        });
+        const { bubble, secondaryText } = this.createSpeechBubble(charX, charY, message, true, true);
+        
+        // Guardar referencia a la burbuja activa del usuario
+        this.activeUserBubble = bubble;
+        
+        // Iniciar animación de puntos si hay texto secundario
+        if (secondaryText) {
+            this.analyzingAnimation = this.animateAnalyzingDots(secondaryText);
+        }
 
         showLoading(true);
         
@@ -1374,7 +1396,39 @@ class EmotionGameScene extends Phaser.Scene {
         this.setCharacterNeutral();
     }
 
-    createSpeechBubble(x, y, text, isUser = false) {
+    /**
+     * Anima los puntos del texto "analizando..." para que aparezcan uno por uno
+     * @param {Phaser.GameObjects.Text} textObject - El objeto de texto que contiene "analizando"
+     * @returns {Object} Objeto con método stop() para detener la animación
+     */
+    animateAnalyzingDots(textObject) {
+        if (!textObject) return { stop: () => {} };
+        
+        let dotCount = 0;
+        const baseText = 'analizando';
+        
+        // Crear evento temporal que se actualiza cada 400ms
+        const timer = this.time.addEvent({
+            delay: 400,
+            callback: () => {
+                dotCount = (dotCount + 1) % 4; // Cicla entre 0, 1, 2, 3
+                const dots = '.'.repeat(dotCount);
+                textObject.setText(baseText + dots);
+            },
+            loop: true
+        });
+        
+        // Retornar objeto con método stop para detener la animación
+        return {
+            stop: () => {
+                if (timer) {
+                    timer.remove();
+                }
+            }
+        };
+    }
+
+    createSpeechBubble(x, y, text, isUser = false, showAnalyzing = false) {
         // Clear previous bubble if bot is speaking
         if (!isUser && this.activeBubble) {
             this.activeBubble.destroy();
@@ -1394,7 +1448,20 @@ class EmotionGameScene extends Phaser.Scene {
             fontSize: isMobile ? '13px' : '14px',
             wordWrap: { width: bubbleWidth - bubblePadding * 2 }
         });
-        const bubbleHeight = Math.max(60, tempText.height + bubblePadding * 2);
+        let bubbleHeight = Math.max(60, tempText.height + bubblePadding * 2);
+        
+        // Si se muestra "analizando...", agregar espacio adicional
+        let secondaryTextHeight = 0;
+        if (isUser && showAnalyzing) {
+            const tempSecondaryText = this.add.text(0, 0, 'analizando...', {
+                fontFamily: 'Segoe UI, system-ui, sans-serif',
+                fontSize: '11px'
+            });
+            secondaryTextHeight = tempSecondaryText.height + 6; // 6px de espaciado
+            bubbleHeight += secondaryTextHeight;
+            tempSecondaryText.destroy();
+        }
+        
         tempText.destroy();
 
         // Ajustar posición X para centrar correctamente la burbuja
@@ -1453,7 +1520,20 @@ class EmotionGameScene extends Phaser.Scene {
             wordWrap: { width: bubbleWidth - bubblePadding * 2 }
         });
 
-        bubble.add([bubbleGraphics, content]);
+        // Agregar texto secundario "analizando..." si es del usuario
+        let secondaryTextObj = null;
+        if (isUser && showAnalyzing) {
+            const secondaryY = bubblePadding + content.height + 6; // 6px de espaciado
+            secondaryTextObj = this.add.text(bubblePadding, secondaryY, 'analizando', {
+                fontFamily: 'Segoe UI, system-ui, sans-serif',
+                fontSize: '11px',
+                color: '#666666',
+                align: 'left'
+            });
+            bubble.add([bubbleGraphics, content, secondaryTextObj]);
+        } else {
+            bubble.add([bubbleGraphics, content]);
+        }
         bubble.setAlpha(0);
         bubble.setScale(0.5);
 
@@ -1469,7 +1549,9 @@ class EmotionGameScene extends Phaser.Scene {
         if (!isUser) {
             this.activeBubble = bubble;
         }
-        return bubble;
+        
+        // Retornar la burbuja y el texto secundario si existe
+        return { bubble, secondaryText: secondaryTextObj };
     }
 
     showUserInput() {
@@ -1575,22 +1657,19 @@ class EmotionGameScene extends Phaser.Scene {
             timestamp: new Date().toISOString()
         });
 
-        // Create user bubble cerca del personaje (arriba) - A la izquierda
+        // Create user bubble cerca del personaje (arriba) - A la izquierda con "analizando..."
         const charX = this.character.x - 130; // A la izquierda del personaje
         const charY = this.character.y - 60; // Más cerca verticalmente
         
-        const userBubble = this.createSpeechBubble(charX, charY, message, true);
+        const { bubble, secondaryText } = this.createSpeechBubble(charX, charY, message, true, true);
         
-        // Auto-destroy user bubble after a few seconds
-        this.time.delayedCall(4000, () => {
-            this.tweens.add({
-                targets: userBubble,
-                alpha: 0,
-                scale: 0.5,
-                duration: 300,
-                onComplete: () => userBubble.destroy()
-            });
-        });
+        // Guardar referencia a la burbuja activa del usuario
+        this.activeUserBubble = bubble;
+        
+        // Iniciar animación de puntos si hay texto secundario
+        if (secondaryText) {
+            this.analyzingAnimation = this.animateAnalyzingDots(secondaryText);
+        }
 
         // Trigger the actual chat logic (which calls n8n)
         window.sendChatMessageFromPhaser(message);
