@@ -302,6 +302,108 @@
             cursor: pointer;
             font-weight: bold;
         }
+
+        .phaser-send-btn:hover {
+            background: #5a4bc7;
+        }
+
+        .phaser-history-btn {
+            background: #f0f0f0;
+            color: #6c5ce7;
+            border: 2px solid #6c5ce7;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phaser-history-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* History Modal Styles */
+        .phaser-history-content {
+            width: 360px;
+            max-height: 360px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .history-entry {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid #6c5ce7;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .history-entry.history-user {
+            border-left-color: #6c5ce7;
+        }
+
+        .history-entry.history-bot {
+            border-left-color: #27ae60;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .history-header strong {
+            color: #2d3436;
+        }
+
+        .history-time {
+            color: #999;
+            font-size: 11px;
+        }
+
+        .history-message {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .crisis-tag {
+            background: #e74c3c;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+            text-transform: uppercase;
+        }
+
+        .phaser-history-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .phaser-history-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .phaser-history-content::-webkit-scrollbar-thumb {
+            background: #6c5ce7;
+            border-radius: 10px;
+        }
+
+        .phaser-history-content::-webkit-scrollbar-thumb:hover {
+            background: #5a4bc7;
+        }
         
         /* Mobile responsive */
             @media (max-width: 768px) {
