@@ -1248,7 +1248,7 @@ class EmotionGameScene extends Phaser.Scene {
     createDisclaimerBubble() {
         const screenWidth = this.cameras.main.width;
         const maxWidth = 320;
-        const y = 40; // Parte superior de la pantalla
+        const y = 15; // Parte superior de la pantalla, más arriba
 
         // Números de emergencia por país (basado en workflow_latest.json)
         const emergencyNumbers = {
@@ -1284,10 +1284,10 @@ class EmotionGameScene extends Phaser.Scene {
         const bubbleHeight = textHeight + 20;
         const bubbleWidth = Math.min(textWidth + 30, maxWidth);
         
-        // Posición inicial centrada
-        const startX = (screenWidth - bubbleWidth) / 2;
+        // Posición inicial en la esquina superior derecha (20px del borde)
+        const startX = screenWidth - bubbleWidth - 20;
         
-        // Crear contenedor en la parte superior centrado
+        // Crear contenedor en la parte superior derecha
         this.disclaimerBubble = this.add.container(startX, y);
         
         const bg = this.add.graphics();
@@ -1309,21 +1309,14 @@ class EmotionGameScene extends Phaser.Scene {
         this.disclaimerBubble.setAlpha(0.9);
         this.disclaimerBubble.setDepth(50); // Por encima de otros elementos
 
-        // Calcular rango de movimiento (20% a 80% de la pantalla)
-        const leftBound = screenWidth * 0.15;
-        const rightBound = screenWidth * 0.85 - bubbleWidth;
-        
-        // Animación de movimiento suave de lado a lado
+        // Animación de movimiento sutil (solo 5px arriba/abajo)
         this.tweens.add({
             targets: this.disclaimerBubble,
-            x: rightBound,
-            duration: 8000,
+            y: y + 5,
+            duration: 3000,
             yoyo: true,
             repeat: -1,
-            ease: 'Sine.easeInOut',
-            onStart: () => {
-                this.disclaimerBubble.x = leftBound;
-            }
+            ease: 'Sine.easeInOut'
         });
     }
 
