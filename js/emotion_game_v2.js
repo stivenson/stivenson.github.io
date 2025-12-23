@@ -1380,19 +1380,45 @@ class EmotionGameScene extends Phaser.Scene {
             this.activeBubble.destroy();
         }
 
-        const bubbleWidth = 220;
+        // Detectar si es móvil y ajustar ancho de burbuja
+        const screenWidth = this.cameras.main.width;
+        const isMobile = screenWidth <= 480;
+        
+        // Ancho adaptativo: más pequeño en móviles
+        const bubbleWidth = isMobile ? Math.min(280, screenWidth - 40) : 220;
         const bubblePadding = 15;
         
         // Temporarily create text to measure height
         const tempText = this.add.text(0, 0, text, {
             fontFamily: 'Segoe UI, system-ui, sans-serif',
-            fontSize: '14px',
+            fontSize: isMobile ? '13px' : '14px',
             wordWrap: { width: bubbleWidth - bubblePadding * 2 }
         });
         const bubbleHeight = Math.max(60, tempText.height + bubblePadding * 2);
         tempText.destroy();
 
-        const bubble = this.add.container(x, y);
+        // Ajustar posición X para centrar correctamente la burbuja
+        // En móviles, asegurar que no se corte por los bordes
+        // Nota: El contenedor se dibuja desde (0,0), así que adjustedX es la esquina superior izquierda
+        let adjustedX = x;
+        if (!isUser) {
+            // Para burbujas del bot: centrar en la pantalla
+            // El centro de la burbuja debe estar en screenWidth/2
+            // Como se dibuja desde (0,0), el contenedor debe estar en: centro - ancho/2
+            adjustedX = screenWidth / 2 - bubbleWidth / 2;
+            // Asegurar que no se salga de los bordes (margen de 10px)
+            const minX = 10;
+            const maxX = screenWidth - bubbleWidth - 10;
+            adjustedX = Math.max(minX, Math.min(adjustedX, maxX));
+        } else {
+            // Para burbujas del usuario: mantener posición relativa pero asegurar visibilidad
+            // x ya viene ajustado desde handleUserChat, solo verificamos límites
+            const minX = 10;
+            const maxX = screenWidth - bubbleWidth - 10;
+            adjustedX = Math.max(minX, Math.min(x, maxX));
+        }
+
+        const bubble = this.add.container(adjustedX, y);
         const bubbleGraphics = this.add.graphics();
 
         // Bubble shape
@@ -1421,7 +1447,7 @@ class EmotionGameScene extends Phaser.Scene {
 
         const content = this.add.text(bubblePadding, bubblePadding, text, {
             fontFamily: 'Segoe UI, system-ui, sans-serif',
-            fontSize: '14px',
+            fontSize: isMobile ? '13px' : '14px',
             color: '#2d3436',
             align: 'left',
             wordWrap: { width: bubbleWidth - bubblePadding * 2 }
