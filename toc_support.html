@@ -702,55 +702,7 @@
     
     <!-- Script para ajustar posición del footer -->
     <script>
-        function adjustFooterPosition() {
-            const footer = document.getElementById('footer');
-            const chatPanel = document.getElementById('chat-panel');
-            
-            if (!footer || !chatPanel) return;
-            
-            // Por defecto, mantener el footer en la parte inferior
-            footer.style.bottom = '0px';
-            
-            // Solo ajustar en móvil donde el chat puede superponerse
-            if (window.innerWidth <= 768) {
-                if (!chatPanel.classList.contains('minimized')) {
-                    // Chat expandido, mover footer debajo del chat con mucho espacio
-                    const chatBottom = chatPanel.getBoundingClientRect().bottom;
-                    const footerHeight = footer.offsetHeight;
-                    const viewportHeight = window.innerHeight;
-                    
-                    // Calcular posición: debajo del chat con mucho espacio, pero siempre cerca del final
-                    // Si el chat está muy arriba, el footer va al final de la pantalla
-                    const spaceFromChat = 400; // Mucho espacio entre chat y footer
-                    const newBottom = viewportHeight - chatBottom - footerHeight - spaceFromChat;
-                    
-                    // Solo ajustar si el cálculo da un valor positivo, sino dejarlo al final
-                    if (newBottom > 0 && newBottom < viewportHeight - footerHeight - 50) {
-                        footer.style.bottom = newBottom + 'px';
-                    } else {
-                        // Si no cabe con el espacio, ponerlo al final con un pequeño margen
-                        footer.style.bottom = '10px';
-                    }
-                }
-            }
-        }
-        
-        // Ajustar al cargar y al redimensionar
-        window.addEventListener('load', adjustFooterPosition);
-        window.addEventListener('resize', adjustFooterPosition);
-        
-        // Observar cambios en el chat panel
-        const chatPanel = document.getElementById('chat-panel');
-        if (chatPanel) {
-            const observer = new MutationObserver(adjustFooterPosition);
-            observer.observe(chatPanel, {
-                attributes: true,
-                attributeFilter: ['class']
-            });
-        }
-        
-        // Ajustar después de un pequeño delay para asegurar que todo esté renderizado
-        setTimeout(adjustFooterPosition, 100);
+        // El footer siempre está pegado al bottom, no necesita ajustes dinámicos
     </script>
 </body>
 </html>
