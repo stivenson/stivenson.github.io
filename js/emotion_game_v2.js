@@ -476,7 +476,7 @@ function displayBotResponse(message, crisisLevel) {
 
             // Crear nube de conversación sobre el input (abajo) - AJUSTADO: más cerca
             const centerX = scene.cameras.main.width / 2;
-            const inputY = scene.cameras.main.height - 80; // Posición del input
+            const inputY = scene.cameras.main.height - 140; // Posición del input (AJUSTADO: más arriba)
             const bubbleY = inputY - 60; // Reducido a 60px para estar más cerca del input
             const { bubble: botBubble } = scene.createSpeechBubble(centerX, bubbleY, cleanedMessage, false);
 
@@ -573,7 +573,7 @@ class EmotionGameScene extends Phaser.Scene {
 
     create() {
         const centerX = this.cameras.main.width / 2;
-        const centerY = this.cameras.main.height / 2;
+        const centerY = this.cameras.main.height * 0.42; // AJUSTADO: Subido del 50% al 42% de altura
 
         this.createBackground();
         this.createCharacter(centerX, centerY);
@@ -1551,7 +1551,7 @@ class EmotionGameScene extends Phaser.Scene {
         if (this.userInputContainer) return;
 
         const centerX = this.cameras.main.width / 2;
-        const centerY = this.cameras.main.height - 80;
+        const centerY = this.cameras.main.height - 140; // AJUSTADO: Subido de 80 a 140 desde el borde inferior
 
         // Crear el elemento DOM para el input con botón de historial y barra de progreso
         const html = `
