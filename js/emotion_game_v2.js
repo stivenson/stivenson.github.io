@@ -1327,15 +1327,16 @@ class EmotionGameScene extends Phaser.Scene {
 
         this.userInputContainer = this.add.dom(centerX, centerY).createFromHTML(html);
         
-        const input = this.userInputContainer.getChildByClass('phaser-chat-input');
-        const btn = this.userInputContainer.getChildByClass('phaser-send-btn');
+        // Acceder a los elementos mediante el node del DOMElement
+        const containerNode = this.userInputContainer.node;
+        const input = containerNode.querySelector('.phaser-chat-input');
+        const btn = containerNode.querySelector('.phaser-send-btn');
 
         const handleSubmit = () => {
             const message = input.value.trim();
             if (message) {
                 this.handleUserChat(message);
                 input.value = '';
-                // Optional: hide input after sending or keep it
             }
         };
 
