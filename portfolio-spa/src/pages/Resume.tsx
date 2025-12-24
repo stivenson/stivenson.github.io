@@ -187,9 +187,10 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '11px',
                       padding: '2px 8px',
-                      background: 'rgba(0, 102, 255, 0.1)',
+                      background: '#ffffff',
                       borderRadius: '4px',
-                      color: 'var(--electric-blue)',
+                      border: '1px solid #0066ff',
+                      color: '#0066ff',
                       fontWeight: 500
                     }}>
                       {project.tool}
@@ -197,9 +198,9 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '11px',
                       padding: '2px 8px',
-                      background: 'rgba(0, 229, 255, 0.1)',
+                      background: '#0066ff',
                       borderRadius: '4px',
-                      color: 'var(--electric-cyan)',
+                      color: '#ffffff',
                       fontWeight: 500
                     }}>
                       {project.role}
@@ -410,12 +411,13 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '12px',
                       padding: '4px 10px',
-                      background: 'rgba(0, 229, 255, 0.1)',
+                      background: '#0066ff',
                       borderRadius: '4px',
-                      color: 'var(--electric-cyan)',
+                      color: '#ffffff',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '4px'
+                      gap: '4px',
+                      fontWeight: 500
                     }}>
                       🌍 {ref.country}
                     </span>
