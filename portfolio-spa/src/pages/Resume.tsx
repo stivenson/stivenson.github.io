@@ -138,27 +138,6 @@ export function Resume() {
               tool: 'Cursor',
               role: 'Desarrollo',
               technologies: ['HTML', 'CSS', 'JavaScript']
-            },
-            {
-              title: 'Dashboard - Simulación de Rendimiento',
-              url: 'https://dashboard-1-simulaci-n-de-rendimiento-instant-neo-952576018707.us-west1.run.app/',
-              tool: 'Google AI Studio',
-              role: 'Acompañamiento',
-              technologies: ['Python', 'Streamlit', 'Google Cloud', 'AI Studio', 'Machine Learning']
-            },
-            {
-              title: 'Dashboard - Predicción de Irradiancia Solar',
-              url: 'https://dashboard-2-predicci-n-de-irradiancia-solar-regre-952576018707.us-west1.run.app/',
-              tool: 'Google AI Studio',
-              role: 'Acompañamiento',
-              technologies: ['Python', 'Streamlit', 'Google Cloud', 'AI Studio', 'Regression', 'ML']
-            },
-            {
-              title: 'Dashboard - Clasificación de Potencial Solar',
-              url: 'https://dashboard-3-clasificaci-n-de-potencial-solar-clas-952576018707.us-west1.run.app/',
-              tool: 'Google AI Studio',
-              role: 'Acompañamiento',
-              technologies: ['Python', 'Streamlit', 'Google Cloud', 'AI Studio', 'Classification', 'ML']
             }
           ].map((project, index) => (
             <motion.div
