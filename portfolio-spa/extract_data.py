@@ -23,7 +23,7 @@ def main():
             {
                 "company": "Mo Technologies (Mastercard)",
                 "role": "Full Stack - Senior Developer",
-                "period": "Marzo 2021 - Actualidad",
+                "period": "Marzo 2021 - Julio 2025",
                 "modality": "semi-presencial",
                 "description": [
                     "Desarrollo de productos bancarios en AWS y GCP usando Python, Serverless y otros servicios AWS",

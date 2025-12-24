@@ -11,19 +11,19 @@
     {
       "company": "Independiente",
       "role": "LLMOps",
-      "period": "Agosto 2024 - Actualidad",
+      "period": "Agosto 2025 - Actualidad",
       "modality": "remoto",
       "description": [
         "Desarrollo y operación de sistemas de Machine Learning y Large Language Models",
         "Arquitectura y despliegue de pipelines MLOps/LLMOps en cloud",
         "Optimización y monitoreo de modelos de IA en producción"
       ],
-      "technologies": ["Python", "LLMOps", "MLOps", "Machine Learning", "AWS", "GCP", "Docker", "Kubernetes"]
+      "technologies": ["Python", "LLMOps", "MLOps", "IA", "JavaScript", "N8N", "Machine Learning", "AWS", "GCP", "Docker"]
     },
     {
       "company": "Mo Technologies (Mastercard - Start Path)",
       "role": "Full Stack - Senior Developer",
-      "period": "Marzo 2021 - Julio 2024",
+      "period": "Marzo 2021 - Julio 2025",
       "modality": "semi-presencial",
       "description": [
         "Desarrollo de productos bancarios en AWS y GCP usando Python, Serverless y otros servicios AWS",
