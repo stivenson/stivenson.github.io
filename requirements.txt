@@ -1,0 +1,14 @@
+# Dependencias principales
+pyaudio>=0.2.11
+deep-translator>=1.11.4
+ffmpeg-python>=0.2.0
+
+# NumPy (versión compatible con PyTorch - NO usar numpy 2.x)
+numpy>=1.21.0,<2.0.0
+
+# PyTorch y Whisper (instalar desde índice oficial de PyTorch)
+# Instalar primero con: pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+torch>=2.0.0
+torchaudio>=2.0.0
+openai-whisper>=20231117
+
