@@ -194,6 +194,86 @@ export function Portfolio() {
         </div>
       </RichPanel>
 
+      {/* TOC Support Panel */}
+      <RichPanel title="Soporte en Crisis TOC" icon="🧠" electric>
+        <div style={{ 
+          display: 'flex', 
+          gap: '16px', 
+          alignItems: 'flex-start',
+          flexWrap: 'wrap'
+        }}>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            style={{ 
+              width: '80px', 
+              height: '80px',
+              minWidth: '60px',
+              minHeight: '60px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #6c5ce7 0%, #5f4bd8 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '36px',
+              boxShadow: 'var(--electric-shadow)',
+              flexShrink: 0
+            }}
+          >
+            🧠
+          </motion.div>
+          <div style={{ flex: 1, minWidth: '200px' }}>
+            <h3 style={{ 
+              fontSize: '16px', 
+              marginBottom: '8px',
+              color: 'var(--electric-blue)',
+              fontWeight: 600
+            }}>
+              Herramienta de Psicoeducación y Autorregulación Emocional
+            </h3>
+            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.6' }}>
+              Herramienta de psicoeducación y autorregulación emocional orientada al Trastorno Obsesivo-Compulsivo (TOC), 
+              basada en andamiaje cognitivo y navegación por estados internos, implementada como interfaz digital no clínica 
+              de apoyo personal, complementaria —no sustitutiva— al tratamiento profesional.
+            </p>
+            <motion.a
+              href="https://stivenson.github.io/toc_support.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rf-button primary"
+              style={{ 
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                textDecoration: 'none'
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>🔗</span>
+              <span>Visitar Soporte TOC</span>
+            </motion.a>
+            <div style={{ 
+              marginTop: '12px',
+              padding: '10px',
+              background: 'rgba(108, 92, 231, 0.05)',
+              borderRadius: '6px',
+              borderLeft: '3px solid #6c5ce7'
+            }}>
+              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
+                <strong style={{ color: '#6c5ce7' }}>✨ Características:</strong>
+                <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
+                  <li>Interfaz de apoyo emocional con LLMs</li>
+                  <li>Almacenamiento local y privacidad garantizada</li>
+                  <li>Navegación por estados internos</li>
+                  <li>Herramienta complementaria no clínica</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </RichPanel>
+
       {/* Pinned Repos Table */}
       <RichPanel title="Repositorios Destacados" icon="📌">
         <RichTable 
