@@ -40,10 +40,64 @@ export function Sidebar() {
           ))}
         </nav>
         
-        <div style={{ marginTop: '24px', padding: '12px', background: 'rgba(0, 102, 255, 0.05)', borderRadius: '4px', border: '1px solid var(--rf-border)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--rf-text-muted)', marginBottom: '8px' }}>
-            Mis Sitios
-          </div>
+        <motion.div 
+          style={{ 
+            marginTop: '24px', 
+            padding: '12px', 
+            borderRadius: '4px', 
+            border: '1px solid var(--rf-border)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.3 }}
+        >
+          <motion.div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.25) 0%, rgba(0, 229, 255, 0.18) 50%, rgba(0, 102, 255, 0.25) 100%)',
+              zIndex: 0,
+              pointerEvents: 'none'
+            }}
+            animate={{
+              opacity: [0.6, 1.0, 0.6],
+            }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: 'easeInOut'
+            }}
+          />
+          <motion.div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(225deg, rgba(0, 229, 255, 0.20) 0%, rgba(0, 102, 255, 0.28) 50%, rgba(0, 229, 255, 0.20) 100%)',
+              zIndex: 0,
+              pointerEvents: 'none'
+            }}
+            animate={{
+              opacity: [0.4, 0.95, 0.4],
+            }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: 0.5
+            }}
+          />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ fontSize: '11px', color: 'rgba(0, 0, 0, 0.65)', marginBottom: '8px', fontWeight: 500 }}>
+              Mis Sitios
+            </div>
           <a 
             href="https://github.com/stivenson" 
             target="_blank" 
@@ -74,7 +128,8 @@ export function Sidebar() {
             <span className="rf-tree-icon">🤖</span>
             Directorio LLMs
           </a>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </aside>
   );
