@@ -42,7 +42,7 @@ export function Sidebar() {
         
         <div style={{ marginTop: '24px', padding: '12px', background: 'rgba(0, 102, 255, 0.05)', borderRadius: '4px', border: '1px solid var(--rf-border)' }}>
           <div style={{ fontSize: '11px', color: 'var(--rf-text-muted)', marginBottom: '8px' }}>
-            Enlaces Externos
+            Mis Sitios
           </div>
           <a 
             href="https://github.com/stivenson" 
