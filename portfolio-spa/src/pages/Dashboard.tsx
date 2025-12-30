@@ -18,21 +18,35 @@ export function Dashboard() {
       {/* Welcome Panel */}
       <RichPanel title="Bienvenido" icon="⚡" electric>
         <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <div style={{ 
-            width: '120px', 
+          <div style={{
+            width: '120px',
             height: '120px',
             minWidth: '80px',
             minHeight: '80px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
+            borderRadius: '16px',
+            background: 'var(--electric-blue)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '48px',
             boxShadow: 'var(--electric-shadow)',
             flexShrink: 0
           }}>
-            👨‍💻
+            <div style={{
+              width: '70%',
+              height: '70%',
+              borderRadius: '8px',
+              background: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{
+                width: '50%',
+                height: '60%',
+                borderRadius: '6px',
+                background: 'var(--electric-blue)'
+              }} />
+            </div>
           </div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h2 style={{ 

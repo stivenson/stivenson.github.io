@@ -213,25 +213,39 @@ export function About() {
     <div className="animate-fade-in">
       <RichPanel title="Sobre Mí" icon="👤" electric>
         <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            style={{ 
-              width: '100px', 
+            style={{
+              width: '100px',
               height: '100px',
               minWidth: '70px',
               minHeight: '70px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
+              borderRadius: '16px',
+              background: 'var(--electric-blue)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '42px',
               boxShadow: 'var(--electric-shadow)',
               flexShrink: 0
             }}
           >
-            👨‍💻
+            <div style={{
+              width: '70%',
+              height: '70%',
+              borderRadius: '8px',
+              background: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{
+                width: '50%',
+                height: '60%',
+                borderRadius: '6px',
+                background: 'var(--electric-blue)'
+              }} />
+            </div>
           </motion.div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h2 style={{ 
