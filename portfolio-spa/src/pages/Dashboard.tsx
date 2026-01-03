@@ -111,7 +111,7 @@ export function Dashboard() {
               }}
             >
               <div style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--electric-blue)' }}>
-                8+
+                12+
               </div>
               <div style={{ fontSize: '11px', color: 'var(--rf-text-muted)' }}>
                 Años Exp.
