@@ -443,6 +443,23 @@
             color: #000;
         }
 
+        /* Spinner de carga para botones de filtro */
+        .badge-filter-spinner {
+            display: none;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 6px;
+            flex-shrink: 0;
+        }
+
+        .badge-filter label.loading .badge-filter-spinner {
+            display: inline-block;
+        }
+
         @media (max-width: 768px) {
             .badge-filter {
                 padding: 8px 10px;
@@ -1149,29 +1166,29 @@
             <div class="badge-filter-container">
                 <div class="badge-filter">
                     <input type="radio" id="filter-all" name="badge-filter" value="all" checked>
-                    <label for="filter-all">Todos</label>
+                    <label for="filter-all">Todos<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-chat" name="badge-filter" value="chat">
-                    <label for="filter-chat">Chat</label>
+                    <label for="filter-chat">Chat<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-imagenes" name="badge-filter" value="generacion-imagenes">
-                    <label for="filter-imagenes">Imágenes</label>
+                    <label for="filter-imagenes">Imágenes<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-video" name="badge-filter" value="generacion-video">
-                    <label for="filter-video">Video</label>
+                    <label for="filter-video">Video<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-audio" name="badge-filter" value="generacion-audio">
-                    <label for="filter-audio">Audio</label>
+                    <label for="filter-audio">Audio<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-codigo" name="badge-filter" value="codigo">
-                    <label for="filter-codigo">Código</label>
+                    <label for="filter-codigo">Código<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-workflow" name="badge-filter" value="workflow">
-                    <label for="filter-workflow">Workflow</label>
+                    <label for="filter-workflow">Workflow<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-agentes" name="badge-filter" value="agentes">
-                    <label for="filter-agentes">Agentes</label>
+                    <label for="filter-agentes">Agentes<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-productividad" name="badge-filter" value="productividad">
-                    <label for="filter-productividad">Productividad</label>
+                    <label for="filter-productividad">Productividad<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-diseño" name="badge-filter" value="diseño">
-                    <label for="filter-diseño">Diseño</label>
+                    <label for="filter-diseño">Diseño<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-desarrollo" name="badge-filter" value="desarrollo">
-                    <label for="filter-desarrollo">Desarrollo</label>
+                    <label for="filter-desarrollo">Desarrollo<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-open-source" name="badge-filter" value="open-source">
-                    <label for="filter-open-source">Open Source</label>
+                    <label for="filter-open-source">Open Source<span class="badge-filter-spinner"></span></label>
                 </div>
             </div>
             <div class="masonry" id="masonryContainer">
