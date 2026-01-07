@@ -286,6 +286,7 @@
         .badge-filter label {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             padding: 5px 12px;
             font-size: 0.75rem;
             font-weight: 600;
@@ -299,6 +300,7 @@
             user-select: none;
             position: relative;
             overflow: hidden;
+            min-height: 28px; /* Asegurar altura mínima consistente */
         }
 
         /* Fondo base del label */
@@ -446,18 +448,40 @@
         /* Spinner de carga para botones de filtro */
         .badge-filter-spinner {
             display: none;
-            width: 12px;
-            height: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid currentColor;
+            width: 16px;
+            height: 16px;
+            border: 2.5px solid rgba(102, 126, 234, 0.3);
+            border-top: 2.5px solid #667eea;
+            border-right: 2.5px solid #667eea;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-left: 6px;
             flex-shrink: 0;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
         }
 
+        /* Estado de carga - hacer el texto invisible pero mantener espacio */
+        .badge-filter label.loading {
+            color: transparent !important;
+        }
+
+        /* Mostrar spinner cuando el label está en estado loading */
         .badge-filter label.loading .badge-filter-spinner {
-            display: inline-block;
+            display: block !important;
+            /* Spinner para botones NO seleccionados (fondo claro - usar color oscuro) */
+            border: 2.5px solid rgba(85, 85, 85, 0.3);
+            border-top: 2.5px solid #555;
+            border-right: 2.5px solid #555;
+        }
+
+        /* Spinner para botones seleccionados (fondo púrpura - usar color blanco) */
+        .badge-filter input[type="radio"]:checked + label.loading .badge-filter-spinner {
+            border: 2.5px solid rgba(255, 255, 255, 0.3);
+            border-top: 2.5px solid #ffffff;
+            border-right: 2.5px solid #ffffff;
         }
 
         @media (max-width: 768px) {
@@ -1132,6 +1156,50 @@
             font-weight: 500;
             margin-top: 10px;
         }
+
+        /* Filter Update Modal - Subtle and Centered */
+        .filter-update-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            border-radius: 12px;
+            padding: 20px 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 100002;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-update-modal.show {
+            display: flex !important;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .filter-update-modal .modal-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2.5px solid rgba(102, 126, 234, 0.2);
+            border-top: 2.5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            flex-shrink: 0;
+        }
+
+        .filter-update-modal .modal-text {
+            color: #333;
+            font-size: 0.95rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -1238,6 +1306,12 @@
             </table>
         </div>
         -->
+    </div>
+
+    <!-- Filter Update Modal -->
+    <div class="filter-update-modal" id="filterUpdateModal" role="status" aria-live="polite" aria-label="Actualizando paneles">
+        <div class="modal-spinner"></div>
+        <div class="modal-text">Actualizando paneles...</div>
     </div>
 
     <!-- Modal -->
