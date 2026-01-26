@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichPanel, RichTabPanel, Timeline, TagList } from '../components';
+import { RichPanel, RichTabPanel, Timeline, TagList, RetroIcon } from '../components';
 import profileData from '../data/profile.json';
 
 export function Resume() {
@@ -172,7 +172,10 @@ export function Resume() {
                   fontSize: '20px',
                   flexShrink: 0
                 }}>
-                  {project.tool === 'Cursor' ? '⚡' : project.tool === 'AntiGravity' ? '🚀' : '🌐'}
+                  <RetroIcon 
+                    emoji={project.tool === 'Cursor' ? '⚡' : project.tool === 'AntiGravity' ? '🚀' : '🌐'} 
+                    size={20} 
+                  />
                 </div>
                 <div style={{ flex: 1 }}>
                   <h4 style={{ 
@@ -223,7 +226,8 @@ export function Resume() {
                     onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
                     onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
                   >
-                    🔗 <span style={{ fontSize: '11px' }}>{project.url.length > 50 ? project.url.substring(0, 50) + '...' : project.url}</span>
+                    <RetroIcon emoji="🔗" size={12} style={{ marginRight: '4px' }} />
+                    <span style={{ fontSize: '11px' }}>{project.url.length > 50 ? project.url.substring(0, 50) + '...' : project.url}</span>
                   </a>
                 </div>
               </div>
@@ -435,7 +439,7 @@ export function Resume() {
     <div className="animate-fade-in">
       <RichPanel title="Curriculum Vitae" icon="📄" electric>
         <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px' }}>
-          +8 años de experiencia como Full Stack Developer, especializado en arquitecturas cloud, 
+          +12 años de experiencia como Full Stack Developer, especializado en arquitecturas cloud, 
           microservicios y desarrollo de productos bancarios. Actualmente cursando Maestría en 
           Inteligencia Artificial en la Universidad de los Andes.
         </p>

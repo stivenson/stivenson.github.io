@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
+import { RetroIcon } from './RetroIcon';
 
 export function Header() {
   return (
     <header className="rf-header-bar electric">
       <div className="rf-header-title">
-        <span style={{ fontSize: '28px' }}>⚡</span>
+        <RetroIcon emoji="⚡" size={28} />
         <span className="electric-text">Stivenson Rincón</span>
         <span className="header-subtitle" style={{ fontSize: '14px', fontWeight: 400, opacity: 0.8 }}>
           | Systems Engineer & Full Stack Developer

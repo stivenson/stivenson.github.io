@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichPanel, RichTable, TagList } from '../components';
+import { RichPanel, RichTable, TagList, RetroIcon } from '../components';
 import profileData from '../data/profile.json';
 
 interface Repo {
@@ -140,7 +140,7 @@ export function Portfolio() {
               flexShrink: 0
             }}
           >
-            🤖
+            <RetroIcon emoji="🤖" size={36} />
           </motion.div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{ 
@@ -170,7 +170,7 @@ export function Portfolio() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>🔗</span>
+              <RetroIcon emoji="🔗" size={16} />
               <span>Visitar Directorio de LLMs</span>
             </motion.a>
             <div style={{ 
@@ -220,7 +220,7 @@ export function Portfolio() {
               flexShrink: 0
             }}
           >
-            🧠
+            <RetroIcon emoji="🧠" size={36} />
           </motion.div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{ 
@@ -250,7 +250,7 @@ export function Portfolio() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>🔗</span>
+              <RetroIcon emoji="🔗" size={16} />
               <span>Visitar Soporte TOC</span>
             </motion.a>
             <div style={{ 
@@ -300,7 +300,7 @@ export function Portfolio() {
               flexShrink: 0
             }}
           >
-            🔍
+            <RetroIcon emoji="🔍" size={36} />
           </motion.div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{ 
@@ -329,7 +329,7 @@ export function Portfolio() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>🔗</span>
+              <RetroIcon emoji="🔗" size={16} />
               <span>Visitar Job Search Agents</span>
             </motion.a>
             <div style={{ 
@@ -380,7 +380,7 @@ export function Portfolio() {
                 gap: '8px',
                 color: 'var(--electric-blue)'
               }}>
-                <span>{category.icon}</span>
+                <RetroIcon emoji={category.icon} size={16} />
                 {category.title}
               </h4>
               <div className="rf-cards-grid">
@@ -397,8 +397,9 @@ export function Portfolio() {
                     transition={{ delay: catIndex * 0.1 + projIndex * 0.05 }}
                     whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(0, 102, 255, 0.2)' }}
                   >
-                    <div className="rf-card-header">
-                      📦 {project.name}
+                    <div className="rf-card-header" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <RetroIcon emoji="📦" size={16} />
+                      {project.name}
                     </div>
                     <div className="rf-card-body">
                       <p style={{ fontSize: '12px', color: 'var(--rf-text-muted)', marginBottom: '12px' }}>
@@ -435,7 +436,9 @@ export function Portfolio() {
             background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
             borderRadius: '8px'
           }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>🦈</div>
+            <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <RetroIcon emoji="🦈" size={32} />
+            </div>
             <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>Pull Shark x3</div>
           </div>
           <div style={{ 
@@ -443,7 +446,9 @@ export function Portfolio() {
             background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
             borderRadius: '8px'
           }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>❄️</div>
+            <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <RetroIcon emoji="❄️" size={32} />
+            </div>
             <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>Arctic Code Vault</div>
           </div>
           <div style={{ 
@@ -451,7 +456,9 @@ export function Portfolio() {
             background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
             borderRadius: '8px'
           }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>💖</div>
+            <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <RetroIcon emoji="💖" size={32} />
+            </div>
             <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>Public Sponsor</div>
           </div>
         </div>
