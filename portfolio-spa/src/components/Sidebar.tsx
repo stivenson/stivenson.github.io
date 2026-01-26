@@ -119,6 +119,16 @@ export function Sidebar() {
             Soporte TOC
           </a>
           <a 
+            href="https://github.com/stivenson/job_search_agents" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="rf-tree-item"
+            style={{ fontSize: '12px' }}
+          >
+            <span className="rf-tree-icon">🔍</span>
+            Job Search Agents
+          </a>
+          <a 
             href="https://stivenson.github.io/llm-directory.html" 
             target="_blank" 
             rel="noopener noreferrer"

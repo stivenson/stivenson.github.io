@@ -274,6 +274,85 @@ export function Portfolio() {
         </div>
       </RichPanel>
 
+      {/* Job Search Agents Panel */}
+      <RichPanel title="Job Search Agents" icon="🔍" electric>
+        <div style={{ 
+          display: 'flex', 
+          gap: '16px', 
+          alignItems: 'flex-start',
+          flexWrap: 'wrap'
+        }}>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            style={{ 
+              width: '80px', 
+              height: '80px',
+              minWidth: '60px',
+              minHeight: '60px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '36px',
+              boxShadow: 'var(--electric-shadow)',
+              flexShrink: 0
+            }}
+          >
+            🔍
+          </motion.div>
+          <div style={{ flex: 1, minWidth: '200px' }}>
+            <h3 style={{ 
+              fontSize: '16px', 
+              marginBottom: '8px',
+              color: 'var(--electric-blue)',
+              fontWeight: 600
+            }}>
+              Sistema Inteligente de Búsqueda de Empleo con Agentes IA
+            </h3>
+            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.6' }}>
+              Sistema inteligente de búsqueda de empleo que utiliza agentes LangGraph para buscar trabajos en múltiples fuentes, 
+              extraer información de contacto y generar un reporte HTML interactivo.
+            </p>
+            <motion.a
+              href="https://github.com/stivenson/job_search_agents"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rf-button primary"
+              style={{ 
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                textDecoration: 'none'
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span>🔗</span>
+              <span>Visitar Job Search Agents</span>
+            </motion.a>
+            <div style={{ 
+              marginTop: '12px',
+              padding: '10px',
+              background: 'rgba(6, 182, 212, 0.05)',
+              borderRadius: '6px',
+              borderLeft: '3px solid #06b6d4'
+            }}>
+              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
+                <strong style={{ color: '#06b6d4' }}>✨ Características:</strong>
+                <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
+                  <li>Arquitectura multiagente con LangGraph</li>
+                  <li>Protección anti-bot avanzada</li>
+                  <li>Sistema de Agent Skills</li>
+                  <li>Matching inteligente y extracción de información</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </RichPanel>
+
       {/* Pinned Repos Table */}
       <RichPanel title="Repositorios Destacados" icon="📌">
         <RichTable 
