@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichPanel, RichTabPanel } from '../components';
+import { RichPanel, RichTabPanel, RetroIcon } from '../components';
 import profileData from '../data/profile.json';
 
 export function About() {
@@ -258,8 +258,9 @@ export function About() {
             <p style={{ fontSize: '14px', color: 'var(--rf-text-muted)', marginBottom: '12px' }}>
               {personal.title}
             </p>
-            <p style={{ fontSize: '13px', marginBottom: '8px' }}>
-              📍 {personal.location}
+            <p style={{ fontSize: '13px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <RetroIcon emoji="📍" size={14} />
+              {personal.location}
             </p>
             <p style={{ 
               fontSize: '13px', 

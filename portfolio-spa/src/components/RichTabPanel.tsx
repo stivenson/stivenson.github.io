@@ -1,10 +1,11 @@
 import { ReactNode, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { RetroIcon } from './RetroIcon';
 
 interface Tab {
   id: string;
   label: string;
-  icon?: ReactNode;
+  icon?: ReactNode | string; // Puede ser ReactNode o string (emoji)
   content: ReactNode;
 }
 
@@ -27,7 +28,15 @@ export function RichTabPanel({ tabs, defaultTab }: RichTabPanelProps) {
             className={`rf-tab ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            {tab.icon && <span style={{ marginRight: '6px' }}>{tab.icon}</span>}
+            {tab.icon && (
+              <span style={{ marginRight: '6px', display: 'inline-flex', alignItems: 'center' }}>
+                {typeof tab.icon === 'string' ? (
+                  <RetroIcon emoji={tab.icon} size={16} />
+                ) : (
+                  tab.icon
+                )}
+              </span>
+            )}
             {tab.label}
           </button>
         ))}

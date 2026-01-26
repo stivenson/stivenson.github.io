@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { RetroIcon } from './RetroIcon';
 
 interface NavItem {
   path: string;
@@ -33,7 +34,9 @@ export function Sidebar() {
                 to={item.path}
                 className={({ isActive }) => `rf-tree-item ${isActive ? 'active' : ''}`}
               >
-                <span className="rf-tree-icon">{item.icon}</span>
+                <span className="rf-tree-icon">
+                  <RetroIcon emoji={item.icon} size={16} />
+                </span>
                 {item.label}
               </NavLink>
             </motion.div>
@@ -105,7 +108,9 @@ export function Sidebar() {
             className="rf-tree-item"
             style={{ fontSize: '12px' }}
           >
-            <span className="rf-tree-icon">🔗</span>
+            <span className="rf-tree-icon">
+              <RetroIcon emoji="🔗" size={16} />
+            </span>
             GitHub Profile
           </a>
           <a 
@@ -115,7 +120,9 @@ export function Sidebar() {
             className="rf-tree-item"
             style={{ fontSize: '12px' }}
           >
-            <span className="rf-tree-icon">🧠</span>
+            <span className="rf-tree-icon">
+              <RetroIcon emoji="🧠" size={16} />
+            </span>
             Soporte TOC
           </a>
           <a 
@@ -125,7 +132,9 @@ export function Sidebar() {
             className="rf-tree-item"
             style={{ fontSize: '12px' }}
           >
-            <span className="rf-tree-icon">🔍</span>
+            <span className="rf-tree-icon">
+              <RetroIcon emoji="🔍" size={16} />
+            </span>
             Job Search Agents
           </a>
           <a 
@@ -135,7 +144,9 @@ export function Sidebar() {
             className="rf-tree-item"
             style={{ fontSize: '12px' }}
           >
-            <span className="rf-tree-icon">🤖</span>
+            <span className="rf-tree-icon">
+              <RetroIcon emoji="🤖" size={16} />
+            </span>
             Directorio LLMs
           </a>
           </div>

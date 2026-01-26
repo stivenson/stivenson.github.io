@@ -1,0 +1,208 @@
+/* Retro-Modern Design Enhancements */
+/* Efectos de sombra y bordes estilo Windows 95/98 */
+
+:root {
+  /* Retro Shadow Effects */
+  --retro-shadow-inset: inset 1px 1px 2px rgba(0, 0, 0, 0.15),
+                         inset -1px -1px 2px rgba(255, 255, 255, 0.8);
+  --retro-shadow-raised: 1px 1px 0 rgba(255, 255, 255, 0.9),
+                         -1px -1px 0 rgba(0, 0, 0, 0.25),
+                         2px 2px 0 rgba(0, 0, 0, 0.1);
+  --retro-shadow-pressed: inset 1px 1px 2px rgba(0, 0, 0, 0.3),
+                          inset -1px -1px 1px rgba(255, 255, 255, 0.5);
+  
+  /* Retro Borders */
+  --retro-border-raised: 2px outset #c0c0c0;
+  --retro-border-inset: 2px inset #c0c0c0;
+  --retro-border-thin-raised: 1px outset #e0e0e0;
+  --retro-border-thin-inset: 1px inset #a0a0a0;
+  
+  /* Retro Colors */
+  --retro-gray-light: #e0e0e0;
+  --retro-gray-medium: #c0c0c0;
+  --retro-gray-dark: #808080;
+  --retro-white: #ffffff;
+  --retro-black: #000000;
+}
+
+/* Estilos para iconos retro */
+.retro-icon {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  filter: contrast(1.1) brightness(0.98);
+}
+
+/* Efectos retro para paneles */
+.rf-panel.retro-enhanced {
+  box-shadow: var(--retro-shadow-raised);
+  border: var(--retro-border-thin-raised);
+}
+
+.rf-panel-header.retro-enhanced {
+  box-shadow: var(--retro-shadow-inset);
+  border-bottom: 2px solid var(--retro-gray-dark);
+}
+
+/* Efectos retro para botones */
+.rf-button.retro-enhanced {
+  box-shadow: var(--retro-shadow-raised);
+  border: var(--retro-border-raised);
+}
+
+.rf-button.retro-enhanced:active {
+  box-shadow: var(--retro-shadow-pressed);
+  border: var(--retro-border-inset);
+}
+
+/* Efectos retro para tabs */
+.rf-tab.retro-enhanced {
+  box-shadow: var(--retro-shadow-raised);
+  border: var(--retro-border-thin-raised);
+}
+
+.rf-tab.retro-enhanced.active {
+  box-shadow: var(--retro-shadow-inset);
+  border-bottom: 2px solid var(--rf-panel-bg);
+}
+
+/* Mejoras para iconos retro en diferentes tamaños */
+.retro-icon-small {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.retro-icon-medium {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.retro-icon-large {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+}
+
+/* Asegurar que iconos retro se vean bien en pantallas de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .retro-icon {
+    image-rendering: auto;
+  }
+}
+
+/* Compatibilidad cross-browser para iconos retro */
+/* Firefox */
+@-moz-document url-prefix() {
+  .retro-icon {
+    image-rendering: -moz-crisp-edges;
+  }
+}
+
+/* Safari/WebKit */
+@supports (-webkit-appearance: none) {
+  .retro-icon {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Edge/IE fallback */
+@supports not (image-rendering: crisp-edges) {
+  .retro-icon {
+    image-rendering: optimizeQuality;
+  }
+}
+
+/* Asegurar que los iconos retro no se rompan en navegadores antiguos */
+.retro-icon img,
+.retro-icon svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Fallback para navegadores que no soportan image-rendering */
+@supports not (image-rendering: crisp-edges) {
+  .retro-icon {
+    image-rendering: auto;
+    -ms-interpolation-mode: nearest-neighbor; /* IE */
+  }
+}
+
+/* Responsive adjustments para iconos retro */
+@media (max-width: 768px) {
+  .retro-icon {
+    max-width: 22px;
+    max-height: 22px;
+  }
+  
+  /* Ajustar iconos en tabs para mobile */
+  .rf-tab .retro-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  /* Ajustar iconos en sidebar para mobile */
+  .rf-tree-icon .retro-icon {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  
+  /* Ajustar iconos en header para mobile */
+  .rf-header-title .retro-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .retro-icon {
+    max-width: 18px;
+    max-height: 18px;
+  }
+  
+  /* Iconos más pequeños en mobile pequeño */
+  .rf-tab .retro-icon {
+    width: 12px !important;
+    height: 12px !important;
+  }
+  
+  .rf-tree-icon .retro-icon {
+    width: 12px !important;
+    height: 12px !important;
+  }
+  
+  .rf-header-title .retro-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  
+  .rf-panel-icon .retro-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .retro-icon {
+    max-width: 24px;
+    max-height: 24px;
+  }
+}
+
+/* Mejoras de contraste para iconos retro */
+.retro-icon-contrast {
+  filter: contrast(1.2) brightness(1.05);
+}
+
+/* Efectos de hover para elementos con iconos retro */
+.retro-hover-effect:hover .retro-icon {
+  filter: brightness(1.1) contrast(1.15);
+  transition: filter 0.2s ease;
+}

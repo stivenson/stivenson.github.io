@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichPanel, TagList } from '../components';
+import { RichPanel, TagList, RetroIcon } from '../components';
 import profileData from '../data/profile.json';
 
 export function Dashboard() {
@@ -61,8 +61,9 @@ export function Dashboard() {
             <p style={{ fontSize: '14px', color: 'var(--rf-text-muted)', marginBottom: '12px' }}>
               {personal.title}
             </p>
-            <p style={{ fontSize: '13px', marginBottom: '8px' }}>
-              📍 {personal.location}
+            <p style={{ fontSize: '13px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <RetroIcon emoji="📍" size={14} />
+              {personal.location}
             </p>
             <p style={{ 
               fontSize: '12px', 
@@ -144,8 +145,8 @@ export function Dashboard() {
                 border: '1px solid var(--rf-border)'
               }}
             >
-              <div style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--electric-blue)' }}>
-                🎓
+              <div style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--electric-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <RetroIcon emoji="🎓" size={28} />
               </div>
               <div style={{ fontSize: '11px', color: 'var(--rf-text-muted)' }}>
                 MSc IA (en curso)
@@ -199,7 +200,7 @@ export function Dashboard() {
             fontSize: '24px',
             boxShadow: 'var(--electric-shadow)'
           }}>
-            🤖
+            <RetroIcon emoji="🤖" size={24} />
           </div>
           <div>
             <h3 style={{ fontSize: '16px', marginBottom: '4px', color: 'var(--electric-blue)' }}>

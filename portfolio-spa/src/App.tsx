@@ -1,7 +1,8 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import { Header, Sidebar } from './components';
+import { Header, Sidebar, RetroIcon } from './components';
 import { Dashboard, Resume, Portfolio, About } from './pages';
 import './styles/richfaces.css';
+import './styles/retro-modern.css';
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
           textAlign: 'center',
           borderTop: '1px solid var(--electric-blue)'
         }}>
-          <span style={{ color: 'var(--electric-cyan)' }}>⚡</span>
+          <RetroIcon emoji="⚡" size={14} style={{ color: 'var(--electric-cyan)' }} />
           {' '}Stivenson Rincón Mora © {new Date().getFullYear()} | 
           <a 
             href="https://github.com/stivenson" 
