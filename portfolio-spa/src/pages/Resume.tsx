@@ -313,50 +313,90 @@ export function Resume() {
       icon: '🛠️',
       content: (
         <div style={{ display: 'grid', gap: '16px' }}>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#E3F2FD', // Azul suave
+            border: '1px solid #90CAF9'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#1565C0', fontWeight: 600 }}>
               Lenguajes de Programación
             </h4>
             <TagList tags={skills.languages} electric />
           </div>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#F3E5F5', // Púrpura suave
+            border: '1px solid #CE93D8'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#7B1FA2', fontWeight: 600 }}>
               Frontend
             </h4>
             <TagList tags={skills.frontend} electric />
           </div>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#FFEBEE', // Rojo suave
+            border: '1px solid #EF9A9A'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#C62828', fontWeight: 600 }}>
               Backend
             </h4>
             <TagList tags={skills.backend} electric />
           </div>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#E1F5FE', // Azul claro suave
+            border: '1px solid #81D4FA'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#0277BD', fontWeight: 600 }}>
               Cloud & DevOps
             </h4>
             <TagList tags={[...skills.cloud, ...skills.devops]} electric />
           </div>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#E8F5E9', // Verde suave
+            border: '1px solid #A5D6A7'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#2E7D32', fontWeight: 600 }}>
               Bases de Datos
             </h4>
             <TagList tags={skills.databases} electric />
           </div>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#FFF3E0', // Naranja suave
+            border: '1px solid #FFCC80'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#E65100', fontWeight: 600 }}>
               Inteligencia Artificial
             </h4>
             <TagList tags={skills.ai} electric />
           </div>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#EFEBE9', // Marrón suave
+            border: '1px solid #BCAAA4'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#5D4037', fontWeight: 600 }}>
               Herramientas & Otros
             </h4>
             <TagList tags={skills.tools} electric />
           </div>
-          <div>
-            <h4 style={{ fontSize: '13px', marginBottom: '8px', color: 'var(--electric-blue)' }}>
+          <div style={{
+            padding: '16px',
+            borderRadius: '8px',
+            background: '#FAFAFA', // Gris muy suave
+            border: '1px solid #E0E0E0'
+          }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#424242', fontWeight: 600 }}>
               Metodologías
             </h4>
             <TagList tags={skills.methodologies} electric />

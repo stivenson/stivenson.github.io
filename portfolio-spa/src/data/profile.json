@@ -206,7 +206,7 @@
     }
   ],
   "skills": {
-    "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js", "PHP", "Ruby"],
+    "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js", "PHP", "Rust"],
     "frontend": ["React", "React Native", "Prime React", "AngularJS", "Mithril.js", "Blueprint.js", "Bootstrap", "HTML5", "CSS3", "Cordova", "Ionic"],
     "backend": ["Django", "Laravel", "Express.js", "Hapi.js", "GraphQL", "REST", "Phalcon", "Spring Boot", "Rails", "Protocol Buffer", "gRPC"],
     "cloud": ["AWS", "GCP", "Lambda", "ECS", "S3", "Terraform", "CloudFormation", "DigitalOcean", "DynamoDB", "Redshift"],
