@@ -4,6 +4,47 @@ import profileData from '../data/profile.json';
 
 export function Resume() {
   const { experience, education, courses, skills, references } = profileData;
+  
+  // Ordenar cursos por fecha (más nuevo primero)
+  const sortedCourses = [...courses].sort((a, b) => {
+    const dateA = typeof a === 'object' && a.date ? a.date : '0000-00';
+    const dateB = typeof b === 'object' && b.date ? b.date : '0000-00';
+    return dateB.localeCompare(dateA);
+  });
+
+  // Función para formatear el nombre del curso con la institución resaltada
+  const formatCourseName = (courseName: string, courseColor: string) => {
+    // Mapeo de instituciones a colores oscuros
+    const institutionColors: Record<string, string> = {
+      'Platzi': '#5A8A2E', // Verde oscuro para Platzi
+      'SENA': '#1B5E20', // Verde muy oscuro para SENA
+      'Universidad Simón Bolívar': '#0D47A1', // Azul oscuro para Unisimón
+      'IBM - Coursera': '#003A8C', // Azul muy oscuro para IBM/Coursera
+      'IBM': '#003A8C',
+      'Coursera': '#003A8C'
+    };
+
+    // Buscar el patrón (Institución) en el texto
+    const match = courseName.match(/\(([^)]+)\)/);
+    if (match && match[1]) {
+      const institution = match[1];
+      const institutionColor = institutionColors[institution] || courseColor;
+      
+      // Reemplazar la institución con formato resaltado
+      const parts = courseName.split(match[0]);
+      return (
+        <>
+          {parts[0]}
+          <strong style={{ color: institutionColor, fontWeight: 700 }}>
+            ({institution})
+          </strong>
+          {parts[1] || ''}
+        </>
+      );
+    }
+    
+    return courseName;
+  };
 
   const experienceTimeline = experience.map(exp => ({
     date: exp.period,
@@ -67,21 +108,48 @@ export function Resume() {
       icon: '📚',
       content: (
         <div>
-          {courses.map((course, index) => (
-            <div 
-              key={index}
-              style={{
-                padding: '12px',
-                marginBottom: '8px',
-                background: index % 2 === 0 ? 'var(--rf-table-row-even)' : 'var(--rf-table-row-odd)',
-                borderRadius: '4px',
-                border: '1px solid var(--rf-border)',
-                fontSize: '13px'
-              }}
-            >
-              {course}
-            </div>
-          ))}
+          {sortedCourses.map((course, index) => {
+            const courseData = typeof course === 'string' 
+              ? { name: course, emoji: '📚', color: '#0066ff' }
+              : course;
+            return (
+              <div 
+                key={index}
+                style={{
+                  padding: '12px',
+                  marginBottom: '8px',
+                  background: index % 2 === 0 ? 'var(--rf-table-row-even)' : 'var(--rf-table-row-odd)',
+                  borderRadius: '4px',
+                  border: '1px solid var(--rf-border)',
+                  fontSize: '13px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}
+              >
+                <span 
+                  style={{ 
+                    fontSize: '24px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '6px',
+                    background: courseData.color ? `${courseData.color}25` : 'rgba(0, 102, 255, 0.15)',
+                    border: courseData.color ? `2px solid ${courseData.color}` : '2px solid rgba(0, 102, 255, 0.3)',
+                    flexShrink: 0,
+                    filter: courseData.color ? `drop-shadow(0 2px 4px ${courseData.color}40)` : 'none'
+                  }}
+                >
+                  {courseData.emoji}
+                </span>
+                <span style={{ flex: 1 }}>
+                  {formatCourseName(courseData.name, courseData.color || '#0066ff')}
+                </span>
+              </div>
+            );
+          })}
         </div>
       )
     },
