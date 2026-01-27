@@ -141,9 +141,69 @@
     }
   ],
   "courses": [
-    "Curso Especial en Mantenimiento Preventivo y Correctivo del Hardware para Procesos de Soporte Técnico (SENA)",
-    "Curso Especial en Microcontroladores I (SENA)",
-    "Curso Especial en Proyecto de Vida (SENA)"
+    {
+      "name": "Taller Planeación y Optimización: El Área Transversal de la Inteligencia Artificial (Universidad Simón Bolívar)",
+      "emoji": "📋",
+      "color": "#1976D2",
+      "date": "2025-11",
+      "type": "taller"
+    },
+    {
+      "name": "Desarrollar las habilidades interpersonales (IBM - Coursera)",
+      "emoji": "📚",
+      "color": "#0056D2",
+      "date": "2025-10",
+      "type": "curso"
+    },
+    {
+      "name": "Curso Práctico de Cloud Computing con AWS (Platzi) - Aprobado abril 2021",
+      "emoji": "📚",
+      "color": "#7CB342",
+      "date": "2021-04",
+      "type": "curso"
+    },
+    {
+      "name": "Curso Práctico de AWS Cloud (Platzi) - Aprobado noviembre 2020",
+      "emoji": "📚",
+      "color": "#7CB342",
+      "date": "2020-11",
+      "type": "curso"
+    },
+    {
+      "name": "Curso de Estrategias para Aprender en Línea Efectivamente (Platzi) - Aprobado julio 2020",
+      "emoji": "📚",
+      "color": "#7CB342",
+      "date": "2020-07",
+      "type": "curso"
+    },
+    {
+      "name": "Curso Especial en Fomento de los Derechos Humanos y el Derecho Internacional Humanitario en Colombia (SENA)",
+      "emoji": "📚",
+      "color": "#2E7D32",
+      "date": "2015-01",
+      "type": "curso"
+    },
+    {
+      "name": "Curso Especial en Mantenimiento Preventivo y Correctivo del Hardware para Procesos de Soporte Técnico (SENA)",
+      "emoji": "📚",
+      "color": "#2E7D32",
+      "date": "2014-01",
+      "type": "curso"
+    },
+    {
+      "name": "Curso Especial en Microcontroladores I (SENA)",
+      "emoji": "📚",
+      "color": "#2E7D32",
+      "date": "2013-01",
+      "type": "curso"
+    },
+    {
+      "name": "Curso Especial en Proyecto de Vida (SENA)",
+      "emoji": "📚",
+      "color": "#2E7D32",
+      "date": "2012-01",
+      "type": "curso"
+    }
   ],
   "skills": {
     "languages": ["Python", "JavaScript", "TypeScript", "Java", "Node.js", "PHP", "Ruby"],
