@@ -3,9 +3,9 @@
 
 :root {
   /* Electric Blue Palette */
-  --electric-blue: #0066ff;
-  --electric-cyan: #00e5ff;
-  --electric-glow: rgba(0, 102, 255, 0.4);
+  --electric-blue: #2563eb;
+  --electric-cyan: #3b82f6;
+  --electric-glow: rgba(37, 99, 235, 0.4);
   --electric-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
   
   /* RichFaces Classic Palette */
@@ -18,8 +18,8 @@
   --rf-body-bg: #e8eef4;
   --rf-text: #333333;
   --rf-text-muted: #666666;
-  --rf-link: #0066cc;
-  --rf-link-hover: #0044aa;
+  --rf-link: #2563eb;
+  --rf-link-hover: #1e40af;
   
   /* Table colors */
   --rf-table-header-bg: linear-gradient(180deg, #6ba8dc 0%, #4a88bc 100%);
@@ -103,7 +103,7 @@ body {
 }
 
 .rf-panel-header.electric {
-  background: linear-gradient(180deg, var(--electric-blue) 0%, #0044cc 100%);
+  background: linear-gradient(180deg, var(--electric-blue) 0%, #1e40af 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), var(--electric-shadow);
 }
 
@@ -219,7 +219,7 @@ body {
 }
 
 .rf-sidebar-header.electric {
-  background: linear-gradient(180deg, var(--electric-blue) 0%, #0044cc 100%);
+  background: linear-gradient(180deg, var(--electric-blue) 0%, #1e40af 100%);
   box-shadow: var(--electric-shadow);
 }
 
@@ -282,9 +282,9 @@ body {
 }
 
 .rf-button.primary {
-  background: linear-gradient(180deg, var(--electric-blue) 0%, #0044cc 100%);
+  background: linear-gradient(180deg, var(--electric-blue) 0%, #1e40af 100%);
   color: white;
-  border-color: #0044aa;
+  border-color: #1e40af;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
@@ -308,7 +308,7 @@ body {
 }
 
 .rf-tag.electric {
-  background: linear-gradient(180deg, rgba(0, 102, 255, 0.15) 0%, rgba(0, 102, 255, 0.25) 100%);
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.25) 100%);
   border-color: var(--electric-blue);
   color: var(--electric-blue);
 }
@@ -329,7 +329,7 @@ body {
 }
 
 .rf-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 102, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
   border-color: var(--electric-blue);
 }
 
@@ -475,6 +475,16 @@ a {
 
 a:hover {
   color: var(--rf-link-hover);
+  text-decoration: underline;
+}
+
+/* Footer GitHub link - mantiene el azul original brillante */
+footer a {
+  color: #00e5ff !important;
+}
+
+footer a:hover {
+  color: #00b8d4 !important;
   text-decoration: underline;
 }
 

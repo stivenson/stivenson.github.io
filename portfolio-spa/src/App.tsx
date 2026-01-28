@@ -1,6 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { Header, Sidebar, RetroIcon } from './components';
-import { Dashboard, Resume, Portfolio, About } from './pages';
+import { Dashboard, Resume, Portfolio, About, Articles, ArticleDetail } from './pages';
 import './styles/richfaces.css';
 import './styles/retro-modern.css';
 
@@ -17,6 +17,8 @@ function App() {
               <Route path="/resume" element={<Resume />} />
               <Route path="/portfolio" element={<Portfolio />} />
               <Route path="/about" element={<About />} />
+              <Route path="/articles" element={<Articles />} />
+              <Route path="/articles/:slug" element={<ArticleDetail />} />
             </Routes>
           </main>
         </div>
@@ -34,7 +36,7 @@ function App() {
             href="https://github.com/stivenson" 
             target="_blank" 
             rel="noopener noreferrer"
-            style={{ color: 'var(--electric-cyan)', marginLeft: '8px' }}
+            style={{ marginLeft: '8px' }}
           >
             GitHub
           </a>
