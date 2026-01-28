@@ -206,3 +206,64 @@
   filter: brightness(1.1) contrast(1.15);
   transition: filter 0.2s ease;
 }
+
+/* Estilos adicionales para contenido Markdown */
+.markdown-content {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 20px 0;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.markdown-content pre {
+  overflow-x: auto;
+}
+
+.markdown-content table {
+  font-size: 14px;
+}
+
+.markdown-content table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Mejoras de accesibilidad para markdown */
+.markdown-content a:focus {
+  outline: 2px solid var(--electric-cyan);
+  outline-offset: 2px;
+}
+
+/* Responsive para markdown */
+@media (max-width: 768px) {
+  .markdown-content {
+    font-size: 14px;
+  }
+  
+  .markdown-content h1 {
+    font-size: 24px !important;
+  }
+  
+  .markdown-content h2 {
+    font-size: 20px !important;
+  }
+  
+  .markdown-content h3 {
+    font-size: 18px !important;
+  }
+  
+  .markdown-content table {
+    font-size: 12px;
+  }
+  
+  .markdown-content th,
+  .markdown-content td {
+    padding: 8px 12px !important;
+  }
+}

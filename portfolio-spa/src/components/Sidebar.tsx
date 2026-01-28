@@ -12,6 +12,7 @@ const navItems: NavItem[] = [
   { path: '/', label: 'Dashboard', icon: '🏠' },
   { path: '/resume', label: 'Experiencia', icon: '💼' },
   { path: '/portfolio', label: 'Portafolio', icon: '📁' },
+  { path: '/articles', label: 'Artículos', icon: '📝' },
   { path: '/about', label: 'Sobre Mí', icon: '👤' },
 ];
 
