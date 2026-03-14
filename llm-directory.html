@@ -69,6 +69,7 @@
             background: white;
             min-height: 100vh;
             padding: 20px;
+            overflow-anchor: auto;
         }
 
         /* Page Loading Progress Bar */
@@ -230,8 +231,21 @@
             color: white;
             margin-bottom: 40px;
             padding: 30px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 35%, #7c3aed 65%, #5b21b6 100%);
+            background-size: 300% 300%;
+            animation: header-gradient-drift 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes header-gradient-drift {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
         }
 
         header h1 {
@@ -497,9 +511,22 @@
         }
 
         .masonry {
-            column-count: 4;
-            column-gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 20px;
             padding: 0 10px;
+            align-items: start;
+        }
+
+        .masonry-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0;
+        }
+
+        .masonry-column .card {
+            margin-bottom: 0;
         }
 
         .card {
@@ -512,6 +539,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             overflow: hidden;
             break-inside: avoid;
+            overflow-anchor: auto;
         }
 
         .card:hover {
@@ -523,6 +551,12 @@
             padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+        }
+
+        .card-header.brand-tinted {
+            /* Subtle, high-contrast tint preserving white text readability */
+            background:
+                linear-gradient(135deg, rgba(102, 126, 234, 0.94) 0%, rgba(118, 75, 162, 0.94) 58%, var(--brand-tint, rgba(16, 163, 127, 0.72)) 100%);
         }
 
         .card-header h2 {
@@ -682,6 +716,7 @@
         .badge.badge-ide { background: #CFD8DC; color: #37474F; }
         .badge.badge-herramienta { background: #CFD8DC; color: #37474F; }
         .badge.badge-ia { background: #E0E0E0; color: #212121; }
+        .badge.badge-tendencia { background: #FFB74D; color: #1a1a1a; font-weight: 600; }
 
         /* Modal Styles */
         .modal-overlay {
@@ -999,15 +1034,21 @@
             overflow: hidden !important;
         }
 
+        @media (min-width: 1201px) {
+            html {
+                scroll-padding-bottom: 160px;
+            }
+        }
+
         @media (max-width: 1200px) {
             .masonry {
-                column-count: 3;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
 
         @media (max-width: 768px) {
             .masonry {
-                column-count: 2;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
             header h1 {
@@ -1017,7 +1058,7 @@
 
         @media (max-width: 480px) {
             .masonry {
-                column-count: 1;
+                grid-template-columns: repeat(1, minmax(0, 1fr));
             }
         }
 
@@ -1140,10 +1181,53 @@
             padding: 20px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            overflow-anchor: none;
+            scroll-margin-bottom: 120px;
         }
 
         #loading-sentinel.visible {
             opacity: 1;
+        }
+
+        /* Panel de diagnóstico de filtros (oculto; mostrar con .llm-debug-visible para depurar) */
+        #llm-filter-debug-panel {
+            position: fixed;
+            bottom: 16px;
+            left: 16px;
+            max-width: 320px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #e0e0e0;
+            font-size: 0.75rem;
+            font-family: monospace;
+            padding: 10px 12px;
+            border-radius: 8px;
+            z-index: 99990;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+        #llm-filter-debug-panel.llm-debug-visible {
+            display: block;
+        }
+        #llm-filter-debug-panel .llm-debug-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #b0b0b0;
+        }
+        #llm-filter-debug-panel .llm-debug-content {
+            word-break: break-word;
+            margin-bottom: 8px;
+        }
+        #llm-filter-debug-panel .llm-debug-copy {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        #llm-filter-debug-panel .llm-debug-copy:hover {
+            opacity: 0.9;
         }
 
         #loading-sentinel .loading-spinner {
@@ -1270,6 +1354,13 @@
             </div>
         </main>
 
+        <!-- Panel de diagnóstico (oculto). Para mostrar: añadir class "llm-debug-visible" a #llm-filter-debug-panel en DevTools -->
+        <div id="llm-filter-debug-panel" aria-hidden="true">
+            <div class="llm-debug-title">Diagnóstico filtros</div>
+            <div class="llm-debug-content">—</div>
+            <button type="button" class="llm-debug-copy">Copiar</button>
+        </div>
+
         <!-- Footer -->
         <footer>
             <p>
@@ -1341,16 +1432,389 @@
 
     <!-- Main Script with Cache Busting -->
     <script>
-        // Load script.js with timestamp to prevent caching
-        var script = document.createElement('script');
-        script.src = 'script.js?v=' + new Date().getTime();
-        script.onerror = function() {
-            console.error('Error al cargar script.js');
-        };
-        script.onload = function() {
-            console.log('script.js cargado correctamente');
-        };
-        document.body.appendChild(script);
+        // Interceptar getElementById para ver qué IDs pide script.js (el contenedor puede tener otro id)
+        window.LLM_GETELEMENTBYID_LOGS = [];
+        (function () {
+            var orig = document.getElementById.bind(document);
+            document.getElementById = function (id) {
+                if (typeof id === 'string' && window.LLM_GETELEMENTBYID_LOGS.indexOf(id) === -1) {
+                    window.LLM_GETELEMENTBYID_LOGS.push(id);
+                }
+                return orig(id);
+            };
+        })();
+
+        (function () {
+            'use strict';
+
+            var USE_STABLE_COLUMNS = false;
+            var stableMasonryState = null;
+            var FAILSAFE_TIMEOUT_MS = 9000;
+            var BRAND_TINT_MAP = [
+                { match: ['openai', 'chatgpt', 'gpt'], hex: '#10A37F' },
+                { match: ['anthropic', 'claude'], hex: '#D4A574' },
+                { match: ['gemini', 'google ai studio', 'notebooklm'], hex: '#4992EA' },
+                { match: ['perplexity'], hex: '#20B2AA' },
+                { match: ['copilot', 'microsoft'], hex: '#199FD7' },
+                { match: ['grok', 'xai', 'x.ai'], hex: '#2196F3' },
+                { match: ['mistral'], hex: '#FA500F' },
+                { match: ['deepseek'], hex: '#2B7FFF' },
+                { match: ['qwen', 'alibaba'], hex: '#7A5CFF' },
+                { match: ['meta ai', 'meta', 'llama'], hex: '#0866FF' },
+                { match: ['zhipu', 'glm'], hex: '#6A5CFF' },
+                { match: ['skywork'], hex: '#4F8DFF' },
+                { match: ['taalas', 'chat jimmy', 'chatjimmy'], hex: '#17B26A' }
+            ];
+
+            function hexToRgba(hex, alpha) {
+                if (!hex || typeof hex !== 'string') return 'rgba(16, 163, 127, ' + alpha + ')';
+                var normalized = hex.replace('#', '');
+                if (normalized.length === 3) {
+                    normalized = normalized.split('').map(function (ch) { return ch + ch; }).join('');
+                }
+                var intVal = parseInt(normalized, 16);
+                if (isNaN(intVal) || normalized.length !== 6) return 'rgba(16, 163, 127, ' + alpha + ')';
+                var r = (intVal >> 16) & 255;
+                var g = (intVal >> 8) & 255;
+                var b = intVal & 255;
+                return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+            }
+
+            function detectBrandColor(card) {
+                var header = card.querySelector('.card-header');
+                if (!header) return null;
+                var title = header.querySelector('h2');
+                var provider = header.querySelector('.provider');
+                var text = ((title ? title.textContent : '') + ' ' + (provider ? provider.textContent : '')).toLowerCase();
+                for (var i = 0; i < BRAND_TINT_MAP.length; i += 1) {
+                    var entry = BRAND_TINT_MAP[i];
+                    for (var j = 0; j < entry.match.length; j += 1) {
+                        if (text.indexOf(entry.match[j]) !== -1) return entry.hex;
+                    }
+                }
+                return null;
+            }
+
+            function applyHeaderBrandTint(card) {
+                var header = card.querySelector('.card-header');
+                if (!header) return;
+                var brandHex = detectBrandColor(card);
+                if (!brandHex) {
+                    header.classList.remove('brand-tinted');
+                    header.style.removeProperty('--brand-tint');
+                    return;
+                }
+                header.style.setProperty('--brand-tint', hexToRgba(brandHex, 0.72));
+                header.classList.add('brand-tinted');
+            }
+
+            function releaseLoadingOverlay(reason) {
+                var body = document.body;
+                var centerOverlay = document.getElementById('centerLoadingOverlay');
+                var topProgress = document.getElementById('pageLoadingProgress');
+                if (centerOverlay) centerOverlay.classList.add('hidden');
+                if (topProgress) topProgress.classList.add('hidden');
+                if (body) {
+                    body.classList.remove('loading');
+                    body.classList.add('loaded');
+                }
+                if (reason) console.warn('Failsafe de carga activado:', reason);
+            }
+
+            function getColumnCount() {
+                var width = window.innerWidth;
+                if (width <= 480) return 1;
+                if (width <= 768) return 2;
+                if (width <= 1200) return 3;
+                return 4;
+            }
+
+            function getBatchSizeByColumns() {
+                var rowsPerBatch = window.innerWidth >= 1201 ? 6 : 8;
+                return getColumnCount() * rowsPerBatch;
+            }
+
+            function createColumn(index) {
+                var column = document.createElement('div');
+                column.className = 'masonry-column';
+                column.dataset.columnIndex = String(index);
+                return column;
+            }
+
+            function cardHeightWithGap(card, gap) {
+                var height = card.getBoundingClientRect().height || card.offsetHeight || 300;
+                return height + gap;
+            }
+
+            function getAllCards(container) {
+                return Array.prototype.slice.call(container.querySelectorAll('.card'));
+            }
+
+            function getShortestColumnIndex(heights) {
+                var idx = 0;
+                for (var i = 1; i < heights.length; i += 1) {
+                    if (heights[i] < heights[idx]) idx = i;
+                }
+                return idx;
+            }
+
+            function assignCardToShortestColumn(card) {
+                var state = stableMasonryState;
+                if (!state || !state.columns.length) return;
+                applyHeaderBrandTint(card);
+                var target = getShortestColumnIndex(state.columnHeights);
+                state.isInternalMutation = true;
+                state.columns[target].appendChild(card);
+                state.columnHeights[target] += cardHeightWithGap(card, state.cardGap);
+                state.isInternalMutation = false;
+            }
+
+            function ensureColumns(forceRebuild) {
+                var state = stableMasonryState;
+                if (!state) return;
+                var desiredColumns = getColumnCount();
+                var needRebuild = forceRebuild || desiredColumns !== state.columnCount || state.columns.length === 0;
+                if (!needRebuild) return;
+
+                var cards = getAllCards(state.container);
+                state.isInternalMutation = true;
+                state.container.innerHTML = '';
+                state.columns = [];
+                state.columnHeights = [];
+                state.columnCount = desiredColumns;
+
+                for (var i = 0; i < desiredColumns; i += 1) {
+                    var col = createColumn(i);
+                    state.columns.push(col);
+                    state.columnHeights.push(0);
+                    state.container.appendChild(col);
+                }
+
+                for (var j = 0; j < cards.length; j += 1) {
+                    assignCardToShortestColumn(cards[j]);
+                }
+                state.isInternalMutation = false;
+
+                // Column-aware hint to lazy loader behavior in obfuscated script.
+                state.container.dataset.batchSizeHint = String(getBatchSizeByColumns());
+            }
+
+            function applyBrandTintsToAllCards() {
+                var container = document.getElementById('masonryContainer');
+                if (!container) return;
+                var cards = container.querySelectorAll('.card');
+                for (var i = 0; i < cards.length; i += 1) {
+                    applyHeaderBrandTint(cards[i]);
+                }
+            }
+
+            function mountBrandTintObserver() {
+                var container = document.getElementById('masonryContainer');
+                if (!container) return;
+
+                applyBrandTintsToAllCards();
+                var observer = new MutationObserver(function (mutations) {
+                    var addedCards = collectAddedCards(mutations);
+                    if (!addedCards.length) return;
+                    for (var i = 0; i < addedCards.length; i += 1) {
+                        applyHeaderBrandTint(addedCards[i]);
+                    }
+                });
+                observer.observe(container, { childList: true, subtree: true });
+            }
+
+            function getFilterDiagnostics() {
+                var active = document.querySelector('input[name=\"badge-filter\"]:checked');
+                var activeValue = active ? active.value : 'none';
+                var container = document.getElementById('masonryContainer');
+                var cards = container ? container.querySelectorAll('.card').length : 0;
+                var directChildren = container ? container.children.length : 0;
+                var columns = container ? container.querySelectorAll(':scope > .masonry-column').length : 0;
+                var cardsDirect = container ? container.querySelectorAll(':scope > .card').length : 0;
+                var sentinel = document.getElementById('loading-sentinel');
+                var sentinelVisible = sentinel && sentinel.classList.contains('visible');
+                var idLogs = window.LLM_GETELEMENTBYID_LOGS || [];
+                return {
+                    filter: activeValue,
+                    cards: cards,
+                    directChildren: directChildren,
+                    columns: columns,
+                    cardsDirect: cardsDirect,
+                    sentinelVisible: sentinelVisible,
+                    initRan: !!window.LLM_INIT_RAN,
+                    getElementByIdLogs: idLogs.slice(0, 20)
+                };
+            }
+
+            function logFilterDiagnostics(stage) {
+                var d = getFilterDiagnostics();
+                d.stage = stage;
+                console.log('[FilterDiag]', d);
+                return d;
+            }
+
+            function updateFilterDebugPanel(d) {
+                var panel = document.getElementById('llm-filter-debug-panel');
+                if (!panel) return;
+                if (!d) d = getFilterDiagnostics();
+                var lines = [
+                    'Filtro: ' + d.filter,
+                    'Cards: ' + d.cards,
+                    'Hijos: ' + d.directChildren,
+                    'Init: ' + (d.initRan ? 'sí' : 'no'),
+                    'Sentinel: ' + d.sentinelVisible
+                ];
+                if (d.getElementByIdLogs && d.getElementByIdLogs.length) {
+                    lines.push('IDs pedidos: ' + d.getElementByIdLogs.join(', '));
+                }
+                if (d.cards === 0 && d.directChildren === 0) {
+                    lines.push('⚠ Si siempre 0, el script puede usar otro id para el contenedor.');
+                }
+                panel.querySelector('.llm-debug-content').textContent = lines.join(' \u2022 ');
+            }
+
+            function mountFilterDiagnostics() {
+                var panel = document.getElementById('llm-filter-debug-panel');
+                if (panel) {
+                    updateFilterDebugPanel(null);
+                    panel.querySelector('.llm-debug-copy').onclick = function () {
+                        var d = getFilterDiagnostics();
+                        var text = '[FilterDiag] ' + JSON.stringify(d, null, 2);
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(text).then(function () {
+                                panel.querySelector('.llm-debug-copy').textContent = 'Copiado';
+                                setTimeout(function () { panel.querySelector('.llm-debug-copy').textContent = 'Copiar'; }, 1500);
+                            });
+                        }
+                    };
+                }
+                document.addEventListener('change', function (ev) {
+                    var target = ev.target;
+                    if (!target || target.name !== 'badge-filter') return;
+                    logFilterDiagnostics('change:' + target.value);
+                    updateFilterDebugPanel(null);
+                    setTimeout(function () {
+                        updateFilterDebugPanel(logFilterDiagnostics('after500ms:' + target.value));
+                    }, 500);
+                    setTimeout(function () {
+                        updateFilterDebugPanel(logFilterDiagnostics('after1500ms:' + target.value));
+                    }, 1500);
+                }, true);
+            }
+
+            function collectAddedCards(mutations) {
+                var added = [];
+                for (var i = 0; i < mutations.length; i += 1) {
+                    var mutation = mutations[i];
+                    if (mutation.type !== 'childList' || mutation.addedNodes.length === 0) continue;
+                    for (var j = 0; j < mutation.addedNodes.length; j += 1) {
+                        var node = mutation.addedNodes[j];
+                        if (!node || node.nodeType !== 1) continue;
+                        if (node.classList && node.classList.contains('card')) {
+                            added.push(node);
+                        } else if (node.querySelectorAll) {
+                            var nested = node.querySelectorAll('.card');
+                            for (var k = 0; k < nested.length; k += 1) {
+                                added.push(nested[k]);
+                            }
+                        }
+                    }
+                }
+                return added;
+            }
+
+            function mountStableMasonry() {
+                if (!USE_STABLE_COLUMNS) return;
+                var container = document.getElementById('masonryContainer');
+                if (!container) return;
+
+                stableMasonryState = {
+                    container: container,
+                    observer: null,
+                    columns: [],
+                    columnHeights: [],
+                    columnCount: 0,
+                    cardGap: 20,
+                    isInternalMutation: false
+                };
+
+                if (container.querySelector('.card')) {
+                    ensureColumns(true);
+                }
+
+                stableMasonryState.observer = new MutationObserver(function (mutations) {
+                    var state = stableMasonryState;
+                    if (!state || state.isInternalMutation) return;
+
+                    var addedCards = collectAddedCards(mutations);
+                    if (!addedCards.length) return;
+
+                    if (!state.columns.length) {
+                        ensureColumns(true);
+                        return;
+                    }
+
+                    state.isInternalMutation = true;
+                    for (var i = 0; i < addedCards.length; i += 1) {
+                        var card = addedCards[i];
+                        if (card.closest('.masonry-column')) continue;
+                        assignCardToShortestColumn(card);
+                    }
+                    state.isInternalMutation = false;
+                });
+
+                stableMasonryState.observer.observe(container, { childList: true, subtree: false });
+
+                var resizeTimer = null;
+                window.addEventListener('resize', function () {
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(function () {
+                        ensureColumns(false);
+                    }, 150);
+                });
+            }
+
+            // Load script.js with timestamp to prevent caching
+            var script = document.createElement('script');
+            script.src = 'script.js?v=' + new Date().getTime();
+            script.onerror = function () {
+                console.error('Error al cargar script.js');
+                releaseLoadingOverlay('script.js no cargó');
+            };
+            script.onload = function () {
+                window.LLM_INIT_RAN = true;
+                console.log('script.js cargado correctamente');
+                try {
+                    requestAnimationFrame(function () {
+                        mountBrandTintObserver();
+                        mountFilterDiagnostics();
+                        if (USE_STABLE_COLUMNS) mountStableMasonry();
+                        // El script solo pinta al cambiar filtro; con "all" en carga no pinta. Forzar change para render inicial.
+                        var allRadio = document.getElementById('filter-all');
+                        if (allRadio && allRadio.checked) {
+                            setTimeout(function () {
+                                allRadio.dispatchEvent(new Event('change', { bubbles: true }));
+                            }, 0);
+                        }
+                    });
+                } catch (e) {
+                    console.error('Error al iniciar layout estable:', e);
+                    releaseLoadingOverlay('error en layout estable');
+                }
+            };
+            document.body.appendChild(script);
+
+            window.addEventListener('error', function () {
+                releaseLoadingOverlay('error global JS');
+            }, { once: true });
+
+            setTimeout(function () {
+                var body = document.body;
+                if (body && body.classList.contains('loading')) {
+                    releaseLoadingOverlay('timeout de carga');
+                }
+            }, FAILSAFE_TIMEOUT_MS);
+        })();
     </script>
 </body>
 
