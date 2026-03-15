@@ -353,6 +353,36 @@
             background: linear-gradient(to left, rgba(255, 243, 224, 1) 0%, rgba(255, 243, 224, 1) 5%, rgba(255, 243, 224, 1) 30%, rgba(239, 108, 0, 1) 100%); 
         }
 
+        /* Editores e IDEs - gris azulado (igual que badge-ide: #CFD8DC / #37474F) */
+        #filter-ide + label::before { 
+            background: linear-gradient(to left, rgba(207, 216, 220, 1) 0%, rgba(207, 216, 220, 1) 5%, rgba(207, 216, 220, 1) 30%, rgba(55, 71, 79, 1) 100%); 
+        }
+        #filter-ide + label:hover::before { 
+            background: linear-gradient(to left, rgba(207, 216, 220, 1) 0%, rgba(207, 216, 220, 1) 5%, rgba(207, 216, 220, 1) 30%, rgba(55, 71, 79, 1) 100%); 
+        }
+
+        /* Datos - teal (badge-data: #B2DFDB / #00796B) */
+        #filter-data + label::before { 
+            background: linear-gradient(to left, rgba(178, 223, 219, 1) 0%, rgba(178, 223, 219, 1) 5%, rgba(178, 223, 219, 1) 30%, rgba(0, 121, 107, 1) 100%); 
+        }
+        #filter-data + label:hover::before { 
+            background: linear-gradient(to left, rgba(178, 223, 219, 1) 0%, rgba(178, 223, 219, 1) 5%, rgba(178, 223, 219, 1) 30%, rgba(0, 121, 107, 1) 100%); 
+        }
+
+        /* Indicador "new" en verde para el filtro Editores e IDEs y Datos */
+        .filter-new-pill {
+            display: inline-block;
+            margin-left: 4px;
+            padding: 1px 5px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            line-height: 1.2;
+            color: #fff;
+            background: #2E7D32;
+            border-radius: 3px;
+            vertical-align: middle;
+        }
+
         /* Imágenes - rosa (progresivo desde el centro hacia la izquierda - MÁXIMA INTENSIDAD) */
         #filter-imagenes + label::before { 
             background: linear-gradient(to left, rgba(252, 228, 236, 1) 0%, rgba(252, 228, 236, 1) 5%, rgba(252, 228, 236, 1) 30%, rgba(194, 24, 91, 1) 100%); 
@@ -437,11 +467,12 @@
             background: #eeeeee;
             border-color: #d0d0d0;
             transform: translateY(-1px);
+            color: #000;
         }
 
         .badge-filter input[type="radio"]:checked + label {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            color: #fff;
             border-color: #667eea;
             box-shadow: 0 2px 5px rgba(102, 126, 234, 0.25);
         }
@@ -452,10 +483,6 @@
 
         .badge-filter input[type="radio"]:checked + label:hover {
             background: linear-gradient(135deg, #5568d3 0%, #6a3d8f 100%);
-        }
-
-        /* Hover específico para el filtro "Todos" - texto negro */
-        #filter-all:checked + label:hover {
             color: #000;
         }
 
@@ -669,6 +696,10 @@
         .badge.badge-movil { background: #F3E5F5; color: #6A1B9A; }
         .badge.badge-ambos { background: #E0F2F1; color: #00695C; }
         .badge.badge-desktop { background: #F5F5F5; color: #424242; }
+        /* Uso: web / escritorio / móvil (varios por entrada) */
+        .badge.badge-web-use { background: #E3F2FD; color: #1565C0; }
+        .badge.badge-desktop-use { background: #EEEEEE; color: #37474F; }
+        .badge.badge-mobile-use { background: #F3E5F5; color: #6A1B9A; }
         .badge.badge-ia-local { background: #EFEBE9; color: #4E342E; }
         
         /* License */
@@ -682,6 +713,7 @@
         .badge.badge-codigo { background: #E0F7FA; color: #00838F; }
         .badge.badge-workflow { background: #E1F5FE; color: #0277BD; }
         .badge.badge-agentes { background: #F1F8E9; color: #558B2F; }
+        .badge.badge-data { background: #B2DFDB; color: #00796B; }
         .badge.badge-monitoreo { background: #EDE7F6; color: #4527A0; }
         .badge.badge-playground { background: #C8E6C9; color: #1B5E20; }
         .badge.badge-automatizacion { background: #B3E5FC; color: #01579B; }
@@ -1322,6 +1354,10 @@
                     <label for="filter-all">Todos<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-chat" name="badge-filter" value="chat">
                     <label for="filter-chat">Chat<span class="badge-filter-spinner"></span></label>
+                    <input type="radio" id="filter-ide" name="badge-filter" value="ide">
+                    <label for="filter-ide">Editores e IDEs<span class="filter-new-pill">new</span><span class="badge-filter-spinner"></span></label>
+                    <input type="radio" id="filter-data" name="badge-filter" value="data">
+                    <label for="filter-data">Datos<span class="filter-new-pill">new</span><span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-imagenes" name="badge-filter" value="generacion-imagenes">
                     <label for="filter-imagenes">Imágenes<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-video" name="badge-filter" value="generacion-video">
@@ -1450,6 +1486,270 @@
             var USE_STABLE_COLUMNS = false;
             var stableMasonryState = null;
             var FAILSAFE_TIMEOUT_MS = 9000;
+
+            var LLM_EDITORES_IDES = [
+                { name: 'Cursor', provider: 'Cursor', description: 'IDE nativo con IA: contexto del codebase, Composer (agente), múltiples modelos (GPT, Claude, Gemini). Fork de VS Code. Desktop.', url: 'https://cursor.com', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Windsurf', provider: 'Codeium', description: 'IDE agéntico con Cascade (codebase + herramientas). Completado ilimitado, MCP, preview en vivo. Fork VS Code. Desktop.', url: 'https://windsurfai.org', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Zed', provider: 'Zed Industries', description: 'Editor en Rust, rápido, IA integrada (Claude, Gemini, Ollama). Colaboración en tiempo real. Desktop (macOS, Linux, Windows).', url: 'https://zed.dev', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Replit', provider: 'Replit', description: 'IDE en la nube con IA (Ghostwriter, Agent). Edición, ejecución y despliegue en navegador. App móvil. 50+ lenguajes.', url: 'https://replit.com', badges: ['ide', 'desarrollo', 'codigo', 'web', 'productividad', 'web-use', 'mobile-use'] },
+                { name: 'Bolt.new', provider: 'StackBlitz', description: 'IDE web con IA: full-stack en navegador con WebContainers. La IA controla filesystem, npm, terminal. Despliegue a Netlify/Vercel.', url: 'https://bolt.new', badges: ['ide', 'desarrollo', 'codigo', 'web', 'web-use'] },
+                { name: 'PlayCode', provider: 'PlayCode', description: 'IDE online con IA para crear sitios y apps desde chat. Playgrounds JS, TypeScript, Python, React, Vue. Cliente desktop también.', url: 'https://playcode.io', badges: ['ide', 'desarrollo', 'codigo', 'web', 'web-use', 'desktop-use'] },
+                { name: 'NxCode', provider: 'NxCode', description: 'Constructor de apps con IA (Conductor + Virtuoso). Ejecución en Docker real, despliegue en Cloudflare. Para no técnicos y devs.', url: 'https://nxcode.io', badges: ['ide', 'desarrollo', 'codigo', 'web', 'productividad', 'web-use'] },
+                { name: 'VS Code', provider: 'Microsoft', description: 'Editor estándar; extensiones de IA (Copilot, Codeium, Continue, etc.). LSP, debugging, terminal. Desktop.', url: 'https://code.visualstudio.com', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'GitHub Copilot', provider: 'GitHub', description: 'Asistente de código (inline y chat) en VS Code, JetBrains, Visual Studio, Neovim. Sugerencias y generación desde comentarios.', url: 'https://github.com/features/copilot', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use', 'web-use'] },
+                { name: 'JetBrains AI Assistant', provider: 'JetBrains', description: 'IA en IntelliJ, PyCharm, WebStorm, Rider, etc. Conciencia del proyecto, completado, tests. Modelos: Gemini, OpenAI, Ollama.', url: 'https://www.jetbrains.com/ai', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Fleet', provider: 'JetBrains', description: 'IDE ligero JetBrains con IA. Modo editor e IDE; completado IA para Python y Kotlin. Backend IntelliJ en la nube opcional.', url: 'https://www.jetbrains.com/fleet', badges: ['ide', 'desarrollo', 'codigo', 'desktop-use'] },
+                { name: 'Visual Studio', provider: 'Microsoft', description: 'IDE para .NET y C++. IntelliCode y GitHub Copilot. Windows.', url: 'https://visualstudio.microsoft.com', badges: ['ide', 'desarrollo', 'codigo', 'desktop-use'] },
+                { name: 'Android Studio', provider: 'Google', description: 'IDE oficial para Android. Gemini integrado: modo agente, tests, UI desde wireframes, corrección de errores.', url: 'https://developer.android.com/studio', badges: ['ide', 'desarrollo', 'codigo', 'desktop-use'] },
+                { name: 'Xcode', provider: 'Apple', description: 'IDE para iOS/macOS. Soporte de codificación agéntica (Claude, Codex vía MCP). Agentes autónomos multiarchivo. macOS.', url: 'https://developer.apple.com/xcode', badges: ['ide', 'desarrollo', 'codigo', 'desktop-use'] },
+                { name: 'Eclipse Theia', provider: 'Eclipse Foundation', description: 'IDE open source (nube y desktop). Theia Coder: IA con control total del LLM, prompts editables, transparencia.', url: 'https://theia-ide.org', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use', 'web-use'] },
+                { name: 'GitHub Codespaces', provider: 'GitHub', description: 'VS Code en la nube. Entorno preconfigurado, integración con Copilot y repos. Horas gratis al mes.', url: 'https://github.com/features/codespaces', badges: ['ide', 'desarrollo', 'codigo', 'web', 'web-use'] },
+                { name: 'Gitpod', provider: 'Gitpod', description: 'IDE en la nube para GitHub, GitLab, Bitbucket. VS Code y JetBrains en navegador. Prebuilds.', url: 'https://www.gitpod.io', badges: ['ide', 'desarrollo', 'codigo', 'web', 'web-use'] },
+                { name: 'CodeSandbox', provider: 'CodeSandbox', description: 'Editor en navegador para prototipos frontend. Vista previa en vivo. Ideal para demos y pruebas rápidas.', url: 'https://codesandbox.io', badges: ['ide', 'desarrollo', 'codigo', 'web', 'web-use'] },
+                { name: 'Lapce', provider: 'Lapce', description: 'Editor en Rust, rápido, GPU. Tree-sitter, LSP, modo Vim, terminal, plugins WASI. Open source. Desktop.', url: 'https://lap.dev/lapce', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Sublime Text', provider: 'Sublime HQ', description: 'Editor de texto con plugins de IA (OpenAI completion, Agentic, CodeContinue). Sintaxis, múltiples cursores. Desktop.', url: 'https://www.sublimetext.com', badges: ['ide', 'desarrollo', 'codigo', 'desktop-use'] },
+                { name: 'Neovim', provider: 'Neovim', description: 'Editor modal extensible. Plugins IA: CodeCompanion.nvim, Copilot.nvim. LSP, MCP. Terminal/escritorio.', url: 'https://neovim.io', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Vim', provider: 'comunidad', description: 'Editor modal clásico. Plugins de IA (Copilot, Codeium) vía extensiones. Escritorio/terminal.', url: 'https://www.vim.org', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Emacs', provider: 'GNU', description: 'Editor extensible. Plugins de IA (Ghostwriter, Copilot, etc.). Escritorio.', url: 'https://www.gnu.org/software/emacs', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Codeium', provider: 'Codeium', description: 'Asistente de código gratuito; extensiones VS Code y JetBrains. También IDE Windsurf.', url: 'https://codeium.com', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Tabnine', provider: 'Tabnine', description: 'Asistente de código con privacidad (sin retención de datos). On-premise y SaaS. VS Code, JetBrains, Vim, etc.', url: 'https://www.tabnine.com', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Cody', provider: 'Sourcegraph', description: 'Asistente de código con conciencia del codebase. Búsqueda + IA (Claude, GPT-4). VS Code, JetBrains.', url: 'https://sourcegraph.com/cody', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Amazon Q Developer', provider: 'Amazon', description: 'Asistente de código para AWS. Mejores prácticas AWS, transformación de código. VS Code, JetBrains, terminal.', url: 'https://aws.amazon.com/q/developer', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Continue', provider: 'Continue', description: 'Asistente de código open source. Cualquier modelo (Ollama, OpenAI, Claude). VS Code y JetBrains. Control total.', url: 'https://continue.dev', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Aider', provider: 'Aider', description: 'Programación en pareja por terminal. Integración con git, 75+ proveedores de LLM. Open source.', url: 'https://aider.chat', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Claude Code', provider: 'Anthropic', description: 'Agente de código en terminal. Edición autónoma multiarchivo, ventana de contexto grande. Incluido en Claude Pro.', url: 'https://claude.ai', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'Cline', provider: 'Cline', description: 'Extensión open source de VS Code. Agente de código con acceso a terminal, archivos y búsqueda.', url: 'https://github.com/SourceGraphCody/cline', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Gemini Code Assist', provider: 'Google', description: 'Asistente de código de Google. VS Code, JetBrains, Android Studio. Completado, tests, depuración.', url: 'https://developers.google.com/gemini-code-assist', badges: ['ide', 'desarrollo', 'codigo', 'productividad', 'desktop-use'] },
+                { name: 'KDevelop', provider: 'KDE', description: 'IDE open source para C++, Python, PHP, etc. Completado de código inteligente. Desktop (Linux, Windows).', url: 'https://www.kdevelop.org', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] },
+                { name: 'Kiro', provider: 'rhysd', description: 'Editor de terminal en Rust (UTF-8). Inspirado en Kilo; sintaxis Rust, Go, JS, C++. Open source.', url: 'https://github.com/rhysd/kiro-editor', badges: ['ide', 'desarrollo', 'codigo', 'open-source', 'desktop-use'] }
+            ];
+
+            function appendEditoresIdesToScriptData() {
+                try {
+                    if (typeof llmServices === 'undefined' || !Array.isArray(llmServices)) {
+                        console.warn('[LLM] No se encontró llmServices; no se inyectaron Editores e IDEs.');
+                        return;
+                    }
+
+                    function normalizeUrl(u) {
+                        if (!u || typeof u !== 'string') return '';
+                        try {
+                            var parsed = new URL(u);
+                            var host = parsed.hostname.replace(/^www\./, '').toLowerCase();
+                            var path = parsed.pathname.replace(/\/+$/, '');
+                            return host + path;
+                        } catch (_) {
+                            return String(u).replace(/\/+$/, '').toLowerCase();
+                        }
+                    }
+
+                    function normalizeName(n) {
+                        return (n || '').toString().trim().toLowerCase();
+                    }
+
+                    function badgeCount(item) {
+                        return item && Array.isArray(item.badges) ? item.badges.length : 0;
+                    }
+
+                    var added = 0;
+                    var merged = 0;
+                    var removed = 0;
+
+                    for (var j = 0; j < LLM_EDITORES_IDES.length; j += 1) {
+                        var entry = LLM_EDITORES_IDES[j];
+                        if (!entry) continue;
+
+                        var entryNameKey = normalizeName(entry.name);
+                        var entryUrlKey = normalizeUrl(entry.url);
+                        var matches = [];
+
+                        for (var i = 0; i < llmServices.length; i += 1) {
+                            var existing = llmServices[i];
+                            if (!existing) continue;
+                            var sameName = normalizeName(existing.name) === entryNameKey;
+                            var sameUrl = entryUrlKey && normalizeUrl(existing.url) === entryUrlKey;
+                            if (sameName || sameUrl) matches.push(i);
+                        }
+
+                        if (!matches.length) {
+                            llmServices.push({
+                                name: entry.name,
+                                provider: entry.provider,
+                                description: entry.description,
+                                url: entry.url,
+                                badges: Array.isArray(entry.badges) ? entry.badges.slice() : ['ide'],
+                                openInNewTab: true
+                            });
+                            added += 1;
+                            continue;
+                        }
+
+                        var keepIdx = matches[0];
+                        for (var m = 1; m < matches.length; m += 1) {
+                            if (badgeCount(llmServices[matches[m]]) > badgeCount(llmServices[keepIdx])) {
+                                keepIdx = matches[m];
+                            }
+                        }
+
+                        var keep = llmServices[keepIdx];
+                        var mergedBadges = {};
+                        var srcA = Array.isArray(keep.badges) ? keep.badges : [];
+                        var srcB = Array.isArray(entry.badges) ? entry.badges : [];
+                        for (var a = 0; a < srcA.length; a += 1) mergedBadges[srcA[a]] = true;
+                        for (var b = 0; b < srcB.length; b += 1) mergedBadges[srcB[b]] = true;
+                        keep.badges = Object.keys(mergedBadges);
+                        if (badgeCount(keep) < badgeCount(entry)) {
+                            keep.provider = entry.provider;
+                            keep.description = entry.description;
+                            keep.url = entry.url;
+                        }
+                        if (keep.openInNewTab !== true) keep.openInNewTab = true;
+                        merged += 1;
+
+                        for (var r = matches.length - 1; r >= 0; r -= 1) {
+                            var idx = matches[r];
+                            if (idx === keepIdx) continue;
+                            llmServices.splice(idx, 1);
+                            removed += 1;
+                            if (idx < keepIdx) keepIdx -= 1;
+                        }
+                    }
+
+                    console.log('[LLM] Editores e IDEs -> añadidos:', added, 'fusionados:', merged, 'duplicados eliminados:', removed);
+                } catch (e) {
+                    console.error('[LLM] Error inyectando Editores e IDEs en llmServices:', e);
+                }
+            }
+
+            // Altas por filtro: cada entrada debe tener al menos un badge que coincida con un filtro (value del radio),
+            // para que aparezca al filtrar por esa categoría y no solo en "Todos". Slugs de filtros: chat, ide, data, generacion-imagenes, generacion-video, generacion-audio, codigo, workflow, agentes, productividad, diseño, desarrollo, open-source.
+            var LLM_ALTAS_GENERAL = [
+                { name: 'Ideogram', provider: 'Ideogram', description: 'Generación de imágenes con IA, fuerte en texto en imagen y estilos.', url: 'https://ideogram.ai', badges: ['web', 'generacion-imagenes'] },
+                { name: 'Open WebUI', provider: 'Open WebUI', description: 'Interfaz tipo ChatGPT para LLMs locales (Ollama, etc.). Open source.', url: 'https://openwebui.com', badges: ['web', 'chat', 'open-source'] },
+                { name: 'Mem', provider: 'Mem', description: 'Notas que se organizan solas con IA; resúmenes y búsqueda.', url: 'https://mem.ai', badges: ['web', 'productividad'] },
+                { name: 'Taskade', provider: 'Taskade', description: 'Listas, proyectos y chat con IA para equipos.', url: 'https://taskade.com', badges: ['web', 'productividad', 'workflow'] },
+                { name: 'Recraft', provider: 'Recraft', description: 'IA para diseño visual: ilustración vectorial, iconos, imágenes.', url: 'https://recraft.ai', badges: ['web', 'generacion-imagenes', 'diseño'] },
+                { name: 'Luma Dream Machine', provider: 'Luma AI', description: 'Generación de vídeo desde texto o imagen. Alta calidad.', url: 'https://lumalabs.ai/dream-machine', badges: ['web', 'generacion-video'] },
+                { name: 'Cline', provider: 'Cline', description: 'Extensión VS Code open source para IA; múltiples proveedores, MCP.', url: 'https://cline.dev', badges: ['codigo', 'open-source', 'desarrollo'] },
+                { name: 'Chat2DB', provider: 'Chat2DB', description: 'Cliente SQL con IA. Natural language → SQL, 30+ BBDD, dashboards auto-generados. Open source. Desktop y web.', url: 'https://chat2db.ai', badges: ['web', 'data', 'codigo', 'open-source'] },
+                { name: 'Quills.ai', provider: 'Quills', description: 'Asistente de datos por chat: SQL, visualización, Excel/CSV. Sin necesidad de saber SQL.', url: 'https://www.quills.ai', badges: ['web', 'data', 'productividad'] },
+                { name: 'Text2SQL.ai', provider: 'Text2SQL', description: 'Natural language → SQL y fórmulas Excel/Google Sheets. 256k+ usuarios. API.', url: 'https://www.text2sql.ai', badges: ['web', 'data', 'codigo'] },
+                { name: 'camelAI', provider: 'Camel QA', description: 'BI sin SQL: preguntas en NL → SQL + gráficos. PostgreSQL, MySQL, Snowflake. SOC 2.', url: 'https://docs.camelqa.com', badges: ['web', 'data', 'productividad'] },
+                { name: 'Keptune', provider: 'Keptune', description: 'Análisis de Excel y CSV por chat. Visualizaciones, ANOVA, regresión, correlación.', url: 'https://keptune.ai', badges: ['web', 'data', 'productividad'] },
+                { name: 'Sourcetable', provider: 'Sourcetable', description: 'SQL generado por IA sobre datos de hojas. 500+ fuentes, ChatGPT.', url: 'https://sourcetable.com', badges: ['web', 'data', 'productividad'] },
+                { name: 'Draxlr', provider: 'Draxlr', description: 'Text-to-SQL, PostgreSQL, MySQL, BigQuery, Snowflake. Gráficos en chat, drill-down.', url: 'https://draxlr.com', badges: ['web', 'data', 'codigo'] },
+                { name: 'Panorad AI', provider: 'Panorad', description: 'Visualización conversacional (NL-Viz) desde cualquier fuente de datos. Sin SQL.', url: 'https://panorad.ai', badges: ['web', 'data', 'productividad'] },
+                { name: 'Prophecy', provider: 'Prophecy', description: 'Agentes IA + preparación visual de datos. Workflows en Databricks, Snowflake, BigQuery.', url: 'https://prophecy.io', badges: ['web', 'data', 'workflow', 'agentes'] },
+                { name: 'DocETL', provider: 'DocETL', description: 'ETL para documentos con LLMs. Flujos de procesamiento de datos no estructurados.', url: 'https://www.docetl.org', badges: ['web', 'data', 'workflow'] },
+                { name: 'Daft', provider: 'Daft', description: 'Datos multimodales → vectores, etiquetas, outputs estructurados. Ingesta + embeddings + LLM.', url: 'https://daft.ai', badges: ['data', 'workflow', 'desarrollo', 'open-source'] },
+                { name: 'Energent.ai', provider: 'Energent', description: 'ETL sin código con IA. Detección de esquemas, procesamiento en tiempo real.', url: 'https://energent.ai', badges: ['web', 'data', 'workflow'] },
+                { name: 'Airbyte', provider: 'Airbyte', description: 'Datos no estructurados → bases vectoriales, RAG, fine-tuning. Pipelines con IA.', url: 'https://airbyte.com/product/ai', badges: ['web', 'data', 'workflow', 'open-source'] },
+                { name: 'Plotly Studio', provider: 'Plotly', description: 'Plataforma de analytics con IA. NL → dashboards interactivos. Snowflake, S3. Dash Enterprise.', url: 'https://plotly.com/studio', badges: ['web', 'data', 'desarrollo'] },
+                { name: 'Sphinx AI', provider: 'Sphinx', description: 'AI Data Scientist: patrones en datos, corrección de código, conocimiento reutilizable.', url: 'https://www.sphinx.ai', badges: ['web', 'data', 'agentes', 'codigo'] },
+                { name: 'Databricks Genie Code', provider: 'Databricks', description: 'Agente IA para equipos de datos: pipelines, depuración, dashboards. Unity Catalog.', url: 'https://www.databricks.com', badges: ['web', 'data', 'agentes', 'desarrollo'] }
+            ];
+
+            function appendAltasPorFiltroToScriptData() {
+                try {
+                    if (typeof llmServices === 'undefined' || !Array.isArray(llmServices)) {
+                        console.warn('[LLM] No se encontró llmServices; no se inyectaron altas por filtro.');
+                        return;
+                    }
+                    function normalizeUrl(u) {
+                        if (!u || typeof u !== 'string') return '';
+                        try {
+                            var parsed = new URL(u);
+                            var host = parsed.hostname.replace(/^www\./, '').toLowerCase();
+                            var path = parsed.pathname.replace(/\/+$/, '');
+                            return host + path;
+                        } catch (_) {
+                            return String(u).replace(/\/+$/, '').toLowerCase();
+                        }
+                    }
+                    function normalizeName(n) {
+                        return (n || '').toString().trim().toLowerCase();
+                    }
+                    var added = 0;
+                    for (var j = 0; j < LLM_ALTAS_GENERAL.length; j += 1) {
+                        var entry = LLM_ALTAS_GENERAL[j];
+                        if (!entry) continue;
+                        var entryUrlKey = normalizeUrl(entry.url);
+                        var entryNameKey = normalizeName(entry.name);
+                        var duplicate = false;
+                        for (var i = 0; i < llmServices.length; i += 1) {
+                            var existing = llmServices[i];
+                            if (!existing) continue;
+                            if (entryUrlKey && normalizeUrl(existing.url) === entryUrlKey) { duplicate = true; break; }
+                            if (entryNameKey && normalizeName(existing.name) === entryNameKey) { duplicate = true; break; }
+                        }
+                        if (!duplicate) {
+                            llmServices.push({
+                                name: entry.name,
+                                provider: entry.provider,
+                                description: entry.description,
+                                url: entry.url,
+                                badges: Array.isArray(entry.badges) ? entry.badges.slice() : [],
+                                openInNewTab: true
+                            });
+                            added += 1;
+                        }
+                    }
+                    if (added) console.log('[LLM] Altas por filtro -> añadidas:', added);
+                } catch (e) {
+                    console.error('[LLM] Error inyectando altas por filtro:', e);
+                }
+            }
+
+            var LLM_DEPRECADOS_URLS = [
+                '/chat', '/chat/', 'https://poe.com', '/', 'https://chatllm.abacus.ai',
+                'https://hunyuan-image.com/image-to-image', '/homePage', '/home', 'https://runwayml.com',
+                'https://www.phind.com', 'https://abysmal.ai/pages/dashboard',
+                'https://www.istockphoto.com/es/vídeos/industria-aeroespacial',
+                'https://www.vibecodingherramientas.com/herramientas/stability-ai/',
+                'https://musevideo.ai/image-to-video', 'https://assembo.ai', 'https://www.krea.ai/app',
+                'https://www.vibecodingherramientas.com/generador-fondos-gradientes',
+                'https://agentverse.ai/?sort=relevancy&page=1&recommended=true',
+                '/en-us/semantic-kernel', 'https://aifaceswap.io/#face-swap-playground'
+            ];
+
+            function removeDeprecadosFromScriptData() {
+                try {
+                    if (typeof llmServices === 'undefined' || !Array.isArray(llmServices)) {
+                        console.warn('[LLM] No se encontró llmServices; no se eliminaron deprecados.');
+                        return;
+                    }
+                    function normalizeUrl(u) {
+                        if (!u || typeof u !== 'string') return '';
+                        try {
+                            var parsed = new URL(u);
+                            var host = parsed.hostname.replace(/^www\./, '').toLowerCase();
+                            var path = parsed.pathname.replace(/\/+$/, '');
+                            return host + path;
+                        } catch (_) {
+                            return String(u).replace(/\/+$/, '').toLowerCase();
+                        }
+                    }
+                    var deprecadosNormalized = {};
+                    for (var d = 0; d < LLM_DEPRECADOS_URLS.length; d += 1) {
+                        var key = normalizeUrl(LLM_DEPRECADOS_URLS[d]);
+                        deprecadosNormalized[key] = true;
+                    }
+                    var removed = 0;
+                    for (var i = llmServices.length - 1; i >= 0; i -= 1) {
+                        var item = llmServices[i];
+                        if (!item) continue;
+                        var itemKey = normalizeUrl(item.url);
+                        if (deprecadosNormalized[itemKey]) {
+                            llmServices.splice(i, 1);
+                            removed += 1;
+                        }
+                    }
+                    console.log('[LLM] Deprecados eliminados de llmServices:', removed);
+                } catch (e) {
+                    console.error('[LLM] Error eliminando deprecados:', e);
+                }
+            }
+
             var BRAND_TINT_MAP = [
                 { match: ['openai', 'chatgpt', 'gpt'], hex: '#10A37F' },
                 { match: ['anthropic', 'claude'], hex: '#D4A574' },
@@ -1788,6 +2088,9 @@
                     requestAnimationFrame(function () {
                         mountBrandTintObserver();
                         mountFilterDiagnostics();
+                        appendEditoresIdesToScriptData();
+                        appendAltasPorFiltroToScriptData();
+                        removeDeprecadosFromScriptData();
                         if (USE_STABLE_COLUMNS) mountStableMasonry();
                         // El script solo pinta al cambiar filtro; con "all" en carga no pinta. Forzar change para render inicial.
                         var allRadio = document.getElementById('filter-all');
