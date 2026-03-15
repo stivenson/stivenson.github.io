@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+
+# JSON de búsquedas y verificación (snapshots, resultados de URL check)
+llm-directory-url-check-results.json
+llm-directory-urls-snapshot.json
+llm-directory-altas-snapshot.json
+
+# Configuración de herramientas (no son el sitio: script.js / HTML)
+package.json
+package-lock.json
+
+# Documentación del directorio LLM (reportes, investigaciones, auditoría)
+llm-directory-docs/
+
+# Markdown no confirmados / borradores
+*-borrador.md
+*-draft.md
+*.bak.md
