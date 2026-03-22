@@ -42,8 +42,6 @@ blockquote { margin: 1em 0; padding: 0.9em 1.1em; background: #e8f4f8; border-le
 .content-panel { margin: 1em 0; padding: 0.9em 1.1em; background: #f8f6f0; border-radius: 8px; border-left: 4px solid #c4a35a; line-height: 1.6; }
 .tip-panel { margin: 1em 0; padding: 0.9em 1.1em; background: #f0f7ff; border-radius: 8px; border-left: 4px solid #2563eb; line-height: 1.6; }
 .tip-panel p { margin: 0; }
-.warn-panel { margin: 1em 0; padding: 0.9em 1.1em; background: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b; line-height: 1.6; }
-.warn-panel p { margin: 0; }
 .intro-panel { margin: 1em 0; padding: 1em 1.2em; background: #f5f9f5; border-radius: 8px; border-left: 4px solid #6b9b6b; line-height: 1.6; }
 .intro-panel p { margin: 0.4em 0; }
 .intro-panel p:first-child { margin-top: 0; }
@@ -217,20 +215,6 @@ h2 + blockquote pre, h2 + p + blockquote pre {
   transition: background 0.2s;
 }
 .pt-run-btn:hover { background: #6d28d9; }
-.colab-btn {
-  cursor: pointer;
-  background: #EA4335;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.4em 1.1em;
-  font-size: 10.5pt;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  transition: background 0.2s;
-}
-.colab-btn:hover { background: #C5221F; }
 .pt-hint {
   font-size: 9.5pt;
   color: #a5b4fc;
@@ -399,6 +383,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <h2>Universidad Simón Bolívar — Cúcuta</h2>
 <hr />
 <p>✨ Esta guía cubre el camino completo desde las bases de Python hasta funciones y ciclos, con ejercicios que tienen contextos reales y relevantes. Cada sección introduce un tema nuevo y lo aplica en situaciones que puedes reconocer en tu día a día.</p>
+<p><strong>Requisitos previos:</strong> Tener Python 3 instalado.<br />
+<strong>Para los ejercicios gráficos:</strong> Los ejercicios de la Sección 5 usan visualización en consola con caracteres ASCII — no se necesitan librerías externas.</p>
 <hr />
 <h2>Tabla de contenidos</h2>
 <ul>
@@ -417,6 +403,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#ejercicio-21">2.1 Rectángulo, Marco y Diagonal</a></li>
 <li><a href="#ejercicio-22">2.2 Pirámides y Triángulos</a></li>
 <li><a href="#ejercicio-23">2.3 Tablero de Ajedrez</a></li>
+<li><a href="#ejercicio-24">2.4 Polígonos con turtle</a></li>
+<li><a href="#ejercicio-25">2.5 Espiral de Colores con turtle</a></li>
 <li><a href="#seccion-3">Sección 3 — Ciclos con Lógica y Listas</a></li>
 <li><a href="#ejercicio-31">3.1 Contador de Calorías del Día</a></li>
 <li><a href="#ejercicio-32">3.2 Adivina el Número</a></li>
@@ -429,6 +417,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#ejercicio-43">4.3 Conversor de Temperaturas</a></li>
 <li><a href="#ejercicio-44">4.4 Calculadora de Nota Final</a></li>
 <li><a href="#seccion-5">Sección 5 — Funciones + Ciclos + Gráficas</a></li>
+<li><a href="#ejercicio-51">5.1 Dibujador de Formas con turtle</a></li>
 <li><a href="#ejercicio-52">5.2 Sistema de Votación con Barras</a></li>
 <li><a href="#ejercicio-53">5.3 Gráfica de Notas del Salón</a></li>
 <li><a href="#ejercicio-54">5.4 Simulador de Crecimiento de Seguidores</a></li>
@@ -509,7 +498,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 #   ║ Nombre:  [valor alineado] ║
 # Incluye todas las variables: nombre, clase capitalizada, nivel, HP y daño
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-1')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-1')">Ver solución</button></div><div class="solucion-content" id="sol-content-1"><div class="pygments-wrap"><pre><span></span><span class="c1"># Tarjeta de Stats de Jugador RPG</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-1')">Ver solución</button></div><div class="solucion-content" id="sol-content-1"><div class="pygments-wrap"><pre><span></span><span class="c1"># Tarjeta de Stats de Jugador RPG</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">nombre</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Nombre del personaje: &quot;</span><span class="p">)</span>
@@ -568,7 +557,7 @@ Días restantes  : 20.5 días
 # Si los días restantes son menos de 3, muestra un mensaje de advertencia
 #   Ejemplo: &quot;⚠️  ¡Atención! Te quedan menos de 3 días de datos.&quot;
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-2')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-2')">Ver solución</button></div><div class="solucion-content" id="sol-content-2"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de duración del plan de internet móvil</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-2')">Ver solución</button></div><div class="solucion-content" id="sol-content-2"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de duración del plan de internet móvil</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">gb_disponibles</span>  <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;GB disponibles en tu plan: &quot;</span><span class="p">))</span>
@@ -617,7 +606,7 @@ Descarga de 1 GB     : 81.9 segundos  (1.4 minutos)
 
 # 📤 SALIDAS — ¿Cuánto es el tiempo por frame, cómo clasifica el ping, cuánta RAM en GB y cuánto tarda en descargar 1 GB?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-3')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-3')">Ver solución</button></div><div class="solucion-content" id="sol-content-3"><div class="pygments-wrap"><pre><span></span><span class="c1"># Convertidor de unidades de gaming</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-3')">Ver solución</button></div><div class="solucion-content" id="sol-content-3"><div class="pygments-wrap"><pre><span></span><span class="c1"># Convertidor de unidades de gaming</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">fps</span>                     <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;FPS: &quot;</span><span class="p">))</span>
@@ -679,7 +668,7 @@ Tiempo por publicación     : 22.5 minutos
 
 # 📤 SALIDAS — ¿Qué indicadores debe mostrar el resumen del día en redes sociales?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-4')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-4')">Ver solución</button></div><div class="solucion-content" id="sol-content-4"><div class="pygments-wrap"><pre><span></span><span class="c1"># Resumen de un día en redes sociales</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-4')">Ver solución</button></div><div class="solucion-content" id="sol-content-4"><div class="pygments-wrap"><pre><span></span><span class="c1"># Resumen de un día en redes sociales</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">seguidores</span>         <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Seguidores actuales: &quot;</span><span class="p">))</span>
@@ -741,7 +730,7 @@ Perfecta para entrenar.
 
 # 📤 SALIDAS — ¿Qué información sobre la canción debe mostrar el programa?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-5')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-5')">Ver solución</button></div><div class="solucion-content" id="sol-content-5"><div class="pygments-wrap"><pre><span></span><span class="c1"># Clasificador de género musical por BPM</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-5')">Ver solución</button></div><div class="solucion-content" id="sol-content-5"><div class="pygments-wrap"><pre><span></span><span class="c1"># Clasificador de género musical por BPM</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">bpm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;BPM de la canción: &quot;</span><span class="p">))</span>
@@ -808,7 +797,7 @@ Perfecta para entrenar.
 
 # 📤 SALIDAS — ¿Qué mensaje debe mostrar el programa según el resultado?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-6')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-6')">Ver solución</button></div><div class="solucion-content" id="sol-content-6"><div class="pygments-wrap"><pre><span></span><span class="c1"># Validador de pedido de domicilio (estilo Rappi)</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-6')">Ver solución</button></div><div class="solucion-content" id="sol-content-6"><div class="pygments-wrap"><pre><span></span><span class="c1"># Validador de pedido de domicilio (estilo Rappi)</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">saldo_disponible</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Saldo disponible ($): &quot;</span><span class="p">))</span>
@@ -861,7 +850,7 @@ Deporte sugerido : Cualquier deporte
 
 # 📤 SALIDAS — ¿Qué debe mostrar el programa sobre el estado físico y el deporte recomendado?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-7')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-7')">Ver solución</button></div><div class="solucion-content" id="sol-content-7"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de IMC con recomendación deportiva</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-7')">Ver solución</button></div><div class="solucion-content" id="sol-content-7"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de IMC con recomendación deportiva</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">peso_kg</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Peso (kg): &quot;</span><span class="p">))</span>
@@ -916,7 +905,7 @@ Deporte sugerido : Cualquier deporte
 
 # 📤 SALIDAS — ¿Qué outfit completo debe mostrar el programa?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-8')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-8')">Ver solución</button></div><div class="solucion-content" id="sol-content-8"><div class="pygments-wrap"><pre><span></span><span class="c1"># ¿Qué ponerme hoy? Recomendador de ropa según clima</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-8')">Ver solución</button></div><div class="solucion-content" id="sol-content-8"><div class="pygments-wrap"><pre><span></span><span class="c1"># ¿Qué ponerme hoy? Recomendador de ropa según clima</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">temperatura</span>   <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Temperatura actual (°C): &quot;</span><span class="p">))</span>
@@ -976,7 +965,7 @@ Ahorro total           : $34,500.00
 
 # 📤 SALIDAS — ¿Qué debe mostrar el resumen de la compra con los descuentos aplicados?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-9')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-9')">Ver solución</button></div><div class="solucion-content" id="sol-content-9"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de descuento en tienda online</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-9')">Ver solución</button></div><div class="solucion-content" id="sol-content-9"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de descuento en tienda online</span>
 
 <span class="c1"># --- Entrada de datos ---</span>
 <span class="n">precio_original</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Precio original del producto ($): &quot;</span><span class="p">))</span>
@@ -1044,7 +1033,7 @@ Si no puedes responderlas, todavía no estás listo para programar — y eso est
 <hr />
 <h2 id="seccion-2">Sección 2 — Formas Geométricas Visuales</h2>
 <blockquote>
-<p>Aquí usamos ciclos <code>for</code> para dibujar figuras usando texto (ASCII art).</p>
+<p>Aquí usamos ciclos <code>for</code> para dibujar figuras. Los primeros ejercicios usan texto (ASCII art) y los últimos usan la librería <code>turtle</code> para dibujar con gráficos reales.</p>
 </blockquote>
 <p><strong>Conceptos clave:</strong></p>
 <ul>
@@ -1052,6 +1041,8 @@ Si no puedes responderlas, todavía no estás listo para programar — y eso est
 <li>Ciclos <code>for</code> anidados: uno dentro del otro (fila, columna)</li>
 <li><code>print("*", end="")</code> — imprimir sin salto de línea</li>
 <li><code>"*" * n</code> — repetir un carácter n veces</li>
+<li><code>turtle.forward(d)</code> — avanzar d píxeles</li>
+<li><code>turtle.left(angulo)</code> — girar a la izquierda</li>
 </ul>
 <hr />
 <h3 id="ejercicio-21">Ejercicio 2.1 — Rectángulo, Marco y Diagonal ⬜</h3>
@@ -1086,7 +1077,7 @@ La diagonal solo se dibuja cuando ancho == alto (figura cuadrada).
 
 # 📤 SALIDAS — ¿Qué figuras geométricas debe mostrar el programa en la consola?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-10')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-10')">Ver solución</button></div><div class="solucion-content" id="sol-content-10"><div class="pygments-wrap"><pre><span></span><span class="c1"># Formas geométricas con arte ASCII usando ciclos for anidados</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-10')">Ver solución</button></div><div class="solucion-content" id="sol-content-10"><div class="pygments-wrap"><pre><span></span><span class="c1"># Formas geométricas con arte ASCII usando ciclos for anidados</span>
 
 <span class="n">ancho</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingresa el ancho: &quot;</span><span class="p">))</span>
 <span class="n">alto</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingresa el alto: &quot;</span><span class="p">))</span>
@@ -1169,7 +1160,7 @@ Diamante:
 
 # 📤 SALIDAS — ¿Qué figuras triangulares y el diamante debe mostrar el programa?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-11')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-11')">Ver solución</button></div><div class="solucion-content" id="sol-content-11"><div class="pygments-wrap"><pre><span></span><span class="c1"># Pirámides y triángulos ASCII con ciclos for</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-11')">Ver solución</button></div><div class="solucion-content" id="sol-content-11"><div class="pygments-wrap"><pre><span></span><span class="c1"># Pirámides y triángulos ASCII con ciclos for</span>
 
 <span class="n">filas</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingresa el número de filas (3-12): &quot;</span><span class="p">))</span>
 
@@ -1245,7 +1236,7 @@ Diamante:
 
 # 📤 SALIDAS — ¿Cómo debe verse el tablero de ajedrez en la consola?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-12')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-12')">Ver solución</button></div><div class="solucion-content" id="sol-content-12"><div class="pygments-wrap"><pre><span></span><span class="c1"># Tablero de ajedrez ASCII con casillas de 2 caracteres de ancho</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-12')">Ver solución</button></div><div class="solucion-content" id="sol-content-12"><div class="pygments-wrap"><pre><span></span><span class="c1"># Tablero de ajedrez ASCII con casillas de 2 caracteres de ancho</span>
 
 <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingresa el tamaño del tablero (4-12): &quot;</span><span class="p">))</span>
 
@@ -1265,6 +1256,142 @@ Diamante:
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">()</span>
+</pre></div>
+</div></div>
+
+<hr />
+<h3 id="ejercicio-24">Ejercicio 2.4 — Polígonos con turtle 🐢</h3>
+<p><strong>Enunciado:</strong> Crea un programa con <code>turtle</code> que dibuje cinco polígonos regulares en línea — triángulo, cuadrado, pentágono, hexágono y octágono — cada uno en un color distinto y con su nombre como etiqueta.</p>
+<p><strong>Entradas:</strong> Ninguna (los polígonos y colores están definidos en el programa).</p>
+<p><strong>Salida esperada:</strong> Ventana gráfica con los cinco polígonos dibujados y etiquetados.</p>
+<p>💡 <strong>Pista:</strong> La fórmula universal para el ángulo exterior de cualquier polígono regular es <code>360 / n</code>, donde <code>n</code> es el número de lados.</p>
+<div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-13" class="pt-editor" spellcheck="false"># ============================================================
+# Ejercicio 2.4 — Polígonos con turtle
+# ============================================================
+
+# 📥 ENTRADAS — ¿Qué polígonos vas a dibujar y qué datos los definen?
+
+# ⚙️ PROCESO — ¿Cómo calcular el ángulo exterior y usar turtle para dibujar cada polígono?
+
+# 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica de turtle?
+</textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-13')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-13')">Ver solución</button></div><div class="solucion-content" id="sol-content-13"><div class="pygments-wrap"><pre><span></span><span class="c1"># Polígonos regulares con turtle: triángulo, cuadrado, pentágono, hexágono y octágono</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+
+<span class="c1"># Configuración de la ventana</span>
+<span class="n">pantalla</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span>
+<span class="n">pantalla</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Polígonos Regulares&quot;</span><span class="p">)</span>
+<span class="n">pantalla</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+
+<span class="n">lapiz</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">pensize</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Polígonos a dibujar: (número de lados, color, nombre en español)</span>
+<span class="n">poligonos</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span>    <span class="s2">&quot;Triángulo&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>   <span class="s2">&quot;Cuadrado&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span>  <span class="s2">&quot;Pentágono&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;Hexágono&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;Octágono&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">lado</span> <span class="o">=</span> <span class="mi">60</span>          <span class="c1"># longitud de cada lado en píxeles</span>
+<span class="n">separacion</span> <span class="o">=</span> <span class="mi">150</span>   <span class="c1"># distancia horizontal entre figuras</span>
+
+<span class="c1"># Calcular posición inicial para que las figuras queden centradas</span>
+<span class="n">x_inicio</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">poligonos</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">separacion</span> <span class="o">/</span> <span class="mi">2</span>
+
+<span class="c1"># Título en la parte superior</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">220</span><span class="p">)</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Polígonos Regulares&quot;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;bold&quot;</span><span class="p">))</span>
+
+<span class="c1"># Dibujar cada polígono</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">poligonos</span><span class="p">):</span>
+    <span class="n">angulo_exterior</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">/</span> <span class="n">n</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x_inicio</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">separacion</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">40</span>  <span class="c1"># posición vertical base</span>
+
+    <span class="c1"># Mover al punto de inicio de esta figura</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">setheading</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+
+    <span class="c1"># Dibujar el polígono</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">lapiz</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
+        <span class="n">lapiz</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo_exterior</span><span class="p">)</span>
+
+    <span class="c1"># Etiquetar debajo de la figura</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">lado</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">25</span><span class="p">)</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">))</span>
+
+<span class="c1"># Ocultar la tortuga al terminar</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">hideturtle</span><span class="p">()</span>
+
+<span class="c1"># Cerrar al hacer click</span>
+<span class="n">pantalla</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+</pre></div>
+</div></div>
+
+<hr />
+<h3 id="ejercicio-25">Ejercicio 2.5 — Espiral de Colores con turtle 🌀</h3>
+<p><strong>Enunciado:</strong> Crea un programa con <code>turtle</code> que dibuje una espiral cuadrada sobre fondo negro, cambiando de color en cada paso a través de una lista de colores cíclicos.</p>
+<p><strong>Entradas:</strong> Ninguna (los parámetros de la espiral están definidos en el programa).</p>
+<p><strong>Salida esperada:</strong> Ventana gráfica con una espiral de colores que crece desde el centro hacia afuera.</p>
+<p>💡 <strong>Pista:</strong> El truco está en usar <code>91°</code> en vez de <code>90°</code>: con 90° se cierra como un cuadrado, con 91° la figura "se abre" y forma una espiral. El lado crece en cada iteración.</p>
+<div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-14" class="pt-editor" spellcheck="false"># ============================================================
+# Ejercicio 2.5 — Espiral con turtle
+# ============================================================
+
+# 📥 ENTRADAS — ¿Qué parámetros controlan el tamaño y los colores de la espiral?
+
+# ⚙️ PROCESO — ¿Cómo crecer el lado y cambiar el color en cada iteración?
+
+# 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica al terminar el ciclo?
+</textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-14')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-14')">Ver solución</button></div><div class="solucion-content" id="sol-content-14"><div class="pygments-wrap"><pre><span></span><span class="c1"># Espiral cuadrada de colores con turtle</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+
+<span class="c1"># Configuración de la ventana</span>
+<span class="n">pantalla</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span>
+<span class="n">pantalla</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Espiral de Colores&quot;</span><span class="p">)</span>
+<span class="n">pantalla</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+
+<span class="n">lapiz</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>       <span class="c1"># velocidad máxima</span>
+<span class="n">lapiz</span><span class="o">.</span><span class="n">pensize</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Lista de colores que se ciclan en cada iteración</span>
+<span class="n">colores</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">]</span>
+
+<span class="n">lado</span> <span class="o">=</span> <span class="mi">10</span>            <span class="c1"># longitud inicial del lado</span>
+<span class="n">angulo</span> <span class="o">=</span> <span class="mi">91</span>          <span class="c1"># ángulo de giro (no 90 exacto para crear el efecto espiral)</span>
+<span class="n">incremento</span> <span class="o">=</span> <span class="mi">3</span>       <span class="c1"># cuánto crece el lado en cada paso</span>
+<span class="n">indice_color</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Dibujar la espiral mientras el lado no supere 200</span>
+<span class="k">while</span> <span class="n">lado</span> <span class="o">&lt;=</span> <span class="mi">200</span><span class="p">:</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">colores</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores</span><span class="p">)])</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
+    <span class="n">lapiz</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo</span><span class="p">)</span>
+
+    <span class="n">lado</span> <span class="o">+=</span> <span class="n">incremento</span>
+    <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="n">lapiz</span><span class="o">.</span><span class="n">hideturtle</span><span class="p">()</span>
+
+<span class="c1"># Cerrar al hacer click</span>
+<span class="n">pantalla</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
 </pre></div>
 </div></div>
 
@@ -1307,7 +1434,7 @@ Evaluación            : En rango normal.
 
 # 📤 SALIDAS — ¿Qué resumen nutricional debe mostrar el programa?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-15')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-15')">Ver solución</button></div><div class="solucion-content" id="sol-content-15"><div class="pygments-wrap"><pre><span></span><span class="c1"># Contador de calorías del día: registra alimentos y muestra resumen</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-15')">Ver solución</button></div><div class="solucion-content" id="sol-content-15"><div class="pygments-wrap"><pre><span></span><span class="c1"># Contador de calorías del día: registra alimentos y muestra resumen</span>
 
 <span class="n">nombres_alimentos</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">calorias_alimentos</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1395,7 +1522,7 @@ Intento 3/7 — Tu número: 37
 
 # 📤 SALIDAS — ¿Qué mensajes debe ver el jugador durante el juego?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-16')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-16')">Ver solución</button></div><div class="solucion-content" id="sol-content-16"><div class="pygments-wrap"><pre><span></span><span class="c1"># Juego de adivinar el número secreto en máximo 7 intentos</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-16')">Ver solución</button></div><div class="solucion-content" id="sol-content-16"><div class="pygments-wrap"><pre><span></span><span class="c1"># Juego de adivinar el número secreto en máximo 7 intentos</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
 
@@ -1467,7 +1594,7 @@ Crecimiento de espectadores:
 
 # 📤 SALIDAS — ¿Qué estadísticas y visualización debe mostrar el análisis del stream?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-17')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-17')">Ver solución</button></div><div class="solucion-content" id="sol-content-17"><div class="pygments-wrap"><pre><span></span><span class="c1"># Estadísticas de un stream hora a hora con barra ASCII proporcional</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-17')">Ver solución</button></div><div class="solucion-content" id="sol-content-17"><div class="pygments-wrap"><pre><span></span><span class="c1"># Estadísticas de un stream hora a hora con barra ASCII proporcional</span>
 
 <span class="n">horas</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;¿Cuántas horas duró el stream? &quot;</span><span class="p">))</span>
 
@@ -1545,7 +1672,7 @@ Duración promedio   : 3:50
 
 # 📤 SALIDAS — ¿Qué información debe mostrar el resumen de la playlist?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-18')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-18')">Ver solución</button></div><div class="solucion-content" id="sol-content-18"><div class="pygments-wrap"><pre><span></span><span class="c1"># Mini playlist: duración total y estadísticas de canciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-18')">Ver solución</button></div><div class="solucion-content" id="sol-content-18"><div class="pygments-wrap"><pre><span></span><span class="c1"># Mini playlist: duración total y estadísticas de canciones</span>
 
 <span class="n">cantidad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;¿Cuántas canciones tiene la playlist? &quot;</span><span class="p">))</span>
 
@@ -1626,7 +1753,7 @@ Tabla de multiplicar completa (1 al 10):
 
 # 📤 SALIDAS — ¿Qué debe mostrar la tabla individual y la grilla completa de multiplicación?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-19')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-19')">Ver solución</button></div><div class="solucion-content" id="sol-content-19"><div class="pygments-wrap"><pre><span></span><span class="c1"># Generador de tabla de multiplicar visual: tabla individual y grilla completa</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-19')">Ver solución</button></div><div class="solucion-content" id="sol-content-19"><div class="pygments-wrap"><pre><span></span><span class="c1"># Generador de tabla de multiplicar visual: tabla individual y grilla completa</span>
 
 <span class="n">numero</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingresa un número del 1 al 10: &quot;</span><span class="p">))</span>
 
@@ -1708,7 +1835,7 @@ Tabla de multiplicar completa (1 al 10):
 
 # 📤 SALIDAS — ¿Cómo debe mostrarse el desglose del costo del viaje?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-20')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-20')">Ver solución</button></div><div class="solucion-content" id="sol-content-20"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Viaje (Uber/Taxi) — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-20')">Ver solución</button></div><div class="solucion-content" id="sol-content-20"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Viaje (Uber/Taxi) — SIN funciones</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== CALCULADORA DE VIAJE (UBER/TAXI) ===&quot;</span><span class="p">)</span>
 <span class="n">distancia_km</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese la distancia en km: &quot;</span><span class="p">))</span>
@@ -1750,7 +1877,7 @@ Tabla de multiplicar completa (1 al 10):
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-21')">Ver solución</button></div><div class="solucion-content" id="sol-content-21"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Viaje (Uber/Taxi) — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-21')">Ver solución</button></div><div class="solucion-content" id="sol-content-21"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Viaje (Uber/Taxi) — CON funciones</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">costo_base</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna el costo base fijo del viaje.&quot;&quot;&quot;</span>
@@ -1829,7 +1956,7 @@ Tabla de multiplicar completa (1 al 10):
 
 # 📤 SALIDAS — ¿Cómo debe mostrarse la evaluación de cada criterio y el nivel final?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-21')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-22')">Ver solución</button></div><div class="solucion-content" id="sol-content-22"><div class="pygments-wrap"><pre><span></span><span class="c1"># Validador de Contraseña Segura — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-22')">Ver solución</button></div><div class="solucion-content" id="sol-content-22"><div class="pygments-wrap"><pre><span></span><span class="c1"># Validador de Contraseña Segura — SIN funciones</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== VALIDADOR DE CONTRASEÑA SEGURA ===&quot;</span><span class="p">)</span>
 <span class="n">contrasena</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese su contraseña: &quot;</span><span class="p">)</span>
@@ -1873,7 +2000,7 @@ Tabla de multiplicar completa (1 al 10):
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nivel de seguridad : </span><span class="si">{</span><span class="n">nivel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-23')">Ver solución</button></div><div class="solucion-content" id="sol-content-23"><div class="pygments-wrap"><pre><span></span><span class="c1"># Validador de Contraseña Segura — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-23')">Ver solución</button></div><div class="solucion-content" id="sol-content-23"><div class="pygments-wrap"><pre><span></span><span class="c1"># Validador de Contraseña Segura — CON funciones</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">longitud_valida</span><span class="p">(</span><span class="n">contrasena</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Verifica si la contraseña tiene al menos 8 caracteres.&quot;&quot;&quot;</span>
@@ -1956,7 +2083,7 @@ Tabla de multiplicar completa (1 al 10):
 
 # 📤 SALIDAS — ¿Qué conversiones y sensación térmica debe mostrar el programa?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-22')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-24')">Ver solución</button></div><div class="solucion-content" id="sol-content-24"><div class="pygments-wrap"><pre><span></span><span class="c1"># Conversor de Temperaturas — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-24')">Ver solución</button></div><div class="solucion-content" id="sol-content-24"><div class="pygments-wrap"><pre><span></span><span class="c1"># Conversor de Temperaturas — SIN funciones</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== CONVERSOR DE TEMPERATURAS ===&quot;</span><span class="p">)</span>
 <span class="n">celsius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese la temperatura en grados Celsius: &quot;</span><span class="p">))</span>
@@ -1992,7 +2119,7 @@ Tabla de multiplicar completa (1 al 10):
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-25')">Ver solución</button></div><div class="solucion-content" id="sol-content-25"><div class="pygments-wrap"><pre><span></span><span class="c1"># Conversor de Temperaturas — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-25')">Ver solución</button></div><div class="solucion-content" id="sol-content-25"><div class="pygments-wrap"><pre><span></span><span class="c1"># Conversor de Temperaturas — CON funciones</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">a_fahrenheit</span><span class="p">(</span><span class="n">celsius</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convierte grados Celsius a Fahrenheit.&quot;&quot;&quot;</span>
@@ -2069,7 +2196,7 @@ Tabla de multiplicar completa (1 al 10):
 
 # 📤 SALIDAS — ¿Cómo debe mostrarse el desglose y el estado del estudiante?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-23')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-26')">Ver solución</button></div><div class="solucion-content" id="sol-content-26"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Nota Final — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-26')">Ver solución</button></div><div class="solucion-content" id="sol-content-26"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Nota Final — SIN funciones</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== CALCULADORA DE NOTA FINAL ===&quot;</span><span class="p">)</span>
 <span class="n">nota_parcial_1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese la nota del parcial 1 (0.0 - 5.0): &quot;</span><span class="p">))</span>
@@ -2123,7 +2250,7 @@ Tabla de multiplicar completa (1 al 10):
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">44</span><span class="p">)</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-27')">Ver solución</button></div><div class="solucion-content" id="sol-content-27"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Nota Final — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-27')">Ver solución</button></div><div class="solucion-content" id="sol-content-27"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Nota Final — CON funciones</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">promedio_parciales</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula el promedio de los dos parciales.&quot;&quot;&quot;</span>
@@ -2192,9 +2319,221 @@ Tabla de multiplicar completa (1 al 10):
 <hr />
 <h2 id="seccion-5">Sección 5 — Funciones + Ciclos + Gráficas</h2>
 <blockquote>
-<p>En esta sección combinamos todo lo aprendido: funciones que contienen ciclos, listas como parámetros, y visualización de datos con <code>matplotlib</code>. El objetivo es que veas cómo el código escala cuando los problemas se vuelven más complejos, y por qué las funciones bien diseñadas siguen siendo manejables.</p>
+<p>En esta sección combinamos todo lo aprendido: funciones que contienen ciclos, listas como parámetros, y visualización de datos en consola con caracteres ASCII. El objetivo es que veas cómo el código escala cuando los problemas se vuelven más complejos, y por qué las funciones bien diseñadas siguen siendo manejables.</p>
 </blockquote>
-<p><strong>Requisito:</strong> <code>pip install matplotlib</code> para los ejercicios 5.3 y 5.4.</p>
+<hr />
+<h3 id="ejercicio-51">Ejercicio 5.1 — Dibujador de Formas con turtle ✏️</h3>
+<p><strong>Enunciado:</strong> Crea un programa interactivo con <code>turtle</code> que permita al usuario elegir una forma (cuadrado, triángulo, diamante o estrella), su tamaño y color, y la dibuje en pantalla. El programa repite el menú hasta que el usuario escriba "salir".</p>
+<p><strong>Entradas (repetidas hasta escribir "salir"):</strong><br />
+- Forma a dibujar: cuadrado, triangulo, diamante, estrella o salir (texto)<br />
+- Tamaño del lado en píxeles (número entero)<br />
+- Color (texto: red, blue, green, etc.)</p>
+<p><strong>Salida esperada:</strong> Ventana gráfica donde aparecen las formas elegidas por el usuario una a una.</p>
+<p>💡 <strong>Pista:</strong> En la versión con funciones, define una función por cada forma (<code>dibujar_cuadrado</code>, <code>dibujar_triangulo</code>, etc.) y una función <code>elegir_y_dibujar</code> que gestiona el menú. Cada función recibe <code>lado</code> y <code>color</code> como parámetros.</p>
+<div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-24" class="pt-editor" spellcheck="false"># ============================================================
+# Ejercicio 5.1 — Formas con turtle (con funciones)
+# ============================================================
+
+# 📥 ENTRADAS — ¿Qué forma y tamaño elige el usuario?
+
+# ⚙️ PROCESO — ¿Cómo definir una función por cada forma geométrica con turtle?
+
+# 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica según la elección del usuario?
+</textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-24')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-28')">Ver solución</button></div><div class="solucion-content" id="sol-content-28"><div class="pygments-wrap"><pre><span></span><span class="c1"># Dibujador de Formas Parametrizadas con Turtle — SIN funciones</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+
+<span class="n">colores_disponibles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;gold&quot;</span><span class="p">]</span>
+<span class="n">indice_color</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">turtle</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">turtle</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+
+<span class="n">continuar</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">while</span> <span class="n">continuar</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== DIBUJADOR DE FORMAS ===&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  1. Cuadrado&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  2. Triángulo&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  3. Diamante&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  4. Estrella&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  5. Salir&quot;</span><span class="p">)</span>
+    <span class="n">opcion</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Elija una forma (1-5): &quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
+        <span class="n">continuar</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
+        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
+        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Dibujar cuadrado</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+        <span class="c1"># Mover para la siguiente forma</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
+        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
+        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Dibujar triángulo equilátero</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+        <span class="c1"># Mover para la siguiente forma</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
+        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
+        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Dibujar diamante (rombo)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">angulo</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">]:</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+        <span class="c1"># Mover para la siguiente forma</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
+        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
+        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Dibujar estrella de 5 puntas</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
+            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">144</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+        <span class="c1"># Mover para la siguiente forma</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no válida. Intente de nuevo.&quot;</span><span class="p">)</span>
+
+<span class="n">turtle</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+</pre></div>
+</div></div>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-29')">Ver solución</button></div><div class="solucion-content" id="sol-content-29"><div class="pygments-wrap"><pre><span></span><span class="c1"># Dibujador de Formas Parametrizadas con Turtle — CON funciones</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ir_a</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mueve la tortuga a la posición (x, y) sin dibujar.&quot;&quot;&quot;</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_cuadrado</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja un cuadrado con el lado y color indicados.&quot;&quot;&quot;</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_triangulo</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja un triángulo equilátero con el lado y color indicados.&quot;&quot;&quot;</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_diamante</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja un rombo (diamante) con el lado y color indicados.&quot;&quot;&quot;</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">angulo</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">]:</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_estrella</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja una estrella de 5 puntas con el lado y color indicados.&quot;&quot;&quot;</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
+        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">144</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">elegir_y_dibujar</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Muestra un menú interactivo para elegir y dibujar formas.&quot;&quot;&quot;</span>
+    <span class="n">colores_disponibles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;gold&quot;</span><span class="p">]</span>
+    <span class="n">indice_color</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">turtle</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">turtle</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+
+    <span class="n">continuar</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">while</span> <span class="n">continuar</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== DIBUJADOR DE FORMAS ===&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  1. Cuadrado&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  2. Triángulo&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  3. Diamante&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  4. Estrella&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  5. Salir&quot;</span><span class="p">)</span>
+        <span class="n">opcion</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Elija una forma (1-5): &quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
+            <span class="n">continuar</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="n">opcion</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">):</span>
+            <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
+            <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
+            <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
+                <span class="n">dibujar_cuadrado</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
+                <span class="n">dibujar_triangulo</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
+                <span class="n">dibujar_diamante</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
+                <span class="n">dibujar_estrella</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
+
+            <span class="c1"># Mover para la siguiente forma</span>
+            <span class="n">ir_a</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no válida. Intente de nuevo.&quot;</span><span class="p">)</span>
+
+<span class="c1"># --- Programa principal ---</span>
+<span class="n">elegir_y_dibujar</span><span class="p">()</span>
+<span class="n">turtle</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+</pre></div>
+</div></div>
+
 <hr />
 <h3 id="ejercicio-52">Ejercicio 5.2 — Sistema de Votación con Barras 🗳️</h3>
 <p><strong>Enunciado:</strong> Crea un programa que registre candidatos y sus votos, y luego muestre los resultados con barras de progreso formadas por caracteres <code>█</code> y <code>░</code>, indicando porcentaje y el ganador.</p>
@@ -2220,7 +2559,7 @@ Ganador: Ana con 800 votos
 
 # 📤 SALIDAS — ¿Qué tabla de resultados y ganador debe mostrar el programa?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-25')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-30')">Ver solución</button></div><div class="solucion-content" id="sol-content-30"><div class="pygments-wrap"><pre><span></span><span class="c1"># Sistema de Votación con Barras ASCII — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-30')">Ver solución</button></div><div class="solucion-content" id="sol-content-30"><div class="pygments-wrap"><pre><span></span><span class="c1"># Sistema de Votación con Barras ASCII — SIN funciones</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== SISTEMA DE VOTACIÓN ===&quot;</span><span class="p">)</span>
 <span class="n">num_candidatos</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el número de candidatos: &quot;</span><span class="p">))</span>
@@ -2269,7 +2608,7 @@ Ganador: Ana con 800 votos
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Ganador: </span><span class="si">{</span><span class="n">nombre_ganador</span><span class="si">}</span><span class="s2"> con </span><span class="si">{</span><span class="n">votos_ganador</span><span class="si">}</span><span class="s2"> votos&quot;</span><span class="p">)</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-31')">Ver solución</button></div><div class="solucion-content" id="sol-content-31"><div class="pygments-wrap"><pre><span></span><span class="c1"># Sistema de Votación con Barras ASCII — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-31')">Ver solución</button></div><div class="solucion-content" id="sol-content-31"><div class="pygments-wrap"><pre><span></span><span class="c1"># Sistema de Votación con Barras ASCII — CON funciones</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">calcular_porcentaje</span><span class="p">(</span><span class="n">votos</span><span class="p">,</span> <span class="n">total</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula el porcentaje de votos de un candidato.&quot;&quot;&quot;</span>
@@ -2326,33 +2665,42 @@ Ganador: Ana con 800 votos
 
 <hr />
 <h3 id="ejercicio-53">Ejercicio 5.3 — Gráfica de Notas del Salón 📊</h3>
-<p><strong>Enunciado:</strong> Crea un programa que registre los nombres y notas de los estudiantes de un salón, muestre estadísticas en consola (promedio, máxima, mínima, aprobados) y genere una gráfica de barras donde las notas aprobadas aparecen en verde y las reprobadas en rojo.</p>
-<p><strong>Requiere:</strong> <code>pip install matplotlib</code></p>
+<p><strong>Enunciado:</strong> Crea un programa que registre los nombres y notas de los estudiantes de un salón, muestre estadísticas en consola (promedio, máxima, mínima, aprobados) y visualice las notas con barras horizontales ASCII donde <code>✓</code> indica aprobado y <code>✗</code> reprobado.</p>
 <p><strong>Entradas:</strong><br />
 - Número de estudiantes (número entero)<br />
 - Para cada estudiante: nombre (texto) y nota (decimal entre 0.0 y 5.0)</p>
-<p><strong>Salida esperada (consola):</strong></p>
-<pre><code>  Promedio : 3.45
-  Máxima   : 4.80  |  Mínima : 2.10
-  Aprobados: 4 de 5
+<p><strong>Salida esperada:</strong></p>
+<pre><code>========================================
+        ESTADÍSTICAS DEL SALÓN
+========================================
+  Promedio del grupo : 3.45
+  Nota más alta      : 4.80
+  Nota más baja      : 2.10
+  Aprobados          : 4 de 5
+  Reprobados         : 1 de 5
+========================================
+
+  BARRAS DE NOTAS  (escala: 0 ─────────────────── 5)
+
+  Ana    | ████████████████░░░░ | 4.0 ✓
+  Carlos | ██████████░░░░░░░░░░ | 2.5 ✗
 </code></pre>
-<p>Además se abre una ventana con la gráfica de barras.</p>
-<p>💡 <strong>Pista:</strong> Usa <code>matplotlib.pyplot</code>. Las barras se colorean con una lista generada por comprensión: <code>["green" if nota &gt;= 3.0 else "red" for nota in notas]</code>.</p>
+<p>💡 <strong>Pista:</strong> Calcula <code>bloques_llenos = round(nota / 5.0 * 20)</code>. Los bloques restantes hasta 20 se rellenan con <code>░</code>. Alinea los nombres con <code>f"{nombre:&lt;{ancho_nombre}}"</code> usando el nombre más largo como referencia.</p>
 <div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-26" class="pt-editor" spellcheck="false"># ============================================================
-# Ejercicio 5.3 — Gráfica de Notas con matplotlib
+# Ejercicio 5.3 — Notas del Salón con barras ASCII
 # ============================================================
 
 # 📥 ENTRADAS — ¿Qué datos de estudiantes y notas vas a usar?
 
-# ⚙️ PROCESO — ¿Cómo colorear las barras según si aprueban o no y agregar la línea de corte?
+# ⚙️ PROCESO — ¿Cómo construir la barra ASCII y calcular las estadísticas?
 
-# 📤 SALIDAS — ¿Qué debe mostrar la gráfica de barras de notas del salón?
+# 📤 SALIDAS — ¿Qué debe mostrar cada línea del gráfico de barras en consola?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-26')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-32')">Ver solución</button></div><div class="solucion-content" id="sol-content-32"><div class="pygments-wrap"><pre><span></span><span class="c1"># Gráfica de Notas del Salón con matplotlib — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-32')">Ver solución</button></div><div class="solucion-content" id="sol-content-32"><div class="pygments-wrap"><pre><span></span><span class="c1"># Notas del Salón con barras ASCII — SIN funciones</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">BARRA_MAX</span> <span class="o">=</span> <span class="mi">20</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== GRÁFICA DE NOTAS DEL SALÓN ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== NOTAS DEL SALÓN ===&quot;</span><span class="p">)</span>
 <span class="n">num_estudiantes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el número de estudiantes: &quot;</span><span class="p">))</span>
 
 <span class="n">nombres_estudiantes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2371,55 +2719,37 @@ Ganador: Ana con 800 votos
 <span class="n">aprobados</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">nota</span> <span class="ow">in</span> <span class="n">notas_estudiantes</span> <span class="k">if</span> <span class="n">nota</span> <span class="o">&gt;=</span> <span class="mf">3.0</span><span class="p">)</span>
 <span class="n">reprobados</span> <span class="o">=</span> <span class="n">num_estudiantes</span> <span class="o">-</span> <span class="n">aprobados</span>
 
-<span class="c1"># Mostrar estadísticas en consola</span>
+<span class="c1"># Mostrar estadísticas</span>
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;       ESTADÍSTICAS DEL SALÓN&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">44</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;        ESTADÍSTICAS DEL SALÓN&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">44</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Promedio del grupo : </span><span class="si">{</span><span class="n">promedio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nota más alta      : </span><span class="si">{</span><span class="n">maxima</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nota más baja      : </span><span class="si">{</span><span class="n">minima</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Aprobados          : </span><span class="si">{</span><span class="n">aprobados</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">num_estudiantes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Reprobados         : </span><span class="si">{</span><span class="n">reprobados</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">num_estudiantes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">44</span><span class="p">)</span>
 
-<span class="c1"># Determinar colores: verde si aprobó, rojo si reprobó</span>
-<span class="n">colores</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">nota</span> <span class="ow">in</span> <span class="n">notas_estudiantes</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">nota</span> <span class="o">&gt;=</span> <span class="mf">3.0</span><span class="p">:</span>
-        <span class="n">colores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">colores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="c1"># Mostrar barras ASCII horizontales</span>
+<span class="n">ancho_nombre</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nombres_estudiantes</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  BARRAS DE NOTAS  (escala: 0 ─────────────────── 5)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">nota</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nombres_estudiantes</span><span class="p">,</span> <span class="n">notas_estudiantes</span><span class="p">):</span>
+    <span class="n">bloques_llenos</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">nota</span> <span class="o">/</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">BARRA_MAX</span><span class="p">)</span>
+    <span class="n">bloques_vacios</span> <span class="o">=</span> <span class="n">BARRA_MAX</span> <span class="o">-</span> <span class="n">bloques_llenos</span>
+    <span class="n">barra</span> <span class="o">=</span> <span class="s2">&quot;█&quot;</span> <span class="o">*</span> <span class="n">bloques_llenos</span> <span class="o">+</span> <span class="s2">&quot;░&quot;</span> <span class="o">*</span> <span class="n">bloques_vacios</span>
+    <span class="n">estado</span> <span class="o">=</span> <span class="s2">&quot;✓&quot;</span> <span class="k">if</span> <span class="n">nota</span> <span class="o">&gt;=</span> <span class="mf">3.0</span> <span class="k">else</span> <span class="s2">&quot;✗&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">nombre</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">ancho_nombre</span><span class="si">}}</span><span class="s2"> | </span><span class="si">{</span><span class="n">barra</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">nota</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">estado</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="c1"># Crear gráfica de barras</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">num_estudiantes</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">barras</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">nombres_estudiantes</span><span class="p">,</span> <span class="n">notas_estudiantes</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colores</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-
-<span class="c1"># Línea de nota mínima aprobatoria</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;navy&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Nota mínima (3.0)&quot;</span><span class="p">)</span>
-
-<span class="c1"># Etiquetas de valor en cada barra</span>
-<span class="k">for</span> <span class="n">barra</span><span class="p">,</span> <span class="n">nota</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">barras</span><span class="p">,</span> <span class="n">notas_estudiantes</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-        <span class="n">barra</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">+</span> <span class="n">barra</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-        <span class="n">barra</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nota</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>
-    <span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Notas del Salón&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Estudiantes&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Nota&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ = aprobado (≥ 3.0)   ✗ = reprobado (&lt; 3.0)&quot;</span><span class="p">)</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-33')">Ver solución</button></div><div class="solucion-content" id="sol-content-33"><div class="pygments-wrap"><pre><span></span><span class="c1"># Gráfica de Notas del Salón con matplotlib — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-33')">Ver solución</button></div><div class="solucion-content" id="sol-content-33"><div class="pygments-wrap"><pre><span></span><span class="c1"># Notas del Salón con barras ASCII — CON funciones</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">BARRA_MAX</span> <span class="o">=</span> <span class="mi">20</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">calcular_estadisticas</span><span class="p">(</span><span class="n">notas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calcula y retorna el promedio, mínima, máxima y número de aprobados.&quot;&quot;&quot;</span>
@@ -2429,40 +2759,27 @@ Ganador: Ana con 800 votos
     <span class="n">aprobados</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">nota</span> <span class="ow">in</span> <span class="n">notas</span> <span class="k">if</span> <span class="n">nota</span> <span class="o">&gt;=</span> <span class="mf">3.0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">promedio</span><span class="p">,</span> <span class="n">minima</span><span class="p">,</span> <span class="n">maxima</span><span class="p">,</span> <span class="n">aprobados</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">colores_segun_nota</span><span class="p">(</span><span class="n">notas</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna una lista de colores: verde si aprobó, rojo si reprobó.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;green&quot;</span> <span class="k">if</span> <span class="n">nota</span> <span class="o">&gt;=</span> <span class="mf">3.0</span> <span class="k">else</span> <span class="s2">&quot;red&quot;</span> <span class="k">for</span> <span class="n">nota</span> <span class="ow">in</span> <span class="n">notas</span><span class="p">]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">barra_ascii</span><span class="p">(</span><span class="n">nota</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna la barra ASCII proporcional a la nota (escala 0-5).&quot;&quot;&quot;</span>
+    <span class="n">bloques_llenos</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">nota</span> <span class="o">/</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">BARRA_MAX</span><span class="p">)</span>
+    <span class="n">bloques_vacios</span> <span class="o">=</span> <span class="n">BARRA_MAX</span> <span class="o">-</span> <span class="n">bloques_llenos</span>
+    <span class="k">return</span> <span class="s2">&quot;█&quot;</span> <span class="o">*</span> <span class="n">bloques_llenos</span> <span class="o">+</span> <span class="s2">&quot;░&quot;</span> <span class="o">*</span> <span class="n">bloques_vacios</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">graficar_notas</span><span class="p">(</span><span class="n">nombres</span><span class="p">,</span> <span class="n">notas</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Muestra una gráfica de barras con las notas de cada estudiante.&quot;&quot;&quot;</span>
-    <span class="n">colores</span> <span class="o">=</span> <span class="n">colores_segun_nota</span><span class="p">(</span><span class="n">notas</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">nombres</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.8</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
-    <span class="n">barras</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">nombres</span><span class="p">,</span> <span class="n">notas</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colores</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-
-    <span class="c1"># Línea de nota mínima aprobatoria</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;navy&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Nota mínima (3.0)&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Etiquetas de valor en cada barra</span>
-    <span class="k">for</span> <span class="n">barra</span><span class="p">,</span> <span class="n">nota</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">barras</span><span class="p">,</span> <span class="n">notas</span><span class="p">):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
-            <span class="n">barra</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">+</span> <span class="n">barra</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-            <span class="n">barra</span><span class="o">.</span><span class="n">get_height</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.05</span><span class="p">,</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nota</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>
-        <span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Notas del Salón&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Estudiantes&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Nota&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mostrar_barras</span><span class="p">(</span><span class="n">nombres</span><span class="p">,</span> <span class="n">notas</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Muestra una barra horizontal ASCII por cada estudiante.&quot;&quot;&quot;</span>
+    <span class="n">ancho_nombre</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nombres</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  BARRAS DE NOTAS  (escala: 0 ─────────────────── 5)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">nombre</span><span class="p">,</span> <span class="n">nota</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">nombres</span><span class="p">,</span> <span class="n">notas</span><span class="p">):</span>
+        <span class="n">barra</span> <span class="o">=</span> <span class="n">barra_ascii</span><span class="p">(</span><span class="n">nota</span><span class="p">)</span>
+        <span class="n">estado</span> <span class="o">=</span> <span class="s2">&quot;✓&quot;</span> <span class="k">if</span> <span class="n">nota</span> <span class="o">&gt;=</span> <span class="mf">3.0</span> <span class="k">else</span> <span class="s2">&quot;✗&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">nombre</span><span class="si">:</span><span class="s2">&lt;</span><span class="si">{</span><span class="n">ancho_nombre</span><span class="si">}}</span><span class="s2"> | </span><span class="si">{</span><span class="n">barra</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">nota</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">estado</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  ✓ = aprobado (≥ 3.0)   ✗ = reprobado (&lt; 3.0)&quot;</span><span class="p">)</span>
 
 <span class="c1"># --- Programa principal ---</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== GRÁFICA DE NOTAS DEL SALÓN ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== NOTAS DEL SALÓN ===&quot;</span><span class="p">)</span>
 <span class="n">num_estudiantes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el número de estudiantes: &quot;</span><span class="p">))</span>
 
 <span class="n">nombres_estudiantes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2474,56 +2791,65 @@ Ganador: Ana con 800 votos
     <span class="n">nombres_estudiantes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nombre</span><span class="p">)</span>
     <span class="n">notas_estudiantes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nota</span><span class="p">)</span>
 
-<span class="c1"># Mostrar estadísticas en consola</span>
+<span class="c1"># Mostrar estadísticas</span>
 <span class="n">promedio</span><span class="p">,</span> <span class="n">minima</span><span class="p">,</span> <span class="n">maxima</span><span class="p">,</span> <span class="n">aprobados</span> <span class="o">=</span> <span class="n">calcular_estadisticas</span><span class="p">(</span><span class="n">notas_estudiantes</span><span class="p">)</span>
 <span class="n">reprobados</span> <span class="o">=</span> <span class="n">num_estudiantes</span> <span class="o">-</span> <span class="n">aprobados</span>
 
 <span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;       ESTADÍSTICAS DEL SALÓN&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">44</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;        ESTADÍSTICAS DEL SALÓN&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">44</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Promedio del grupo : </span><span class="si">{</span><span class="n">promedio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nota más alta      : </span><span class="si">{</span><span class="n">maxima</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Nota más baja      : </span><span class="si">{</span><span class="n">minima</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Aprobados          : </span><span class="si">{</span><span class="n">aprobados</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">num_estudiantes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Reprobados         : </span><span class="si">{</span><span class="n">reprobados</span><span class="si">}</span><span class="s2"> de </span><span class="si">{</span><span class="n">num_estudiantes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">44</span><span class="p">)</span>
 
-<span class="c1"># Mostrar gráfica</span>
-<span class="n">graficar_notas</span><span class="p">(</span><span class="n">nombres_estudiantes</span><span class="p">,</span> <span class="n">notas_estudiantes</span><span class="p">)</span>
+<span class="c1"># Mostrar barras ASCII</span>
+<span class="n">mostrar_barras</span><span class="p">(</span><span class="n">nombres_estudiantes</span><span class="p">,</span> <span class="n">notas_estudiantes</span><span class="p">)</span>
 </pre></div>
 </div></div>
 
 <hr />
 <h3 id="ejercicio-54">Ejercicio 5.4 — Simulador de Crecimiento de Seguidores 📈</h3>
-<p><strong>Enunciado:</strong> Crea un programa que proyecte el crecimiento de seguidores mes a mes aplicando una tasa de crecimiento constante. Muestra la tabla de resultados en consola, indica en qué mes se llega al doble de seguidores iniciales y genera una gráfica de línea con <code>matplotlib</code>.</p>
-<p><strong>Requiere:</strong> <code>pip install matplotlib</code></p>
+<p><strong>Enunciado:</strong> Crea un programa que proyecte el crecimiento de seguidores mes a mes aplicando una tasa de crecimiento constante. Muestra la tabla de resultados en consola, indica en qué mes se llega al doble de seguidores iniciales y visualiza la tendencia con barras ASCII proporcionales.</p>
 <p><strong>Entradas:</strong><br />
 - Seguidores iniciales (número entero)<br />
 - Tasa de crecimiento mensual (decimal; ej: 0.08 para 8%)<br />
 - Número de meses a simular (número entero)</p>
-<p><strong>Salida esperada (consola):</strong></p>
-<pre><code>  Mes   0:         1,000  (—)
-  Mes   1:         1,080  (+80)
-  Mes   2:         1,166  (+86)
+<p><strong>Salida esperada:</strong></p>
+<pre><code>======================================
+   PROYECCIÓN MES A MES
+======================================
+   Mes    Seguidores  Crecimiento
+--------------------------------------
+     0         1,000           —
+     1         1,080         +80
+     2         1,166         +86
   ...
-  Llegas al doble en el mes 9 (1,999 seguidores)
+  Llegas al doble en el mes 9 (2,000 seguidores)
+
+  TENDENCIA DE CRECIMIENTO
+
+  Mes   0: ██████████████ 1,000
+  Mes   1: ████████████████ 1,080
+  ...
 </code></pre>
-<p>Además se abre una ventana con la gráfica de línea.</p>
-<p>💡 <strong>Pista:</strong> En la versión con funciones, separa la lógica en <code>simular_crecimiento(iniciales, tasa, meses)</code> que devuelve una lista, y <code>graficar_crecimiento(lista)</code> que solo visualiza. Cada función tiene una sola responsabilidad.</p>
+<p>💡 <strong>Pista:</strong> En la versión con funciones, separa la lógica en <code>simular_crecimiento(iniciales, tasa, meses)</code> que devuelve una lista, <code>mes_duplicacion(lista, iniciales)</code> que busca el mes del doble, y <code>mostrar_tendencia(lista)</code> que dibuja las barras. Cada función tiene una sola responsabilidad.</p>
 <div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-27" class="pt-editor" spellcheck="false"># ============================================================
-# Ejercicio 5.4 — Crecimiento de Seguidores con matplotlib
+# Ejercicio 5.4 — Crecimiento de Seguidores con barras ASCII
 # ============================================================
 
 # 📥 ENTRADAS — ¿Qué parámetros iniciales definen la simulación de seguidores?
 
-# ⚙️ PROCESO — ¿Cómo calcular el crecimiento mes a mes y preparar los datos para la gráfica?
+# ⚙️ PROCESO — ¿Cómo calcular el crecimiento mes a mes y construir la barra proporcional?
 
-# 📤 SALIDAS — ¿Qué debe mostrar la gráfica de línea del crecimiento de seguidores?
+# 📤 SALIDAS — ¿Qué debe mostrar la tabla y la tendencia visual en consola?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-27')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-34')">Ver solución</button></div><div class="solucion-content" id="sol-content-34"><div class="pygments-wrap"><pre><span></span><span class="c1"># Simulador de Crecimiento de Seguidores con matplotlib — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-34')">Ver solución</button></div><div class="solucion-content" id="sol-content-34"><div class="pygments-wrap"><pre><span></span><span class="c1"># Simulador de Crecimiento de Seguidores — SIN funciones</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">ANCHO_BARRA</span> <span class="o">=</span> <span class="mi">30</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== SIMULADOR DE CRECIMIENTO DE SEGUIDORES ===&quot;</span><span class="p">)</span>
 <span class="n">seguidores_iniciales</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese los seguidores iniciales: &quot;</span><span class="p">))</span>
@@ -2567,30 +2893,21 @@ Ganador: Ana con 800 votos
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  No alcanzas el doble en </span><span class="si">{</span><span class="n">meses</span><span class="si">}</span><span class="s2"> meses.&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Meta: </span><span class="si">{</span><span class="n">meta_doble</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> seguidores&quot;</span><span class="p">)</span>
 
-<span class="c1"># Crear la lista de meses para el eje X</span>
-<span class="n">eje_meses</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">)))</span>
-
-<span class="c1"># Graficar el crecimiento</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">eje_meses</span><span class="p">,</span> <span class="n">lista_seguidores</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-         <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Seguidores&quot;</span><span class="p">)</span>
-
-<span class="c1"># Línea del doble inicial</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">meta_doble</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-            <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Meta: </span><span class="si">{</span><span class="n">meta_doble</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> (doble inicial)&quot;</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Proyección de Crecimiento de Seguidores&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Mes&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Seguidores&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># Mostrar tendencia con barras ASCII proporcionales</span>
+<span class="n">maximo</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  TENDENCIA DE CRECIMIENTO&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">mes</span><span class="p">,</span> <span class="n">cantidad</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">):</span>
+    <span class="n">proporcion</span> <span class="o">=</span> <span class="n">cantidad</span> <span class="o">/</span> <span class="n">maximo</span>
+    <span class="n">bloques</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">proporcion</span> <span class="o">*</span> <span class="n">ANCHO_BARRA</span><span class="p">)</span>
+    <span class="n">barra</span> <span class="o">=</span> <span class="s2">&quot;█&quot;</span> <span class="o">*</span> <span class="n">bloques</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mes </span><span class="si">{</span><span class="n">mes</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">barra</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">cantidad</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-35')">Ver solución</button></div><div class="solucion-content" id="sol-content-35"><div class="pygments-wrap"><pre><span></span><span class="c1"># Simulador de Crecimiento de Seguidores con matplotlib — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-35')">Ver solución</button></div><div class="solucion-content" id="sol-content-35"><div class="pygments-wrap"><pre><span></span><span class="c1"># Simulador de Crecimiento de Seguidores — CON funciones</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">ANCHO_BARRA</span> <span class="o">=</span> <span class="mi">30</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">simular_crecimiento</span><span class="p">(</span><span class="n">iniciales</span><span class="p">,</span> <span class="n">tasa</span><span class="p">,</span> <span class="n">meses</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Simula el crecimiento de seguidores mes a mes y retorna la lista.&quot;&quot;&quot;</span>
@@ -2608,26 +2925,17 @@ Ganador: Ana con 800 votos
             <span class="k">return</span> <span class="n">mes</span>
     <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># No se alcanzó el doble en el período simulado</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">graficar_crecimiento</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Muestra una gráfica de línea con la proyección de crecimiento.&quot;&quot;&quot;</span>
-    <span class="n">meses</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">)))</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">meses</span><span class="p">,</span> <span class="n">lista_seguidores</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;royalblue&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-             <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Seguidores&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Línea del doble inicial</span>
-    <span class="n">doble</span> <span class="o">=</span> <span class="n">lista_seguidores</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">doble</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
-                <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Meta: </span><span class="si">{</span><span class="n">doble</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> (doble inicial)&quot;</span><span class="p">)</span>
-
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Proyección de Crecimiento de Seguidores&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Mes&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Seguidores&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">11</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mostrar_tendencia</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Muestra una barra horizontal ASCII proporcional por mes.&quot;&quot;&quot;</span>
+    <span class="n">maximo</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  TENDENCIA DE CRECIMIENTO&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">mes</span><span class="p">,</span> <span class="n">cantidad</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">):</span>
+        <span class="n">proporcion</span> <span class="o">=</span> <span class="n">cantidad</span> <span class="o">/</span> <span class="n">maximo</span>
+        <span class="n">bloques</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">proporcion</span> <span class="o">*</span> <span class="n">ANCHO_BARRA</span><span class="p">)</span>
+        <span class="n">barra</span> <span class="o">=</span> <span class="s2">&quot;█&quot;</span> <span class="o">*</span> <span class="n">bloques</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Mes </span><span class="si">{</span><span class="n">mes</span><span class="si">:</span><span class="s2">&gt;3</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">barra</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">cantidad</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># --- Programa principal ---</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== SIMULADOR DE CRECIMIENTO DE SEGUIDORES ===&quot;</span><span class="p">)</span>
@@ -2661,8 +2969,8 @@ Ganador: Ana con 800 votos
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  No alcanzas el doble en </span><span class="si">{</span><span class="n">meses</span><span class="si">}</span><span class="s2"> meses.&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Meta: </span><span class="si">{</span><span class="n">seguidores_iniciales</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> seguidores&quot;</span><span class="p">)</span>
 
-<span class="c1"># Mostrar gráfica</span>
-<span class="n">graficar_crecimiento</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">)</span>
+<span class="c1"># Mostrar tendencia visual</span>
+<span class="n">mostrar_tendencia</span><span class="p">(</span><span class="n">lista_seguidores</span><span class="p">)</span>
 </pre></div>
 </div></div>
 
@@ -2715,11 +3023,6 @@ function abrirPythonTutor(id) {
   var url = "https://pythontutor.com/visualize.html#code=" + encoded
           + "&mode=edit&py=3&rawInputLstJSON=%5B%5D&cumulative=false";
   window.open(url, '_blank');
-}
-
-/* --- Abrir Google Colab --- */
-function abrirGoogleColab() {
-  window.open('https://colab.research.google.com/notebooks/empty.ipynb', '_blank');
 }
 
 var _solIdPendiente = null;
