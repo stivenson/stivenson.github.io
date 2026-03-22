@@ -403,8 +403,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#ejercicio-21">2.1 Rectángulo, Marco y Diagonal</a></li>
 <li><a href="#ejercicio-22">2.2 Pirámides y Triángulos</a></li>
 <li><a href="#ejercicio-23">2.3 Tablero de Ajedrez</a></li>
-<li><a href="#ejercicio-24">2.4 Polígonos con turtle</a></li>
-<li><a href="#ejercicio-25">2.5 Espiral de Colores con turtle</a></li>
+<li><a href="#ejercicio-24">2.4 Ola Sinusoidal ASCII</a></li>
+<li><a href="#ejercicio-25">2.5 Triángulo de Pascal</a></li>
 <li><a href="#seccion-3">Sección 3 — Ciclos con Lógica y Listas</a></li>
 <li><a href="#ejercicio-31">3.1 Contador de Calorías del Día</a></li>
 <li><a href="#ejercicio-32">3.2 Adivina el Número</a></li>
@@ -417,7 +417,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#ejercicio-43">4.3 Conversor de Temperaturas</a></li>
 <li><a href="#ejercicio-44">4.4 Calculadora de Nota Final</a></li>
 <li><a href="#seccion-5">Sección 5 — Funciones + Ciclos + Gráficas</a></li>
-<li><a href="#ejercicio-51">5.1 Dibujador de Formas con turtle</a></li>
+<li><a href="#ejercicio-51">5.1 Calculadora de Figuras Geométricas</a></li>
 <li><a href="#ejercicio-52">5.2 Sistema de Votación con Barras</a></li>
 <li><a href="#ejercicio-53">5.3 Gráfica de Notas del Salón</a></li>
 <li><a href="#ejercicio-54">5.4 Simulador de Crecimiento de Seguidores</a></li>
@@ -1033,7 +1033,7 @@ Si no puedes responderlas, todavía no estás listo para programar — y eso est
 <hr />
 <h2 id="seccion-2">Sección 2 — Formas Geométricas Visuales</h2>
 <blockquote>
-<p>Aquí usamos ciclos <code>for</code> para dibujar figuras. Los primeros ejercicios usan texto (ASCII art) y los últimos usan la librería <code>turtle</code> para dibujar con gráficos reales.</p>
+<p>Aquí usamos ciclos <code>for</code> para dibujar figuras en la consola con ASCII art, y el módulo <code>math</code> para calcular posiciones y valores matemáticos.</p>
 </blockquote>
 <p><strong>Conceptos clave:</strong></p>
 <ul>
@@ -1041,8 +1041,9 @@ Si no puedes responderlas, todavía no estás listo para programar — y eso est
 <li>Ciclos <code>for</code> anidados: uno dentro del otro (fila, columna)</li>
 <li><code>print("*", end="")</code> — imprimir sin salto de línea</li>
 <li><code>"*" * n</code> — repetir un carácter n veces</li>
-<li><code>turtle.forward(d)</code> — avanzar d píxeles</li>
-<li><code>turtle.left(angulo)</code> — girar a la izquierda</li>
+<li><code>import math</code> — módulo matemático de la librería estándar</li>
+<li><code>math.sin(angulo)</code>, <code>math.pi</code> — funciones trigonométricas</li>
+<li><code>math.factorial(n)</code> — factorial de n</li>
 </ul>
 <hr />
 <h3 id="ejercicio-21">Ejercicio 2.1 — Rectángulo, Marco y Diagonal ⬜</h3>
@@ -1260,138 +1261,108 @@ Diamante:
 </div></div>
 
 <hr />
-<h3 id="ejercicio-24">Ejercicio 2.4 — Polígonos con turtle 🐢</h3>
-<p><strong>Enunciado:</strong> Crea un programa con <code>turtle</code> que dibuje cinco polígonos regulares en línea — triángulo, cuadrado, pentágono, hexágono y octágono — cada uno en un color distinto y con su nombre como etiqueta.</p>
-<p><strong>Entradas:</strong> Ninguna (los polígonos y colores están definidos en el programa).</p>
-<p><strong>Salida esperada:</strong> Ventana gráfica con los cinco polígonos dibujados y etiquetados.</p>
-<p>💡 <strong>Pista:</strong> La fórmula universal para el ángulo exterior de cualquier polígono regular es <code>360 / n</code>, donde <code>n</code> es el número de lados.</p>
+<h3 id="ejercicio-24">Ejercicio 2.4 — Ola Sinusoidal ASCII 🌊</h3>
+<p><strong>Enunciado:</strong> Crea un programa que dibuje una ola sinusoidal verticalmente en la consola usando el carácter <code>*</code>. El usuario ingresa la amplitud, el número de ciclos y la altura en filas. Usa <code>math.sin</code> y <code>math.pi</code>.</p>
+<p><strong>Entradas:</strong><br />
+- Amplitud en caracteres (número entero, ej: 10)<br />
+- Número de ciclos (número entero, ej: 2)<br />
+- Altura en filas (número entero, ej: 40)</p>
+<p><strong>Salida esperada (amplitud=8, ciclos=2, filas=20):</strong></p>
+<pre><code>        *
+               *
+                *
+               *
+             *
+        *
+  *
+ *
+  *
+        *
+               *
+                *
+               *
+             *
+        *
+  *
+ *
+  *
+        *
+               *
+</code></pre>
+<p>💡 <strong>Pista:</strong> Para cada fila calcula <code>angulo = (fila / filas) * ciclos * 2 * math.pi</code>. Luego <code>posicion = round((math.sin(angulo) + 1) * amplitud)</code> te da un valor entre <code>0</code> y <code>2 * amplitud</code>. Imprime ese número de espacios seguido de <code>*</code>.</p>
 <div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-13" class="pt-editor" spellcheck="false"># ============================================================
-# Ejercicio 2.4 — Polígonos con turtle
+# Ejercicio 2.4 — Ola Sinusoidal ASCII
 # ============================================================
 
-# 📥 ENTRADAS — ¿Qué polígonos vas a dibujar y qué datos los definen?
+# 📥 ENTRADAS — ¿Qué parámetros controlan la forma de la ola?
 
-# ⚙️ PROCESO — ¿Cómo calcular el ángulo exterior y usar turtle para dibujar cada polígono?
+# ⚙️ PROCESO — ¿Cómo usar math.sin para calcular la posición horizontal en cada fila?
 
-# 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica de turtle?
+# 📤 SALIDAS — ¿Qué debe imprimir cada fila de la ola?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-13')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-13')">Ver solución</button></div><div class="solucion-content" id="sol-content-13"><div class="pygments-wrap"><pre><span></span><span class="c1"># Polígonos regulares con turtle: triángulo, cuadrado, pentágono, hexágono y octágono</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-13')">Ver solución</button></div><div class="solucion-content" id="sol-content-13"><div class="pygments-wrap"><pre><span></span><span class="c1"># Ola Sinusoidal ASCII con math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+<span class="n">amplitud</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Amplitud en caracteres (ej: 10): &quot;</span><span class="p">))</span>
+<span class="n">ciclos</span>   <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Número de ciclos (ej: 2): &quot;</span><span class="p">))</span>
+<span class="n">filas</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Altura en filas (ej: 40): &quot;</span><span class="p">))</span>
 
-<span class="c1"># Configuración de la ventana</span>
-<span class="n">pantalla</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span>
-<span class="n">pantalla</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Polígonos Regulares&quot;</span><span class="p">)</span>
-<span class="n">pantalla</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
-
-<span class="n">lapiz</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">pensize</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="c1"># Polígonos a dibujar: (número de lados, color, nombre en español)</span>
-<span class="n">poligonos</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span>    <span class="s2">&quot;Triángulo&quot;</span><span class="p">),</span>
-    <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>   <span class="s2">&quot;Cuadrado&quot;</span><span class="p">),</span>
-    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span>  <span class="s2">&quot;Pentágono&quot;</span><span class="p">),</span>
-    <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;Hexágono&quot;</span><span class="p">),</span>
-    <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;Octágono&quot;</span><span class="p">),</span>
-<span class="p">]</span>
-
-<span class="n">lado</span> <span class="o">=</span> <span class="mi">60</span>          <span class="c1"># longitud de cada lado en píxeles</span>
-<span class="n">separacion</span> <span class="o">=</span> <span class="mi">150</span>   <span class="c1"># distancia horizontal entre figuras</span>
-
-<span class="c1"># Calcular posición inicial para que las figuras queden centradas</span>
-<span class="n">x_inicio</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">poligonos</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">separacion</span> <span class="o">/</span> <span class="mi">2</span>
-
-<span class="c1"># Título en la parte superior</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">220</span><span class="p">)</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Polígonos Regulares&quot;</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">&quot;bold&quot;</span><span class="p">))</span>
-
-<span class="c1"># Dibujar cada polígono</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">nombre</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">poligonos</span><span class="p">):</span>
-    <span class="n">angulo_exterior</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">/</span> <span class="n">n</span>
-
-    <span class="n">x</span> <span class="o">=</span> <span class="n">x_inicio</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">separacion</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="mi">40</span>  <span class="c1"># posición vertical base</span>
-
-    <span class="c1"># Mover al punto de inicio de esta figura</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">setheading</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
-
-    <span class="c1"># Dibujar el polígono</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">lapiz</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
-        <span class="n">lapiz</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo_exterior</span><span class="p">)</span>
-
-    <span class="c1"># Etiquetar debajo de la figura</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">lado</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">25</span><span class="p">)</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">nombre</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="n">font</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">))</span>
-
-<span class="c1"># Ocultar la tortuga al terminar</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">hideturtle</span><span class="p">()</span>
-
-<span class="c1"># Cerrar al hacer click</span>
-<span class="n">pantalla</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">filas</span><span class="p">):</span>
+    <span class="n">angulo</span>   <span class="o">=</span> <span class="p">(</span><span class="n">fila</span> <span class="o">/</span> <span class="n">filas</span><span class="p">)</span> <span class="o">*</span> <span class="n">ciclos</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">posicion</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angulo</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">amplitud</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">posicion</span> <span class="o">+</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>
 </pre></div>
 </div></div>
 
 <hr />
-<h3 id="ejercicio-25">Ejercicio 2.5 — Espiral de Colores con turtle 🌀</h3>
-<p><strong>Enunciado:</strong> Crea un programa con <code>turtle</code> que dibuje una espiral cuadrada sobre fondo negro, cambiando de color en cada paso a través de una lista de colores cíclicos.</p>
-<p><strong>Entradas:</strong> Ninguna (los parámetros de la espiral están definidos en el programa).</p>
-<p><strong>Salida esperada:</strong> Ventana gráfica con una espiral de colores que crece desde el centro hacia afuera.</p>
-<p>💡 <strong>Pista:</strong> El truco está en usar <code>91°</code> en vez de <code>90°</code>: con 90° se cierra como un cuadrado, con 91° la figura "se abre" y forma una espiral. El lado crece en cada iteración.</p>
+<h3 id="ejercicio-25">Ejercicio 2.5 — Triángulo de Pascal 🔺</h3>
+<p><strong>Enunciado:</strong> Crea un programa que dibuje el Triángulo de Pascal centrado en la consola. Cada número se calcula con la fórmula combinatoria <code>C(n, k) = n! / (k! × (n−k)!)</code> usando <code>math.factorial</code>. El usuario ingresa cuántas filas mostrar.</p>
+<p><strong>Entradas:</strong><br />
+- Número de filas (número entero, ej: 7)</p>
+<p><strong>Salida esperada (7 filas):</strong></p>
+<pre><code>            1
+           1  1
+          1  2  1
+         1  3  3  1
+        1  4  6  4  1
+      1  5  10  10  5  1
+    1  6  15  20  15  6  1
+</code></pre>
+<p>💡 <strong>Pista:</strong> Para centrar, calcula primero el texto de la última fila (<code>"  ".join(str(x) for x in fila_n)</code>). Su longitud es el <code>ancho_max</code>. Para cada fila anterior, el número de espacios de relleno es <code>(ancho_max - len(fila_str)) // 2</code>.</p>
 <div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-14" class="pt-editor" spellcheck="false"># ============================================================
-# Ejercicio 2.5 — Espiral con turtle
+# Ejercicio 2.5 — Triángulo de Pascal
 # ============================================================
 
-# 📥 ENTRADAS — ¿Qué parámetros controlan el tamaño y los colores de la espiral?
+# 📥 ENTRADAS — ¿Cuántas filas va a tener el triángulo?
 
-# ⚙️ PROCESO — ¿Cómo crecer el lado y cambiar el color en cada iteración?
+# ⚙️ PROCESO — ¿Cómo calcular C(n,k) con math.factorial y cómo centrar cada fila?
 
-# 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica al terminar el ciclo?
+# 📤 SALIDAS — ¿Qué debe mostrar cada fila del triángulo?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-14')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-14')">Ver solución</button></div><div class="solucion-content" id="sol-content-14"><div class="pygments-wrap"><pre><span></span><span class="c1"># Espiral cuadrada de colores con turtle</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-14')">Ver solución</button></div><div class="solucion-content" id="sol-content-14"><div class="pygments-wrap"><pre><span></span><span class="c1"># Triángulo de Pascal con math.factorial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+<span class="n">filas</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Número de filas del triángulo de Pascal (ej: 7): &quot;</span><span class="p">))</span>
 
-<span class="c1"># Configuración de la ventana</span>
-<span class="n">pantalla</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Screen</span><span class="p">()</span>
-<span class="n">pantalla</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Espiral de Colores&quot;</span><span class="p">)</span>
-<span class="n">pantalla</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+<span class="c1"># Generar todas las filas usando C(n,k) = n! / (k! * (n-k)!)</span>
+<span class="n">triangulo</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">filas</span><span class="p">):</span>
+    <span class="n">fila</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">valor</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">factorial</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">k</span><span class="p">))</span>
+        <span class="n">fila</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valor</span><span class="p">)</span>
+    <span class="n">triangulo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fila</span><span class="p">)</span>
 
-<span class="n">lapiz</span> <span class="o">=</span> <span class="n">turtle</span><span class="o">.</span><span class="n">Turtle</span><span class="p">()</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>       <span class="c1"># velocidad máxima</span>
-<span class="n">lapiz</span><span class="o">.</span><span class="n">pensize</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># Calcular el ancho de la última fila para centrar</span>
+<span class="n">ultima_fila_str</span> <span class="o">=</span> <span class="s2">&quot;  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">triangulo</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">ancho_max</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ultima_fila_str</span><span class="p">)</span>
 
-<span class="c1"># Lista de colores que se ciclan en cada iteración</span>
-<span class="n">colores</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">]</span>
-
-<span class="n">lado</span> <span class="o">=</span> <span class="mi">10</span>            <span class="c1"># longitud inicial del lado</span>
-<span class="n">angulo</span> <span class="o">=</span> <span class="mi">91</span>          <span class="c1"># ángulo de giro (no 90 exacto para crear el efecto espiral)</span>
-<span class="n">incremento</span> <span class="o">=</span> <span class="mi">3</span>       <span class="c1"># cuánto crece el lado en cada paso</span>
-<span class="n">indice_color</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="c1"># Dibujar la espiral mientras el lado no supere 200</span>
-<span class="k">while</span> <span class="n">lado</span> <span class="o">&lt;=</span> <span class="mi">200</span><span class="p">:</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">colores</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores</span><span class="p">)])</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
-    <span class="n">lapiz</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo</span><span class="p">)</span>
-
-    <span class="n">lado</span> <span class="o">+=</span> <span class="n">incremento</span>
-    <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
-
-<span class="n">lapiz</span><span class="o">.</span><span class="n">hideturtle</span><span class="p">()</span>
-
-<span class="c1"># Cerrar al hacer click</span>
-<span class="n">pantalla</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">fila</span> <span class="ow">in</span> <span class="n">triangulo</span><span class="p">:</span>
+    <span class="n">fila_str</span> <span class="o">=</span> <span class="s2">&quot;  &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fila</span><span class="p">)</span>
+    <span class="n">espacios</span> <span class="o">=</span> <span class="p">(</span><span class="n">ancho_max</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">fila_str</span><span class="p">))</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="n">espacios</span> <span class="o">+</span> <span class="n">fila_str</span><span class="p">)</span>
 </pre></div>
 </div></div>
 
@@ -2322,215 +2293,150 @@ Tabla de multiplicar completa (1 al 10):
 <p>En esta sección combinamos todo lo aprendido: funciones que contienen ciclos, listas como parámetros, y visualización de datos en consola con caracteres ASCII. El objetivo es que veas cómo el código escala cuando los problemas se vuelven más complejos, y por qué las funciones bien diseñadas siguen siendo manejables.</p>
 </blockquote>
 <hr />
-<h3 id="ejercicio-51">Ejercicio 5.1 — Dibujador de Formas con turtle ✏️</h3>
-<p><strong>Enunciado:</strong> Crea un programa interactivo con <code>turtle</code> que permita al usuario elegir una forma (cuadrado, triángulo, diamante o estrella), su tamaño y color, y la dibuje en pantalla. El programa repite el menú hasta que el usuario escriba "salir".</p>
+<h3 id="ejercicio-51">Ejercicio 5.1 — Calculadora de Figuras Geométricas 📐</h3>
+<p><strong>Enunciado:</strong> Crea un programa interactivo que permita al usuario elegir una figura geométrica (<code>circulo</code>, <code>triangulo</code> o <code>rectangulo</code>), ingresar sus medidas y ver el área, perímetro y —en el caso del rectángulo— la diagonal. El programa repite el menú hasta que el usuario escriba <code>salir</code>. Usa <code>math.pi</code> y <code>math.sqrt</code>.</p>
 <p><strong>Entradas (repetidas hasta escribir "salir"):</strong><br />
-- Forma a dibujar: cuadrado, triangulo, diamante, estrella o salir (texto)<br />
-- Tamaño del lado en píxeles (número entero)<br />
-- Color (texto: red, blue, green, etc.)</p>
-<p><strong>Salida esperada:</strong> Ventana gráfica donde aparecen las formas elegidas por el usuario una a una.</p>
-<p>💡 <strong>Pista:</strong> En la versión con funciones, define una función por cada forma (<code>dibujar_cuadrado</code>, <code>dibujar_triangulo</code>, etc.) y una función <code>elegir_y_dibujar</code> que gestiona el menú. Cada función recibe <code>lado</code> y <code>color</code> como parámetros.</p>
+- Nombre de la figura: <code>circulo</code>, <code>triangulo</code>, <code>rectangulo</code> o <code>salir</code><br />
+- Las medidas correspondientes: radio / tres lados / largo y ancho</p>
+<p><strong>Salida esperada:</strong></p>
+<pre><code>=== CALCULADORA DE FIGURAS GEOMÉTRICAS ===
+
+Elige una figura (o 'salir'): circulo
+  Radio: 5
+
+  Área          : 78.5398
+  Perímetro     : 31.4159
+
+Elige una figura (o 'salir'): triangulo
+  Lado a: 3
+  Lado b: 4
+  Lado c: 5
+
+  Área          : 6.0000
+  Perímetro     : 12.0000
+</code></pre>
+<p>💡 <strong>Pista:</strong> Para el triángulo usa la <strong>fórmula de Herón</strong>: calcula el semiperímetro <code>s = (a+b+c)/2</code> y luego <code>área = math.sqrt(s*(s-a)*(s-b)*(s-c))</code>. En la versión con funciones, define <code>datos_circulo(r)</code>, <code>datos_triangulo(a,b,c)</code> y <code>datos_rectangulo(largo, ancho)</code>, cada una retornando una tupla con los resultados.</p>
 <div class="pythontutor-wrap"><div class="pythontutor-label">✏️ Escribe tu código aquí — luego visualízalo paso a paso en Python Tutor</div><textarea id="pteditor-24" class="pt-editor" spellcheck="false"># ============================================================
-# Ejercicio 5.1 — Formas con turtle (con funciones)
+# Ejercicio 5.1 — Calculadora de Figuras Geométricas
 # ============================================================
 
-# 📥 ENTRADAS — ¿Qué forma y tamaño elige el usuario?
+# 📥 ENTRADAS — ¿Qué figura elige el usuario y qué medidas necesita?
 
-# ⚙️ PROCESO — ¿Cómo definir una función por cada forma geométrica con turtle?
+# ⚙️ PROCESO — ¿Cómo definir una función por figura usando math.pi y math.sqrt?
 
-# 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica según la elección del usuario?
+# 📤 SALIDAS — ¿Qué resultados debe mostrar el programa para cada figura?
 </textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-24')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-28')">Ver solución</button></div><div class="solucion-content" id="sol-content-28"><div class="pygments-wrap"><pre><span></span><span class="c1"># Dibujador de Formas Parametrizadas con Turtle — SIN funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-28')">Ver solución</button></div><div class="solucion-content" id="sol-content-28"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Figuras Geométricas — SIN funciones</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== CALCULADORA DE FIGURAS GEOMÉTRICAS ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Figuras disponibles: circulo, triangulo, rectangulo&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
 
-<span class="n">colores_disponibles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;gold&quot;</span><span class="p">]</span>
-<span class="n">indice_color</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="n">turtle</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">turtle</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
-
-<span class="n">continuar</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">while</span> <span class="n">continuar</span><span class="p">:</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">figura</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Elige una figura (o &#39;salir&#39;): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     <span class="nb">print</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== DIBUJADOR DE FORMAS ===&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  1. Cuadrado&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  2. Triángulo&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  3. Diamante&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  4. Estrella&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  5. Salir&quot;</span><span class="p">)</span>
-    <span class="n">opcion</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Elija una forma (1-5): &quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
-        <span class="n">continuar</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;salir&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;¡Hasta luego!&quot;</span><span class="p">)</span>
+        <span class="k">break</span>
 
-    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
-        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
-        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
-        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;circulo&quot;</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Radio: &quot;</span><span class="p">))</span>
+        <span class="n">area</span>      <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">perimetro</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Área          : </span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Perímetro     : </span><span class="si">{</span><span class="n">perimetro</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Dibujar cuadrado</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;triangulo&quot;</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Lado a: &quot;</span><span class="p">))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Lado b: &quot;</span><span class="p">))</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Lado c: &quot;</span><span class="p">))</span>
+        <span class="n">perimetro</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">perimetro</span> <span class="o">/</span> <span class="mi">2</span>                              <span class="c1"># semiperímetro</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">c</span><span class="p">))</span>  <span class="c1"># Fórmula de Herón</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Área          : </span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Perímetro     : </span><span class="si">{</span><span class="n">perimetro</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Mover para la siguiente forma</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
-
-    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
-        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
-        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
-        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="c1"># Dibujar triángulo equilátero</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
-
-        <span class="c1"># Mover para la siguiente forma</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
-
-    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
-        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
-        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
-        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="c1"># Dibujar diamante (rombo)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">angulo</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">]:</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
-
-        <span class="c1"># Mover para la siguiente forma</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
-
-    <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
-        <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
-        <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
-        <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="c1"># Dibujar estrella de 5 puntas</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color_actual</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">tamano</span><span class="p">)</span>
-            <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">144</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
-
-        <span class="c1"># Mover para la siguiente forma</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;rectangulo&quot;</span><span class="p">:</span>
+        <span class="n">largo</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Largo: &quot;</span><span class="p">))</span>
+        <span class="n">ancho</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Ancho: &quot;</span><span class="p">))</span>
+        <span class="n">area</span>      <span class="o">=</span> <span class="n">largo</span> <span class="o">*</span> <span class="n">ancho</span>
+        <span class="n">perimetro</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">largo</span> <span class="o">+</span> <span class="n">ancho</span><span class="p">)</span>
+        <span class="n">diagonal</span>  <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">largo</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ancho</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Área          : </span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Perímetro     : </span><span class="si">{</span><span class="n">perimetro</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Diagonal      : </span><span class="si">{</span><span class="n">diagonal</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no válida. Intente de nuevo.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Figura no reconocida. Intenta con: circulo, triangulo, rectangulo&quot;</span><span class="p">)</span>
 
-<span class="n">turtle</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">()</span>
 </pre></div>
 </div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-29')">Ver solución</button></div><div class="solucion-content" id="sol-content-29"><div class="pygments-wrap"><pre><span></span><span class="c1"># Dibujador de Formas Parametrizadas con Turtle — CON funciones</span>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-29')">Ver solución</button></div><div class="solucion-content" id="sol-content-29"><div class="pygments-wrap"><pre><span></span><span class="c1"># Calculadora de Figuras Geométricas — CON funciones</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">datos_circulo</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna área y perímetro de un círculo dado su radio.&quot;&quot;&quot;</span>
+    <span class="n">area</span>      <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">perimetro</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="n">area</span><span class="p">,</span> <span class="n">perimetro</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">ir_a</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mueve la tortuga a la posición (x, y) sin dibujar.&quot;&quot;&quot;</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">penup</span><span class="p">()</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">pendown</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">datos_triangulo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna área y perímetro de un triángulo por la fórmula de Herón.&quot;&quot;&quot;</span>
+    <span class="n">perimetro</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">perimetro</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">s</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="n">c</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">area</span><span class="p">,</span> <span class="n">perimetro</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_cuadrado</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja un cuadrado con el lado y color indicados.&quot;&quot;&quot;</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">datos_rectangulo</span><span class="p">(</span><span class="n">largo</span><span class="p">,</span> <span class="n">ancho</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retorna área, perímetro y diagonal de un rectángulo.&quot;&quot;&quot;</span>
+    <span class="n">area</span>      <span class="o">=</span> <span class="n">largo</span> <span class="o">*</span> <span class="n">ancho</span>
+    <span class="n">perimetro</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">largo</span> <span class="o">+</span> <span class="n">ancho</span><span class="p">)</span>
+    <span class="n">diagonal</span>  <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">largo</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">ancho</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">area</span><span class="p">,</span> <span class="n">perimetro</span><span class="p">,</span> <span class="n">diagonal</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_triangulo</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja un triángulo equilátero con el lado y color indicados.&quot;&quot;&quot;</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_diamante</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja un rombo (diamante) con el lado y color indicados.&quot;&quot;&quot;</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">angulo</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">120</span><span class="p">]:</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="n">angulo</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">dibujar_estrella</span><span class="p">(</span><span class="n">lado</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dibuja una estrella de 5 puntas con el lado y color indicados.&quot;&quot;&quot;</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">color</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">begin_fill</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">lado</span><span class="p">)</span>
-        <span class="n">turtle</span><span class="o">.</span><span class="n">left</span><span class="p">(</span><span class="mi">144</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">end_fill</span><span class="p">()</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">elegir_y_dibujar</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Muestra un menú interactivo para elegir y dibujar formas.&quot;&quot;&quot;</span>
-    <span class="n">colores_disponibles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;purple&quot;</span><span class="p">,</span> <span class="s2">&quot;gold&quot;</span><span class="p">]</span>
-    <span class="n">indice_color</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="n">turtle</span><span class="o">.</span><span class="n">speed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-    <span class="n">turtle</span><span class="o">.</span><span class="n">bgcolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
-
-    <span class="n">continuar</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">while</span> <span class="n">continuar</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== DIBUJADOR DE FORMAS ===&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  1. Cuadrado&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  2. Triángulo&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  3. Diamante&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  4. Estrella&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  5. Salir&quot;</span><span class="p">)</span>
-        <span class="n">opcion</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Elija una forma (1-5): &quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span>
-            <span class="n">continuar</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="n">opcion</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">):</span>
-            <span class="n">tamano</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Ingrese el tamaño (ej: 100): &quot;</span><span class="p">))</span>
-            <span class="n">color_actual</span> <span class="o">=</span> <span class="n">colores_disponibles</span><span class="p">[</span><span class="n">indice_color</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colores_disponibles</span><span class="p">)]</span>
-            <span class="n">indice_color</span> <span class="o">+=</span> <span class="mi">1</span>
-
-            <span class="k">if</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
-                <span class="n">dibujar_cuadrado</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span>
-                <span class="n">dibujar_triangulo</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span>
-                <span class="n">dibujar_diamante</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">opcion</span> <span class="o">==</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span>
-                <span class="n">dibujar_estrella</span><span class="p">(</span><span class="n">tamano</span><span class="p">,</span> <span class="n">color_actual</span><span class="p">)</span>
-
-            <span class="c1"># Mover para la siguiente forma</span>
-            <span class="n">ir_a</span><span class="p">(</span><span class="n">turtle</span><span class="o">.</span><span class="n">xcor</span><span class="p">()</span> <span class="o">+</span> <span class="n">tamano</span> <span class="o">+</span> <span class="mi">20</span><span class="p">,</span> <span class="n">turtle</span><span class="o">.</span><span class="n">ycor</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no válida. Intente de nuevo.&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mostrar_resultado</span><span class="p">(</span><span class="n">etiquetas</span><span class="p">,</span> <span class="n">valores</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Imprime cada etiqueta con su valor alineados.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">etiqueta</span><span class="p">,</span> <span class="n">valor</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">etiquetas</span><span class="p">,</span> <span class="n">valores</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">etiqueta</span><span class="si">:</span><span class="s2">&lt;14</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">valor</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># --- Programa principal ---</span>
-<span class="n">elegir_y_dibujar</span><span class="p">()</span>
-<span class="n">turtle</span><span class="o">.</span><span class="n">exitonclick</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=== CALCULADORA DE FIGURAS GEOMÉTRICAS ===&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Figuras disponibles: circulo, triangulo, rectangulo&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">figura</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Elige una figura (o &#39;salir&#39;): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;salir&quot;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;¡Hasta luego!&quot;</span><span class="p">)</span>
+        <span class="k">break</span>
+
+    <span class="k">elif</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;circulo&quot;</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Radio: &quot;</span><span class="p">))</span>
+        <span class="n">resultados</span> <span class="o">=</span> <span class="n">datos_circulo</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">mostrar_resultado</span><span class="p">([</span><span class="s2">&quot;Área&quot;</span><span class="p">,</span> <span class="s2">&quot;Perímetro&quot;</span><span class="p">],</span> <span class="n">resultados</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;triangulo&quot;</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Lado a: &quot;</span><span class="p">))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Lado b: &quot;</span><span class="p">))</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Lado c: &quot;</span><span class="p">))</span>
+        <span class="n">resultados</span> <span class="o">=</span> <span class="n">datos_triangulo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">mostrar_resultado</span><span class="p">([</span><span class="s2">&quot;Área&quot;</span><span class="p">,</span> <span class="s2">&quot;Perímetro&quot;</span><span class="p">],</span> <span class="n">resultados</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">figura</span> <span class="o">==</span> <span class="s2">&quot;rectangulo&quot;</span><span class="p">:</span>
+        <span class="n">largo</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Largo: &quot;</span><span class="p">))</span>
+        <span class="n">ancho</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;  Ancho: &quot;</span><span class="p">))</span>
+        <span class="n">resultados</span> <span class="o">=</span> <span class="n">datos_rectangulo</span><span class="p">(</span><span class="n">largo</span><span class="p">,</span> <span class="n">ancho</span><span class="p">)</span>
+        <span class="n">mostrar_resultado</span><span class="p">([</span><span class="s2">&quot;Área&quot;</span><span class="p">,</span> <span class="s2">&quot;Perímetro&quot;</span><span class="p">,</span> <span class="s2">&quot;Diagonal&quot;</span><span class="p">],</span> <span class="n">resultados</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Figura no reconocida. Intenta con: circulo, triangulo, rectangulo&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">()</span>
 </pre></div>
 </div></div>
 
