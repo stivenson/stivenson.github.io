@@ -42,6 +42,8 @@ blockquote { margin: 1em 0; padding: 0.9em 1.1em; background: #e8f4f8; border-le
 .content-panel { margin: 1em 0; padding: 0.9em 1.1em; background: #f8f6f0; border-radius: 8px; border-left: 4px solid #c4a35a; line-height: 1.6; }
 .tip-panel { margin: 1em 0; padding: 0.9em 1.1em; background: #f0f7ff; border-radius: 8px; border-left: 4px solid #2563eb; line-height: 1.6; }
 .tip-panel p { margin: 0; }
+.warn-panel { margin: 1em 0; padding: 0.9em 1.1em; background: #fffbeb; border-radius: 8px; border-left: 4px solid #f59e0b; line-height: 1.6; }
+.warn-panel p { margin: 0; }
 .intro-panel { margin: 1em 0; padding: 1em 1.2em; background: #f5f9f5; border-radius: 8px; border-left: 4px solid #6b9b6b; line-height: 1.6; }
 .intro-panel p { margin: 0.4em 0; }
 .intro-panel p:first-child { margin-top: 0; }
@@ -215,6 +217,20 @@ h2 + blockquote pre, h2 + p + blockquote pre {
   transition: background 0.2s;
 }
 .pt-run-btn:hover { background: #6d28d9; }
+.colab-btn {
+  cursor: pointer;
+  background: #EA4335;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4em 1.1em;
+  font-size: 10.5pt;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.colab-btn:hover { background: #C5221F; }
 .pt-hint {
   font-size: 9.5pt;
   color: #a5b4fc;
@@ -383,8 +399,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <h2>Universidad Simón Bolívar — Cúcuta</h2>
 <hr />
 <p>✨ Esta guía cubre el camino completo desde las bases de Python hasta funciones y ciclos, con ejercicios que tienen contextos reales y relevantes. Cada sección introduce un tema nuevo y lo aplica en situaciones que puedes reconocer en tu día a día.</p>
-<p><strong>Requisitos previos:</strong> Tener Python 3 instalado.<br />
-<strong>Para los ejercicios gráficos:</strong> <code>pip install matplotlib</code> (turtle viene incluida con Python).</p>
 <hr />
 <h2>Tabla de contenidos</h2>
 <ul>
@@ -1274,8 +1288,9 @@ Diamante:
 # ⚙️ PROCESO — ¿Cómo calcular el ángulo exterior y usar turtle para dibujar cada polígono?
 
 # 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica de turtle?
-</textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-13')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-13')">Ver solución</button></div><div class="solucion-content" id="sol-content-13"><div class="pygments-wrap"><pre><span></span><span class="c1"># Polígonos regulares con turtle: triángulo, cuadrado, pentágono, hexágono y octágono</span>
+</textarea><div class="pt-bar"><button class="colab-btn" onclick="abrirGoogleColab()">▶ Abrir Google Colab</button><span class="pt-hint">Edita el código arriba y haz clic para abrir en Google Colab</span></div><p style="font-size: 9pt; color: #666; margin-top: 0.5em; padding: 0 1em;"><strong>⚠️ Nota:</strong> El paquete <code>turtle</code> no está soportado en Python Tutor. Copia y pega el código en Google Colab para ejecutarlo correctamente.</p></div>
+<div class="warn-panel"><p>📦 <strong>Para los ejercicios gráficos:</strong> <code>pip install matplotlib</code> será necesario — o agregando la siguiente línea al principio del código en Google Colab también funciona: <code>!pip install matplotlib</code></p></div>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Google Colab</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-13')">Ver solución</button></div><div class="solucion-content" id="sol-content-13"><div class="pygments-wrap"><pre><span></span><span class="c1"># Polígonos regulares con turtle: triángulo, cuadrado, pentágono, hexágono y octágono</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
 
@@ -1357,8 +1372,9 @@ Diamante:
 # ⚙️ PROCESO — ¿Cómo crecer el lado y cambiar el color en cada iteración?
 
 # 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica al terminar el ciclo?
-</textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-14')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-14')">Ver solución</button></div><div class="solucion-content" id="sol-content-14"><div class="pygments-wrap"><pre><span></span><span class="c1"># Espiral cuadrada de colores con turtle</span>
+</textarea><div class="pt-bar"><button class="colab-btn" onclick="abrirGoogleColab()">▶ Abrir Google Colab</button><span class="pt-hint">Edita el código arriba y haz clic para abrir en Google Colab</span></div><p style="font-size: 9pt; color: #666; margin-top: 0.5em; padding: 0 1em;"><strong>⚠️ Nota:</strong> El paquete <code>turtle</code> no está soportado en Python Tutor. Copia y pega el código en Google Colab para ejecutarlo correctamente.</p></div>
+<div class="warn-panel"><p>📦 <strong>Para los ejercicios gráficos:</strong> <code>pip install matplotlib</code> será necesario — o agregando la siguiente línea al principio del código en Google Colab también funciona: <code>!pip install matplotlib</code></p></div>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Google Colab</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-14')">Ver solución</button></div><div class="solucion-content" id="sol-content-14"><div class="pygments-wrap"><pre><span></span><span class="c1"># Espiral cuadrada de colores con turtle</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
 
@@ -2340,8 +2356,9 @@ Tabla de multiplicar completa (1 al 10):
 # ⚙️ PROCESO — ¿Cómo definir una función por cada forma geométrica con turtle?
 
 # 📤 SALIDAS — ¿Qué debe mostrar la ventana gráfica según la elección del usuario?
-</textarea><div class="pt-bar"><button class="pt-run-btn" onclick="abrirPythonTutor('pteditor-24')">▶ Visualizar Ejecución en Python Tutor</button><span class="pt-hint">Edita el código arriba y haz clic para ejecutarlo paso a paso</span></div></div>
-<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Python Tutor</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-28')">Ver solución</button></div><div class="solucion-content" id="sol-content-28"><div class="pygments-wrap"><pre><span></span><span class="c1"># Dibujador de Formas Parametrizadas con Turtle — SIN funciones</span>
+</textarea><div class="pt-bar"><button class="colab-btn" onclick="abrirGoogleColab()">▶ Abrir Google Colab</button><span class="pt-hint">Edita el código arriba y haz clic para abrir en Google Colab</span></div><p style="font-size: 9pt; color: #666; margin-top: 0.5em; padding: 0 1em;"><strong>⚠️ Nota:</strong> El paquete <code>turtle</code> no está soportado en Python Tutor. Copia y pega el código en Google Colab para ejecutarlo correctamente.</p></div>
+<div class="warn-panel"><p>📦 <strong>Para los ejercicios gráficos:</strong> <code>pip install matplotlib</code> será necesario — o agregando la siguiente línea al principio del código en Google Colab también funciona: <code>!pip install matplotlib</code></p></div>
+<div class="solucion-wrap"><div class="solucion-header"><span>💡 Solución — intenta resolverlo primero en Google Colab</span><button class="solucion-btn" onclick="pedirConfirmacion('sol-content-28')">Ver solución</button></div><div class="solucion-content" id="sol-content-28"><div class="pygments-wrap"><pre><span></span><span class="c1"># Dibujador de Formas Parametrizadas con Turtle — SIN funciones</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">turtle</span>
 
@@ -3055,6 +3072,11 @@ function abrirPythonTutor(id) {
   var url = "https://pythontutor.com/visualize.html#code=" + encoded
           + "&mode=edit&py=3&rawInputLstJSON=%5B%5D&cumulative=false";
   window.open(url, '_blank');
+}
+
+/* --- Abrir Google Colab --- */
+function abrirGoogleColab() {
+  window.open('https://colab.research.google.com/notebooks/empty.ipynb', '_blank');
 }
 
 var _solIdPendiente = null;
