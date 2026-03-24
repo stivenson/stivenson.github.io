@@ -39,6 +39,19 @@ th { background: #e8eef2; font-weight: 600; }
 a { color: #2563eb; text-decoration: none; }
 a:hover { text-decoration: underline; }
 blockquote { margin: 1em 0; padding: 0.9em 1.1em; background: #e8f4f8; border-left: 4px solid #5ba3b8; border-radius: 0 8px 8px 0; color: #2c3e50; line-height: 1.6; }
+.guia-instrucciones { background: #f0f1f3; border: 1px solid #d1d5db; border-radius: 12px; padding: 1.5em 1.8em; margin: 1.5em 0; }
+.guia-instrucciones h2 { margin-top: 0; }
+.guia-instrucciones ul { background: transparent; border: none; padding-left: 1.4em; }
+.guia-instrucciones blockquote { background: #e3e5e8; border-left-color: #9ca3af; }
+.guia-dos-columnas { display: flex; gap: 2em; align-items: flex-start; margin: 1.2em 0; }
+.guia-col-img { flex: 1; min-width: 0; }
+.guia-col-img pre { font-size: 9pt; line-height: 1.35; margin: 0; background: #dfe1e5; border-color: #c5c8cd; }
+.guia-col-texto { flex: 1; min-width: 0; }
+.guia-col-texto ul { background: none; border: none; padding-left: 1.4em; }
+@media (max-width: 768px) {
+  .guia-dos-columnas { flex-direction: column; gap: 1em; }
+  .guia-instrucciones { padding: 1em 1.2em; }
+}
 details { margin: 1em 0; padding: 0; border: 1px solid #d1d5db; border-radius: 10px; background: #f9fafb; overflow: hidden; }
 details summary { cursor: pointer; padding: 0.75em 1.2em; background: #eef2f7; border-bottom: 1px solid #d1d5db; font-size: 12pt; color: #1a1a1a; user-select: none; transition: background 0.2s; }
 details summary:hover { background: #dde5ee; }
@@ -495,6 +508,90 @@ date: "2026-I"</p>
 </tr>
 </tbody>
 </table>
+<hr />
+<div class="guia-instrucciones">
+
+## 🔍 Cómo usar esta guía
+
+En cada ejercicio de las secciones que siguen, vas a encontrar:
+
+- **Un enunciado** con lo que debes construir y ejemplos de entrada/salida esperada.
+- **Un editor de código** directamente en la página — escribe tu solución ahí mismo.
+- **Un panel de solución** que puedes revelar una vez lo hayas intentado.
+
+Al hacer clic en **"▶ Visualizar Ejecución en Python Tutor"**, se abrirá una nueva pestaña donde podrás ejecutar tu código paso a paso:
+
+<div class="guia-dos-columnas">
+<div class="guia-col-img">
+
+
+<pre><code> ┌─────────────────────────────────────┐
+ │  📝 Tu código        🔍 Visualización│
+ │                                     │
+ │  1│ x = 10           ┌────────────┐ │
+ │  2│ y = 20        →  │ x  │  10   │ │
+ │ →3│ z = x + y        │ y  │  20   │ │
+ │  4│ print(z)         │ z  │  30   │ │
+ │                      └────────────┘ │
+ │                                     │
+ │  &lt;&lt; First  &lt; Prev  Next &gt;  Last &gt;&gt;  │
+ │                                     │
+ │  Step 3 of 4                        │
+ └─────────────────────────────────────┘
+</code></pre>
+
+
+</div>
+<div class="guia-col-texto">
+
+**Controles de Python Tutor:**
+
+- **`< Prev`** / **`Next >`** — retrocede o avanza un paso en la ejecución.
+- **`<< First`** / **`Last >>`** — salta al inicio o al final del programa.
+- **`Edit this code`** — vuelve al editor para modificar tu código.
+
+**¿Qué significan las flechas?**
+
+- Flecha **verde** → línea que **acaba** de ejecutarse.
+- Flecha **roja** → línea que se ejecutará **a continuación**.
+
+**Tip:** A la derecha verás las variables y sus valores actualizándose en tiempo real conforme avanzas.
+
+</div>
+</div>
+
+---
+
+## 🧠 Cómo pensar antes de programar: Entradas → Proceso → Salidas
+
+> 📌 **Nota fundamental — lee esto antes de cada ejercicio**
+>
+> Antes de escribir una sola línea de código, todo problema debe descomponerse en tres partes:
+>
+> ---
+>
+> ### 📥 ENTRADAS
+> ¿Qué datos necesita el programa para funcionar?
+> Son los valores que el usuario proporciona (`input()`) o que el programa recibe (matrices, listas, objetos).
+> *Ejemplo: una matriz de calificaciones de usuarios × películas.*
+>
+> ### ⚙️ PROCESO
+> ¿Qué cálculos o decisiones hay que hacer con esos datos?
+> Son las fórmulas, condicionales, ciclos, métodos de clase y manejo de excepciones.
+> *Ejemplo: recorrer la matriz por columnas y calcular el promedio de cada película.*
+>
+> ### 📤 SALIDAS
+> ¿Qué resultado debe mostrar el programa?
+> Son los `print()` con los resultados procesados y formateados.
+> *Ejemplo: tabla con promedios, mejor película y usuario más exigente.*
+>
+> ---
+>
+> 💡 **Antes de tocar el teclado**, responde estas tres preguntas en papel o mentalmente.
+> Si no puedes responderlas, todavía no estás listo para programar — y eso está bien: primero entiende el problema. 🧩
+
+</div>
+
 <hr />
 <h2 id="seccion-1">Sección 1 — Matrices y Estructuras Bidimensionales 🧮</h2>
 <blockquote>
