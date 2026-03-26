@@ -1,0 +1,2113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVA - Cálculo Diferencial</title>
+    <style>
+        :root {
+            --primary: #1a5276;
+            --primary-light: #2980b9;
+            --secondary: #148f77;
+            --secondary-light: #1abc9c;
+            --accent: #e74c3c;
+            --accent-green: #27ae60;
+            --accent-orange: #e67e22;
+            --bg-light: #f0f4f8;
+            --bg-card: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.18);
+            --radius: 14px;
+            --transition: 0.3s ease;
+            --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            --font-math: 'Cambria Math', 'Times New Roman', Georgia, serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-light);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .ova-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--primary-light) 100%);
+            background-size: 200% 200%;
+            animation: headerShift 8s ease infinite;
+            color: white;
+            text-align: center;
+            padding: 48px 24px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .ova-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: headerDots 20s linear infinite;
+        }
+        .ova-header h1 {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .ova-header .subtitle {
+            font-size: 1.15rem;
+            opacity: 0.92;
+            margin-top: 8px;
+            position: relative;
+            z-index: 1;
+            font-weight: 300;
+        }
+        .ova-header .credits {
+            margin-top: 18px;
+            font-size: 0.92rem;
+            opacity: 0.85;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .ova-header .credits span {
+            background: rgba(255,255,255,0.13);
+            padding: 5px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        @keyframes headerShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        @keyframes headerDots {
+            from { transform: translate(0, 0); }
+            to { transform: translate(30px, 30px); }
+        }
+
+        /* ===== TABS NAV ===== */
+        .tab-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: white;
+            display: flex;
+            box-shadow: var(--shadow-sm);
+            border-bottom: 2px solid #e8ecf1;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            background: white;
+            font-family: var(--font-main);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--secondary);
+            transition: all var(--transition);
+            transform: translateX(-50%);
+            border-radius: 3px 3px 0 0;
+        }
+        .tab-btn:hover { color: var(--primary); background: #f8fafb; }
+        .tab-btn.active { color: var(--primary); }
+        .tab-btn.active::after { width: 80%; }
+        .tab-icon {
+            font-family: var(--font-math);
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tab-btn.active .tab-icon {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .content-wrapper {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 32px;
+            margin-bottom: 24px;
+            transition: box-shadow var(--transition);
+        }
+        .section:hover { box-shadow: var(--shadow-md); }
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--primary);
+            border-left: 5px solid var(--secondary);
+            padding-left: 14px;
+            margin-bottom: 20px;
+        }
+        .section-title .icon { margin-right: 8px; }
+
+        /* ===== INTRO SECTION ===== */
+        .intro-hook {
+            background: linear-gradient(135deg, #eaf2f8 0%, #d5f5e3 100%);
+            border-radius: var(--radius);
+            padding: 24px 28px;
+            font-size: 1.08rem;
+            line-height: 1.8;
+            border-left: 5px solid var(--secondary-light);
+            position: relative;
+        }
+        .intro-hook .hook-icon {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* ===== MATH NOTATION ===== */
+        .math { font-family: var(--font-math); font-style: italic; }
+        .math-block {
+            font-family: var(--font-math);
+            font-size: 1.15rem;
+            text-align: center;
+            margin: 16px 0;
+            padding: 16px;
+            background: #fafbfc;
+            border-radius: 10px;
+            border: 1px solid #e8ecf1;
+        }
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            font-family: var(--font-math);
+            margin: 0 4px;
+        }
+        .frac-num { border-bottom: 2px solid var(--text-primary); padding: 0 6px 3px; }
+        .frac-den { padding: 3px 6px 0; }
+        .limit-expr {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: var(--font-math);
+            margin: 0 6px;
+            vertical-align: middle;
+        }
+        .limit-lim { font-size: 1em; font-style: normal; }
+        .limit-approach { font-size: 0.72em; line-height: 1; white-space: nowrap; }
+
+        /* ===== PIECEWISE ===== */
+        .piecewise {
+            display: inline-flex;
+            align-items: center;
+            font-family: var(--font-math);
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+        .piecewise-name {
+            margin-right: 6px;
+            font-style: italic;
+        }
+        .piecewise-eq { margin-right: 4px; }
+        .piecewise-brace {
+            font-size: 3.2em;
+            font-weight: 100;
+            line-height: 0.9;
+            margin-right: 6px;
+            color: var(--text-secondary);
+        }
+        .piecewise-cases {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .piecewise-case { white-space: nowrap; }
+        .piecewise-cond { color: var(--text-secondary); margin-left: 16px; font-style: normal; font-size: 0.95em; }
+
+        /* ===== BOXES ===== */
+        .theorem-box {
+            background: linear-gradient(135deg, #eaf2f8, #d5f5e3);
+            border-left: 5px solid var(--secondary);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 20px 24px;
+            margin: 18px 0;
+        }
+        .theorem-box .box-title {
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .definition-box {
+            background: #fef9e7;
+            border: 2px solid #f0c040;
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin: 18px 0;
+        }
+        .definition-box .box-title {
+            font-weight: 700;
+            color: #b7950b;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .warning-box {
+            background: #fdedec;
+            border-left: 5px solid var(--accent);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 16px 20px;
+            margin: 18px 0;
+            font-weight: 500;
+        }
+        .warning-box .warning-icon { margin-right: 6px; }
+
+        /* ===== CANVAS / GRAPH ===== */
+        .canvas-wrap {
+            position: relative;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+        .canvas-wrap canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: crosshair;
+        }
+        .graph-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            padding: 16px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e8ecf1;
+            align-items: center;
+        }
+        .graph-controls label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .graph-controls select, .graph-controls input[type="range"] {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #ccd1d9;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+        }
+        .graph-controls input[type="range"] {
+            width: 140px;
+            accent-color: var(--secondary);
+        }
+        .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            color: white;
+        }
+        .btn-secondary:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+        .btn-sm { padding: 6px 14px; font-size: 0.82rem; }
+        .slider-val {
+            font-family: var(--font-math);
+            font-size: 0.95rem;
+            color: var(--primary);
+            font-weight: 600;
+            min-width: 32px;
+            text-align: center;
+        }
+
+        /* ===== EXAMPLES ACCORDION ===== */
+        .example-card {
+            border: 1px solid #e0e5ec;
+            border-radius: var(--radius);
+            margin-bottom: 14px;
+            overflow: hidden;
+            transition: box-shadow var(--transition);
+        }
+        .example-card:hover { box-shadow: var(--shadow-sm); }
+        .example-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, #eef3f8, #fff);
+            font-weight: 600;
+            font-size: 1.02rem;
+            user-select: none;
+            transition: background var(--transition);
+        }
+        .example-header:hover { background: linear-gradient(to right, #dce8f3, #f0f4f8); }
+        .example-header .arrow { transition: transform var(--transition); font-size: 0.85rem; color: var(--text-secondary); }
+        .example-header.open .arrow { transform: rotate(180deg); }
+        .example-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .example-body.open { max-height: 2000px; }
+        .example-steps { padding: 12px 20px 20px; }
+        .step {
+            padding: 14px 16px;
+            margin: 8px 0;
+            background: #fafbfc;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-light);
+            font-size: 0.98rem;
+            display: none;
+        }
+        .step.visible {
+            display: block;
+            animation: stepReveal 0.35s ease forwards;
+        }
+        @keyframes stepReveal {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .step-label {
+            font-weight: 700;
+            color: var(--primary-light);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .step .math-block { margin: 8px 0; font-size: 1.05rem; text-align: left; }
+        .step-conclusion {
+            border-left-color: var(--accent);
+            background: #fef5f5;
+        }
+        .step-conclusion .step-label { color: var(--accent); }
+
+        /* ===== THEOREM DEMO ===== */
+        .demo-theorem {
+            background: linear-gradient(135deg, #1a5276, #148f77);
+            color: white;
+            border-radius: var(--radius);
+            padding: 22px 26px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .demo-theorem .th-label {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+        .demo-theorem .th-formula {
+            font-family: var(--font-math);
+            font-size: 1.25rem;
+            font-weight: 400;
+            line-height: 2;
+        }
+        .demo-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 18px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .demo-table thead th {
+            background: var(--primary);
+            color: white;
+            padding: 12px 14px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+        .demo-table tbody td {
+            padding: 12px 14px;
+            text-align: center;
+            border-bottom: 1px solid #e8ecf1;
+            font-size: 0.95rem;
+        }
+        .demo-table tbody tr:nth-child(even) { background: #f8f9fa; }
+        .demo-table tbody tr:hover { background: #eef3f8; }
+        .demo-table .val-math {
+            font-family: var(--font-math);
+            font-size: 1rem;
+        }
+        .demo-badge {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .demo-badge.exists { background: #d5f5e3; color: #1e8449; }
+        .demo-badge.not-exists { background: #fadbd8; color: #c0392b; }
+        .demo-verify-btn {
+            margin-top: 16px;
+        }
+        .demo-row-hidden { display: none; }
+        .demo-row-hidden.show { display: table-row; animation: slideDown 0.3s ease; }
+        .demo-summary {
+            margin-top: 18px;
+            padding: 18px 22px;
+            border-radius: var(--radius);
+            display: none;
+            animation: slideDown 0.4s ease;
+        }
+        .demo-summary.show { display: block; }
+        .demo-summary.success { background: #d5f5e3; border-left: 5px solid var(--accent-green); }
+        .demo-summary.fail { background: #fadbd8; border-left: 5px solid var(--accent); }
+
+        .next-step-btn {
+            margin-top: 10px;
+        }
+
+        /* ===== QUIZ ===== */
+        .quiz-score {
+            text-align: right;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .quiz-score .score-num { color: var(--accent-green); font-size: 1.2rem; }
+        .quiz-question {
+            background: white;
+            border: 2px solid #e0e5ec;
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 18px;
+            transition: border-color var(--transition), background var(--transition);
+        }
+        .quiz-question.correct { border-color: var(--accent-green); background: #eafaf1; }
+        .quiz-question.incorrect { border-color: var(--accent); background: #fef5f5; }
+        .quiz-question .q-text {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 14px;
+        }
+        .q-text .math { font-size: 1.1rem; }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            margin: 7px 0;
+            border: 2px solid #e0e5ec;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-family: var(--font-main);
+            font-size: 1rem;
+        }
+        .option-btn:hover { border-color: var(--primary-light); background: #eef3f8; }
+        .option-btn.selected { border-color: var(--primary); background: #d6eaf8; font-weight: 600; }
+        .option-btn.correct-answer { border-color: var(--accent-green); background: #d5f5e3; }
+        .option-btn.wrong-answer { border-color: var(--accent); background: #fadbd8; }
+        .option-btn:disabled { cursor: default; opacity: 0.85; }
+        .free-text-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e5ec;
+            border-radius: 10px;
+            font-family: var(--font-main);
+            font-size: 1rem;
+            transition: border-color var(--transition);
+        }
+        .free-text-input:focus { outline: none; border-color: var(--primary-light); }
+        .feedback {
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            display: none;
+            animation: slideDown 0.3s ease;
+            font-size: 0.95rem;
+        }
+        .feedback.show { display: block; }
+        .feedback.success { background: #d5f5e3; color: #1e8449; border-left: 4px solid var(--accent-green); }
+        .feedback.error { background: #fadbd8; color: #c0392b; border-left: 4px solid var(--accent); }
+        .show-solution-btn { margin-top: 8px; display: none; }
+        .solution-panel {
+            display: none;
+            margin-top: 10px;
+            padding: 14px;
+            background: #fef9e7;
+            border-radius: 10px;
+            border: 1px solid #f0c040;
+            font-size: 0.93rem;
+        }
+        .solution-panel.show { display: block; animation: slideDown 0.3s ease; }
+        .quiz-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+
+        /* ===== APP CARDS ===== */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+        .app-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border-top: 4px solid var(--secondary);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+        .app-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+        .app-card:nth-child(2) { border-top-color: var(--primary-light); }
+        .app-card:nth-child(3) { border-top-color: var(--accent-orange); }
+        .app-icon { font-size: 2.4rem; margin-bottom: 10px; display: block; }
+        .app-card h4 { font-size: 1.05rem; margin-bottom: 8px; color: var(--primary); }
+        .app-card p { font-size: 0.93rem; color: var(--text-secondary); line-height: 1.6; }
+        .app-formula {
+            font-family: var(--font-math);
+            background: #f0f4f8;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* ===== FOOTER ===== */
+        .ova-footer {
+            text-align: center;
+            padding: 32px 20px;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            border-top: 1px solid #e0e5ec;
+            margin-top: 20px;
+        }
+        .ova-footer strong { color: var(--primary); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .ova-header { padding: 32px 16px 28px; }
+            .ova-header h1 { font-size: 1.7rem; }
+            .ova-header .subtitle { font-size: 0.95rem; }
+            .ova-header .credits { gap: 12px; font-size: 0.82rem; }
+            .section { padding: 22px 18px; }
+            .graph-controls { gap: 10px; padding: 12px 14px; }
+            .graph-controls input[type="range"] { width: 100px; }
+        }
+        @media (max-width: 480px) {
+            .ova-header h1 { font-size: 1.4rem; }
+            .tab-btn { padding: 12px 8px; font-size: 0.88rem; flex-direction: column; gap: 4px; }
+            .section { padding: 18px 14px; margin-bottom: 16px; }
+            .section-title { font-size: 1.15rem; }
+            .quiz-question { padding: 16px; }
+            .app-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="ova-header">
+    <h1>OVA - Calculo Diferencial</h1>
+    <p class="subtitle">Limite del Valor Absoluto &amp; Funcion Escalonada de Heaviside</p>
+    <div class="credits">
+        <span>Autor: Ing. Stivenson Rincon</span>
+        <span>Tutor: Ing. Antonio</span>
+    </div>
+</header>
+
+<!-- ========== TAB NAVIGATION ========== -->
+<nav class="tab-nav">
+    <button class="tab-btn active" data-tab="tab1">
+        <span class="tab-icon">|x|</span>
+        Limite del Valor Absoluto
+    </button>
+    <button class="tab-btn" data-tab="tab2">
+        <span class="tab-icon">H(t)</span>
+        Funcion Escalonada
+    </button>
+</nav>
+
+<div class="content-wrapper">
+
+<!-- ================================================================ -->
+<!-- ==================== TAB 1: VALOR ABSOLUTO ===================== -->
+<!-- ================================================================ -->
+<div id="tab1" class="tab-content active">
+
+    <!-- INTRO -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128218;</span> Introduccion</h2>
+        <div class="intro-hook">
+            <span class="hook-icon">&#9881;&#65039;</span>
+            <strong>Imagina esto:</strong> Un ingeniero fabrica un eje que debe medir exactamente 5.00 cm. La pieza real mide 4.97 cm. &iquest;Esta bien o esta mal? La respuesta depende de la <em>tolerancia</em>: si el error permitido es 0.05 cm, calculamos |5.00 &minus; 4.97| = 0.03 &lt; 0.05... &iexcl;la pieza es aceptable! Este concepto de &laquo;distancia sin importar la direccion&raquo; es el <strong>valor absoluto</strong>, y entender como se comportan sus <strong>limites</strong> es clave en calculo diferencial.
+        </div>
+    </div>
+
+    <!-- TEORIA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128214;</span> Teoria</h2>
+
+        <div class="definition-box">
+            <div class="box-title">&#128313; Definicion de Valor Absoluto</div>
+            <div class="piecewise">
+                <span class="piecewise-name">|x|</span>
+                <span class="piecewise-eq">=</span>
+                <span class="piecewise-brace">{</span>
+                <span class="piecewise-cases">
+                    <span class="piecewise-case"><span class="math">x</span><span class="piecewise-cond">si x &ge; 0</span></span>
+                    <span class="piecewise-case"><span class="math">&minus;x</span><span class="piecewise-cond">si x &lt; 0</span></span>
+                </span>
+            </div>
+            <p style="margin-top:10px; font-size:0.95rem; color: var(--text-secondary);">
+                Geometricamente, |x| es la <strong>distancia</strong> del numero <em>x</em> al origen en la recta numerica. Siempre es un valor no negativo.
+            </p>
+        </div>
+
+        <div class="theorem-box">
+            <div class="box-title">&#128161; Teorema: Limites con Valor Absoluto</div>
+            <p>Para evaluar <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;a</span></span> |<span class="math">f(x)</span>| debemos analizar los <strong>limites laterales</strong>:</p>
+            <div class="math-block">
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;a<sup>&minus;</sup></span></span> |f(x)|
+                &nbsp;&nbsp; y &nbsp;&nbsp;
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;a<sup>+</sup></span></span> |f(x)|
+            </div>
+            <p>El limite <strong>existe</strong> si y solo si ambos limites laterales son iguales.</p>
+        </div>
+
+        <div class="warning-box">
+            <span class="warning-icon">&#9888;&#65039;</span>
+            <strong>Clave:</strong> Cuando tenemos <span class="math">|f(x)| / f(x)</span>, debemos separar en casos segun el signo de <span class="math">f(x)</span>. Si f(x) &gt; 0, el cociente es 1. Si f(x) &lt; 0, el cociente es &minus;1. &iexcl;Los limites laterales seran distintos!
+        </div>
+
+        <h3 style="margin-top:20px; font-size:1.08rem; color: var(--primary);">&#128270; Metodo paso a paso</h3>
+        <ol style="margin-top:8px; padding-left:20px; line-height:2;">
+            <li>Identificar el <strong>punto critico</strong> (donde la expresion dentro de |&middot;| cambia de signo).</li>
+            <li>Calcular el <strong>limite por la izquierda</strong> (x &rarr; a<sup>&minus;</sup>): sustituir |f(x)| por &minus;f(x) cuando f(x) &lt; 0.</li>
+            <li>Calcular el <strong>limite por la derecha</strong> (x &rarr; a<sup>+</sup>): sustituir |f(x)| por f(x) cuando f(x) &gt; 0.</li>
+            <li>Comparar: si son iguales, el limite existe. Si no, <strong>el limite no existe</strong>.</li>
+        </ol>
+    </div>
+
+    <!-- GRAFICA INTERACTIVA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128200;</span> Visualizacion Interactiva</h2>
+        <p style="margin-bottom:14px; color: var(--text-secondary);">Explora como se comportan los limites laterales. Arrastra el slider o haz clic en <strong>Animar</strong> para ver los puntos acercarse al punto critico.</p>
+        <div class="canvas-wrap">
+            <canvas id="absCanvas" width="700" height="420"></canvas>
+            <div class="graph-controls">
+                <label>Funcion:
+                    <select id="absFnSelect">
+                        <option value="absX">|x| (continua)</option>
+                        <option value="absX_over_x">|x| / x</option>
+                        <option value="absXminus3">|x&minus;3| / (x&minus;3)</option>
+                        <option value="absXplus2">|x+2| / (x+2)</option>
+                    </select>
+                </label>
+                <label>Posicion:
+                    <input type="range" id="absSlider" min="-40" max="40" value="-30" step="1">
+                    <span class="slider-val" id="absSliderVal">-3.0</span>
+                </label>
+                <button class="btn btn-primary btn-sm" id="absAnimBtn">&#9654; Animar</button>
+                <label>Velocidad:
+                    <select id="absSpeedSelect">
+                        <option value="slow">Lenta</option>
+                        <option value="medium" selected>Media</option>
+                        <option value="fast">Rapida</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEMOSTRACION DEL TEOREMA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128300;</span> Demostracion del Teorema</h2>
+
+        <div class="demo-theorem">
+            <div class="th-label">Teorema: Existencia del Limite</div>
+            <div class="th-formula">
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;a</span></span> f(x) = L
+                &nbsp; si y solo si &nbsp;
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;a<sup>&minus;</sup></span></span> f(x) = L =
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;a<sup>+</sup></span></span> f(x)
+            </div>
+        </div>
+
+        <p style="margin-bottom:14px;">Verifiquemos este teorema evaluando <strong>f(x) = |x|</strong> y <strong>f(x) = |x|/x</strong> en el punto critico <strong>x = 0</strong>. Haz clic en el boton para revelar cada verificacion.</p>
+
+        <!-- Tabla f(x) = |x| -->
+        <h3 style="margin: 18px 0 10px; color: var(--secondary); font-size: 1.05rem;">&#9989; Caso 1: f(x) = |x| &mdash; Funcion continua</h3>
+        <table class="demo-table" id="demoTable1">
+            <thead>
+                <tr>
+                    <th>Evaluacion</th>
+                    <th>Calculo</th>
+                    <th>Resultado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Forma de f(x)</strong></td>
+                    <td class="val-math">|x| = x si x&ge;0, &minus;x si x&lt;0</td>
+                    <td>Funcion &laquo;V&raquo;</td>
+                </tr>
+                <tr>
+                    <td><strong>Dominio y Rango</strong></td>
+                    <td class="val-math">Dom: &#8477; &nbsp; Rango: [0, +&infin;)</td>
+                    <td>Definida en todo &#8477;</td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d1">
+                    <td><strong><span style="color:#e74c3c;">Lim. Izquierda</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0<sup>&minus;</sup></span></span> |x| = <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0<sup>&minus;</sup></span></span> (&minus;x) = 0</td>
+                    <td><strong style="color:#e74c3c; font-size:1.2rem;">0</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d1">
+                    <td><strong><span style="color:#27ae60;">Lim. Derecha</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0<sup>+</sup></span></span> |x| = <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0<sup>+</sup></span></span> x = 0</td>
+                    <td><strong style="color:#27ae60; font-size:1.2rem;">0</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d1">
+                    <td><strong>&iquest;Coinciden?</strong></td>
+                    <td class="val-math">0 = 0 &nbsp; &#9989;</td>
+                    <td><span class="demo-badge exists">LIMITE EXISTE = 0</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary btn-sm demo-verify-btn" onclick="revealDemo('d1', this)">&#128270; Verificar Teorema &rarr;</button>
+
+        <div class="demo-summary success" id="d1-summary">
+            <strong>&#9989; Teorema verificado:</strong> Como <span class="math">lim<sub>x&rarr;0<sup>&minus;</sup></sub> |x| = 0 = lim<sub>x&rarr;0<sup>+</sup></sub> |x|</span>, el teorema confirma que el limite <strong>existe y vale 0</strong>. La funcion |x| es continua en x = 0 a pesar de tener un &laquo;pico&raquo;.
+        </div>
+
+        <!-- Tabla f(x) = |x|/x -->
+        <h3 style="margin: 28px 0 10px; color: var(--accent); font-size: 1.05rem;">&#10060; Caso 2: f(x) = |x|/x &mdash; Funcion con salto</h3>
+        <table class="demo-table" id="demoTable2">
+            <thead>
+                <tr>
+                    <th>Evaluacion</th>
+                    <th>Calculo</th>
+                    <th>Resultado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Forma de f(x)</strong></td>
+                    <td class="val-math">|x|/x = 1 si x&gt;0, &minus;1 si x&lt;0</td>
+                    <td>Dos lineas horizontales</td>
+                </tr>
+                <tr>
+                    <td><strong>Dominio y Rango</strong></td>
+                    <td class="val-math">Dom: &#8477; &minus; {0} &nbsp; Rango: {&minus;1, 1}</td>
+                    <td>No definida en x=0</td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d2">
+                    <td><strong><span style="color:#e74c3c;">Lim. Izquierda</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0<sup>&minus;</sup></span></span> <span class="fraction"><span class="frac-num">|x|</span><span class="frac-den">x</span></span> = <span class="fraction"><span class="frac-num">&minus;x</span><span class="frac-den">x</span></span> = &minus;1</td>
+                    <td><strong style="color:#e74c3c; font-size:1.2rem;">&minus;1</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d2">
+                    <td><strong><span style="color:#27ae60;">Lim. Derecha</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0<sup>+</sup></span></span> <span class="fraction"><span class="frac-num">|x|</span><span class="frac-den">x</span></span> = <span class="fraction"><span class="frac-num">x</span><span class="frac-den">x</span></span> = 1</td>
+                    <td><strong style="color:#27ae60; font-size:1.2rem;">1</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d2">
+                    <td><strong>&iquest;Coinciden?</strong></td>
+                    <td class="val-math">&minus;1 &ne; 1 &nbsp; &#10060;</td>
+                    <td><span class="demo-badge not-exists">LIMITE NO EXISTE</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary btn-sm demo-verify-btn" onclick="revealDemo('d2', this)">&#128270; Verificar Teorema &rarr;</button>
+
+        <div class="demo-summary fail" id="d2-summary">
+            <strong>&#10060; Teorema verificado:</strong> Como <span class="math">lim<sub>x&rarr;0<sup>&minus;</sup></sub> |x|/x = &minus;1 &ne; 1 = lim<sub>x&rarr;0<sup>+</sup></sub> |x|/x</span>, el teorema confirma que el limite <strong>no existe</strong>. Hay una discontinuidad de salto de magnitud 2 en x = 0.
+        </div>
+    </div>
+
+    <!-- EJEMPLOS RESUELTOS -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#9999;&#65039;</span> Ejemplos Resueltos</h2>
+
+        <!-- Ejemplo 1 -->
+        <div class="example-card">
+            <div class="example-header" onclick="toggleExample(this)">
+                <span>Ejemplo 1: &nbsp;<span class="math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0</span></span> <span class="fraction"><span class="frac-num">|x|</span><span class="frac-den">x</span></span></span></span>
+                <span class="arrow">&#9660;</span>
+            </div>
+            <div class="example-body">
+                <div class="example-steps">
+                    <div class="step visible">
+                        <div class="step-label">Paso 1 &mdash; Identificar punto critico</div>
+                        El denominador es <span class="math">x</span> y el argumento del valor absoluto es <span class="math">x</span>. El punto critico es <strong>x = 0</strong>.
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 2 &mdash; Limite por la izquierda</div>
+                        Cuando x &rarr; 0<sup>&minus;</sup>, tenemos x &lt; 0, entonces |x| = &minus;x:
+                        <div class="math-block"><span class="fraction"><span class="frac-num">|x|</span><span class="frac-den">x</span></span> = <span class="fraction"><span class="frac-num">&minus;x</span><span class="frac-den">x</span></span> = &minus;1</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 3 &mdash; Limite por la derecha</div>
+                        Cuando x &rarr; 0<sup>+</sup>, tenemos x &gt; 0, entonces |x| = x:
+                        <div class="math-block"><span class="fraction"><span class="frac-num">|x|</span><span class="frac-den">x</span></span> = <span class="fraction"><span class="frac-num">x</span><span class="frac-den">x</span></span> = 1</div>
+                    </div>
+                    <div class="step step-conclusion">
+                        <div class="step-label">&#10060; Conclusion</div>
+                        Como &minus;1 &ne; 1, los limites laterales son diferentes. <strong>El limite NO existe.</strong>
+                    </div>
+                    <button class="btn btn-secondary btn-sm next-step-btn" onclick="revealNextStep(this)">Siguiente paso &#8594;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ejemplo 2 -->
+        <div class="example-card">
+            <div class="example-header" onclick="toggleExample(this)">
+                <span>Ejemplo 2: &nbsp;<span class="math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;3</span></span> <span class="fraction"><span class="frac-num">|x&minus;3|</span><span class="frac-den">x&minus;3</span></span></span></span>
+                <span class="arrow">&#9660;</span>
+            </div>
+            <div class="example-body">
+                <div class="example-steps">
+                    <div class="step visible">
+                        <div class="step-label">Paso 1 &mdash; Identificar punto critico</div>
+                        La expresion dentro del valor absoluto es <span class="math">x &minus; 3</span>. Cambia de signo en <strong>x = 3</strong>.
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 2 &mdash; Limite por la izquierda</div>
+                        Cuando x &rarr; 3<sup>&minus;</sup>, tenemos x &lt; 3, entonces x&minus;3 &lt; 0 y |x&minus;3| = &minus;(x&minus;3):
+                        <div class="math-block"><span class="fraction"><span class="frac-num">&minus;(x&minus;3)</span><span class="frac-den">x&minus;3</span></span> = &minus;1</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 3 &mdash; Limite por la derecha</div>
+                        Cuando x &rarr; 3<sup>+</sup>, tenemos x &gt; 3, entonces x&minus;3 &gt; 0 y |x&minus;3| = x&minus;3:
+                        <div class="math-block"><span class="fraction"><span class="frac-num">x&minus;3</span><span class="frac-den">x&minus;3</span></span> = 1</div>
+                    </div>
+                    <div class="step step-conclusion">
+                        <div class="step-label">&#10060; Conclusion</div>
+                        &minus;1 &ne; 1 &rArr; <strong>El limite NO existe.</strong>
+                    </div>
+                    <button class="btn btn-secondary btn-sm next-step-btn" onclick="revealNextStep(this)">Siguiente paso &#8594;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ejemplo 3 -->
+        <div class="example-card">
+            <div class="example-header" onclick="toggleExample(this)">
+                <span>Ejemplo 3: &nbsp;<span class="math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;1</span></span> |x &minus; 1|</span></span>
+                <span class="arrow">&#9660;</span>
+            </div>
+            <div class="example-body">
+                <div class="example-steps">
+                    <div class="step visible">
+                        <div class="step-label">Paso 1 &mdash; Identificar la funcion</div>
+                        Aqui solo tenemos |x &minus; 1| <em>sin division</em>. La funcion valor absoluto es <strong>continua</strong> en todo punto.
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 2 &mdash; Sustitucion directa</div>
+                        Como |x&minus;1| es continua, podemos sustituir directamente:
+                        <div class="math-block">|1 &minus; 1| = |0| = 0</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 3 &mdash; Verificacion con limites laterales</div>
+                        Izquierda: |x&minus;1| = &minus;(x&minus;1) = 1&minus;x &rarr; 0<br>
+                        Derecha: |x&minus;1| = x&minus;1 &rarr; 0<br>
+                        Ambos dan 0. &#9989;
+                    </div>
+                    <div class="step" style="border-left-color: var(--accent-green); background: #eafaf1;">
+                        <div class="step-label" style="color: var(--accent-green);">&#9989; Conclusion</div>
+                        Los limites laterales coinciden. <strong>El limite EXISTE y vale 0.</strong>
+                    </div>
+                    <button class="btn btn-secondary btn-sm next-step-btn" onclick="revealNextStep(this)">Siguiente paso &#8594;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRACTICA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Practica Interactiva</h2>
+        <div class="quiz-score">Puntaje: <span class="score-num" id="score1">0</span> / 3</div>
+
+        <!-- Q1 -->
+        <div class="quiz-question" id="q1-1">
+            <div class="q-text">1. Evalua: &nbsp;<span class="math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;0</span></span> <span class="fraction"><span class="frac-num">|2x|</span><span class="frac-den">x</span></span></span></div>
+            <button class="option-btn" onclick="checkMC('q1-1', 0, 2)">a) 2</button>
+            <button class="option-btn" onclick="checkMC('q1-1', 1, 2)">b) &minus;2</button>
+            <button class="option-btn" onclick="checkMC('q1-1', 2, 2)">c) No existe</button>
+            <button class="option-btn" onclick="checkMC('q1-1', 3, 2)">d) 0</button>
+            <div class="feedback success" id="q1-1-ok">&#9989; <strong>Correcto!</strong> Por la izquierda: |2x|/x = &minus;2x/x = &minus;2. Por la derecha: |2x|/x = 2x/x = 2. Como &minus;2 &ne; 2, el limite no existe.</div>
+            <div class="feedback error" id="q1-1-err">&#10060; Incorrecto. <em>Pista: Analiza los limites laterales. &iquest;Que pasa con |2x| cuando x &lt; 0?</em></div>
+            <button class="btn btn-sm show-solution-btn" id="q1-1-sol-btn" onclick="showSolution('q1-1')">Ver solucion</button>
+            <div class="solution-panel" id="q1-1-sol">&#128161; <strong>Solucion:</strong> Cuando x &rarr; 0<sup>&minus;</sup>: |2x|/x = &minus;2x/x = <strong>&minus;2</strong>. Cuando x &rarr; 0<sup>+</sup>: |2x|/x = 2x/x = <strong>2</strong>. Como &minus;2 &ne; 2, el limite <strong>no existe</strong>.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question" id="q1-2">
+            <div class="q-text">2. Evalua: &nbsp;<span class="math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;5</span></span> <span class="fraction"><span class="frac-num">|x&minus;5|</span><span class="frac-den">x&minus;5</span></span></span></div>
+            <input type="text" class="free-text-input" id="q1-2-input" placeholder="Escribe tu respuesta...">
+            <div class="quiz-actions">
+                <button class="btn btn-primary btn-sm" onclick="checkFreeText('q1-2', ['no existe','no existe el limite','dne','no definido','el limite no existe'])">Verificar</button>
+            </div>
+            <div class="feedback success" id="q1-2-ok">&#9989; <strong>Correcto!</strong> Los limites laterales son &minus;1 (izquierda) y 1 (derecha), por lo que el limite no existe.</div>
+            <div class="feedback error" id="q1-2-err">&#10060; Incorrecto. <em>Pista: Es la misma estructura que |x|/x pero desplazada a x=5.</em></div>
+            <button class="btn btn-sm show-solution-btn" id="q1-2-sol-btn" onclick="showSolution('q1-2')">Ver solucion</button>
+            <div class="solution-panel" id="q1-2-sol">&#128161; <strong>Solucion:</strong> Por la izquierda (x&lt;5): &minus;(x&minus;5)/(x&minus;5) = &minus;1. Por la derecha (x&gt;5): (x&minus;5)/(x&minus;5) = 1. Como &minus;1 &ne; 1, <strong>no existe</strong>.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question" id="q1-3">
+            <div class="q-text">3. Evalua: &nbsp;<span class="math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">x&rarr;1</span></span> |x &minus; 1|</span></div>
+            <button class="option-btn" onclick="checkMC('q1-3', 0, 0)">a) 0</button>
+            <button class="option-btn" onclick="checkMC('q1-3', 1, 0)">b) 1</button>
+            <button class="option-btn" onclick="checkMC('q1-3', 2, 0)">c) No existe</button>
+            <button class="option-btn" onclick="checkMC('q1-3', 3, 0)">d) &minus;1</button>
+            <div class="feedback success" id="q1-3-ok">&#9989; <strong>Correcto!</strong> |x&minus;1| es continua, asi que el limite es simplemente |1&minus;1| = 0.</div>
+            <div class="feedback error" id="q1-3-err">&#10060; Incorrecto. <em>Pista: No hay division aqui. La funcion |x&minus;1| es continua. Solo sustituye x=1.</em></div>
+            <button class="btn btn-sm show-solution-btn" id="q1-3-sol-btn" onclick="showSolution('q1-3')">Ver solucion</button>
+            <div class="solution-panel" id="q1-3-sol">&#128161; <strong>Solucion:</strong> La funcion |x&minus;1| es continua en todo punto. Sustituyendo: |1&minus;1| = |0| = <strong>0</strong>.</div>
+        </div>
+    </div>
+
+    <!-- APLICACIONES -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#127758;</span> Aplicaciones en el Mundo Real</h2>
+        <div class="app-grid">
+            <div class="app-card">
+                <span class="app-icon">&#9881;&#65039;</span>
+                <h4>Tolerancias de fabricacion</h4>
+                <p>En ingenieria, la calidad de una pieza se mide comparando la medida real con la ideal usando valor absoluto.</p>
+                <div class="app-formula">|medida<sub>real</sub> &minus; medida<sub>ideal</sub>| &lt; tolerancia</div>
+            </div>
+            <div class="app-card">
+                <span class="app-icon">&#128225;</span>
+                <h4>Rectificacion de senales</h4>
+                <p>En electronica, los circuitos rectificadores usan el principio del valor absoluto para convertir corriente alterna (AC) en corriente continua (DC).</p>
+                <div class="app-formula">V<sub>DC</sub> = |V<sub>AC</sub>(t)|</div>
+            </div>
+            <div class="app-card">
+                <span class="app-icon">&#127919;</span>
+                <h4>Analisis de errores</h4>
+                <p>El error absoluto mide la precision de una medicion sin importar si el error fue por exceso o por defecto.</p>
+                <div class="app-formula">Error = |valor<sub>medido</sub> &minus; valor<sub>real</sub>|</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- ==================== TAB 2: HEAVISIDE ========================== -->
+<!-- ================================================================ -->
+<div id="tab2" class="tab-content">
+
+    <!-- INTRO -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128218;</span> Introduccion</h2>
+        <div class="intro-hook">
+            <span class="hook-icon">&#128161;</span>
+            <strong>Imagina un interruptor de luz:</strong> esta apagado... y de pronto, encendido. No hay transicion gradual, no hay dimmer. Este comportamiento &laquo;todo o nada&raquo; es exactamente lo que modela la <strong>funcion escalon de Heaviside</strong>. Fue creada por <em>Oliver Heaviside</em> (1850-1925), un ingeniero electrico autodidacta britanico que revoluciono el analisis de circuitos. Hoy su funcion es fundamental en ingenieria, fisica y procesamiento de senales.
+        </div>
+    </div>
+
+    <!-- TEORIA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128214;</span> Teoria</h2>
+
+        <div class="definition-box">
+            <div class="box-title">&#128313; Definicion de la Funcion Escalon de Heaviside</div>
+            <div class="piecewise">
+                <span class="piecewise-name">H(t)</span>
+                <span class="piecewise-eq">=</span>
+                <span class="piecewise-brace">{</span>
+                <span class="piecewise-cases">
+                    <span class="piecewise-case"><span class="math">0</span><span class="piecewise-cond">si t &lt; 0</span></span>
+                    <span class="piecewise-case"><span class="math">1</span><span class="piecewise-cond">si t &ge; 0</span></span>
+                </span>
+            </div>
+            <p style="margin-top:14px; font-size:0.95rem; color: var(--text-secondary);">
+                Es una funcion que &laquo;enciende&raquo; un valor en un instante especifico. Antes del instante: 0 (apagado). Despues: 1 (encendido).
+            </p>
+        </div>
+
+        <div class="definition-box" style="border-color: #7dcea0;">
+            <div class="box-title" style="color: #1e8449;">&#128313; Version Desplazada</div>
+            <div class="piecewise">
+                <span class="piecewise-name">H(t &minus; a)</span>
+                <span class="piecewise-eq">=</span>
+                <span class="piecewise-brace">{</span>
+                <span class="piecewise-cases">
+                    <span class="piecewise-case"><span class="math">0</span><span class="piecewise-cond">si t &lt; a</span></span>
+                    <span class="piecewise-case"><span class="math">1</span><span class="piecewise-cond">si t &ge; a</span></span>
+                </span>
+            </div>
+            <p style="margin-top:10px; font-size:0.95rem; color: var(--text-secondary);">
+                Desplazar por <span class="math">a</span> mueve el &laquo;encendido&raquo; al instante <span class="math">t = a</span>.
+            </p>
+        </div>
+
+        <div class="theorem-box">
+            <div class="box-title">&#128161; Propiedad clave: Discontinuidad de salto</div>
+            <div class="math-block">
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0<sup>&minus;</sup></span></span> H(t) = 0
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0<sup>+</sup></span></span> H(t) = 1
+            </div>
+            <p>Como 0 &ne; 1, el <strong>limite en t = 0 NO existe</strong>. Esto se llama <strong>discontinuidad de salto</strong> con magnitud 1.</p>
+        </div>
+
+        <div class="theorem-box" style="border-left-color: var(--accent-orange);">
+            <div class="box-title" style="color: var(--accent-orange);">&#128279; Relacion con el Valor Absoluto</div>
+            <div class="math-block">
+                H(x) = <span class="fraction"><span class="frac-num">x + |x|</span><span class="frac-den">2x</span></span> &nbsp;&nbsp; para x &ne; 0
+            </div>
+            <p style="font-size:0.93rem;">Esta formula conecta ambos temas de esta OVA: el valor absoluto y la funcion escalon estan intimamente relacionados.</p>
+        </div>
+
+        <div class="warning-box">
+            <span class="warning-icon">&#9888;&#65039;</span>
+            <strong>Funciones compuestas con Heaviside:</strong> Podemos construir cualquier funcion escalonada (como una escalera) sumando multiples funciones de Heaviside desplazadas. Por ejemplo: f(t) = H(t) + H(t&minus;1) + H(t&minus;2) crea una escalera de 3 peldanos.
+        </div>
+    </div>
+
+    <!-- GRAFICA INTERACTIVA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128200;</span> Visualizacion Interactiva</h2>
+        <p style="margin-bottom:14px; color: var(--text-secondary);">Experimenta con los controles: desplaza la funcion, cambia su altura, o construye una escalera sumando multiples escalones.</p>
+        <div class="canvas-wrap">
+            <canvas id="hvCanvas" width="700" height="420"></canvas>
+            <div class="graph-controls">
+                <label>Desplazamiento (a):
+                    <input type="range" id="hvShift" min="-30" max="30" value="0" step="1">
+                    <span class="slider-val" id="hvShiftVal">0.0</span>
+                </label>
+                <label>Altura (k):
+                    <input type="range" id="hvScale" min="5" max="30" value="10" step="1">
+                    <span class="slider-val" id="hvScaleVal">1.0</span>
+                </label>
+                <button class="btn btn-secondary btn-sm" id="hvCombineBtn">&#128200; Escalera</button>
+                <button class="btn btn-primary btn-sm" id="hvAnimBtn">&#9654; Animar limite</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEMOSTRACION DEL TEOREMA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#128300;</span> Demostracion del Teorema</h2>
+
+        <div class="demo-theorem">
+            <div class="th-label">Teorema: Existencia del Limite</div>
+            <div class="th-formula">
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;a</span></span> f(t) = L
+                &nbsp; si y solo si &nbsp;
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;a<sup>&minus;</sup></span></span> f(t) = L =
+                <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;a<sup>+</sup></span></span> f(t)
+            </div>
+        </div>
+
+        <p style="margin-bottom:14px;">Verifiquemos este teorema evaluando la <strong>funcion escalon de Heaviside H(t)</strong> en distintos puntos. Haz clic para revelar cada verificacion.</p>
+
+        <!-- Tabla H(t) en t=0 -->
+        <h3 style="margin: 18px 0 10px; color: var(--accent); font-size: 1.05rem;">&#10060; Caso 1: H(t) en t = 0 &mdash; Punto de discontinuidad</h3>
+        <table class="demo-table" id="demoTable3">
+            <thead>
+                <tr>
+                    <th>Evaluacion</th>
+                    <th>Calculo</th>
+                    <th>Resultado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Forma de H(t)</strong></td>
+                    <td class="val-math">H(t) = 0 si t&lt;0, &nbsp; 1 si t&ge;0</td>
+                    <td>Escalon en t = 0</td>
+                </tr>
+                <tr>
+                    <td><strong>Dominio y Rango</strong></td>
+                    <td class="val-math">Dom: &#8477; &nbsp; Rango: {0, 1}</td>
+                    <td>Solo dos valores posibles</td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d3">
+                    <td><strong><span style="color:#e74c3c;">Lim. Izquierda</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0<sup>&minus;</sup></span></span> H(t) = 0 &nbsp; (zona &laquo;apagada&raquo;)</td>
+                    <td><strong style="color:#e74c3c; font-size:1.2rem;">0</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d3">
+                    <td><strong><span style="color:#27ae60;">Lim. Derecha</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0<sup>+</sup></span></span> H(t) = 1 &nbsp; (zona &laquo;encendida&raquo;)</td>
+                    <td><strong style="color:#27ae60; font-size:1.2rem;">1</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d3">
+                    <td><strong>&iquest;Coinciden?</strong></td>
+                    <td class="val-math">0 &ne; 1 &nbsp; &#10060;</td>
+                    <td><span class="demo-badge not-exists">LIMITE NO EXISTE</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary btn-sm demo-verify-btn" onclick="revealDemo('d3', this)">&#128270; Verificar Teorema &rarr;</button>
+
+        <div class="demo-summary fail" id="d3-summary">
+            <strong>&#10060; Teorema verificado:</strong> Como <span class="math">lim<sub>t&rarr;0<sup>&minus;</sup></sub> H(t) = 0 &ne; 1 = lim<sub>t&rarr;0<sup>+</sup></sub> H(t)</span>, el teorema confirma que el limite <strong>no existe</strong> en t = 0. Hay un salto de magnitud 1: la funcion &laquo;salta&raquo; instantaneamente de apagado a encendido.
+        </div>
+
+        <!-- Tabla H(t) en t=2 (lejos del escalon) -->
+        <h3 style="margin: 28px 0 10px; color: var(--secondary); font-size: 1.05rem;">&#9989; Caso 2: H(t) en t = 2 &mdash; Punto de continuidad</h3>
+        <table class="demo-table" id="demoTable4">
+            <thead>
+                <tr>
+                    <th>Evaluacion</th>
+                    <th>Calculo</th>
+                    <th>Resultado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Punto t = 2</strong></td>
+                    <td class="val-math">Como 2 &gt; 0, estamos en la zona donde H(t) = 1</td>
+                    <td>Zona constante</td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d4">
+                    <td><strong><span style="color:#e74c3c;">Lim. Izquierda</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;2<sup>&minus;</sup></span></span> H(t) = 1 &nbsp; (ya estamos en zona &laquo;encendida&raquo;)</td>
+                    <td><strong style="color:#e74c3c; font-size:1.2rem;">1</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d4">
+                    <td><strong><span style="color:#27ae60;">Lim. Derecha</span></strong></td>
+                    <td class="val-math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;2<sup>+</sup></span></span> H(t) = 1 &nbsp; (seguimos en zona &laquo;encendida&raquo;)</td>
+                    <td><strong style="color:#27ae60; font-size:1.2rem;">1</strong></td>
+                </tr>
+                <tr class="demo-row-hidden" data-demo="d4">
+                    <td><strong>&iquest;Coinciden?</strong></td>
+                    <td class="val-math">1 = 1 &nbsp; &#9989;</td>
+                    <td><span class="demo-badge exists">LIMITE EXISTE = 1</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary btn-sm demo-verify-btn" onclick="revealDemo('d4', this)">&#128270; Verificar Teorema &rarr;</button>
+
+        <div class="demo-summary success" id="d4-summary">
+            <strong>&#9989; Teorema verificado:</strong> Como <span class="math">lim<sub>t&rarr;2<sup>&minus;</sup></sub> H(t) = 1 = lim<sub>t&rarr;2<sup>+</sup></sub> H(t)</span>, el teorema confirma que el limite <strong>existe y vale 1</strong>. Lejos del punto de salto, H(t) se comporta como una funcion constante y su limite se puede calcular por sustitucion directa.
+        </div>
+
+        <!-- Conclusion general -->
+        <div class="warning-box" style="margin-top: 22px;">
+            <span class="warning-icon">&#128161;</span>
+            <strong>Conclusion:</strong> La funcion de Heaviside <strong>solo pierde su limite en el punto exacto del escalon</strong> (t = 0). En cualquier otro punto, como es constante a trozos, el limite existe trivialmente. &iexcl;El teorema funciona perfectamente para identificar ambos casos!
+        </div>
+    </div>
+
+    <!-- EJEMPLOS RESUELTOS -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#9999;&#65039;</span> Ejemplos Resueltos</h2>
+
+        <!-- Ejemplo 1 -->
+        <div class="example-card">
+            <div class="example-header" onclick="toggleExample(this)">
+                <span>Ejemplo 1: &nbsp;<span class="math">Evaluar <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0</span></span> H(t)</span></span>
+                <span class="arrow">&#9660;</span>
+            </div>
+            <div class="example-body">
+                <div class="example-steps">
+                    <div class="step visible">
+                        <div class="step-label">Paso 1 &mdash; Punto de discontinuidad</div>
+                        La funcion H(t) tiene su punto de &laquo;encendido&raquo; en <strong>t = 0</strong>. Debemos evaluar los limites laterales alli.
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 2 &mdash; Limite por la izquierda</div>
+                        Cuando t &rarr; 0<sup>&minus;</sup> (t se acerca a 0 por valores negativos), estamos en la zona donde H(t) = 0:
+                        <div class="math-block"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0<sup>&minus;</sup></span></span> H(t) = 0</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 3 &mdash; Limite por la derecha</div>
+                        Cuando t &rarr; 0<sup>+</sup> (t se acerca a 0 por valores positivos), estamos en la zona donde H(t) = 1:
+                        <div class="math-block"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0<sup>+</sup></span></span> H(t) = 1</div>
+                    </div>
+                    <div class="step step-conclusion">
+                        <div class="step-label">&#10060; Conclusion</div>
+                        Como 0 &ne; 1, el <strong>limite NO existe</strong>. Hay una <strong>discontinuidad de salto</strong> de magnitud 1 en t = 0.
+                    </div>
+                    <button class="btn btn-secondary btn-sm next-step-btn" onclick="revealNextStep(this)">Siguiente paso &#8594;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ejemplo 2 -->
+        <div class="example-card">
+            <div class="example-header" onclick="toggleExample(this)">
+                <span>Ejemplo 2: &nbsp;<span class="math">Graficar H(t &minus; 2) y evaluar <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;2</span></span> H(t&minus;2)</span></span>
+                <span class="arrow">&#9660;</span>
+            </div>
+            <div class="example-body">
+                <div class="example-steps">
+                    <div class="step visible">
+                        <div class="step-label">Paso 1 &mdash; Desplazamiento</div>
+                        H(t &minus; 2) es la funcion escalon desplazada 2 unidades a la derecha. El &laquo;encendido&raquo; ocurre en <strong>t = 2</strong>.
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 2 &mdash; Grafica</div>
+                        y = 0 para t &lt; 2 (linea horizontal sobre el eje t)<br>
+                        y = 1 para t &ge; 2 (linea horizontal a altura 1)<br>
+                        Circulo abierto en (2, 0), circulo cerrado en (2, 1).
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 3 &mdash; Limites laterales en t = 2</div>
+                        <div class="math-block">
+                            <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;2<sup>&minus;</sup></span></span> H(t&minus;2) = 0
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;2<sup>+</sup></span></span> H(t&minus;2) = 1
+                        </div>
+                    </div>
+                    <div class="step step-conclusion">
+                        <div class="step-label">&#10060; Conclusion</div>
+                        0 &ne; 1 &rArr; <strong>El limite NO existe</strong>. Discontinuidad de salto en t = 2.
+                    </div>
+                    <button class="btn btn-secondary btn-sm next-step-btn" onclick="revealNextStep(this)">Siguiente paso &#8594;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ejemplo 3 -->
+        <div class="example-card">
+            <div class="example-header" onclick="toggleExample(this)">
+                <span>Ejemplo 3: &nbsp;<span class="math">Expresar f(t) = {0 si t&lt;1, 3 si 1&le;t&lt;4, 0 si t&ge;4} con Heaviside</span></span>
+                <span class="arrow">&#9660;</span>
+            </div>
+            <div class="example-body">
+                <div class="example-steps">
+                    <div class="step visible">
+                        <div class="step-label">Paso 1 &mdash; Analizar la funcion</div>
+                        La funcion &laquo;enciende&raquo; el valor 3 en t = 1 y lo &laquo;apaga&raquo; en t = 4. Necesitamos dos funciones escalon.
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 2 &mdash; Encendido en t = 1</div>
+                        Para encender el valor 3 en t = 1 usamos: <span class="math">3 &middot; H(t &minus; 1)</span>
+                        <div class="math-block">3 &middot; H(t&minus;1) = 0 si t &lt; 1, &nbsp; 3 si t &ge; 1</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Paso 3 &mdash; Apagado en t = 4</div>
+                        Para apagar, restamos otro escalon: <span class="math">&minus;3 &middot; H(t &minus; 4)</span>
+                        <div class="math-block">3&middot;H(t&minus;1) &minus; 3&middot;H(t&minus;4)</div>
+                    </div>
+                    <div class="step" style="border-left-color: var(--accent-green); background: #eafaf1;">
+                        <div class="step-label" style="color: var(--accent-green);">&#9989; Resultado Final</div>
+                        <div class="math-block" style="font-size: 1.2rem;"><strong>f(t) = 3[ H(t &minus; 1) &minus; H(t &minus; 4) ]</strong></div>
+                        Esta expresion compacta reemplaza toda la definicion por partes.
+                    </div>
+                    <button class="btn btn-secondary btn-sm next-step-btn" onclick="revealNextStep(this)">Siguiente paso &#8594;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRACTICA -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#127919;</span> Practica Interactiva</h2>
+        <div class="quiz-score">Puntaje: <span class="score-num" id="score2">0</span> / 3</div>
+
+        <!-- Q1 -->
+        <div class="quiz-question" id="q2-1">
+            <div class="q-text">1. &iquest;Cual es el valor de <span class="math"><span class="limit-expr"><span class="limit-lim">lim</span><span class="limit-approach">t&rarr;0<sup>+</sup></span></span> H(t)</span>?</div>
+            <button class="option-btn" onclick="checkMC('q2-1', 0, 1)">a) 0</button>
+            <button class="option-btn" onclick="checkMC('q2-1', 1, 1)">b) 1</button>
+            <button class="option-btn" onclick="checkMC('q2-1', 2, 1)">c) No existe</button>
+            <button class="option-btn" onclick="checkMC('q2-1', 3, 1)">d) 1/2</button>
+            <div class="feedback success" id="q2-1-ok">&#9989; <strong>Correcto!</strong> Para t ligeramente mayor que 0, H(t) = 1. El limite lateral por la derecha es 1.</div>
+            <div class="feedback error" id="q2-1-err">&#10060; Incorrecto. <em>Pista: Para valores de t justo mayores que 0, &iquest;en que zona de H(t) estamos?</em></div>
+            <button class="btn btn-sm show-solution-btn" id="q2-1-sol-btn" onclick="showSolution('q2-1')">Ver solucion</button>
+            <div class="solution-panel" id="q2-1-sol">&#128161; <strong>Solucion:</strong> Cuando t &rarr; 0<sup>+</sup>, estamos en la zona t &gt; 0, donde H(t) = <strong>1</strong>.</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question" id="q2-2">
+            <div class="q-text">2. Expresa <span class="math">f(t) = {0 si t&lt;2, &nbsp;5 si t&ge;2}</span> usando la funcion de Heaviside:</div>
+            <input type="text" class="free-text-input" id="q2-2-input" placeholder="Escribe tu respuesta (ej: 5H(t-2))...">
+            <div class="quiz-actions">
+                <button class="btn btn-primary btn-sm" onclick="checkFreeText('q2-2', ['5h(t-2)','5*h(t-2)','5 h(t-2)','5h(t - 2)','5*h(t - 2)','5 * h(t-2)','5 * h(t - 2)','f(t)=5h(t-2)','f(t) = 5h(t-2)','5h(t- 2)'])">Verificar</button>
+            </div>
+            <div class="feedback success" id="q2-2-ok">&#9989; <strong>Correcto!</strong> f(t) = 5&middot;H(t&minus;2) enciende el valor 5 en el instante t = 2.</div>
+            <div class="feedback error" id="q2-2-err">&#10060; Incorrecto. <em>Pista: Necesitas &laquo;encender&raquo; el valor 5 en t=2. Usa H(t&minus;a) desplazada.</em></div>
+            <button class="btn btn-sm show-solution-btn" id="q2-2-sol-btn" onclick="showSolution('q2-2')">Ver solucion</button>
+            <div class="solution-panel" id="q2-2-sol">&#128161; <strong>Solucion:</strong> f(t) = <strong>5H(t &minus; 2)</strong>. El escalon se desplaza a t=2 y se multiplica por 5.</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question" id="q2-3">
+            <div class="q-text">3. &iquest;En que punto tiene discontinuidad <span class="math">H(t &minus; 3)</span>?</div>
+            <input type="text" class="free-text-input" id="q2-3-input" placeholder="Escribe el valor de t...">
+            <div class="quiz-actions">
+                <button class="btn btn-primary btn-sm" onclick="checkFreeText('q2-3', ['3','t=3','t = 3','en t=3','en t = 3','en 3'])">Verificar</button>
+            </div>
+            <div class="feedback success" id="q2-3-ok">&#9989; <strong>Correcto!</strong> La discontinuidad esta en t = 3, donde el argumento t&minus;3 se hace cero.</div>
+            <div class="feedback error" id="q2-3-err">&#10060; Incorrecto. <em>Pista: La discontinuidad de H(t) esta en t=0. Si desplazamos por 3...</em></div>
+            <button class="btn btn-sm show-solution-btn" id="q2-3-sol-btn" onclick="showSolution('q2-3')">Ver solucion</button>
+            <div class="solution-panel" id="q2-3-sol">&#128161; <strong>Solucion:</strong> H(t&minus;3) tiene discontinuidad donde t&minus;3 = 0, es decir en <strong>t = 3</strong>.</div>
+        </div>
+    </div>
+
+    <!-- APLICACIONES -->
+    <div class="section">
+        <h2 class="section-title"><span class="icon">&#127758;</span> Aplicaciones en el Mundo Real</h2>
+        <div class="app-grid">
+            <div class="app-card">
+                <span class="app-icon">&#9889;</span>
+                <h4>Circuitos electricos</h4>
+                <p>Modelar el encendido de un circuito: un voltaje que se activa en el instante t = 0 y permanece constante.</p>
+                <div class="app-formula">V(t) = V<sub>0</sub> &middot; H(t)</div>
+            </div>
+            <div class="app-card">
+                <span class="app-icon">&#9879;&#65039;</span>
+                <h4>Sistemas de control</h4>
+                <p>Las funciones de transferencia en automatizacion usan entradas escalon para analizar la respuesta de un sistema.</p>
+                <div class="app-formula">entrada(t) = A &middot; H(t &minus; t<sub>0</sub>)</div>
+            </div>
+            <div class="app-card">
+                <span class="app-icon">&#128200;</span>
+                <h4>Modelado de eventos</h4>
+                <p>Terremotos, dosis de medicamentos, cambios subitos de precio: eventos instantaneos modelados como escalones.</p>
+                <div class="app-formula">efecto(t) = magnitud &middot; H(t &minus; t<sub>evento</sub>)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- end content-wrapper -->
+
+<!-- ========== FOOTER ========== -->
+<footer class="ova-footer">
+    <strong>OVA &mdash; Calculo Diferencial</strong><br>
+    Autor: Ing. Stivenson Rincon &nbsp;|&nbsp; Tutor: Ing. Antonio<br>
+    <span style="font-size:0.82rem; margin-top:6px; display:inline-block;">Objeto Virtual de Aprendizaje &mdash; 2026</span>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+(function() {
+    'use strict';
+
+    // ===== TAB NAVIGATION =====
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    let hvInitialized = false;
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            const target = document.getElementById(btn.dataset.tab);
+            target.classList.add('active');
+            if (btn.dataset.tab === 'tab2' && !hvInitialized) {
+                hvInitialized = true;
+                HeavisideGraph.init();
+            }
+        });
+    });
+
+    // ===== GRAPH ENGINE (shared) =====
+    const GE = {
+        setupHiDPI(canvas, w, h) {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+            return ctx;
+        },
+        w2s(x, y, c) {
+            const plotW = c.w - c.pad.l - c.pad.r;
+            const plotH = c.h - c.pad.t - c.pad.b;
+            return {
+                sx: c.pad.l + (x - c.xMin) / (c.xMax - c.xMin) * plotW,
+                sy: c.pad.t + (c.yMax - y) / (c.yMax - c.yMin) * plotH
+            };
+        },
+        drawGrid(ctx, c) {
+            const plotW = c.w - c.pad.l - c.pad.r;
+            const plotH = c.h - c.pad.t - c.pad.b;
+            ctx.strokeStyle = '#ecf0f1';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+            for (let x = Math.ceil(c.xMin); x <= Math.floor(c.xMax); x++) {
+                const p = this.w2s(x, 0, c);
+                ctx.beginPath(); ctx.moveTo(p.sx, c.pad.t); ctx.lineTo(p.sx, c.pad.t + plotH); ctx.stroke();
+            }
+            for (let y = Math.ceil(c.yMin); y <= Math.floor(c.yMax); y++) {
+                const p = this.w2s(0, y, c);
+                ctx.beginPath(); ctx.moveTo(c.pad.l, p.sy); ctx.lineTo(c.pad.l + plotW, p.sy); ctx.stroke();
+            }
+            ctx.setLineDash([]);
+        },
+        drawAxes(ctx, c) {
+            const o = this.w2s(0, 0, c);
+            const plotW = c.w - c.pad.l - c.pad.r;
+            const plotH = c.h - c.pad.t - c.pad.b;
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineWidth = 2;
+            // x-axis
+            ctx.beginPath(); ctx.moveTo(c.pad.l, o.sy); ctx.lineTo(c.pad.l + plotW, o.sy); ctx.stroke();
+            // y-axis
+            ctx.beginPath(); ctx.moveTo(o.sx, c.pad.t); ctx.lineTo(o.sx, c.pad.t + plotH); ctx.stroke();
+            // labels
+            ctx.fillStyle = '#7f8c8d';
+            ctx.font = '12px Segoe UI, system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            for (let x = Math.ceil(c.xMin); x <= Math.floor(c.xMax); x++) {
+                if (x === 0) continue;
+                const p = this.w2s(x, 0, c);
+                ctx.fillText(x, p.sx, o.sy + 18);
+            }
+            ctx.textAlign = 'right';
+            for (let y = Math.ceil(c.yMin); y <= Math.floor(c.yMax); y++) {
+                if (y === 0) continue;
+                const p = this.w2s(0, y, c);
+                ctx.fillText(y, o.sx - 8, p.sy + 4);
+            }
+        },
+        drawPoint(ctx, x, y, c, color, radius) {
+            const p = this.w2s(x, y, c);
+            ctx.beginPath(); ctx.arc(p.sx, p.sy, radius || 6, 0, Math.PI * 2);
+            ctx.fillStyle = color || '#2980b9';
+            ctx.fill();
+        },
+        drawOpenCircle(ctx, x, y, c, color, radius) {
+            const p = this.w2s(x, y, c);
+            ctx.beginPath(); ctx.arc(p.sx, p.sy, radius || 5, 0, Math.PI * 2);
+            ctx.strokeStyle = color || '#2980b9';
+            ctx.lineWidth = 2.5;
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.stroke();
+        },
+        drawLine(ctx, x1, y1, x2, y2, c, color, lw) {
+            const p1 = this.w2s(x1, y1, c);
+            const p2 = this.w2s(x2, y2, c);
+            ctx.beginPath(); ctx.moveTo(p1.sx, p1.sy); ctx.lineTo(p2.sx, p2.sy);
+            ctx.strokeStyle = color || '#2980b9';
+            ctx.lineWidth = lw || 3;
+            ctx.stroke();
+        },
+        drawDashed(ctx, x1, y1, x2, y2, c, color) {
+            const p1 = this.w2s(x1, y1, c);
+            const p2 = this.w2s(x2, y2, c);
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath(); ctx.moveTo(p1.sx, p1.sy); ctx.lineTo(p2.sx, p2.sy);
+            ctx.strokeStyle = color || '#bdc3c7';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            ctx.setLineDash([]);
+        },
+        drawLabel(ctx, text, x, y, c, opts) {
+            const p = this.w2s(x, y, c);
+            const ox = (opts && opts.ox) || 0;
+            const oy = (opts && opts.oy) || 0;
+            ctx.font = (opts && opts.font) || 'bold 13px Segoe UI, sans-serif';
+            ctx.fillStyle = (opts && opts.color) || '#2c3e50';
+            ctx.textAlign = (opts && opts.align) || 'left';
+            ctx.fillText(text, p.sx + ox, p.sy + oy);
+        },
+        drawBanner(ctx, text, x, y, bgColor, textColor) {
+            ctx.font = 'bold 15px Segoe UI, sans-serif';
+            const m = ctx.measureText(text);
+            const pw = m.width + 20;
+            const ph = 28;
+            ctx.fillStyle = bgColor || 'rgba(231,76,60,0.9)';
+            const r = 8;
+            ctx.beginPath();
+            ctx.moveTo(x - pw/2 + r, y - ph/2);
+            ctx.lineTo(x + pw/2 - r, y - ph/2);
+            ctx.quadraticCurveTo(x + pw/2, y - ph/2, x + pw/2, y - ph/2 + r);
+            ctx.lineTo(x + pw/2, y + ph/2 - r);
+            ctx.quadraticCurveTo(x + pw/2, y + ph/2, x + pw/2 - r, y + ph/2);
+            ctx.lineTo(x - pw/2 + r, y + ph/2);
+            ctx.quadraticCurveTo(x - pw/2, y + ph/2, x - pw/2, y + ph/2 - r);
+            ctx.lineTo(x - pw/2, y - ph/2 + r);
+            ctx.quadraticCurveTo(x - pw/2, y - ph/2, x - pw/2 + r, y - ph/2);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = textColor || 'white';
+            ctx.textAlign = 'center';
+            ctx.fillText(text, x, y + 5);
+        },
+        clear(ctx, c) {
+            ctx.clearRect(0, 0, c.w * (window.devicePixelRatio || 1), c.h * (window.devicePixelRatio || 1));
+        }
+    };
+
+    // ===== ABSOLUTE VALUE GRAPH =====
+    const AbsValueGraph = {
+        canvas: null, ctx: null,
+        cfg: { xMin: -5, xMax: 5, yMin: -2.5, yMax: 2.5, w: 700, h: 420, pad: { t: 40, r: 40, b: 50, l: 60 }},
+        fn: 'absX',
+        sliderX: -3,
+        animId: null,
+        animating: false,
+        speed: 0.02,
+
+        init() {
+            this.canvas = document.getElementById('absCanvas');
+            const container = this.canvas.parentElement;
+            const w = Math.min(700, container.clientWidth);
+            const h = w * (420 / 700);
+            this.cfg.w = w; this.cfg.h = h;
+            this.ctx = GE.setupHiDPI(this.canvas, w, h);
+
+            document.getElementById('absFnSelect').addEventListener('change', e => { this.fn = e.target.value; this.updateConfig(); this.render(); });
+            document.getElementById('absSlider').addEventListener('input', e => { this.sliderX = e.target.value / 10; document.getElementById('absSliderVal').textContent = this.sliderX.toFixed(1); this.render(); });
+            document.getElementById('absAnimBtn').addEventListener('click', () => this.animate());
+            document.getElementById('absSpeedSelect').addEventListener('change', e => { this.speed = {slow: 0.008, medium: 0.02, fast: 0.05}[e.target.value]; });
+            this.updateConfig();
+            this.render();
+        },
+
+        getCritical() {
+            if (this.fn === 'absX_over_x' || this.fn === 'absX') return 0;
+            if (this.fn === 'absXminus3') return 3;
+            if (this.fn === 'absXplus2') return -2;
+            return 0;
+        },
+
+        updateConfig() {
+            if (this.fn === 'absXminus3') { this.cfg.xMin = -2; this.cfg.xMax = 8; }
+            else if (this.fn === 'absXplus2') { this.cfg.xMin = -7; this.cfg.xMax = 3; }
+            else if (this.fn === 'absX') { this.cfg.xMin = -5; this.cfg.xMax = 5; this.cfg.yMin = -1; this.cfg.yMax = 5; }
+            else { this.cfg.xMin = -5; this.cfg.xMax = 5; this.cfg.yMin = -2.5; this.cfg.yMax = 2.5; }
+            if (this.fn !== 'absX') { this.cfg.yMin = -2.5; this.cfg.yMax = 2.5; }
+        },
+
+        evalFn(x) {
+            const eps = 1e-10;
+            if (this.fn === 'absX') return Math.abs(x);
+            if (this.fn === 'absX_over_x') return Math.abs(x) < eps ? NaN : Math.abs(x) / x;
+            if (this.fn === 'absXminus3') return Math.abs(x - 3) < eps ? NaN : Math.abs(x - 3) / (x - 3);
+            if (this.fn === 'absXplus2') return Math.abs(x + 2) < eps ? NaN : Math.abs(x + 2) / (x + 2);
+            return NaN;
+        },
+
+        leftLimit() {
+            const cr = this.getCritical();
+            if (this.fn === 'absX') return Math.abs(cr);
+            return -1;
+        },
+        rightLimit() {
+            const cr = this.getCritical();
+            if (this.fn === 'absX') return Math.abs(cr);
+            return 1;
+        },
+
+        render(animState) {
+            const c = this.cfg;
+            GE.clear(this.ctx, c);
+            GE.drawGrid(this.ctx, c);
+            GE.drawAxes(this.ctx, c);
+
+            const ctx = this.ctx;
+            const cr = this.getCritical();
+            const color = '#2980b9';
+
+            if (this.fn === 'absX') {
+                GE.drawLine(ctx, c.xMin, Math.abs(c.xMin), cr, 0, c, color, 3);
+                GE.drawLine(ctx, cr, 0, c.xMax, c.xMax, c, color, 3);
+                GE.drawPoint(ctx, cr, 0, c, color, 5);
+            } else {
+                // left segment: y = -1
+                GE.drawLine(ctx, c.xMin, -1, cr - 0.02, -1, c, color, 3);
+                // right segment: y = 1
+                GE.drawLine(ctx, cr + 0.02, 1, c.xMax, 1, c, color, 3);
+                GE.drawOpenCircle(ctx, cr, -1, c, color);
+                GE.drawOpenCircle(ctx, cr, 1, c, color);
+            }
+
+            // Function name label
+            let fnLabel = '';
+            if (this.fn === 'absX_over_x') fnLabel = 'f(x) = |x| / x';
+            else if (this.fn === 'absXminus3') fnLabel = 'f(x) = |x-3| / (x-3)';
+            else if (this.fn === 'absXplus2') fnLabel = 'f(x) = |x+2| / (x+2)';
+            else fnLabel = 'f(x) = |x|';
+            ctx.font = 'bold 14px Segoe UI, sans-serif';
+            ctx.fillStyle = '#2c3e50';
+            ctx.textAlign = 'left';
+            ctx.fillText(fnLabel, c.pad.l + 8, c.pad.t - 12);
+
+            // Slider point
+            if (!animState) {
+                const sx = this.sliderX;
+                const sy = this.evalFn(sx);
+                if (!isNaN(sy)) {
+                    GE.drawDashed(ctx, sx, 0, sx, sy, c, '#95a5a6');
+                    GE.drawPoint(ctx, sx, sy, c, '#e67e22', 7);
+                    GE.drawLabel(ctx, `f(${sx.toFixed(1)}) = ${sy.toFixed(2)}`, sx, sy, c, {ox: 12, oy: -10, color: '#e67e22'});
+                }
+            }
+
+            // Animation state
+            if (animState) {
+                const ll = this.leftLimit();
+                const rl = this.rightLimit();
+
+                // Left point (red)
+                GE.drawDashed(ctx, animState.lx, 0, animState.lx, ll, c, '#e74c3c');
+                GE.drawPoint(ctx, animState.lx, ll, c, '#e74c3c', 8);
+                ctx.shadowColor = '#e74c3c'; ctx.shadowBlur = 12;
+                GE.drawPoint(ctx, animState.lx, ll, c, '#e74c3c', 5);
+                ctx.shadowBlur = 0;
+
+                // Right point (green)
+                GE.drawDashed(ctx, animState.rx, 0, animState.rx, rl, c, '#27ae60');
+                GE.drawPoint(ctx, animState.rx, rl, c, '#27ae60', 8);
+                ctx.shadowColor = '#27ae60'; ctx.shadowBlur = 12;
+                GE.drawPoint(ctx, animState.rx, rl, c, '#27ae60', 5);
+                ctx.shadowBlur = 0;
+
+                // Labels
+                GE.drawLabel(ctx, `lim⁻ = ${ll}`, animState.lx, ll, c, {ox: -70, oy: -14, color: '#e74c3c', font: 'bold 13px Segoe UI'});
+                GE.drawLabel(ctx, `lim⁺ = ${rl}`, animState.rx, rl, c, {ox: 12, oy: -14, color: '#27ae60', font: 'bold 13px Segoe UI'});
+
+                if (animState.done) {
+                    const p = GE.w2s(cr, (ll + rl) / 2, c);
+                    if (ll === rl) {
+                        GE.drawBanner(ctx, `El limite EXISTE = ${ll}`, p.sx, p.sy - 30, 'rgba(39,174,96,0.92)', 'white');
+                    } else {
+                        GE.drawBanner(ctx, 'El limite NO EXISTE', p.sx, p.sy - 30, 'rgba(231,76,60,0.92)', 'white');
+                        GE.drawBanner(ctx, `${ll} ≠ ${rl}`, p.sx, p.sy + 10, 'rgba(44,62,80,0.85)', 'white');
+                    }
+                }
+            }
+        },
+
+        animate() {
+            if (this.animating) { cancelAnimationFrame(this.animId); this.animating = false; }
+            this.animating = true;
+            const cr = this.getCritical();
+            let dist = 3;
+            const speed = this.speed;
+            const self = this;
+
+            function frame() {
+                dist -= speed;
+                if (dist < 0.02) {
+                    self.render({lx: cr - 0.02, rx: cr + 0.02, done: true});
+                    self.animating = false;
+                    return;
+                }
+                self.render({lx: cr - dist, rx: cr + dist, done: false});
+                self.animId = requestAnimationFrame(frame);
+            }
+            self.animId = requestAnimationFrame(frame);
+        }
+    };
+
+    // ===== HEAVISIDE GRAPH =====
+    const HeavisideGraph = {
+        canvas: null, ctx: null,
+        cfg: { xMin: -4, xMax: 6, yMin: -0.8, yMax: 3.8, w: 700, h: 420, pad: { t: 40, r: 40, b: 50, l: 60 }},
+        shiftA: 0,
+        scaleK: 1,
+        combined: false,
+        animId: null,
+        animating: false,
+
+        init() {
+            this.canvas = document.getElementById('hvCanvas');
+            const container = this.canvas.parentElement;
+            const w = Math.min(700, container.clientWidth);
+            const h = w * (420 / 700);
+            this.cfg.w = w; this.cfg.h = h;
+            this.ctx = GE.setupHiDPI(this.canvas, w, h);
+
+            document.getElementById('hvShift').addEventListener('input', e => {
+                this.shiftA = e.target.value / 10;
+                document.getElementById('hvShiftVal').textContent = this.shiftA.toFixed(1);
+                this.combined = false;
+                document.getElementById('hvCombineBtn').textContent = '📈 Escalera';
+                this.render();
+            });
+            document.getElementById('hvScale').addEventListener('input', e => {
+                this.scaleK = e.target.value / 10;
+                document.getElementById('hvScaleVal').textContent = this.scaleK.toFixed(1);
+                this.combined = false;
+                document.getElementById('hvCombineBtn').textContent = '📈 Escalera';
+                this.render();
+            });
+            document.getElementById('hvCombineBtn').addEventListener('click', () => {
+                this.combined = !this.combined;
+                document.getElementById('hvCombineBtn').textContent = this.combined ? '📉 Individual' : '📈 Escalera';
+                this.render();
+            });
+            document.getElementById('hvAnimBtn').addEventListener('click', () => this.animate());
+            this.render();
+        },
+
+        render(animState) {
+            const c = this.cfg;
+            const ctx = this.ctx;
+            GE.clear(ctx, c);
+            GE.drawGrid(ctx, c);
+            GE.drawAxes(ctx, c);
+
+            if (this.combined) {
+                this.drawStaircase(ctx, c);
+            } else {
+                this.drawH(ctx, c, this.shiftA, this.scaleK, '#e67e22');
+                // Label
+                let lbl = this.scaleK === 1 ? `H(t${this.shiftA === 0 ? '' : (this.shiftA > 0 ? ' - ' + this.shiftA.toFixed(1) : ' + ' + (-this.shiftA).toFixed(1))})` :
+                    `${this.scaleK.toFixed(1)}·H(t${this.shiftA === 0 ? '' : (this.shiftA > 0 ? ' - ' + this.shiftA.toFixed(1) : ' + ' + (-this.shiftA).toFixed(1))})`;
+                ctx.font = 'bold 14px Segoe UI, sans-serif';
+                ctx.fillStyle = '#2c3e50';
+                ctx.textAlign = 'left';
+                ctx.fillText(lbl, c.pad.l + 8, c.pad.t - 12);
+            }
+
+            if (animState) {
+                const a = this.combined ? 0 : this.shiftA;
+                const k = this.combined ? 1 : this.scaleK;
+                // Left point (red) at y=0
+                GE.drawDashed(ctx, animState.lx, 0, animState.lx, 0, c, '#e74c3c');
+                GE.drawPoint(ctx, animState.lx, 0, c, '#e74c3c', 8);
+                // Right point (green) at y=k
+                GE.drawDashed(ctx, animState.rx, 0, animState.rx, k, c, '#27ae60');
+                GE.drawPoint(ctx, animState.rx, k, c, '#27ae60', 8);
+                // Labels
+                GE.drawLabel(ctx, `lim⁻ = 0`, animState.lx, 0, c, {ox: -65, oy: -14, color: '#e74c3c', font: 'bold 13px Segoe UI'});
+                GE.drawLabel(ctx, `lim⁺ = ${k.toFixed(1)}`, animState.rx, k, c, {ox: 12, oy: -14, color: '#27ae60', font: 'bold 13px Segoe UI'});
+
+                if (animState.done) {
+                    const p = GE.w2s(a, k / 2, c);
+                    GE.drawBanner(ctx, 'El limite NO EXISTE', p.sx, p.sy - 20, 'rgba(231,76,60,0.92)', 'white');
+                    GE.drawBanner(ctx, `Salto = ${k.toFixed(1)}`, p.sx, p.sy + 18, 'rgba(44,62,80,0.85)', 'white');
+                    // Arrow for jump
+                    const pBot = GE.w2s(a, 0, c);
+                    const pTop = GE.w2s(a, k, c);
+                    ctx.strokeStyle = '#8e44ad';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([6, 4]);
+                    ctx.beginPath(); ctx.moveTo(pBot.sx + 25, pBot.sy); ctx.lineTo(pTop.sx + 25, pTop.sy); ctx.stroke();
+                    ctx.setLineDash([]);
+                    // Arrow heads
+                    ctx.fillStyle = '#8e44ad';
+                    ctx.beginPath(); ctx.moveTo(pTop.sx + 25, pTop.sy); ctx.lineTo(pTop.sx + 20, pTop.sy + 8); ctx.lineTo(pTop.sx + 30, pTop.sy + 8); ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(pBot.sx + 25, pBot.sy); ctx.lineTo(pBot.sx + 20, pBot.sy - 8); ctx.lineTo(pBot.sx + 30, pBot.sy - 8); ctx.fill();
+                }
+            }
+        },
+
+        drawH(ctx, c, a, k, color) {
+            // left segment y=0
+            GE.drawLine(ctx, c.xMin, 0, a, 0, c, color, 3);
+            // right segment y=k
+            GE.drawLine(ctx, a, k, c.xMax, k, c, color, 3);
+            // circles
+            GE.drawOpenCircle(ctx, a, 0, c, color);
+            GE.drawPoint(ctx, a, k, c, color, 5);
+            // vertical dashed
+            GE.drawDashed(ctx, a, 0, a, k, c, '#bdc3c7');
+        },
+
+        drawStaircase(ctx, c) {
+            const colors = ['#3498db', '#e67e22', '#27ae60'];
+            const steps = [0, 1, 2];
+            // Draw the combined staircase
+            // y=0 for t<0
+            GE.drawLine(ctx, c.xMin, 0, 0, 0, c, '#3498db', 3);
+            // y=1 for 0<=t<1
+            GE.drawLine(ctx, 0, 1, 1, 1, c, '#3498db', 3);
+            // y=2 for 1<=t<2
+            GE.drawLine(ctx, 1, 2, 2, 2, c, '#3498db', 3);
+            // y=3 for t>=2
+            GE.drawLine(ctx, 2, 3, c.xMax, 3, c, '#3498db', 3);
+
+            // Circles at transitions
+            GE.drawOpenCircle(ctx, 0, 0, c, '#3498db');
+            GE.drawPoint(ctx, 0, 1, c, '#3498db', 4);
+            GE.drawOpenCircle(ctx, 1, 1, c, '#e67e22');
+            GE.drawPoint(ctx, 1, 2, c, '#e67e22', 4);
+            GE.drawOpenCircle(ctx, 2, 2, c, '#27ae60');
+            GE.drawPoint(ctx, 2, 3, c, '#27ae60', 4);
+
+            // vertical dashes
+            GE.drawDashed(ctx, 0, 0, 0, 1, c, '#bdc3c7');
+            GE.drawDashed(ctx, 1, 1, 1, 2, c, '#bdc3c7');
+            GE.drawDashed(ctx, 2, 2, 2, 3, c, '#bdc3c7');
+
+            // Labels
+            ctx.font = 'bold 14px Segoe UI, sans-serif';
+            ctx.fillStyle = '#2c3e50';
+            ctx.textAlign = 'left';
+            ctx.fillText('H(t) + H(t-1) + H(t-2)', c.pad.l + 8, c.pad.t - 12);
+
+            // Step labels
+            GE.drawLabel(ctx, 'y = 0', -2.5, 0, c, {ox: 0, oy: -10, color: '#7f8c8d', font: '12px Segoe UI'});
+            GE.drawLabel(ctx, 'y = 1', 0.3, 1, c, {ox: 0, oy: -10, color: '#3498db', font: '12px Segoe UI'});
+            GE.drawLabel(ctx, 'y = 2', 1.3, 2, c, {ox: 0, oy: -10, color: '#e67e22', font: '12px Segoe UI'});
+            GE.drawLabel(ctx, 'y = 3', 2.3, 3, c, {ox: 0, oy: -10, color: '#27ae60', font: '12px Segoe UI'});
+        },
+
+        animate() {
+            if (this.animating) { cancelAnimationFrame(this.animId); this.animating = false; }
+            this.animating = true;
+            const a = this.combined ? 0 : this.shiftA;
+            let dist = 3;
+            const self = this;
+
+            function frame() {
+                dist -= 0.02;
+                if (dist < 0.02) {
+                    self.render({lx: a - 0.02, rx: a + 0.02, done: true});
+                    self.animating = false;
+                    return;
+                }
+                self.render({lx: a - dist, rx: a + dist, done: false});
+                self.animId = requestAnimationFrame(frame);
+            }
+            self.animId = requestAnimationFrame(frame);
+        }
+    };
+
+    // ===== EXAMPLE ACCORDION =====
+    // ===== THEOREM DEMO =====
+    window.revealDemo = function(demoId, btn) {
+        const rows = document.querySelectorAll(`.demo-row-hidden[data-demo="${demoId}"]`);
+        let delay = 0;
+        rows.forEach(row => {
+            setTimeout(() => {
+                row.classList.add('show');
+                row.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            }, delay);
+            delay += 400;
+        });
+        setTimeout(() => {
+            document.getElementById(demoId + '-summary').classList.add('show');
+        }, delay + 200);
+        btn.style.display = 'none';
+    };
+
+    window.toggleExample = function(header) {
+        const body = header.nextElementSibling;
+        const isOpen = body.classList.contains('open');
+        // Close all in same section
+        header.closest('.section').querySelectorAll('.example-body').forEach(b => b.classList.remove('open'));
+        header.closest('.section').querySelectorAll('.example-header').forEach(h => h.classList.remove('open'));
+        if (!isOpen) {
+            body.classList.add('open');
+            header.classList.add('open');
+        }
+    };
+
+    window.revealNextStep = function(btn) {
+        const stepsContainer = btn.parentElement;
+        const hiddenSteps = stepsContainer.querySelectorAll('.step:not(.visible)');
+        if (hiddenSteps.length > 0) {
+            hiddenSteps[0].classList.add('visible');
+            hiddenSteps[0].scrollIntoView({behavior: 'smooth', block: 'nearest'});
+            if (hiddenSteps.length === 1) {
+                btn.style.display = 'none';
+            }
+        }
+    };
+
+    // ===== QUIZ SYSTEM =====
+    const attempts = {};
+    const scores = { tab1: 0, tab2: 0 };
+    const answered = {};
+
+    window.checkMC = function(qId, selected, correct) {
+        if (answered[qId]) return;
+        if (!attempts[qId]) attempts[qId] = 0;
+        attempts[qId]++;
+
+        const qEl = document.getElementById(qId);
+        const btns = qEl.querySelectorAll('.option-btn');
+
+        if (selected === correct) {
+            answered[qId] = true;
+            btns[selected].classList.add('correct-answer');
+            btns.forEach(b => b.disabled = true);
+            qEl.classList.add('correct');
+            document.getElementById(qId + '-ok').classList.add('show');
+            document.getElementById(qId + '-err').classList.remove('show');
+            const tab = qId.startsWith('q1') ? 'tab1' : 'tab2';
+            scores[tab]++;
+            document.getElementById(tab === 'tab1' ? 'score1' : 'score2').textContent = scores[tab];
+        } else {
+            btns[selected].classList.add('wrong-answer');
+            setTimeout(() => btns[selected].classList.remove('wrong-answer'), 800);
+            document.getElementById(qId + '-err').classList.add('show');
+            if (attempts[qId] >= 2) {
+                document.getElementById(qId + '-sol-btn').style.display = 'inline-block';
+            }
+        }
+    };
+
+    window.checkFreeText = function(qId, acceptableAnswers) {
+        if (answered[qId]) return;
+        if (!attempts[qId]) attempts[qId] = 0;
+        attempts[qId]++;
+
+        const input = document.getElementById(qId + '-input');
+        const userAnswer = input.value.trim().toLowerCase().replace(/\s+/g, '');
+        const qEl = document.getElementById(qId);
+
+        const normalized = acceptableAnswers.map(a => a.toLowerCase().replace(/\s+/g, ''));
+        if (normalized.includes(userAnswer)) {
+            answered[qId] = true;
+            input.disabled = true;
+            input.style.borderColor = '#27ae60';
+            input.style.background = '#eafaf1';
+            qEl.classList.add('correct');
+            document.getElementById(qId + '-ok').classList.add('show');
+            document.getElementById(qId + '-err').classList.remove('show');
+            const tab = qId.startsWith('q1') ? 'tab1' : 'tab2';
+            scores[tab]++;
+            document.getElementById(tab === 'tab1' ? 'score1' : 'score2').textContent = scores[tab];
+        } else {
+            input.style.borderColor = '#e74c3c';
+            setTimeout(() => { input.style.borderColor = '#e0e5ec'; }, 800);
+            document.getElementById(qId + '-err').classList.add('show');
+            if (attempts[qId] >= 2) {
+                document.getElementById(qId + '-sol-btn').style.display = 'inline-block';
+            }
+        }
+    };
+
+    window.showSolution = function(qId) {
+        document.getElementById(qId + '-sol').classList.add('show');
+        document.getElementById(qId + '-sol-btn').style.display = 'none';
+        // Disable the question
+        answered[qId] = true;
+        const qEl = document.getElementById(qId);
+        qEl.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+        const input = qEl.querySelector('.free-text-input');
+        if (input) input.disabled = true;
+    };
+
+    // ===== INIT =====
+    AbsValueGraph.init();
+
+    // ===== AUTO-ANIMATE ON SCROLL (IntersectionObserver) =====
+    function autoAnimateOnScroll(canvasId, graphObj, initFn) {
+        let triggered = false;
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !triggered) {
+                    triggered = true;
+                    if (initFn) initFn();
+                    setTimeout(() => graphObj.animate(), 400);
+                }
+            });
+        }, { threshold: 0.5 });
+        const el = document.getElementById(canvasId);
+        if (el) observer.observe(el);
+        return { reset() { triggered = false; } };
+    }
+
+    // Auto-animate Tab 1 graph when scrolled into view
+    autoAnimateOnScroll('absCanvas', AbsValueGraph);
+
+    // Auto-animate Tab 2 graph when its tab is opened and scrolled into view
+    let hvAutoAnim = null;
+    const origTabClick = tabBtns[1].onclick;
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.dataset.tab === 'tab2' && !hvAutoAnim) {
+                // Small delay to let the tab content render
+                setTimeout(() => {
+                    hvAutoAnim = autoAnimateOnScroll('hvCanvas', HeavisideGraph, () => {
+                        if (!hvInitialized) { hvInitialized = true; HeavisideGraph.init(); }
+                    });
+                }, 100);
+            }
+        });
+    });
+
+    // Responsive resize
+    window.addEventListener('resize', () => {
+        const c1 = AbsValueGraph.canvas.parentElement;
+        const w1 = Math.min(700, c1.clientWidth);
+        const h1 = w1 * (420 / 700);
+        AbsValueGraph.cfg.w = w1; AbsValueGraph.cfg.h = h1;
+        AbsValueGraph.ctx = GE.setupHiDPI(AbsValueGraph.canvas, w1, h1);
+        AbsValueGraph.render();
+
+        if (hvInitialized) {
+            const c2 = HeavisideGraph.canvas.parentElement;
+            const w2 = Math.min(700, c2.clientWidth);
+            const h2 = w2 * (420 / 700);
+            HeavisideGraph.cfg.w = w2; HeavisideGraph.cfg.h = h2;
+            HeavisideGraph.ctx = GE.setupHiDPI(HeavisideGraph.canvas, w2, h2);
+            HeavisideGraph.render();
+        }
+    });
+
+})();
+</script>
+</body>
+</html>
