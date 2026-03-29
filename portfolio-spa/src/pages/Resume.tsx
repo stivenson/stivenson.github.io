@@ -167,7 +167,7 @@ export function Resume() {
           {[
             {
               title: 'Guía Proyecto Sostenible Data IA',
-              url: 'https://stivenson.github.io/guia-proyecto-sostenible-data-ia.html',
+              url: 'https://stivenson.github.io/proyecto-solar-sostenible.html',
               tool: 'AntiGravity',
               role: 'Desarrollo',
               technologies: ['HTML', 'CSS', 'JavaScript', 'AI-Assisted']
