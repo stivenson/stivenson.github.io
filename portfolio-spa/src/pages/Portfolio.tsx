@@ -353,6 +353,86 @@ export function Portfolio() {
         </div>
       </RichPanel>
 
+      {/* Academic Guides Panel */}
+      <RichPanel title="Guías Académicas — Unisimón" icon="🎓" electric>
+        <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px', lineHeight: '1.6' }}>
+          Material académico desarrollado para la Universidad Simón Bolívar: guías, talleres y objetos virtuales de aprendizaje.
+        </p>
+        <div style={{ display: 'grid', gap: '16px' }}>
+          {[
+            {
+              category: 'Programación',
+              icon: '🐍',
+              color: '#3b82f6',
+              items: [
+                {
+                  title: 'Guías y Ejercicios — Python Básico',
+                  desc: 'Guía práctica de Python básico para estudiantes de la USB Cúcuta.',
+                  url: 'https://stivenson.github.io/guia_python_basico_usb.html',
+                },
+                {
+                  title: 'Taller de Práctica — Programación 2',
+                  desc: 'Taller del primer corte de Programación 2 con ejercicios aplicados.',
+                  url: 'https://stivenson.github.io/taller_prog2_corte1_usb.html',
+                },
+              ],
+            },
+            {
+              category: 'Matemáticas',
+              icon: '📐',
+              color: '#10b981',
+              items: [
+                {
+                  title: 'OVA — Cálculo Diferencial',
+                  desc: 'Objeto Virtual de Aprendizaje para el curso de Cálculo Diferencial.',
+                  url: 'https://stivenson.github.io/OVA_Calculo_Diferencial.html',
+                },
+              ],
+            },
+          ].map((group) => (
+            <div key={group.category}>
+              <h4 style={{
+                fontSize: '13px',
+                fontWeight: 600,
+                marginBottom: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: group.color,
+              }}>
+                <span>{group.icon}</span>
+                {group.category}
+              </h4>
+              <div className="rf-cards-grid">
+                {group.items.map((item) => (
+                  <motion.a
+                    key={item.url}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rf-card"
+                    style={{ textDecoration: 'none', color: 'inherit' }}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(0, 102, 255, 0.2)' }}
+                  >
+                    <div className="rf-card-header" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <RetroIcon emoji="📄" size={14} />
+                      {item.title}
+                    </div>
+                    <div className="rf-card-body">
+                      <p style={{ fontSize: '12px', color: 'var(--rf-text-muted)', lineHeight: '1.6' }}>
+                        {item.desc}
+                      </p>
+                    </div>
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </RichPanel>
+
       {/* Pinned Repos Table */}
       <RichPanel title="Repositorios Destacados" icon="📌">
         <RichTable 
