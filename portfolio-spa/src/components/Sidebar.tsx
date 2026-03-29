@@ -114,18 +114,16 @@ export function Sidebar() {
             </span>
             GitHub Profile
           </a>
-          <a 
-            href="https://stivenson.github.io/toc_support.html" 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <span
             className="rf-tree-item"
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: '12px', opacity: 0.5, cursor: 'not-allowed' }}
+            title="En mantenimiento"
           >
             <span className="rf-tree-icon">
               <RetroIcon emoji="🧠" size={16} />
             </span>
-            Soporte TOC
-          </a>
+            Soporte TOC 🚧
+          </span>
           <a 
             href="https://github.com/stivenson/job_search_agents" 
             target="_blank" 

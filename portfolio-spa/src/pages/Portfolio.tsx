@@ -236,23 +236,20 @@ export function Portfolio() {
               basada en andamiaje cognitivo y navegación por estados internos, implementada como interfaz digital no clínica 
               de apoyo personal, complementaria —no sustitutiva— al tratamiento profesional.
             </p>
-            <motion.a
-              href="https://stivenson.github.io/toc_support.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rf-button primary"
-              style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                textDecoration: 'none'
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <RetroIcon emoji="🔗" size={16} />
-              <span>Visitar Soporte TOC</span>
-            </motion.a>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              borderRadius: '4px',
+              background: 'rgba(108, 92, 231, 0.1)',
+              border: '1px solid #6c5ce7',
+              fontSize: '13px',
+              color: '#6c5ce7',
+              fontWeight: 500,
+            }}>
+              🚧 <span>En mantenimiento — próximamente disponible</span>
+            </div>
             <div style={{ 
               marginTop: '12px',
               padding: '10px',
