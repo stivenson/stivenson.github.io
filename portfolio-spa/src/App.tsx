@@ -7,6 +7,7 @@ import './styles/retro-modern.css';
 function App() {
   return (
     <HashRouter>
+      <div className="dark-mountain-bg" />
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
         <div className="rf-layout" style={{ flex: 1 }}>
@@ -24,7 +25,7 @@ function App() {
         </div>
         <footer style={{ 
           padding: '12px 24px',
-          background: 'linear-gradient(180deg, #1a3050 0%, #0d1a28 100%)',
+          background: 'linear-gradient(180deg, #060620 0%, #030315 100%)',
           color: 'rgba(255, 255, 255, 0.7)',
           fontSize: '12px',
           textAlign: 'center',

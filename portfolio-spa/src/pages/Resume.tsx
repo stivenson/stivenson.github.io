@@ -16,12 +16,12 @@ export function Resume() {
   const formatCourseName = (courseName: string, courseColor: string) => {
     // Mapeo de instituciones a colores oscuros
     const institutionColors: Record<string, string> = {
-      'Platzi': '#5A8A2E', // Verde oscuro para Platzi
-      'SENA': '#1B5E20', // Verde muy oscuro para SENA
-      'Universidad Simón Bolívar': '#0D47A1', // Azul oscuro para Unisimón
-      'IBM - Coursera': '#003A8C', // Azul muy oscuro para IBM/Coursera
-      'IBM': '#003A8C',
-      'Coursera': '#003A8C'
+      'Platzi': '#6DC535', // Verde oscuro para Platzi
+      'SENA': '#4CAF50', // Verde muy oscuro para SENA
+      'Universidad Simón Bolívar': '#5580DD', // Azul oscuro para Unisimón
+      'IBM - Coursera': '#4488DD', // Azul muy oscuro para IBM/Coursera
+      'IBM': '#4488DD',
+      'Coursera': '#4488DD'
     };
 
     // Buscar el patrón (Institución) en el texto
@@ -56,10 +56,10 @@ export function Resume() {
           <span style={{ 
             display: 'inline-block',
             padding: '2px 8px',
-            background: 'rgba(0, 102, 255, 0.1)',
+            background: 'rgba(76, 89, 211, 0.12)',
             borderRadius: '4px',
             fontSize: '11px',
-            color: 'var(--electric-blue)'
+            color: 'rgba(255, 255, 255, 0.85)'
           }}>
             {exp.modality}
           </span>
@@ -110,7 +110,7 @@ export function Resume() {
         <div>
           {sortedCourses.map((course, index) => {
             const courseData = typeof course === 'string' 
-              ? { name: course, emoji: '📚', color: '#0066ff' }
+              ? { name: course, emoji: '📚', color: '#6B7BF0' }
               : course;
             return (
               <div 
@@ -222,7 +222,7 @@ export function Resume() {
                 transition: 'all 0.2s ease'
               }}
               whileHover={{ 
-                boxShadow: '0 4px 12px rgba(0, 102, 255, 0.15)',
+                boxShadow: '0 4px 12px rgba(76, 89, 211, 0.25)',
                 borderColor: 'var(--electric-blue)'
               }}
             >
@@ -258,10 +258,10 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '11px',
                       padding: '2px 8px',
-                      background: '#ffffff',
+                      background: '#0a0a2e',
                       borderRadius: '4px',
-                      border: '1px solid #0066ff',
-                      color: '#0066ff',
+                      border: '1px solid #4C59D3',
+                      color: '#6B7BF0',
                       fontWeight: 500
                     }}>
                       {project.tool}
@@ -269,7 +269,7 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '11px',
                       padding: '2px 8px',
-                      background: '#0066ff',
+                      background: '#4C59D3',
                       borderRadius: '4px',
                       color: '#ffffff',
                       fontWeight: 500
@@ -316,10 +316,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#E3F2FD', // Azul suave
-            border: '1px solid #90CAF9'
+            background: 'rgba(76,89,211,0.1)', // Azul suave
+            border: '1px solid rgba(76,89,211,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#1565C0', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#6B7BF0', fontWeight: 600 }}>
               Lenguajes de Programación
             </h4>
             <TagList tags={skills.languages} electric />
@@ -327,10 +327,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#F3E5F5', // Púrpura suave
-            border: '1px solid #CE93D8'
+            background: 'rgba(123,104,238,0.1)', // Púrpura suave
+            border: '1px solid rgba(123,104,238,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#7B1FA2', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#9B8AFF', fontWeight: 600 }}>
               Frontend
             </h4>
             <TagList tags={skills.frontend} electric />
@@ -338,10 +338,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#FFEBEE', // Rojo suave
-            border: '1px solid #EF9A9A'
+            background: 'rgba(239,68,68,0.1)', // Rojo suave
+            border: '1px solid rgba(239,68,68,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#C62828', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#F87171', fontWeight: 600 }}>
               Backend
             </h4>
             <TagList tags={skills.backend} electric />
@@ -349,10 +349,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#E1F5FE', // Azul claro suave
-            border: '1px solid #81D4FA'
+            background: 'rgba(85,170,255,0.1)', // Azul claro suave
+            border: '1px solid rgba(85,170,255,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#0277BD', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#55AAFF', fontWeight: 600 }}>
               Cloud & DevOps
             </h4>
             <TagList tags={[...skills.cloud, ...skills.devops]} electric />
@@ -360,10 +360,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#E8F5E9', // Verde suave
-            border: '1px solid #A5D6A7'
+            background: 'rgba(74,222,128,0.1)', // Verde suave
+            border: '1px solid rgba(74,222,128,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#2E7D32', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#4ADE80', fontWeight: 600 }}>
               Bases de Datos
             </h4>
             <TagList tags={skills.databases} electric />
@@ -371,10 +371,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#FFF3E0', // Naranja suave
-            border: '1px solid #FFCC80'
+            background: 'rgba(245,158,11,0.1)', // Naranja suave
+            border: '1px solid rgba(245,158,11,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#E65100', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#F59E0B', fontWeight: 600 }}>
               Inteligencia Artificial
             </h4>
             <TagList tags={skills.ai} electric />
@@ -382,10 +382,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#EFEBE9', // Marrón suave
-            border: '1px solid #BCAAA4'
+            background: 'rgba(161,137,115,0.1)', // Marrón suave
+            border: '1px solid rgba(161,137,115,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#5D4037', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#C8A882', fontWeight: 600 }}>
               Herramientas & Otros
             </h4>
             <TagList tags={skills.tools} electric />
@@ -393,10 +393,10 @@ export function Resume() {
           <div style={{
             padding: '16px',
             borderRadius: '8px',
-            background: '#FAFAFA', // Gris muy suave
-            border: '1px solid #E0E0E0'
+            background: 'rgba(152,152,176,0.1)', // Gris muy suave
+            border: '1px solid rgba(152,152,176,0.3)'
           }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#424242', fontWeight: 600 }}>
+            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#B8B8D0', fontWeight: 600 }}>
               Metodologías
             </h4>
             <TagList tags={skills.methodologies} electric />
@@ -424,7 +424,7 @@ export function Resume() {
                 transition: 'all 0.2s ease'
               }}
               whileHover={{ 
-                boxShadow: '0 4px 12px rgba(0, 102, 255, 0.15)',
+                boxShadow: '0 4px 12px rgba(76, 89, 211, 0.25)',
                 borderColor: 'var(--electric-blue)'
               }}
             >
@@ -489,7 +489,7 @@ export function Resume() {
                           padding: '4px 10px',
                           background: ref.social.platform === 'instagram' 
                             ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)'
-                            : 'rgba(0, 136, 204, 0.15)',
+                            : 'rgba(76, 89, 211, 0.15)',
                           borderRadius: '4px',
                           color: ref.social.platform === 'instagram' ? 'white' : 'var(--electric-blue)',
                           display: 'inline-flex',
@@ -523,7 +523,7 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '12px',
                       padding: '4px 10px',
-                      background: '#0066ff',
+                      background: '#4C59D3',
                       borderRadius: '4px',
                       color: '#ffffff',
                       display: 'inline-flex',

@@ -2,26 +2,26 @@
 /* Efectos de sombra y bordes estilo Windows 95/98 */
 
 :root {
-  /* Retro Shadow Effects */
-  --retro-shadow-inset: inset 1px 1px 2px rgba(0, 0, 0, 0.15),
-                         inset -1px -1px 2px rgba(255, 255, 255, 0.8);
-  --retro-shadow-raised: 1px 1px 0 rgba(255, 255, 255, 0.9),
-                         -1px -1px 0 rgba(0, 0, 0, 0.25),
-                         2px 2px 0 rgba(0, 0, 0, 0.1);
-  --retro-shadow-pressed: inset 1px 1px 2px rgba(0, 0, 0, 0.3),
-                          inset -1px -1px 1px rgba(255, 255, 255, 0.5);
-  
-  /* Retro Borders */
-  --retro-border-raised: 2px outset #c0c0c0;
-  --retro-border-inset: 2px inset #c0c0c0;
-  --retro-border-thin-raised: 1px outset #e0e0e0;
-  --retro-border-thin-inset: 1px inset #a0a0a0;
-  
-  /* Retro Colors */
-  --retro-gray-light: #e0e0e0;
-  --retro-gray-medium: #c0c0c0;
-  --retro-gray-dark: #808080;
-  --retro-white: #ffffff;
+  /* Retro Shadow Effects — Dark Mode */
+  --retro-shadow-inset: inset 1px 1px 2px rgba(0, 0, 0, 0.4),
+                         inset -1px -1px 2px rgba(255, 255, 255, 0.04);
+  --retro-shadow-raised: 1px 1px 0 rgba(255, 255, 255, 0.06),
+                         -1px -1px 0 rgba(0, 0, 0, 0.5),
+                         2px 2px 0 rgba(0, 0, 0, 0.3);
+  --retro-shadow-pressed: inset 1px 1px 2px rgba(0, 0, 0, 0.5),
+                          inset -1px -1px 1px rgba(255, 255, 255, 0.03);
+
+  /* Retro Borders — Dark Mode */
+  --retro-border-raised: 2px outset #2a2a4a;
+  --retro-border-inset: 2px inset #1a1a3a;
+  --retro-border-thin-raised: 1px outset #2a2a5a;
+  --retro-border-thin-inset: 1px inset #141438;
+
+  /* Retro Colors — Dark Mode */
+  --retro-gray-light: #2a2a4a;
+  --retro-gray-medium: #1e1e48;
+  --retro-gray-dark: #141438;
+  --retro-white: #0a0a2e;
   --retro-black: #000000;
 }
 
@@ -218,8 +218,8 @@
   height: auto;
   border-radius: 8px;
   margin: 20px 0;
-  border: 1px solid rgba(0, 229, 255, 0.2);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(85, 170, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .markdown-content pre {

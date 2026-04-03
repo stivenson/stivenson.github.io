@@ -97,10 +97,10 @@ export function Portfolio() {
         </p>
         
         <div style={{ 
-          display: 'flex', 
-          gap: '8px', 
+          display: 'flex',
+          gap: '8px',
           padding: '12px',
-          background: 'rgba(0, 102, 255, 0.05)',
+          background: 'var(--card-accent-bg-light)',
           borderRadius: '6px',
           marginBottom: '16px'
         }}>
@@ -176,12 +176,12 @@ export function Portfolio() {
             <div style={{ 
               marginTop: '12px',
               padding: '10px',
-              background: 'rgba(0, 102, 255, 0.05)',
+              background: 'var(--card-accent-bg-light)',
               borderRadius: '6px',
               borderLeft: '3px solid var(--electric-blue)'
             }}>
               <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-                <strong style={{ color: 'var(--electric-blue)' }}>✨ Características:</strong>
+                <strong style={{ color: 'var(--electric-cyan)' }}>✨ Características:</strong>
                 <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
                   <li>Interfaces de chat conversacionales</li>
                   <li>Dashboards de IA</li>
@@ -211,7 +211,7 @@ export function Portfolio() {
               minWidth: '60px',
               minHeight: '60px',
               borderRadius: '8px',
-              background: 'linear-gradient(135deg, #6c5ce7 0%, #5f4bd8 100%)',
+              background: 'linear-gradient(135deg, #7B68EE 0%, #6858DE 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -246,7 +246,7 @@ export function Portfolio() {
                 alignItems: 'center',
                 gap: '8px',
                 textDecoration: 'none',
-                background: 'linear-gradient(135deg, #6c5ce7 0%, #5f4bd8 100%)',
+                background: 'linear-gradient(135deg, #7B68EE 0%, #6858DE 100%)',
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -257,12 +257,12 @@ export function Portfolio() {
             <div style={{ 
               marginTop: '12px',
               padding: '10px',
-              background: 'rgba(108, 92, 231, 0.05)',
+              background: 'rgba(123, 104, 238, 0.08)',
               borderRadius: '6px',
-              borderLeft: '3px solid #6c5ce7'
+              borderLeft: '3px solid #7B68EE'
             }}>
               <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-                <strong style={{ color: '#6c5ce7' }}>✨ Características:</strong>
+                <strong style={{ color: '#9B8AFF' }}>✨ Características:</strong>
                 <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
                   <li>Interfaz de apoyo emocional con LLMs</li>
                   <li>Almacenamiento local y privacidad garantizada</li>
@@ -292,7 +292,7 @@ export function Portfolio() {
               minWidth: '60px',
               minHeight: '60px',
               borderRadius: '8px',
-              background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+              background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -336,12 +336,12 @@ export function Portfolio() {
             <div style={{ 
               marginTop: '12px',
               padding: '10px',
-              background: 'rgba(6, 182, 212, 0.05)',
+              background: 'rgba(34, 211, 238, 0.08)',
               borderRadius: '6px',
-              borderLeft: '3px solid #06b6d4'
+              borderLeft: '3px solid #22d3ee'
             }}>
               <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-                <strong style={{ color: '#06b6d4' }}>✨ Características:</strong>
+                <strong style={{ color: '#22d3ee' }}>✨ Características:</strong>
                 <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
                   <li>Arquitectura multiagente con LangGraph</li>
                   <li>Protección anti-bot avanzada</li>
@@ -364,7 +364,7 @@ export function Portfolio() {
             {
               category: 'Programación',
               icon: '🐍',
-              color: '#3b82f6',
+              color: '#6B7BF0',
               items: [
                 {
                   title: 'Guías y Ejercicios — Python Básico',
@@ -381,7 +381,7 @@ export function Portfolio() {
             {
               category: 'Matemáticas',
               icon: '📐',
-              color: '#10b981',
+              color: '#4ade80',
               items: [
                 {
                   title: 'OVA — Cálculo Diferencial',
@@ -415,7 +415,7 @@ export function Portfolio() {
                     style={{ textDecoration: 'none', color: 'inherit' }}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(0, 102, 255, 0.2)' }}
+                    whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(76, 89, 211, 0.3)' }}
                   >
                     <div className="rf-card-header" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <RetroIcon emoji="📄" size={14} />
@@ -476,7 +476,7 @@ export function Portfolio() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: catIndex * 0.1 + projIndex * 0.05 }}
-                    whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(0, 102, 255, 0.2)' }}
+                    whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(76, 89, 211, 0.3)' }}
                   >
                     <div className="rf-card-header" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <RetroIcon emoji="📦" size={16} />
@@ -506,7 +506,7 @@ export function Portfolio() {
         }}>
           <div style={{ 
             padding: '20px',
-            background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
             borderRadius: '8px'
           }}>
             <div style={{ fontSize: '32px', marginBottom: '8px' }}>72+</div>
@@ -514,7 +514,7 @@ export function Portfolio() {
           </div>
           <div style={{ 
             padding: '20px',
-            background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
             borderRadius: '8px'
           }}>
             <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -524,7 +524,7 @@ export function Portfolio() {
           </div>
           <div style={{ 
             padding: '20px',
-            background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
             borderRadius: '8px'
           }}>
             <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -534,7 +534,7 @@ export function Portfolio() {
           </div>
           <div style={{ 
             padding: '20px',
-            background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
             borderRadius: '8px'
           }}>
             <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

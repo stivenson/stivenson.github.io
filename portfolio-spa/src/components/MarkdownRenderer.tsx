@@ -36,7 +36,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           marginTop: '28px',
           marginBottom: '14px',
           paddingBottom: '8px',
-          borderBottom: '1px solid rgba(0, 229, 255, 0.3)',
+          borderBottom: '1px solid rgba(85, 170, 255, 0.2)',
           lineHeight: 1.4
         }}
         {...props}
@@ -124,7 +124,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         style={{
           color: 'var(--electric-cyan)',
           textDecoration: 'underline',
-          textDecorationColor: 'rgba(0, 229, 255, 0.5)',
+          textDecorationColor: 'rgba(85, 170, 255, 0.4)',
           transition: 'all 0.2s ease'
         }}
         onMouseEnter={(e) => {
@@ -133,7 +133,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.color = 'var(--electric-cyan)';
-          e.currentTarget.style.textDecorationColor = 'rgba(0, 229, 255, 0.5)';
+          e.currentTarget.style.textDecorationColor = 'rgba(85, 170, 255, 0.4)';
         }}
         target="_blank"
         rel="noopener noreferrer"
@@ -176,8 +176,8 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             height: 'auto',
             borderRadius: '8px',
             margin: '20px 0',
-            border: '1px solid rgba(0, 229, 255, 0.2)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+            border: '1px solid rgba(85, 170, 255, 0.15)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
           }}
           {...props}
         />
@@ -193,13 +193,13 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         return (
           <code 
             style={{
-              background: 'rgba(0, 102, 255, 0.1)',
+              background: 'rgba(76, 89, 211, 0.12)',
               color: 'var(--electric-cyan)',
               padding: '2px 6px',
               borderRadius: '4px',
               fontSize: '0.9em',
               fontFamily: 'monospace',
-              border: '1px solid rgba(0, 229, 255, 0.2)'
+              border: '1px solid rgba(85, 170, 255, 0.15)'
             }}
             {...props}
           >
@@ -217,8 +217,8 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             padding: '16px',
             marginBottom: '20px',
             fontSize: '14px',
-            border: '1px solid rgba(0, 229, 255, 0.2)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+            border: '1px solid rgba(85, 170, 255, 0.15)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
           }}
           {...props}
         >
@@ -246,7 +246,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           marginBottom: '20px',
           paddingTop: '12px',
           paddingBottom: '12px',
-          background: 'rgba(0, 102, 255, 0.05)',
+          background: 'rgba(76, 89, 211, 0.06)',
           borderRadius: '0 6px 6px 0',
           fontStyle: 'italic',
           color: 'var(--rf-text-muted)'
@@ -262,7 +262,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           style={{
             width: '100%',
             borderCollapse: 'collapse',
-            border: '1px solid rgba(0, 229, 255, 0.3)',
+            border: '1px solid rgba(85, 170, 255, 0.2)',
             borderRadius: '6px',
             overflow: 'hidden'
           }}
@@ -273,7 +273,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     thead: ({ node, ...props }) => (
       <thead 
         style={{
-          background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.2) 0%, rgba(0, 229, 255, 0.15) 100%)',
+          background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.2) 0%, rgba(85, 170, 255, 0.1) 100%)',
           borderBottom: '2px solid var(--electric-cyan)'
         }}
         {...props}
@@ -285,11 +285,11 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     tr: ({ node, ...props }) => (
       <tr 
         style={{
-          borderBottom: '1px solid rgba(0, 229, 255, 0.2)',
+          borderBottom: '1px solid rgba(85, 170, 255, 0.15)',
           transition: 'background 0.2s ease'
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(0, 229, 255, 0.1)';
+          e.currentTarget.style.background = 'rgba(85, 170, 255, 0.08)';
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.background = 'transparent';
