@@ -125,6 +125,22 @@ export function Sidebar() {
               <RetroIcon emoji="🧠" size={16} />
             </span>
             Soporte TOC
+            <motion.span
+              style={{
+                fontSize: '8px',
+                padding: '1px 5px',
+                borderRadius: '8px',
+                background: 'var(--electric-blue)',
+                color: '#fff',
+                fontWeight: 700,
+                marginLeft: '6px',
+                letterSpacing: '0.3px',
+              }}
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              app web
+            </motion.span>
           </a>
           <a 
             href="https://github.com/stivenson/job_search_agents" 
@@ -149,6 +165,22 @@ export function Sidebar() {
               <RetroIcon emoji="🤖" size={16} />
             </span>
             Directorio LLMs
+            <motion.span
+              style={{
+                fontSize: '8px',
+                padding: '1px 5px',
+                borderRadius: '8px',
+                background: 'var(--electric-blue)',
+                color: '#fff',
+                fontWeight: 700,
+                marginLeft: '6px',
+                letterSpacing: '0.3px',
+              }}
+              animate={{ opacity: [1, 0.3, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+            >
+              app web
+            </motion.span>
           </a>
           </div>
         </motion.div>
