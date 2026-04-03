@@ -130,14 +130,14 @@ export function Sidebar() {
                 fontSize: '8px',
                 padding: '1px 5px',
                 borderRadius: '8px',
-                background: 'var(--electric-blue)',
+                background: '#e67e22',
                 color: '#fff',
                 fontWeight: 700,
                 marginLeft: '6px',
                 letterSpacing: '0.3px',
               }}
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ opacity: [1, 0.45, 1] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
             >
               app web
             </motion.span>
@@ -170,14 +170,14 @@ export function Sidebar() {
                 fontSize: '8px',
                 padding: '1px 5px',
                 borderRadius: '8px',
-                background: 'var(--electric-blue)',
+                background: '#e67e22',
                 color: '#fff',
                 fontWeight: 700,
                 marginLeft: '6px',
                 letterSpacing: '0.3px',
               }}
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              animate={{ opacity: [1, 0.45, 1] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
             >
               app web
             </motion.span>
