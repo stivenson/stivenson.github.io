@@ -234,7 +234,7 @@ export function About() {
               width: '70%',
               height: '70%',
               borderRadius: '8px',
-              background: '#ffffff',
+              background: '#0a0a2e',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -267,7 +267,7 @@ export function About() {
               fontStyle: 'italic', 
               color: 'var(--rf-text-muted)',
               padding: '12px',
-              background: 'rgba(0, 102, 255, 0.05)',
+              background: 'var(--card-accent-bg-light)',
               borderRadius: '6px',
               borderLeft: '3px solid var(--electric-blue)'
             }}>
@@ -290,7 +290,7 @@ function QuestionAnswer({ question, answer }: { question: string; answer: string
       animate={{ opacity: 1, x: 0 }}
       style={{
         padding: '12px 16px',
-        background: 'rgba(0, 102, 255, 0.03)',
+        background: 'var(--card-accent-bg-lighter)',
         borderLeft: '3px solid var(--electric-blue)',
         borderRadius: '0 6px 6px 0'
       }}

@@ -35,7 +35,7 @@ export function Dashboard() {
               width: '70%',
               height: '70%',
               borderRadius: '8px',
-              background: '#ffffff',
+              background: '#0a0a2e',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -66,11 +66,11 @@ export function Dashboard() {
               {personal.location}
             </p>
             <p style={{ 
-              fontSize: '12px', 
-              fontStyle: 'italic', 
-              color: 'var(--electric-blue)',
+              fontSize: '12px',
+              fontStyle: 'italic',
+              color: 'rgba(255, 255, 255, 0.85)',
               padding: '8px 12px',
-              background: 'rgba(0, 102, 255, 0.08)',
+              background: 'var(--card-accent-bg)',
               borderRadius: '4px',
               borderLeft: '3px solid var(--electric-blue)'
             }}>
@@ -88,7 +88,7 @@ export function Dashboard() {
               whileHover={{ scale: 1.02 }}
               style={{ 
                 padding: '16px', 
-                background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+                background: 'var(--card-accent-bg)',
                 borderRadius: '6px',
                 textAlign: 'center',
                 border: '1px solid var(--rf-border)'
@@ -105,7 +105,7 @@ export function Dashboard() {
               whileHover={{ scale: 1.02 }}
               style={{ 
                 padding: '16px', 
-                background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+                background: 'var(--card-accent-bg)',
                 borderRadius: '6px',
                 textAlign: 'center',
                 border: '1px solid var(--rf-border)'
@@ -122,7 +122,7 @@ export function Dashboard() {
               whileHover={{ scale: 1.02 }}
               style={{ 
                 padding: '16px', 
-                background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+                background: 'var(--card-accent-bg)',
                 borderRadius: '6px',
                 textAlign: 'center',
                 border: '1px solid var(--rf-border)'
@@ -139,7 +139,7 @@ export function Dashboard() {
               whileHover={{ scale: 1.02 }}
               style={{ 
                 padding: '16px', 
-                background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%)',
+                background: 'var(--card-accent-bg)',
                 borderRadius: '6px',
                 textAlign: 'center',
                 border: '1px solid var(--rf-border)'

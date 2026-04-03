@@ -72,22 +72,22 @@ export function ArticleDetail() {
             alignItems: 'center',
             gap: '8px',
             padding: '8px 16px',
-            background: 'rgba(0, 102, 255, 0.1)',
-            color: '#6b7280',
+            background: 'rgba(76, 89, 211, 0.12)',
+            color: '#9898b0',
             borderRadius: '6px',
             textDecoration: 'none',
             fontSize: '13px',
             fontWeight: 600,
-            border: '1px solid rgba(0, 229, 255, 0.3)',
+            border: '1px solid var(--border-glow-strong)',
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.2)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.2)';
             e.currentTarget.style.borderColor = 'var(--electric-cyan)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.1)';
-            e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.3)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.12)';
+            e.currentTarget.style.borderColor = 'var(--border-glow-strong)';
           }}
         >
           <RetroIcon emoji="←" size={14} />
@@ -119,7 +119,7 @@ export function ArticleDetail() {
                 day: 'numeric'
               })}
             </span>
-            <span style={{ color: 'rgba(0, 229, 255, 0.6)' }}>•</span>
+            <span style={{ color: 'rgba(85, 170, 255, 0.4)' }}>•</span>
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',
@@ -130,12 +130,12 @@ export function ArticleDetail() {
                   key={tag}
                   style={{
                     padding: '4px 10px',
-                    background: 'rgba(0, 102, 255, 0.1)',
+                    background: 'rgba(76, 89, 211, 0.12)',
                     color: 'var(--electric-cyan)',
                     borderRadius: '12px',
                     fontSize: '11px',
                     fontWeight: 500,
-                    border: '1px solid rgba(0, 229, 255, 0.2)'
+                    border: '1px solid var(--border-glow)'
                   }}
                 >
                   {tag}
@@ -150,7 +150,7 @@ export function ArticleDetail() {
             lineHeight: 1.6,
             fontStyle: 'italic',
             padding: '12px',
-            background: 'rgba(0, 102, 255, 0.05)',
+            background: 'var(--card-accent-bg-light)',
             borderRadius: '6px',
             borderLeft: '3px solid var(--electric-blue)'
           }}>
@@ -165,10 +165,10 @@ export function ArticleDetail() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         style={{
-          background: 'rgba(0, 102, 255, 0.02)',
+          background: 'var(--card-accent-bg-lighter)',
           padding: '32px',
           borderRadius: '8px',
-          border: '1px solid rgba(0, 229, 255, 0.1)',
+          border: '1px solid rgba(85, 170, 255, 0.1)',
           marginTop: '20px'
         }}
       >
@@ -194,20 +194,20 @@ export function ArticleDetail() {
               style={{
                 display: 'block',
                 padding: '16px',
-                background: 'rgba(0, 102, 255, 0.05)',
-                border: '1px solid rgba(0, 229, 255, 0.2)',
+                background: 'var(--card-accent-bg-light)',
+                border: '1px solid var(--border-glow)',
                 borderRadius: '8px',
                 textDecoration: 'none',
                 color: 'inherit',
                 transition: 'all 0.2s ease'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 102, 255, 0.1)';
+                e.currentTarget.style.background = 'rgba(76, 89, 211, 0.12)';
                 e.currentTarget.style.borderColor = 'var(--electric-cyan)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 102, 255, 0.05)';
-                e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.2)';
+                e.currentTarget.style.background = 'var(--card-accent-bg-light)';
+                e.currentTarget.style.borderColor = 'var(--border-glow)';
               }}
             >
               <div style={{
@@ -237,8 +237,8 @@ export function ArticleDetail() {
               style={{
                 display: 'block',
                 padding: '16px',
-                background: 'rgba(0, 102, 255, 0.05)',
-                border: '1px solid rgba(0, 229, 255, 0.2)',
+                background: 'var(--card-accent-bg-light)',
+                border: '1px solid var(--border-glow)',
                 borderRadius: '8px',
                 textDecoration: 'none',
                 color: 'inherit',
@@ -246,12 +246,12 @@ export function ArticleDetail() {
                 textAlign: previousArticle ? 'right' : 'left'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 102, 255, 0.1)';
+                e.currentTarget.style.background = 'rgba(76, 89, 211, 0.12)';
                 e.currentTarget.style.borderColor = 'var(--electric-cyan)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(0, 102, 255, 0.05)';
-                e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.2)';
+                e.currentTarget.style.background = 'var(--card-accent-bg-light)';
+                e.currentTarget.style.borderColor = 'var(--border-glow)';
               }}
             >
               <div style={{

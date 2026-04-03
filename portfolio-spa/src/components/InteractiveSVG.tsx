@@ -301,11 +301,11 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
         width: '100%',
         maxWidth: '100%',
         margin: '32px 0',
-        border: '1px solid rgba(0, 229, 255, 0.2)',
+        border: '1px solid rgba(85, 170, 255, 0.15)',
         borderRadius: '8px',
         overflow: 'hidden',
-        background: 'rgba(0, 102, 255, 0.02)',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+        background: 'rgba(76, 89, 211, 0.04)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
       }}
     >
       {/* Controles de zoom */}
@@ -329,8 +329,8 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
           style={{
             width: '32px',
             height: '32px',
-            border: '1px solid rgba(0, 229, 255, 0.3)',
-            background: 'rgba(0, 102, 255, 0.2)',
+            border: '1px solid rgba(85, 170, 255, 0.25)',
+            background: 'rgba(76, 89, 211, 0.2)',
             color: 'var(--electric-cyan)',
             borderRadius: '4px',
             cursor: 'pointer',
@@ -341,12 +341,12 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.4)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.4)';
             e.currentTarget.style.borderColor = 'var(--electric-cyan)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.2)';
-            e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.3)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.2)';
+            e.currentTarget.style.borderColor = 'rgba(85, 170, 255, 0.25)';
           }}
           title="Zoom in"
         >
@@ -357,8 +357,8 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
           style={{
             width: '32px',
             height: '32px',
-            border: '1px solid rgba(0, 229, 255, 0.3)',
-            background: 'rgba(0, 102, 255, 0.2)',
+            border: '1px solid rgba(85, 170, 255, 0.25)',
+            background: 'rgba(76, 89, 211, 0.2)',
             color: 'var(--electric-cyan)',
             borderRadius: '4px',
             cursor: 'pointer',
@@ -369,12 +369,12 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.4)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.4)';
             e.currentTarget.style.borderColor = 'var(--electric-cyan)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.2)';
-            e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.3)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.2)';
+            e.currentTarget.style.borderColor = 'rgba(85, 170, 255, 0.25)';
           }}
           title="Zoom out"
         >
@@ -385,8 +385,8 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
           style={{
             width: '32px',
             height: '32px',
-            border: '1px solid rgba(0, 229, 255, 0.3)',
-            background: 'rgba(0, 102, 255, 0.2)',
+            border: '1px solid rgba(85, 170, 255, 0.25)',
+            background: 'rgba(76, 89, 211, 0.2)',
             color: 'var(--electric-cyan)',
             borderRadius: '4px',
             cursor: 'pointer',
@@ -397,12 +397,12 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
             transition: 'all 0.2s ease'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.4)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.4)';
             e.currentTarget.style.borderColor = 'var(--electric-cyan)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(0, 102, 255, 0.2)';
-            e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.3)';
+            e.currentTarget.style.background = 'rgba(76, 89, 211, 0.2)';
+            e.currentTarget.style.borderColor = 'rgba(85, 170, 255, 0.25)';
           }}
           title="Reset zoom"
         >
@@ -441,7 +441,7 @@ export function InteractiveSVG({ src, alt }: InteractiveSVGProps) {
           overflow: 'hidden',
           cursor: isDragging ? 'grabbing' : 'grab',
           position: 'relative',
-          background: '#ffffff'
+          background: '#0a0a2e'
         }}
       >
         <div

@@ -64,7 +64,7 @@ export function Sidebar() {
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.25) 0%, rgba(0, 229, 255, 0.18) 50%, rgba(0, 102, 255, 0.25) 100%)',
+              background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.20) 0%, rgba(85, 170, 255, 0.15) 50%, rgba(76, 89, 211, 0.20) 100%)',
               zIndex: 0,
               pointerEvents: 'none'
             }}
@@ -84,7 +84,7 @@ export function Sidebar() {
               left: 0,
               right: 0,
               bottom: 0,
-              background: 'linear-gradient(225deg, rgba(0, 229, 255, 0.20) 0%, rgba(0, 102, 255, 0.28) 50%, rgba(0, 229, 255, 0.20) 100%)',
+              background: 'linear-gradient(225deg, rgba(85, 170, 255, 0.15) 0%, rgba(76, 89, 211, 0.22) 50%, rgba(85, 170, 255, 0.15) 100%)',
               zIndex: 0,
               pointerEvents: 'none'
             }}
@@ -99,7 +99,7 @@ export function Sidebar() {
             }}
           />
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <div style={{ fontSize: '11px', color: 'rgba(0, 0, 0, 0.65)', marginBottom: '8px', fontWeight: 500 }}>
+            <div style={{ fontSize: '11px', color: 'rgba(255, 255, 255, 0.5)', marginBottom: '8px', fontWeight: 500 }}>
               Mis Sitios
             </div>
           <a 
@@ -130,7 +130,7 @@ export function Sidebar() {
                 fontSize: '8px',
                 padding: '1px 5px',
                 borderRadius: '8px',
-                background: '#e67e22',
+                background: '#f59e0b',
                 color: '#000',
                 fontWeight: 700,
                 marginLeft: '6px',
@@ -170,7 +170,7 @@ export function Sidebar() {
                 fontSize: '8px',
                 padding: '1px 5px',
                 borderRadius: '8px',
-                background: '#e67e22',
+                background: '#f59e0b',
                 color: '#000',
                 fontWeight: 700,
                 marginLeft: '6px',

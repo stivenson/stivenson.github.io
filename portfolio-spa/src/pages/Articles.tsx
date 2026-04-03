@@ -44,8 +44,8 @@ export function Articles() {
                   <div
                     style={{
                       padding: '20px',
-                      background: 'rgba(0, 102, 255, 0.03)',
-                      border: '1px solid rgba(0, 229, 255, 0.2)',
+                      background: 'var(--card-accent-bg-lighter)',
+                      border: '1px solid var(--border-glow)',
                       borderRadius: '8px',
                       transition: 'all 0.3s ease',
                       cursor: 'pointer',
@@ -53,14 +53,14 @@ export function Articles() {
                       overflow: 'hidden'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(0, 102, 255, 0.08)';
+                      e.currentTarget.style.background = 'var(--card-accent-bg)';
                       e.currentTarget.style.borderColor = 'var(--electric-cyan)';
                       e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 229, 255, 0.2)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px var(--border-glow)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(0, 102, 255, 0.03)';
-                      e.currentTarget.style.borderColor = 'rgba(0, 229, 255, 0.2)';
+                      e.currentTarget.style.background = 'var(--card-accent-bg-lighter)';
+                      e.currentTarget.style.borderColor = 'var(--border-glow)';
                       e.currentTarget.style.transform = 'translateY(0)';
                       e.currentTarget.style.boxShadow = 'none';
                     }}
@@ -71,7 +71,7 @@ export function Articles() {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      background: 'linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 229, 255, 0.05) 100%)',
+                      background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.05) 100%)',
                       opacity: 0,
                       transition: 'opacity 0.3s ease',
                       pointerEvents: 'none'
@@ -132,7 +132,7 @@ export function Articles() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '4px',
-                          color: '#6b7280'
+                          color: '#7878a0'
                         }}>
                           Leer más
                           <RetroIcon emoji="→" size={14} />
