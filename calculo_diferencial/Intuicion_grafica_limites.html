@@ -16,6 +16,12 @@ h1{color:#89b4fa;font-size:1.6rem;font-weight:800;margin-bottom:4px;letter-spaci
 .score-badge{background:linear-gradient(135deg,#89b4fa22,#cba6f722);border:1px solid #89b4fa44;color:#89b4fa;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:700}
 .progress-bar-bg{width:100%;height:8px;background-color:#45475a;border-radius:10px;overflow:hidden}
 .progress-bar-fill{height:100%;background:linear-gradient(90deg,#89b4fa,#cba6f7);border-radius:10px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0%}
+.loading-indicator{margin-bottom:18px;display:none}
+.loading-indicator.visible{display:block}
+.loading-label{font-size:0.82rem;color:#a6adc8;margin-bottom:8px;font-weight:600}
+.loading-bar-track{width:100%;height:6px;background-color:#45475a;border-radius:999px;overflow:hidden;position:relative}
+.loading-bar-fill{position:absolute;top:0;left:-45%;width:40%;height:100%;background:linear-gradient(90deg,#89b4fa,#cba6f7,#89dceb);border-radius:999px;animation:indeterminateSlide 1s ease-in-out infinite}
+@keyframes indeterminateSlide{0%{left:-45%}100%{left:105%}}
 .question-wrapper{min-height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
 h2{color:#f9e2af;font-size:1.15rem;font-weight:600;line-height:1.5;transition:opacity 0.3s ease,transform 0.3s ease}
 h2.fade-out{opacity:0;transform:translateX(-20px)}
@@ -116,6 +122,10 @@ h2.fade-in{opacity:0;transform:translateX(20px)}
 <span class="timer-display" id="timer-display">⏱ 0:00</span>
 </div>
 <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+</div>
+<div class="loading-indicator visible" id="loading-indicator" aria-live="polite">
+<div class="loading-label">Cargando...</div>
+<div class="loading-bar-track"><div class="loading-bar-fill"></div></div>
 </div>
 <div class="question-wrapper"><h2 id="question">Cargando pregunta...</h2></div>
 <div class="options" id="options-container"></div>
@@ -230,6 +240,7 @@ const questions=[
 function loadQuestion(){
 if(currentQ>=questions.length){showResults();return;}
 answered=false;panelOpen=false;
+document.getElementById('loading-indicator').classList.add('visible');
 const q=questions[currentQ];
 const qEl=document.getElementById('question');
 qEl.classList.add('fade-out');
@@ -258,6 +269,7 @@ c.appendChild(btn);
 });
 renderMath(document.getElementById('question'));
 renderMath(c);
+document.getElementById('loading-indicator').classList.remove('visible');
 },250);
 }
 function checkAnswer(index,btn){
