@@ -171,6 +171,15 @@ h2.fade-in{opacity:0;transform:translateX(20px)}
 const labels=['A','B','C','D'];let currentQ=0,score=0,answered=false,timerInterval,elapsedSeconds=0,panelOpen=false,graphOpen=false,activeModal=null,desmosCalc=null;
 function renderMath(el){if(window.renderMathInElement)renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}
 function formatTime(t){const m=Math.floor(t/60),s=t%60;return`${m}:${s.toString().padStart(2,'0')}`}
+function isMobileView(){return window.matchMedia('(max-width: 600px)').matches;}
+function scrollToFeedbackMobile(){
+if(!isMobileView())return;
+const actionButtons=document.getElementById('action-buttons');
+const feedbackArea=document.querySelector('.feedback-area');
+const target=actionButtons||feedbackArea;
+if(!target)return;
+setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'start'}),120);
+}
 function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{elapsedSeconds++;document.getElementById('timer-display').textContent=`⏱ ${formatTime(elapsedSeconds)}`},1000)}
 function setActionButtonState(){document.getElementById('expand-btn').innerHTML=panelOpen?'📕 Cerrar explicación':'📖 Ver explicación extendida';document.getElementById('graph-btn').innerHTML=graphOpen?'📉 Cerrar gráfica':'📈 Ver gráfica';}
 function closeModal(){
@@ -293,6 +302,7 @@ fb.className='visible error';
 }
 document.getElementById('score-badge').textContent=`⭐ ${score} correcta${score!==1?'s':''}`;
 document.getElementById('action-buttons').classList.add('visible');
+scrollToFeedbackMobile();
 const ep=document.getElementById('expand-panel');
 const ex=q.explain;
 let html=`<strong>${ex.title}</strong><br>`;
