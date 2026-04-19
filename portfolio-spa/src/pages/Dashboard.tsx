@@ -65,7 +65,30 @@ export function Dashboard() {
               <RetroIcon emoji="📍" size={14} />
               {personal.location}
             </p>
-            <p style={{ 
+            <a
+              href="https://scienti.minciencias.gov.co/cvlac/visualizador/generarCurriculoCv.do?cod_rh=0001402041"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '12px',
+                color: 'var(--electric-cyan)',
+                border: '1px solid var(--electric-cyan)',
+                borderRadius: '12px',
+                padding: '3px 10px',
+                marginBottom: '8px',
+                textDecoration: 'none',
+                background: 'rgba(85, 170, 255, 0.08)',
+                transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(85, 170, 255, 0.18)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(85, 170, 255, 0.08)')}
+            >
+              🔬 Investigador registrado en CvLAC · Minciencias
+            </a>
+            <p style={{
               fontSize: '12px',
               fontStyle: 'italic',
               color: 'rgba(255, 255, 255, 0.85)',
