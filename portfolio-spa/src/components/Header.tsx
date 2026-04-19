@@ -24,6 +24,15 @@ export function Header() {
         <NavLink to="/about" className="rf-button">
           Sobre Mí
         </NavLink>
+        <a
+          href="https://scienti.minciencias.gov.co/cvlac/visualizador/generarCurriculoCv.do?cod_rh=0001402041"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rf-button"
+          style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+        >
+          🔬 CvLAC
+        </a>
       </nav>
     </header>
   );
