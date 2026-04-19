@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Cuestionario - Límites y Funciones</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background-color:#1e1e2e;color:#cdd6f4;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;overflow-x:hidden}
+.container{background-color:#313244;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.4);max-width:720px;width:100%;padding:40px 35px 35px;text-align:center;position:relative;overflow:hidden}
+.container::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#89b4fa,#cba6f7,#f38ba8,#f9e2af,#a6e3a1);border-radius:20px 20px 0 0}
+.header-icon{font-size:2.5rem;margin-bottom:8px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+h1{color:#89b4fa;font-size:1.6rem;font-weight:800;margin-bottom:4px;letter-spacing:-0.5px}
+.subtitle{color:#6c7086;font-size:0.85rem;margin-bottom:20px}
+.progress-wrapper{margin-bottom:24px}
+.progress-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-text{color:#a6adc8;font-size:0.85rem;font-weight:600}
+.score-badge{background:linear-gradient(135deg,#89b4fa22,#cba6f722);border:1px solid #89b4fa44;color:#89b4fa;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:700}
+.progress-bar-bg{width:100%;height:8px;background-color:#45475a;border-radius:10px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#89b4fa,#cba6f7);border-radius:10px;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);width:0%}
+.question-wrapper{min-height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:24px}
+h2{color:#f9e2af;font-size:1.15rem;font-weight:600;line-height:1.5;transition:opacity 0.3s ease,transform 0.3s ease}
+h2.fade-out{opacity:0;transform:translateX(-20px)}
+h2.fade-in{opacity:0;transform:translateX(20px)}
+.options{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.option-btn{background-color:#45475a;color:#cdd6f4;border:2px solid #585b70;padding:14px 20px;border-radius:12px;font-size:0.95rem;cursor:pointer;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);font-weight:500;text-align:left;position:relative;overflow:hidden;opacity:0;transform:translateY(15px);animation:slideUp 0.4s ease forwards}
+.option-btn:nth-child(1){animation-delay:0.05s}
+.option-btn:nth-child(2){animation-delay:0.1s}
+.option-btn:nth-child(3){animation-delay:0.15s}
+.option-btn:nth-child(4){animation-delay:0.2s}
+@keyframes slideUp{to{opacity:1;transform:translateY(0)}}
+.option-btn:hover:not(:disabled){background-color:#585b70;border-color:#89b4fa;transform:translateY(-2px);box-shadow:0 4px 15px rgba(137,180,250,0.15)}
+.option-btn:disabled{cursor:not-allowed;opacity:0.6}
+.option-btn.correct{background-color:#a6e3a1!important;color:#1e1e2e!important;border-color:#a6e3a1!important;transform:scale(1.02);box-shadow:0 0 20px rgba(166,227,161,0.3)}
+.option-btn.incorrect{background-color:#f38ba8!important;color:#1e1e2e!important;border-color:#f38ba8!important;transform:scale(0.98)}
+.option-label{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background-color:#585b70;color:#a6adc8;font-size:0.75rem;font-weight:700;margin-right:10px;flex-shrink:0}
+.option-btn.correct .option-label,.option-btn.incorrect .option-label{background-color:#1e1e2e44;color:#1e1e2e}
+.option-text{display:inline}
+.feedback-area{margin-top:20px;min-height:70px;display:flex;flex-direction:column;align-items:center}
+#feedback{font-size:0.95rem;font-weight:500;line-height:1.5;padding:12px 16px;border-radius:10px;background-color:#45475a;border:1px solid #585b70;opacity:0;transform:translateY(10px);transition:all 0.4s ease;max-width:100%}
+#feedback.visible{opacity:1;transform:translateY(0)}
+#feedback.success{border-color:#a6e3a144;background-color:#a6e3a115}
+#feedback.error{border-color:#f38ba844;background-color:#f38ba815}
+.action-buttons{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center;display:none}
+.action-buttons.visible{display:flex}
+.action-btn{padding:10px 20px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s ease;border:none;display:inline-flex;align-items:center;gap:6px}
+.action-btn:hover{transform:translateY(-2px)}
+#expand-btn{background-color:#45475a;color:#cba6f7;border:1px solid #cba6f744!important}
+#expand-btn:hover{background-color:#cba6f722}
+#next-btn{background:linear-gradient(135deg,#89b4fa,#74c7ec);color:#1e1e2e;font-weight:700}
+#next-btn:hover{box-shadow:0 6px 20px rgba(137,180,250,0.25)}.action-btn-sm{padding:7px 14px;font-size:0.78rem}#graph-btn{background-color:#45475a;color:#a6e3a1;border:1px solid #a6e3a144!important}#graph-btn:hover{background-color:#a6e3a122}.graph-panel{max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.4s ease,margin 0.4s ease;opacity:0;margin-top:0;width:100%;border-radius:12px}.graph-panel.open{max-height:360px;opacity:1;margin-top:14px}#desmos-container{width:100%;height:330px;border-radius:12px;border:1px solid #585b70;overflow:hidden}
+.expand-panel{max-height:0;overflow:hidden;transition:max-height 0.5s ease,opacity 0.4s ease,margin 0.4s ease;opacity:0;margin-top:0;background-color:#45475a;border:1px solid #585b70;border-radius:12px;padding:0 20px;text-align:left;font-size:0.88rem;line-height:1.7;color:#a6adc8;width:100%}
+.expand-panel.open{max-height:600px;opacity:1;margin-top:14px;padding:18px 20px;overflow-y:auto}
+.expand-panel::-webkit-scrollbar{width:6px}
+.expand-panel::-webkit-scrollbar-thumb{background:#585b70;border-radius:10px}
+.expand-panel strong{color:#f9e2af}
+.expand-panel .step{margin:8px 0;padding:8px 12px;background-color:#313244;border-radius:8px;border-left:3px solid #89b4fa}
+.expand-panel .key-concept{margin:10px 0;padding:10px 14px;background-color:#89b4fa15;border:1px solid #89b4fa33;border-radius:8px;color:#89b4fa;font-weight:600}
+.expand-panel .visual{margin:10px 0;text-align:center;font-size:1.2rem;color:#f38ba8;font-weight:700}
+.expand-panel .summary{margin-top:12px;padding:10px 14px;background-color:#a6e3a115;border:1px solid #a6e3a133;border-radius:8px;color:#a6e3a1;font-weight:600;text-align:center}
+.results-screen{display:none;animation:fadeInUp 0.6s ease}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.results-icon{font-size:4rem;margin-bottom:15px}
+.results-title{font-size:1.8rem;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#89b4fa,#cba6f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.results-score{font-size:3rem;font-weight:800;color:#f9e2af;margin:15px 0}
+.results-bar-container{width:80%;margin:15px auto;height:12px;background-color:#45475a;border-radius:10px;overflow:hidden}
+.results-bar-fill{height:100%;border-radius:10px;transition:width 1s cubic-bezier(0.4,0,0.2,1);width:0%}
+.results-message{color:#a6adc8;font-size:1rem;margin:15px 0 25px;line-height:1.6}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.stat-card{background-color:#45475a;border-radius:12px;padding:14px;border:1px solid #585b70}
+.stat-value{font-size:1.5rem;font-weight:800}
+.stat-label{font-size:0.75rem;color:#6c7086;margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.stat-card.correct-stat .stat-value{color:#a6e3a1}
+.stat-card.incorrect-stat .stat-value{color:#f38ba8}
+.stat-card.percent-stat .stat-value{color:#f9e2af}
+.stat-card.time-stat .stat-value{color:#89b4fa}
+.timer-display{color:#6c7086;font-size:0.8rem;font-weight:600}
+.footer{margin-top:25px;font-size:0.75rem;opacity:0.4}
+.footer a{color:#cdd6f4;text-decoration:none;transition:opacity 0.3s}
+.footer a:hover{opacity:1;text-decoration:underline}
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1000;overflow:hidden}
+.confetti{position:absolute;width:10px;height:10px;top:-10px;animation:confettiFall linear forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@media(max-width:600px){.container{padding:25px 20px 20px;border-radius:16px}h1{font-size:1.3rem}h2{font-size:1rem}.option-btn{padding:12px 14px;font-size:0.88rem}.results-score{font-size:2.5rem}.stats-grid{grid-template-columns:1fr 1fr;gap:8px}.action-buttons{flex-direction:column}.action-btn{width:100%;justify-content:center}.action-btn-sm{padding:6px 10px;font-size:0.75rem}#desmos-container{height:260px}.graph-panel.open{max-height:290px}}
+</style><script src="https://www.desmos.com/api/v1.10/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+</head>
+<body>
+<div class="container">
+<div id="quiz-screen">
+<div class="header-icon">🧠</div>
+<h1>Intuición Gráfica y Límites</h1>
+<div class="subtitle">Domina las funciones paso a paso</div>
+<div class="progress-wrapper">
+<div class="progress-info">
+<span class="progress-text" id="progress-text">Pregunta 1 de 25</span>
+<span class="score-badge" id="score-badge">⭐ 0 correctas</span>
+<span class="timer-display" id="timer-display">⏱ 0:00</span>
+</div>
+<div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+</div>
+<div class="question-wrapper"><h2 id="question">Cargando pregunta...</h2></div>
+<div class="options" id="options-container"></div>
+<div class="feedback-area">
+<div id="feedback"></div>
+<div class="action-buttons" id="action-buttons">
+<button class="action-btn action-btn-sm" id="graph-btn" onclick="toggleGraph()">📈 Ver gráfica</button>
+<button class="action-btn action-btn-sm" id="expand-btn" onclick="toggleExpand()">📖 Ver explicación extendida</button>
+<button class="action-btn" id="next-btn" onclick="nextQuestion()">Siguiente →</button>
+</div>
+</div>
+<div class="expand-panel" id="expand-panel"></div>
+<div class="graph-panel" id="graph-panel"><div id="desmos-container"></div></div>
+</div>
+<div class="results-screen" id="results-screen">
+<div class="results-icon" id="results-icon"></div>
+<div class="results-title">¡Cuestionario Terminado!</div>
+<div class="results-score" id="results-score">0 / 25</div>
+<div class="results-bar-container"><div class="results-bar-fill" id="results-bar-fill"></div></div>
+<div class="results-message" id="results-message"></div>
+<div class="stats-grid">
+<div class="stat-card correct-stat"><div class="stat-value" id="stat-correct">0</div><div class="stat-label">Correctas</div></div>
+<div class="stat-card incorrect-stat"><div class="stat-value" id="stat-incorrect">0</div><div class="stat-label">Incorrectas</div></div>
+<div class="stat-card percent-stat"><div class="stat-value" id="stat-percent">0%</div><div class="stat-label">Precisión</div></div>
+<div class="stat-card time-stat"><div class="stat-value" id="stat-time">0:00</div><div class="stat-label">Tiempo Total</div></div>
+</div>
+<button class="action-btn" id="restart-btn" onclick="restartQuiz()" style="background:linear-gradient(135deg,#cba6f7,#f38ba8);color:#1e1e2e">🔄 Intentar de Nuevo</button>
+</div>
+</div>
+<div class="confetti-container" id="confetti-container"></div>
+<div class="footer">Creado por <a href="https://github.com/stivenson" target="_blank">@stivenson</a> · Co-autores: GLM 5.1 &amp; Qwen 3.6 · Resultados verificados</div>
+<script>
+const labels=['A','B','C','D'];let currentQ=0,score=0,answered=false,timerInterval,elapsedSeconds=0,panelOpen=false,graphOpen=false,desmosCalc=null;
+function renderMath(el){if(window.renderMathInElement)renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});}
+function formatTime(t){const m=Math.floor(t/60),s=t%60;return`${m}:${s.toString().padStart(2,'0')}`}
+function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{elapsedSeconds++;document.getElementById('timer-display').textContent=`⏱ ${formatTime(elapsedSeconds)}`},1000)}
+function toggleExpand(){const p=document.getElementById('expand-panel');panelOpen=!panelOpen;p.classList.toggle('open');document.getElementById('expand-btn').innerHTML=panelOpen?'📕 Cerrar explicación':'📖 Ver explicación extendida'}
+function toggleGraph(){const panel=document.getElementById('graph-panel');graphOpen=!graphOpen;panel.classList.toggle('open');document.getElementById('graph-btn').innerHTML=graphOpen?'📉 Cerrar gráfica':'📈 Ver gráfica';if(graphOpen){const container=document.getElementById('desmos-container');desmosCalc=Desmos.GraphingCalculator(container,{settingsMenu:false,keypad:false,expressions:false,lockViewport:false,border:false});const q=questions[currentQ];if(q.graph&&q.graph.exprs){q.graph.exprs.forEach((latex,i)=>{desmosCalc.setExpression({id:'e'+i,latex});});}if(q.graph&&q.graph.bounds)desmosCalc.setMathBounds(q.graph.bounds);}else{if(desmosCalc){desmosCalc.destroy();desmosCalc=null;}}}
+const questions=[
+{q:"¿Qué forma geométrica tiene la gráfica de $f(x) = |x|$?",opts:["Forma de U (Parábola)","Forma de V (Valor absoluto)","Una línea recta diagonal","Una curva exponencial"],ans:1,fb:"El valor absoluto forma una 'V' en el origen, ya que convierte los negativos en positivos.",graph:{exprs:["y=\\left|x\\right|"]},explain:{title:"Explicación extendida: f(x) = |x|",steps:[{t:"Paso 1: Definición del valor absoluto",c:"|x| = x si x ≥ 0, y |x| = -x si x < 0"},{t:"Paso 2: Analicemos valores",c:"f(-3) = |-3| = 3 → punto (-3,3)<br>f(-1) = |-1| = 1 → punto (-1,1)<br>f(0) = |0| = 0 → punto (0,0)<br>f(1) = |1| = 1 → punto (1,1)<br>f(3) = |3| = 3 → punto (3,3)"},{t:"Paso 3: Interpretación gráfica",c:"A la izquierda del origen (x<0), la gráfica es la recta y = -x (pendiente negativa). A la derecha (x≥0), es la recta y = x (pendiente positiva). Ambas se encuentran en el origen formando una V."}],key:"💡 El valor absoluto mide la distancia al origen, y las distancias siempre son positivas. Por eso la gráfica nunca baja del eje X.",summary:"✅ Forma de V con vértice en (0,0). La rama izquierda tiene pendiente -1, la derecha tiene pendiente +1."}},
+{q:"Si $f(x) = x^2$, ¿cuál es su Dominio y Rango?",opts:["D: (-∞, ∞), R: (-∞, ∞)","D: [0, ∞), R: (-∞, ∞)","D: (-∞, ∞), R: [0, ∞)","D: [0, ), R: [0, ∞)"],ans:2,fb:"Cualquier número al cuadrado existe (Dom=todos), y el resultado siempre es positivo o cero (Rango=[0,∞)).",graph:{exprs:["y=x^{2}"]},explain:{title:"Explicación extendida: Dominio y Rango de f(x) = x²",steps:[{t:"Paso 1: ¿Qué es el Dominio?",c:"El dominio son TODOS los valores de x para los cuales la función está definida. ¿Podemos elevar cualquier número real al cuadrado? ¡Sí! No hay restricciones. → Dominio = (-∞, ∞)"},{t:"Paso 2: ¿Qué es el Rango?",c:"El rango son todos los valores posibles que puede tomar f(x). Si elevamos cualquier número real al cuadrado: (-5)² = 25, 0² = 0, 3² = 9. Siempre obtenemos un número ≥ 0."},{t:"Paso 3: Conclusión",c:"No importa qué número elijas, x² nunca será negativo. El menor valor posible es 0 (cuando x=0), y puede crecer infinitamente."}],key:"💡 Dominio = '¿qué puedo meter?' (todo). Rango = '¿qué puedo obtener?' (solo positivos y cero).",visual:" La parábola abre hacia arriba: el punto más bajo está en (0,0) y sube por ambos lados.",summary:"✅ D: todos los reales (-, ∞). R: solo no negativos [0, ∞). Opción C es correcta."}},
+{q:"¿Cuántas asíntotas verticales tiene $f(x) = \\dfrac{x^2-1}{x-1}$?",opts:["0 (Tiene un agujero, no asíntota)","1 asíntota en x=1","2 asíntotas","1 asíntota en x=-1"],ans:0,fb:"Al factorizar $\\dfrac{(x-1)(x+1)}{(x-1)}$, se cancela $(x-1)$. No hay asíntota: hay un agujero en $x=1$.",graph:{exprs:["y=\\frac{x^{2}-1}{x-1}"]},explain:{title:"Explicación extendida: ¿Por qué no hay asíntota vertical?",steps:[{t:"Paso 1: Factorizar el numerador",c:"x² - 1 es diferencia de cuadrados: x² - 1 = (x+1)(x-1)"},{t:"Paso 2: Reescribir la función",c:"f(x) = (x+1)(x-1) / (x-1)"},{t:"Paso 3: Cancelar el factor común",c:"El factor (x-1) aparece arriba y abajo, así que se cancela: f(x) = x + 1, pero SOLO cuando x ≠ 1"},{t:"Paso 4: ¿Qué pasa en x = 1?",c:"Cuando x = 1, el denominador original vale 0: (1-1) = 0. División entre cero → indefinido. Pero como el factor se canceló, no es una asíntota, es un AGUJERO (discontinuidad evitable)."},{t:"Paso 5: Diferencia clave",c:"Asíntota vertical: el factor problemático NO se cancela (la función se va a ∞).<br>Agujero: el factor problemático SÍ se cancela (solo falta un punto)."}],key:"💡 Para que haya asíntota vertical, el factor que hace cero al denominador NO debe cancelarse con el numerador. Aquí (x-1) se cancela completamente.",summary:"✅ La función simplificada es f(x) = x + 1 con un hueco en x=1. Cero asíntotas verticales."}},
+{q:"¿Qué tipo de función es $f(x) = e^x$ y cómo se ve al ir a la izquierda ($x \\to -\\infty$)?",opts:["Exponencial, se aplana contra el eje X (y=0)","Exponencial, sube infinitamente","Logarítmica, baja infinitamente","Racional, tiene asíntota vertical"],ans:0,fb:"La exponencial eˣ tiene asíntota horizontal y=0 cuando x se hace muy negativo.",graph:{exprs:["y=e^{x}"]},explain:{title:"Explicación extendida: Comportamiento de f(x) = eˣ cuando x → -∞",steps:[{t:"Paso 1: Identificar el tipo de función",c:"eˣ es la función exponencial natural, donde e ≈ 2.71828... Es la base de los logaritmos naturales."},{t:"Paso 2: Comportamiento hacia la derecha (x → +∞)",c:"e⁵ ≈ 148.4<br>e¹⁰ ≈ 22,026<br>e²⁰ ≈ 485,165,195<br>→ Crece extremadamente rápido"},{t:"Paso 3: Comportamiento hacia la izquierda (x → -∞)",c:"e⁻¹ = 1/e ≈ 0.368<br>e⁻⁵ ≈ 0.0067<br>e⁻¹⁰ ≈ 0.000045<br>e⁻²⁰ ≈ 0.000000002<br>→ Se acerca a CERO sin nunca llegar"},{t:"Paso 4: La asíntota horizontal",c:"Cuando x → -∞, eˣ → 0. La gráfica se aplana y se acerca al eje X (y=0) sin nunca tocarlo. Esta es una asíntota horizontal."}],visual:"📉 Hacia la izquierda: la curva baja y se aplana contra y=0. Hacia la derecha: se dispara hacia arriba.",summary:"✅ Es exponencial. Cuando x → -∞, eˣ → 0 (se aplana contra el eje X). Asíntota horizontal y=0."}},
+{q:"Límite al infinito: $$\\lim_{x \\to \\infty} \\dfrac{3x^2-5}{x+1}$$",opts:["3","0","Infinito (∞)","1"],ans:2,fb:"Grado del numerador (2) > Grado del denominador (1). La gráfica se va a infinito (comportamiento de 3x).",graph:{exprs:["y=\\frac{3x^{2}-5}{x+1}"]},explain:{title:"Explicación extendida: Límite cuando x → ∞",steps:[{t:"Regla general para límites al infinito en funciones racionales:",c:"Compara el grado del numerador (N) con el grado del denominador (D):<br>• Si N > D → Límite = ∞ o -∞<br>• Si N = D → Límite = cociente de coeficientes principales<br>• Si N < D → Límite = 0"},{t:"Paso 1: Identificar grados",c:"Numerador: 3x² - 5 → grado = 2<br>Denominador: x + 1 → grado = 1<br>2 > 1 → El numerador crece más rápido."},{t:"Paso 2: Comportamiento dominante",c:"Para x muy grande:<br>3x² - 5 ≈ 3x²<br>x + 1 ≈ x<br>Entonces: (3x² - 5)/(x + 1) ≈ 3x²/x = 3x"},{t:"Paso 3: Conclusión",c:"3x → ∞ cuando x → ∞. El límite es infinito."}],key:"💡 Cuando el numerador tiene mayor grado, la función 'gana' y crece sin límite. Piensa: ¿qué término domina cuando x es gigante?",summary:"✅ Grado numerador (2) > grado denominador (1) → Límite = ∞. La función crece sin límite."}},
+{q:"¿Cuál es el dominio de $f(x) = \\sqrt{x+2}$?",opts:["(-∞, ∞)","[-2, )","[0, ∞)","(-2, )"],ans:1,fb:"No podemos sacar raíz de negativos: $x+2 \\geq 0$ implica $x \\geq -2$.",graph:{exprs:["y=\\sqrt{x+2}"]},explain:{title:"Explicación extendida: Dominio de f(x) = (x+2)",steps:[{t:"Paso 1: Restricción fundamental",c:"En los números reales, NO se puede sacar raíz cuadrada de un número negativo. Por ejemplo: √(-4) no existe en los reales."},{t:"Paso 2: Establecer la condición",c:"Para que √(x+2) exista, necesitamos: x + 2 ≥ 0"},{t:"Paso 3: Resolver la desigualdad",c:"x + 2 ≥ 0<br>x ≥ -2"},{t:"Paso 4: Interpretar",c:"x puede ser -2 o cualquier número mayor que -2. En notación de intervalo: [-2, ∞). El corchete [ indica que -2 SÍ está incluido porque √(0) = 0."}],key:"💡 Regla clave: todo lo que esté dentro de una raíz cuadrada debe ser ≥ 0. Siempre resuelve la desigualdad para encontrar el dominio.",summary:"✅ x ≥ -2, es decir, [-2, ∞). El -2 se incluye porque √0 = 0 es válido."}},
+{q:"En una función a trozos, si el límite por la izquierda y derecha en $x=2$ son distintos, ¿qué pasa?",opts:["El límite existe y es el promedio","El límite es 0","El límite no existe (hay un salto o asíntota)","La gráfica es suave"],ans:2,fb:"Si $\\lim_{x \\to 2^-} f(x) \\neq \\lim_{x \\to 2^+} f(x)$, el límite en $x=2$ no existe.",graph:{exprs:["y=\\{x<2:x+1,x+5\\}"]},explain:{title:"Explicación extendida: ¿Cuándo existe un límite?",steps:[{t:"Paso 1: Definición formal de límite",c:"lim(x→a) f(x) = L si y solo si:<br>• El límite por la izquierda = L, Y<br>• El límite por la derecha = L<br>Ambos deben ser IGUALES."},{t:"Paso 2: Ejemplo visual",c:"Imagina caminar por la gráfica:<br>→ Acercándote a x=2 desde la izquierda: llegas a y=3<br>→ Acercándote a x=2 desde la derecha: llegas a y=7<br>→ ¿Coinciden? No. 3 ≠ 7."},{t:"Paso 3: ¿Qué se ve en la gráfica?",c:"Esto produce un SALTO en x=2. La gráfica se 'rompe' y hay un 'escalón'. El valor de la función en x=2 podría ser cualquiera (o no existir)."}],key:"💡 Para que exista el límite, ambos caminos deben llegar al MISMO punto. Si hay salto, el límite no existe.",summary:"✅ Límite izquierdo ≠ Límite derecho → El límite NO EXISTE. Hay un salto en la gráfica."}},
+{q:"Límite trigonométrico: $$\\lim_{\\theta \\to 0} \\dfrac{\\operatorname{sen}(\\theta)}{\\theta}$$",opts:["0","1","∞","No existe"],ans:1,fb:"Este es el límite fundamental: $\\lim_{\\theta \\to 0} \\dfrac{\\operatorname{sen}(\\theta)}{\\theta} = 1$. Cuando $\\theta \\to 0$, el seno y el ángulo valen casi lo mismo.",graph:{exprs:["y=\\frac{\\sin(x)}{x}"]},explain:{title:"Explicación extendida: El límite fundamental sen(θ)/θ",steps:[{t:"Paso 1: El problema directo",c:"Si sustituimos θ = 0:<br>sen(0)/0 = 0/0 → ¡Forma indeterminada!<br>No podemos simplemente reemplazar."},{t:"Paso 2: Tabla de valores",c:"θ = 0.1 → sen(0.1)/0.1 ≈ 0.0998/0.1 ≈ 0.998<br>θ = 0.01 → sen(0.01)/0.01 ≈ 0.99998<br>θ = 0.001 → sen(0.001)/0.001 ≈ 0.9999998<br>→ ¡Se acerca a 1!"},{t:"Paso 3: Intuición geométrica",c:"En un círculo unitario, para ángulos muy pequeños (en radianes), la longitud del arco (θ) y la altura del seno son casi idénticas. Por eso su cociente tiende a 1."},{t:"Paso 4: Demostración (Teorema del Sándwich)",c:"Se demuestra que cos(θ) < sen(θ)/θ < 1 para θ cercano a 0. Como cos(0) = 1, por el teorema del sándwich: lim = 1."}],key:" Este es el límite MÁS IMPORTANTE del cálculo. Se usa para demostrar que la derivada de sen(x) es cos(x). ¡Memorízalo!",summary:"✅ lim(θ→0) sen(θ)/θ = 1. Es la forma indeterminada 0/0 que resuelve a 1. Fundamental para derivadas trigonométricas."}},
+{q:"Si $f(x) = \\dfrac{1}{x}$, ¿hacia dónde se mueve la gráfica cuando $x \\to 0^+$?",opts:["Hacia y=0","Hacia y=1","Hacia infinito positivo (+∞)","Hacia infinito negativo (-∞)"],ans:2,fb:"1 dividido un número positivo muy pequeñito da un número positivo gigante. Sube por la asíntota vertical.",graph:{exprs:["y=\\frac{1}{x}"]},explain:{title:"Explicación extendida: Comportamiento de f(x) = 1/x cerca de x = 0⁺",steps:[{t:"Paso 1: Entender x→0⁺",c:"x→0⁺ significa que x se acerca a 0 POR LA DERECHA, es decir, x toma valores positivos cada vez más pequeños: 0.1, 0.01, 0.001, ..."},{t:"Paso 2: Tabla de valores",c:"f(0.1) = 1/0.1 = 10<br>f(0.01) = 1/0.01 = 100<br>f(0.001) = 1/0.001 = 1,000<br>f(0.0001) = 1/0.0001 = 10,000<br>f(0.000001) = 1,000,000"},{t:"Paso 3: Patrón",c:"Entre más pequeño es el denominador (pero positivo), más GRANDE es el resultado. No hay techo: crece sin parar."},{t:"Paso 4: Asíntota vertical",c:"En x = 0 hay una asíntota vertical. La curva se acerca a esta línea infinitamente sin tocarla, subiendo hacia +∞."}],key:"💡 Regla: 1/(número positivo muy pequeño) = número positivo muy grande. La gráfica se dispara hacia arriba.",summary:"✅ Cuando x→0⁺, f(x) = 1/x → +∞. La curva sube infinitamente por la asíntota vertical x=0."}},
+{q:"Límite infinito: $$\\lim_{x \\to \\infty} \\dfrac{x^5-x^3}{x^6+2}$$",opts:["1","∞","-∞","0"],ans:3,fb:"Grado del denominador (6) > numerador (5) en $\\dfrac{x^5-x^3}{x^6+2}$. El denominador domina: la curva se aplana en $y=0$.",graph:{exprs:["y=\\frac{x^{5}-x^{3}}{x^{6}+2}"]},explain:{title:"Explicación extendida: Límite cuando x → ∞",steps:[{t:"Paso 1: Identificar grados",c:"Numerador: x⁵ - x³ → grado = 5<br>Denominador: x⁶ + 2 → grado = 6<br>5 < 6 → El denominador tiene MAYOR grado."},{t:"Paso 2: ¿Qué domina?",c:"Dividimos numerador y denominador por el término de mayor grado del denominador (x⁶):<br>(x-x³)/x⁶ = 1/x - 1/x³ → tiende a 0<br>(x⁶+2)/x⁶ = 1 + 2/x⁶ → tiende a 1"},{t:"Paso 3: Resultado",c:"lim = (0 - 0) / (1 + 0) = 0/1 = 0"},{t:"Paso 4: Intuición",c:"x⁶ crece MUCHO más rápido que x⁵. Es como comparar un millón con mil millones: el denominador 'aplana' todo contra cero."}],key:"💡 Cuando el denominador tiene mayor grado, la fracción siempre tiende a 0. El denominador 'gana' y hace que todo se encoja.",summary:"✅ Grado denominador (6) > grado numerador (5) → Límite = 0. La curva se aplana contra el eje X."}},
+{q:"¿Por qué punto SIEMPRE pasa $y = a^x$ (con $a > 0$)?",opts:["(0, 0)","(1, 0)","(0, 1)","(1, a)"],ans:2,fb:"Cualquier número elevado a la 0 es 1. Por eso todas las exponenciales cruzan el eje Y en y=1.",graph:{exprs:["y=2^{x}","y=e^{x}","y=0.5^{x}"]},explain:{title:"Explicación extendida: Punto fijo de las funciones exponenciales",steps:[{t:"Paso 1: Evaluemos en x = 0",c:"Para CUALQUIER base a > 0:<br>y = a⁰ = 1"},{t:"Paso 2: Ejemplos con diferentes bases",c:"y = 2ˣ → cuando x=0: y = 2⁰ = 1 → punto (0,1)<br>y = 3ˣ → cuando x=0: y = 3⁰ = 1 → punto (0,1)<br>y = 0.5 → cuando x=0: y = 0.5⁰ = 1 → punto (0,1)<br>y = eˣ → cuando x=0: y = e⁰ = 1 → punto (0,1)<br>y = 10 → cuando x=0: y = 10⁰ = 1 → punto (0,1)"},{t:"Paso 3: ¿Por qué a⁰ = 1 siempre?",c:"Por definición de potencias: a = aⁿ/aⁿ = 1 (para cualquier a ≠ 0). Es una propiedad fundamental de los exponentes."}],key:" Todas las exponenciales y = aˣ (con a > 0, a ≠ 1) cruzan el eje Y en (0, 1). Es como una 'huella digital' de las exponenciales.",summary:"✅ El punto fijo es (0, 1). No importa la base: a⁰ siempre = 1. ¡Memoriza este punto clave!"}},
+{q:"¿Por qué punto SIEMPRE pasa $y = \\log_a(x)$?",opts:["(0, 1)","(1, 0)","(0, 0)","(a, 1)"],ans:1,fb:"El logaritmo de 1 siempre es 0. Por eso las logarítmicas siempre cruzan el eje X en x=1.",graph:{exprs:["y=\\log(x)","y=\\ln(x)","y=\\log_{2}(x)"]},explain:{title:"Explicación extendida: Punto fijo de las funciones logarítmicas",steps:[{t:"Paso 1: Evaluemos en x = 1",c:"Para CUALQUIER base a > 0, a ≠ 1:<br>y = logₐ(1) = 0"},{t:"Paso 2: ¿Por qué logₐ(1) = 0?",c:"Por definición: logₐ(1) = y significa aʸ = 1<br>¿Qué exponente hace que aʸ = 1? ¡Solo y = 0!<br>Porque a⁰ = 1 para cualquier a ≠ 0."},{t:"Paso 3: Ejemplos",c:"log₂(1) = 0 porque 2⁰ = 1<br>log₁₀(1) = 0 porque 10⁰ = 1<br>ln(1) = 0 porque e = 1<br>log₅(1) = 0 porque 5⁰ = 1"},{t:"Paso 4: Relación con la exponencial",c:"La logarítmica es la inversa de la exponencial. Si y = aˣ pasa por (0, 1), entonces y = logₐ(x) pasa por (1, 0) — ¡son simétricas respecto a y = x!"}],key:"💡 La logarítmica cruza el eje X en (1, 0). Es la 'versión espejo' del punto (0, 1) de la exponencial.",summary:"✅ El punto fijo es (1, 0). Siempre. logₐ(1) = 0 por definición. Es una propiedad universal de los logaritmos."}},
+{q:"¿En qué valores de $x$ la parábola $f(x) = x^2 - 4x + 3$ cruza el eje $X$?",opts:["En x=1 y x=3","En x=-1 y x=-3","En x=2","Solo cruza en x=3"],ans:0,fb:"Factorizando: (x-1)(x-3)=0. La gráfica toca el 'piso' (eje X) en x=1 y x=3. Es una parábola que sonríe.",graph:{exprs:["y=x^{2}-4x+3"]},explain:{title:"Explicación extendida: Interceptos en X de f(x) = x² - 4x + 3",steps:[{t:"Paso 1: ¿Qué es un intercepto en X?",c:"Es donde la gráfica toca el eje X, es decir, donde f(x) = 0 (y = 0)."},{t:"Paso 2: Resolver x² - 4x + 3 = 0",c:"Necesitamos dos números que multiplicados den +3 y sumados den -4:<br>-1 y -3 cumplen: (-1)(-3) = 3 y (-1)+(-3) = -4<br>Entonces: (x-1)(x-3) = 0"},{t:"Paso 3: Encontrar las raíces",c:"x - 1 = 0 → x = 1<br>x - 3 = 0 → x = 3"},{t:"Paso 4: Verificar",c:"f(1) = 1 - 4 + 3 = 0 ✓<br>f(3) = 9 - 12 + 3 = 0 ✓<br>La parábola cruza el eje X en (1, 0) y (3, 0)."},{t:"Paso 5: Forma de la parábola",c:"Como el coeficiente de x² es positivo (+1), la parábola abre hacia arriba ('sonríe'). El vértice está en x = -b/(2a) = 4/2 = 2."}],key:" Para encontrar interceptos en X, siempre iguala f(x) = 0 y resuelve. Factorear es la técnica más rápida para cuadráticas.",summary:"✅ Las raíces son x = 1 y x = 3. La parábola cruza el eje X en esos dos puntos."}},
+{q:"¿Dónde intersecta el eje $Y$ la función $f(x) = 2x-5$?",opts:["En y = -5","En y = 5","En y = 2","En x = 2.5"],ans:0,fb:"Para hallar la intersección Y, hacemos x=0. f(0) = 2(0) - 5 = -5. La recta baja hasta -5 en el eje vertical.",graph:{exprs:["y=2x-5"]},explain:{title:"Explicación extendida: Intercepto en Y de f(x) = 2x - 5",steps:[{t:"Paso 1: ¿Qué es el intercepto en Y?",c:"Es donde la gráfica cruza el eje Y. En el eje Y, x = 0. Simplemente evaluamos f(0)."},{t:"Paso 2: Evaluar f(0)",c:"f(0) = 2(0) - 5 = 0 - 5 = -5"},{t:"Paso 3: Forma pendiente-intercepto",c:"La función está en forma y = mx + b:<br>y = 2x - 5<br>m = 2 (pendiente: sube 2 por cada 1 a la derecha)<br>b = -5 (intercepto en Y)<br>→ La recta cruza el eje Y en (0, -5)."},{t:"Paso 4: Visualización",c:"La recta pasa por (0, -5) y tiene pendiente positiva 2. También cruza el eje X cuando y=0: 2x-5=0 → x=2.5"}],key:"💡 En y = mx + b, el término 'b' SIEMPRE es el intercepto en Y. Solo mira el número sin la x.",summary:"✅ f(0) = -5. La recta cruza el eje Y en el punto (0, -5). El -5 es el término independiente."}},
+{q:"En $f(x) = |x-3|+2$, ¿en qué coordenada $(x,y)$ está el vértice de la V?",opts:["(3, 2)","(-3, -2)","(0, 3)","(3, -2)"],ans:0,fb:"La V se desplaza. El valor dentro del absoluto nos dice x=3, y la constante fuera nos dice y=2. ¡La punta está en (3,2)!",graph:{exprs:["y=\\left|x-3\\right|+2"]},explain:{title:"Explicación extendida: Vértice de f(x) = |x - 3| + 2",steps:[{t:"Paso 1: Forma general del valor absoluto",c:"f(x) = a|x - h| + k<br>Donde (h, k) es el vértice de la V.<br>a controla la apertura (si a > 0 abre arriba, si a < 0 abre abajo)."},{t:"Paso 2: Identificar h y k",c:"f(x) = |x - 3| + 2<br>Comparando con a|x - h| + k:<br>h = 3 (desplazamiento horizontal)<br>k = 2 (desplazamiento vertical)<br>Vértice = (3, 2)"},{t:"Paso 3: ¿Por qué (3, 2)?",c:"El valor absoluto más pequeño posible es 0.<br>|x - 3| = 0 cuando x = 3<br>Entonces f(3) = 0 + 2 = 2<br>→ El punto más bajo de la V está en (3, 2)."},{t:"Paso 4: Transformaciones",c:"|x| → |x - 3|: la V se mueve 3 unidades a la derecha.<br>|x - 3| → |x - 3| + 2: la V sube 2 unidades.<br>Resultado: vértice en (3, 2)."}],key:"💡 Regla: f(x) = |x - h| + k tiene vértice en (h, k). El signo de h va AL REVÉS del que aparece dentro del absoluto.",summary:"✅ Vértice en (3, 2). El -3 dentro del absoluto se convierte en +3 para la coordenada x, y el +2 fuera es la coordenada y."}},
+{q:"La gráfica de $f(x) = \\dfrac{1}{x-2}+3$, ¿dónde tiene su asíntota vertical y horizontal?",opts:["x=2, y=3","x=3, y=2","x=-2, y=-3","No tiene asíntotas"],ans:0,fb:"En $\\dfrac{1}{x-2}+3$: denominador $=0$ cuando $x=2$ (AV). Al $x \\to \\infty$, $\\dfrac{1}{x-2} \\to 0$, quedando $y=3$ (AH).",graph:{exprs:["y=\\frac{1}{x-2}+3"]},explain:{title:"Explicación extendida: Asíntotas de f(x) = 1/(x-2) + 3",steps:[{t:"Paso 1: Asíntota vertical",c:"El denominador no puede ser cero:<br>x - 2 = 0 → x = 2<br>En x = 2, la función no está definida. → Asíntota vertical: x = 2"},{t:"Paso 2: Asíntota horizontal",c:"Cuando x → ∞ o x → -∞:<br>1/(x-2) → 0 (porque el denominador crece infinitamente)<br>Entonces f(x) → 0 + 3 = 3<br>→ Asíntota horizontal: y = 3"},{t:"Paso 3: Forma general",c:"f(x) = a/(x - h) + k siempre tiene:<br>• Asíntota vertical: x = h<br>• Asíntota horizontal: y = k<br>En nuestro caso: h = 2, k = 3."},{t:"Paso 4: Comportamiento cerca de la asíntota vertical",c:"x→2⁺ (por la derecha): 1/(pequeño+) + 3 → +∞ + 3 → +∞ ↑<br>x→2⁻ (por la izquierda): 1/(pequeño-) + 3 → -∞ + 3 → -∞ ↓"}],key:"💡 En f(x) = a/(x-h) + k: la asíntota vertical está en x=h y la horizontal en y=k. ¡Solo lee los números desplazados!",summary:"✅ Asíntota vertical: x = 2. Asíntota horizontal: y = 3. Es una hipérbola trasladada al punto (2, 3)."}},
+{q:"Si la gráfica toca el eje $X$ en $x=-4$ y $x=5$, ¿cuál podría ser su ecuación?",opts:["$f(x) = (x+4)(x-5)$","$f(x) = (x-4)(x+5)$","$f(x) = x+4-5$","$f(x) = -4x+5$"],ans:0,fb:"Para que $y=0$, los factores deben ser $0$. Si $x=-4$, $(x+4)=0$. Si $x=5$, $(x-5)=0$. Ecuación: $(x+4)(x-5)$.",graph:{exprs:["y=(x+4)(x-5)"]},explain:{title:"Explicación extendida: De raíces a factores",steps:[{t:"Paso 1: Relación entre raíces y factores",c:"Si una función tiene raíz en x = r, entonces (x - r) es un factor de la función.<br>Esto es el Teorema del Factor."},{t:"Paso 2: Aplicar a cada raíz",c:"Raíz en x = -4 → factor: (x - (-4)) = (x + 4)<br>Raíz en x = 5 → factor: (x - 5)"},{t:"Paso 3: Construir la función",c:"f(x) = (x + 4)(x - 5)<br>Verifiquemos:<br>f(-4) = (-4+4)(-4-5) = (0)(-9) = 0 ✓<br>f(5) = (5+4)(5-5) = (9)(0) = 0 ✓"},{t:"Paso 4: ¿Por qué las otras opciones fallan?",c:"Opción B: (x-4)(x+5) → raíces en x=4 y x=-5 ❌<br>Opción C: x+4-5 = x-1 → solo una raíz en x=1 ❌<br>Opción D: -4x+5 → solo una raíz en x=5/4 ❌"}],key:"💡 Regla mnemotécnica: si la raíz es positiva (x=5), el factor tiene signo negativo (x-5). Si la raíz es negativa (x=-4), el factor tiene signo positivo (x+4). ¡Los signos van al revés!",summary:"✅ f(x) = (x+4)(x-5). Las raíces -4 y 5 generan factores (x+4) y (x-5). Los signos se invierten."}},
+{q:"¿Cuál es la asíntota horizontal de $f(x) = \\dfrac{4x^2-1}{2x^2+3}$?",opts:["y = 0","y = 2","y = 4","y = 1.5"],ans:1,fb:"Grados iguales en $\\dfrac{4x^2-1}{2x^2+3}$: asíntota $= \\dfrac{4}{2} = 2$. La gráfica se aplana en $y=2$.",graph:{exprs:["y=\\frac{4x^{2}-1}{2x^{2}+3}","y=2"]},explain:{title:"Explicación extendida: Asíntota horizontal cuando los grados son iguales",steps:[{t:"Paso 1: Regla para grados iguales",c:"Cuando el grado del numerador = grado del denominador:<br>Asíntota horizontal = coeficiente principal del numerador / coeficiente principal del denominador"},{t:"Paso 2: Identificar coeficientes principales",c:"Numerador: 4x² - 1 → coeficiente principal = 4<br>Denominador: 2x² + 3 → coeficiente principal = 2<br>Grado de ambos = 2 (iguales ✓)"},{t:"Paso 3: Calcular la asíntota",c:"AH = 4/2 = 2<br>→ Asíntota horizontal: y = 2"},{t:"Paso 4: Demostración con límites",c:"lim(x→∞) (4x²-1)/(2x²+3)<br>Dividimos todo entre x²:<br>= (4 - 1/x²) / (2 + 3/x²)<br>→ (4 - 0) / (2 + 0) = 4/2 = 2"},{t:"Paso 5: ¿Por qué funciona?",c:"Para x muy grande, los términos -1 y +3 son insignificantes comparados con 4x² y 2x². La función se comporta como 4x²/2x² = 2."}],key:"💡 Grados iguales → asíntota horizontal = coef. numerador / coef. denominador. Solo mira los números delante de la x de mayor potencia.",summary:"✅ Asíntota horizontal: y = 4/2 = 2. Cuando los grados son iguales, divide los coeficientes principales."}},
+{q:"¿Qué le pasa a $f(x) = x^3$ cuando $x \\to -\\infty$?",opts:["Se va a infinito positivo (arriba a la derecha)","Se va a infinito negativo (abajo a la izquierda)","Se aplana en y=0","Hace un salto"],ans:1,fb:"Un cubo de un número negativo muy grande sigue siendo negativo y muy grande. La curva va hacia el 'piso' del lado izquierdo.",graph:{exprs:["y=x^{3}"]},explain:{title:"Explicación extendida: Comportamiento de f(x) = x³ cuando x → -∞",steps:[{t:"Paso 1: Tabla de valores negativos",c:"f(-1) = (-1)³ = -1<br>f(-2) = (-2)³ = -8<br>f(-5) = (-5)³ = -125<br>f(-10) = (-10)³ = -1,000<br>f(-100) = (-100)³ = -1,000,000"},{t:"Paso 2: Regla de signos para potencias impares",c:"(-)³ = (-) × (-) × (-) = (+) × (-) = (-)<br>Un número negativo elevado a una potencia IMPAR siempre da negativo.<br>Por eso (-100)³ = -1,000,000 (negativo)."},{t:"Paso 3: Comportamiento al infinito",c:"x → -∞ → x³ → -∞<br>La gráfica se va hacia abajo a la izquierda, hacia infinito negativo."},{t:"Paso 4: Forma general de la cúbica",c:"f(x) = x³ tiene forma de 'S':<br>→ Desde abajo a la izquierda (x→-∞, y→-∞)<br>→ Pasa por el origen (0,0)<br>→ Sube hacia arriba a la derecha (x→+, y→+∞)"}],key:"💡 Potencia impar: los signos se mantienen. Negativo al cubo = negativo. La cúbica va de -∞ a +∞, subiendo siempre.",summary:"✅ x → -∞ → x³ → -∞. La gráfica baja hacia el infinito negativo por la izquierda. Forma de S."}},
+{q:"¿Por dónde empieza a dibujarse $f(x) = \\sqrt{x}$?",opts:["Desde abajo (y negativo) y sube","Desde el origen (0,0) y sube hacia la derecha","Es una U invertida","Cruza de lado, como una hipérbola"],ans:1,fb:"La raíz cuadrada no existe para x<0 y √0=0. Su gráfica es medio arco que nace exactamente en el (0,0) y sube hacia la derecha lentamente.",graph:{exprs:["y=\\sqrt{x}"]},explain:{title:"Explicación extendida: Gráfica de f(x) = √(x)",steps:[{t:"Paso 1: Dominio",c:"√(x) solo existe para x ≥ 0. No hay gráfica a la izquierda del eje Y."},{t:"Paso 2: Punto inicial",c:"f(0) = √0 = 0<br>→ La gráfica empieza en el origen (0, 0)."},{t:"Paso 3: Tabla de valores",c:"f(0) = 0 → punto (0, 0)<br>f(1) = 1 → punto (1, 1)<br>f(4) = 2 → punto (4, 2)<br>f(9) = 3 → punto (9, 3)<br>f(16) = 4 → punto (16, 4)"},{t:"Paso 4: Comportamiento",c:"La curva sube pero cada vez más lentamente (es cóncava hacia abajo). Para obtener y=10, necesitas x=100. Para y=100, necesitas x=10,000."},{t:"Paso 5: Forma visual",c:"Es como la mitad de una parábola acostada. Solo existe en el primer cuadrante (x≥0, y≥0). Nace en (0,0) y sube hacia la derecha."}],key:"💡 La raíz cuadrada SOLO existe para x ≥ 0 y produce SOLO y ≥ 0. Su gráfica es un 'medio arco' que nace en el origen.",summary:"✅ La gráfica nace en (0,0) y sube hacia la derecha. Solo existe en el primer cuadrante. Crece lentamente."}},
+{q:"¿Tiene huecos la gráfica de $f(x) = \\dfrac{x^2-4}{x+2}$?",opts:["No, es una parábola perfecta","Sí, tiene 1 hueco en x = -2","Sí, tiene 2 huecos","No, tiene una asíntota vertical en x = -2"],ans:1,fb:"Al factorizar $\\dfrac{(x-2)(x+2)}{(x+2)}$, se cancela $(x+2)$. La gráfica es la recta $y=x-2$ con un hueco en $x=-2$.",graph:{exprs:["y=\\frac{x^{2}-4}{x+2}"]},explain:{title:"Explicación extendida: ¿Hueco o asíntota en f(x) = (x² - 4)/(x + 2)?",steps:[{t:"Paso 1: Factorizar el numerador",c:"x² - 4 = (x + 2)(x - 2) (diferencia de cuadrados)"},{t:"Paso 2: Reescribir la función",c:"f(x) = (x+2)(x-2) / (x+2)"},{t:"Paso 3: Cancelar el factor común",c:"El factor (x+2) aparece arriba y abajo → se cancela:<br>f(x) = x - 2, pero SOLO cuando x ≠ -2"},{t:"Paso 4: ¿Qué es un hueco?",c:"En x = -2, la función original tiene 0/0 (indefinida). Pero como el factor se canceló, la función simplificada x-2 sí está definida. Esto crea un AGUJERO (discontinuidad evitable) en x = -2."},{t:"Paso 5: Coordenada del hueco",c:"El hueco está en x = -2, y = (-2) - 2 = -4.<br>→ Punto del hueco: (-2, -4).<br>La gráfica es la recta y = x - 2 con un 'punto faltante' en (-2, -4)."}],key:" Factor que se cancela = HUECO. Factor que NO se cancela = ASÍNTOTA. Aquí (x+2) se cancela → hueco.",summary:"✅ Sí, tiene 1 hueco en x = -2. La gráfica es la recta y = x - 2 con un punto faltante en (-2, -4)."}},
+{q:"Si $f(x) = \\dfrac{x^2-1}{x^2+3x+2}$, ¿cuántos huecos tiene la gráfica?",opts:["0 huecos","1 hueco","2 huecos","3 huecos"],ans:1,fb:"Factorizando: $\\dfrac{(x-1)(x+1)}{(x+1)(x+2)}$. Se cancela $(x+1)$: 1 hueco en $x=-1$ y 1 AV en $x=-2$.",graph:{exprs:["y=\\frac{x^{2}-1}{x^{2}+3x+2}"]},explain:{title:"Explicación extendida: Huecos y asíntotas de f(x) = (x²-1)/(x²+3x+2)",steps:[{t:"Paso 1: Factorizar numerador y denominador",c:"Numerador: x² - 1 = (x+1)(x-1)<br>Denominador: x² + 3x + 2 = (x+1)(x+2)<br>(Buscamos dos números que multiplicados den 2 y sumados den 3: son 1 y 2)"},{t:"Paso 2: Reescribir",c:"f(x) = (x+1)(x-1) / (x+1)(x+2)"},{t:"Paso 3: Identificar factores comunes",c:"El factor (x+1) aparece arriba y abajo → SE CANCELA → genera un HUECO en x = -1.<br>El factor (x+2) solo está abajo → NO se cancela → genera una ASÍNTOTA VERTICAL en x = -2."},{t:"Paso 4: Función simplificada",c:"f(x) = (x-1)/(x+2), con x ≠ -1<br>→ 1 hueco en x = -1<br>→ 1 asíntota vertical en x = -2"}],key:"💡 Cuenta los factores que se cancelan (huecos) y los que solo están abajo (asíntotas). Aquí: 1 se cancela, 1 no se cancela.",summary:"✅ La gráfica tiene 1 hueco (en x=-1, donde se canceló el factor) y 1 asíntota vertical (en x=-2, donde quedó un factor sin cancelar)."}},
+{q:"¿Cuál es la coordenada exacta del hueco en $f(x) = \\dfrac{x^2-9}{x-3}$?",opts:["(3, 6)","(3, 0)","(-3, 6)","(3, 9)"],ans:0,fb:"Se cancela $(x-3)$ en $\\dfrac{x^2-9}{x-3}$. Función simplificada: $x+3$; en $x=3$: $3+3=6$. Hueco en $(3,6)$.",graph:{exprs:["y=\\frac{x^{2}-9}{x-3}"]},explain:{title:"Explicación extendida: Coordenada del hueco en f(x) = (x²-9)/(x-3)",steps:[{t:"Paso 1: Factorizar el numerador",c:"x² - 9 = (x+3)(x-3) (diferencia de cuadrados)"},{t:"Paso 2: Reescribir y cancelar",c:"f(x) = (x+3)(x-3) / (x-3)<br>Se cancela (x-3):<br>f(x) = x + 3, pero x ≠ 3"},{t:"Paso 3: Encontrar la coordenada x del hueco",c:"El hueco está donde el factor cancelado es cero:<br>x - 3 = 0 → x = 3"},{t:"Paso 4: Encontrar la coordenada y del hueco",c:"Evaluamos la función SIMPLIFICADA en x = 3:<br>f_simplificada(3) = 3 + 3 = 6<br>→ El hueco está en (3, 6)."},{t:"Paso 5: ¿Por qué usamos la simplificada?",c:"Porque la original en x=3 da 0/0 (indefinida). Pero la simplificada x+3 nos dice a qué valor se ACERCA la función. En (3,6) hay un punto 'fantasma' — la recta pasa por ahí pero no existe el punto."}],key:"💡 Para hallar la y del hueco: cancela el factor, simplifica la función, y evalúa en el valor de x del hueco.",summary:"✅ Hueco en (3, 6). La gráfica es la recta y = x + 3 con un punto faltante en (3, 6)."}},
+{q:"¿Por qué $f(x) = \\dfrac{x}{x^2-4}$ NO tiene huecos, sino asíntotas verticales?",opts:["Porque el numerador es x","Porque el denominador no se cancela con nada de arriba","Porque x²-4 da negativo","Porque tiene asíntota horizontal"],ans:1,fb:"En $\\dfrac{x}{(x-2)(x+2)}$, el numerador $x$ no se cancela con ningún factor. Sin cancelación → solo AV en $x=2$ y $x=-2$.",graph:{exprs:["y=\\frac{x}{x^{2}-4}"]},explain:{title:"Explicación extendida: Asíntotas vs huecos en f(x) = x/(x²-4)",steps:[{t:"Paso 1: Factorizar el denominador",c:"x² - 4 = (x-2)(x+2)<br>f(x) = x / [(x-2)(x+2)]"},{t:"Paso 2: ¿Hay factores comunes?",c:"Numerador: x<br>Denominador: (x-2)(x+2)<br>→ ¡Ningún factor se repite! No hay nada que cancelar."},{t:"Paso 3: Identificar las asíntotas verticales",c:"El denominador se hace cero cuando:<br>x - 2 = 0 → x = 2<br>x + 2 = 0 → x = -2<br>Como estos factores NO se cancelan con el numerador, son ASÍNTOTAS VERTICALES."},{t:"Paso 4: Comparar con un caso con hueco",c:"Si fuera f(x) = (x-2) / [(x-2)(x+2)], el (x-2) se cancelaría → hueco en x=2.<br>Pero aquí el numerador es x, que NO contiene (x-2) ni (x+2). → No hay cancelación → No hay hueco."}],key:"💡 HUECO = factor se cancela. ASÍNTOTA = factor NO se cancela. Aquí nada se cancela → solo asíntotas.",summary:"✅ No hay huecos porque x no comparte factores con (x-2)(x+2). Hay 2 asíntotas verticales: x=2 y x=-2."}},
+{q:"Si una función racional simplificada resulta ser $f(x) = x+1$, pero la original tenía $(x-5)$ en numerador y denominador, ¿cómo se ve la gráfica?",opts:["Una recta que sube, con un hueco en x=5","Una parábola que toca x=5","Una recta que sube, con una asíntota en x=5","Una V en x=5"],ans:0,fb:"Al cancelar $(x-5)$, queda la recta $f(x) = x+1$, pero con un hueco en $x=5$ — el punto $(5,6)$ no existe.",graph:{exprs:["y=\\frac{(x+1)(x-5)}{x-5}"]},explain:{title:"Explicación extendida: Función original vs simplificada",steps:[{t:"Paso 1: Reconstruir la función original",c:"Si f(x) = x + 1 y originalmente tenía (x-5) arriba y abajo:<br>f_original(x) = (x+1)(x-5) / (x-5)<br>= (x² - 4x - 5) / (x - 5)"},{t:"Paso 2: Verificar el punto problemático",c:"En x = 5:<br>f_original(5) = (25 - 20 - 5) / (5 - 5) = 0/0 → ¡Indefinido!"},{t:"Paso 3: Simplificar",c:"f_original(x) = (x+1)(x-5)/(x-5) = x + 1, para x ≠ 5"},{t:"Paso 4: ¿Qué se ve en la gráfica?",c:"La gráfica es la recta y = x + 1 (pendiente 1, intercepto en 1), PERO con un agujero en x = 5.<br>El hueco está en el punto (5, 6) porque 5 + 1 = 6.<br>→ Es una recta completa con un 'punto comido' en (5, 6)."},{t:"Paso 5: ¿Por qué no es asíntota?",c:"Porque el factor (x-5) se cancela completamente. No queda nada en el denominador que explote a infinito. Solo falta un punto."}],key:" Cuando un factor se cancela completamente, la gráfica es la función simplificada CON UN AGUJERO en el punto donde el factor era cero.",summary:"✅ Una recta y = x + 1 con un hueco en (5, 6). La recta sube normalmente pero tiene un punto faltante en x=5."}}
+];
+function loadQuestion(){
+if(currentQ>=questions.length){showResults();return;}
+answered=false;panelOpen=false;
+const q=questions[currentQ];
+const qEl=document.getElementById('question');
+qEl.classList.add('fade-out');
+setTimeout(()=>{
+document.getElementById('progress-text').textContent=`Pregunta ${currentQ+1} de ${questions.length}`;
+document.getElementById('score-badge').textContent=`⭐ ${score} correcta${score!==1?'s':''}`;
+document.getElementById('progress-bar').style.width=`${((currentQ)/questions.length)*100}%`;
+document.getElementById('feedback').textContent='';
+document.getElementById('feedback').className='';
+document.getElementById('action-buttons').classList.remove('visible');
+document.getElementById('expand-btn').innerHTML='📖 Ver explicación extendida';
+const ep=document.getElementById('expand-panel');
+ep.classList.remove('open');
+ep.innerHTML='';
+graphOpen=false;document.getElementById('graph-btn').innerHTML='📈 Ver gráfica';const gp=document.getElementById('graph-panel');gp.classList.remove('open');if(desmosCalc){desmosCalc.destroy();desmosCalc=null;}
+qEl.innerHTML=q.q;
+qEl.classList.remove('fade-out');
+qEl.classList.add('fade-in');
+setTimeout(()=>qEl.classList.remove('fade-in'),50);
+const c=document.getElementById('options-container');
+c.innerHTML='';
+q.opts.forEach((opt,i)=>{
+const btn=document.createElement('button');
+btn.className='option-btn';
+btn.innerHTML=`<span class="option-label">${labels[i]}</span><span class="option-text">${opt}</span>`;
+btn.onclick=()=>checkAnswer(i,btn);
+c.appendChild(btn);
+});
+renderMath(document.getElementById('question'));
+renderMath(c);
+},250);
+}
+function checkAnswer(index,btn){
+if(answered)return;
+answered=true;
+clearInterval(timerInterval);
+const q=questions[currentQ];
+const buttons=document.querySelectorAll('#options-container .option-btn');
+buttons.forEach(b=>b.disabled=true);
+const fb=document.getElementById('feedback');
+if(index===q.ans){
+btn.classList.add('correct');
+score++;
+fb.innerHTML=`✅ ¡Correcto! ${q.fb}`;
+fb.className='visible success';
+}else{
+btn.classList.add('incorrect');
+buttons[q.ans].classList.add('correct');
+fb.innerHTML=`❌ Incorrecto. ${q.fb}`;
+fb.className='visible error';
+}
+document.getElementById('score-badge').textContent=`⭐ ${score} correcta${score!==1?'s':''}`;
+document.getElementById('action-buttons').classList.add('visible');
+const ep=document.getElementById('expand-panel');
+const ex=q.explain;
+let html=`<strong>${ex.title}</strong><br>`;
+ex.steps.forEach((s,si)=>{
+html+=`<div class="step"><strong>${s.t}</strong><br>${s.c}</div>`;
+});
+if(ex.key)html+=`<div class="key-concept">${ex.key}</div>`;
+if(ex.visual)html+=`<div class="visual">${ex.visual}</div>`;
+if(ex.summary)html+=`<div class="summary">${ex.summary}</div>`;
+ep.innerHTML=html;
+renderMath(document.getElementById('feedback'));
+renderMath(ep);
+}
+function nextQuestion(){currentQ++;loadQuestion();startTimer();}
+function showResults(){
+clearInterval(timerInterval);
+document.getElementById('quiz-screen').style.display='none';
+const rs=document.getElementById('results-screen');
+rs.style.display='block';
+const p=Math.round((score/questions.length)*100);
+document.getElementById('results-score').textContent=`${score} / ${questions.length}`;
+document.getElementById('stat-correct').textContent=score;
+document.getElementById('stat-incorrect').textContent=questions.length-score;
+document.getElementById('stat-percent').textContent=`${p}%`;
+document.getElementById('stat-time').textContent=formatTime(elapsedSeconds);
+const bf=document.getElementById('results-bar-fill');
+let bc,ic,msg;
+if(p>=90){bc='linear-gradient(90deg,#a6e3a1,#94e2d5)';ic='🏆';msg='¡Extraordinario! Dominas los límites y funciones a la perfección.';}
+else if(p>=70){bc='linear-gradient(90deg,#89b4fa,#cba6f7)';ic='🎉';msg='¡Muy bien! Tienes una base sólida. Repasa los errores para alcanzar la perfección.';}
+else if(p>=50){bc='linear-gradient(90deg,#f9e2af,#fab387)';ic='';msg='Buen intento. Revisa los conceptos donde fallaste y vuelve a intentarlo.';}
+else{bc='linear-gradient(90deg,#f38ba8,#eba0ac)';ic='📚';msg='No te desanimes. Estudia los conceptos básicos y vuelve con más confianza.';}
+document.getElementById('results-icon').textContent=ic;
+document.getElementById('results-message').textContent=msg;
+setTimeout(()=>{bf.style.width=`${p}%`;bf.style.background=bc;},300);
+if(p>=70)setTimeout(launchConfetti,500);
+}
+function launchConfetti(){
+const c=document.getElementById('confetti-container');
+const colors=['#89b4fa','#cba6f7','#f38ba8','#f9e2af','#a6e3a1','#fab387','#94e2d5'];
+for(let i=0;i<60;i++){
+const cf=document.createElement('div');
+cf.className='confetti';
+cf.style.left=Math.random()*100+'%';
+cf.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
+cf.style.width=(Math.random()*8+5)+'px';
+cf.style.height=(Math.random()*8+5)+'px';
+cf.style.borderRadius=Math.random()>0.5?'50%':'2px';
+cf.style.animationDuration=(Math.random()*2+1.5)+'s';
+cf.style.animationDelay=(Math.random()*1.5)+'s';
+c.appendChild(cf);
+}
+setTimeout(()=>{c.innerHTML='';},4000);
+}
+function restartQuiz(){
+currentQ=0;score=0;answered=false;elapsedSeconds=0;panelOpen=false;
+document.getElementById('timer-display').textContent='⏱ 0:00';
+document.getElementById('results-screen').style.display='none';
+document.getElementById('quiz-screen').style.display='block';
+document.getElementById('results-bar-fill').style.width='0%';
+document.getElementById('expand-panel').classList.remove('open');
+document.getElementById('expand-panel').innerHTML='';
+loadQuestion();startTimer();
+}
+window.onload=function(){loadQuestion();startTimer();};
+</script></body></html>
+
