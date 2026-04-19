@@ -17,3 +17,4 @@ llm-directory-docs/
 *-borrador.md
 *-draft.md
 *.bak.md
+.worktrees/
