@@ -1,0 +1,1001 @@
+codigo,nombre,carrera,semestre,materia,nota
+CS20230001,Iván Sánchez Martínez,Comunicación Social,5,Producción Audiovisual,3.04
+OD20220002,Mauricio Núñez Rodríguez,Odontología,7,Anatomía Dental,3.09
+AE20250003,Rafael Martínez Aguilar,Administración de Empresas,9,Finanzas,3.64
+CS20240004,Alejandro Bermúdez Flores,Comunicación Social,7,Publicidad,3.38
+PS20240005,Luisa Pérez Rodríguez,Psicología,2,Social,4.4
+IC20220006,Sandra Delgado Núñez,Ingeniería Civil,7,Concreto,3.81
+CS20220007,Stephanie Salinas Gómez,Comunicación Social,2,Producción Audiovisual,4.49
+CP20240008,Julián Pérez Jiménez,Contaduría Pública,8,Auditoría,3.6
+AR20230009,Natalia Guzmán Serrano,Arquitectura,2,Materiales,4.08
+CS20230010,Juan Ortega Pineda,Comunicación Social,9,Publicidad,4.39
+PS20220011,Julián López Mendoza,Psicología,5,Neuropsicología,4.78
+AR20250012,Gabriel Mendoza Díaz,Arquitectura,8,Historia del Arte,3.06
+CP20250013,Mauricio Aguilar Núñez,Contaduría Pública,10,Finanzas,3.61
+IC20220014,Nicolás Herrera Peña,Ingeniería Civil,1,Resistencia de Materiales,4.4
+PS20250015,Carolina Palacios González,Psicología,7,Evaluación,3.78
+IC20240016,Alejandro Serrano Ariza,Ingeniería Civil,9,Hidráulica,3.17
+LE20230017,Vanessa García Ariza,Licenciatura en Educación Infantil,5,Inclusión,4.94
+OD20230018,Paola Pineda Herrera,Odontología,4,Periodoncia,4.27
+OD20250019,Cristian Campos García,Odontología,6,Anatomía Dental,3.15
+AE20220020,Paola Morales Hernández,Administración de Empresas,10,Gestión Humana,4.41
+II20250021,Liliana Núñez Polo,Ingeniería Industrial,3,Logística,3.21
+LE20230022,Rafael Guerrero Díaz,Licenciatura en Educación Infantil,9,Didáctica,3.84
+MD20230023,Stephanie Ruiz Campos,Medicina,2,Fisiología,1.04
+AE20220024,Diana Reyes Cárdenas,Administración de Empresas,1,Gestión Humana,3.36
+AE20250025,Luisa González Herrera,Administración de Empresas,5,Finanzas,3.86
+AE20250026,Eduardo Salinas Ríos,Administración de Empresas,8,Finanzas,3.26
+MD20220027,David Guerrero Vega,Medicina,1,Anatomía,3.67
+AE20250028,Mateo Morales Gómez,Administración de Empresas,9,Finanzas,3.64
+NI20220029,Andrea González Ruiz,Negocios Internacionales,9,Comercio Exterior,4.27
+TS20230030,Alejandro Rodríguez Bermúdez,Trabajo Social,4,Familia,3.61
+PS20250031,Melissa Hernández Flores,Psicología,1,Social,4.89
+CS20250032,Carlos Guerrero Guzmán,Comunicación Social,9,Producción Audiovisual,3.09
+EN20240033,Isabella Cárdenas Figueroa,Enfermería,1,Cuidado Básico,1.91
+EN20230034,Claudia Flores Hernández,Enfermería,2,Cuidado Básico,3.84
+LE20230035,Andrea Medina Sánchez,Licenciatura en Educación Infantil,10,Inclusión,3.81
+OD20240036,Jorge Barrera Cárdenas,Odontología,9,Periodoncia,3.29
+II20250037,Andrea Cruz Medina,Ingeniería Industrial,5,Estadística,4.97
+OD20220038,Alejandro Delgado Acosta,Odontología,2,Endodoncia,3.11
+DR20230039,David González Morales,Derecho,5,Laboral,4.35
+IS20240040,Marcela Roa Campos,Ingeniería de Sistemas,9,Programación I,4.57
+EN20240041,Sofía Pérez Figueroa,Enfermería,3,Pediatría,4.36
+TS20250042,Laura Serrano Pineda,Trabajo Social,5,Comunidad,4.92
+TS20220043,Camila Pineda Guerrero,Trabajo Social,5,Intervención Social,3.57
+MD20250044,Diego Flores Figueroa,Medicina,9,Cirugía,1.14
+IS20230045,Alejandra Torres Núñez,Ingeniería de Sistemas,6,Algoritmos,3.12
+AR20220046,Santiago Castillo Díaz,Arquitectura,4,Estructuras,4.44
+II20230047,Jorge Acosta Figueroa,Ingeniería Industrial,4,Producción,4.51
+NI20240048,Mauricio Suárez Vega,Negocios Internacionales,4,Finanzas Internacionales,4.05
+AE20240049,Santiago Ríos Reyes,Administración de Empresas,8,Marketing,4.44
+AE20240050,Julián Martínez Barrera,Administración de Empresas,7,Marketing,4.48
+EN20240051,Natalia Castillo Roa,Enfermería,7,Cuidado Básico,3.39
+IS20250052,Mariana Cárdenas Cruz,Ingeniería de Sistemas,2,Redes,4.16
+PS20230053,Rafael Herrera Sánchez,Psicología,10,Social,1.83
+CS20240054,Claudia Núñez Serrano,Comunicación Social,4,Opinión Pública,2.26
+AR20240055,Luisa Acosta Mendoza,Arquitectura,2,Materiales,3.7
+EN20230056,Melissa Guzmán Vargas,Enfermería,3,Salud Pública,4.19
+OD20250057,Mauricio Rivera Acosta,Odontología,5,Endodoncia,4.15
+OD20250058,Laura Guerrero Cárdenas,Odontología,6,Ortodoncia,3.61
+AR20240059,Ricardo Figueroa Flores,Arquitectura,2,Materiales,4.31
+AR20230060,Camila Bermúdez Morales,Arquitectura,5,Urbanismo,3.02
+IC20250061,Ricardo Acosta Polo,Ingeniería Civil,8,Concreto,3.28
+II20220062,María Medina Morales,Ingeniería Industrial,1,Ergonomía,3.32
+IS20230063,Alejandra Campos Delgado,Ingeniería de Sistemas,9,Programación I,3.9
+OD20250064,Rodrigo Campos Aguilar,Odontología,6,Endodoncia,4.45
+LE20250065,Carolina Aguilar Ruiz,Licenciatura en Educación Infantil,3,Lúdica,3.62
+NI20250066,Iván Ortega Polo,Negocios Internacionales,9,Finanzas Internacionales,3.54
+DR20220067,Carlos Morales Ortega,Derecho,6,Penal,3.15
+IC20250068,Daniela Pinto Díaz,Ingeniería Civil,7,Hidráulica,3.71
+LE20220069,Laura Vega Jiménez,Licenciatura en Educación Infantil,10,Inclusión,3.5
+PS20230070,David Ramos Bermúdez,Psicología,7,Educativa,3.17
+AR20230071,Valentina Jiménez Suárez,Arquitectura,7,Historia del Arte,4.99
+OD20220072,Fernando Martínez Medina,Odontología,10,Anatomía Dental,4.07
+CP20240073,Vanessa Rivera Hernández,Contaduría Pública,7,Auditoría,3.67
+TS20240074,Juan Ortega Bermúdez,Trabajo Social,7,Intervención Social,3.87
+AR20220075,Isabella Castillo Reyes,Arquitectura,2,Diseño I,4.6
+AE20250076,Valentina Acosta Torres,Administración de Empresas,3,Gestión Humana,3.61
+DR20220077,Alejandra Cruz Polo,Derecho,3,Penal,4.55
+AR20250078,Valentina Ramos Salinas,Arquitectura,7,Urbanismo,3.28
+CS20220079,Iván Morales Pérez,Comunicación Social,5,Comunicación Digital,4.17
+IC20240080,Carolina Barrera Romero,Ingeniería Civil,9,Estática,4.41
+AR20230081,Mateo Guerrero Romero,Arquitectura,8,Historia del Arte,3.21
+NI20250082,Adriana Ortega Acosta,Negocios Internacionales,9,Logística,3.87
+TS20240083,Natalia Mendoza Morales,Trabajo Social,2,Familia,3.19
+DR20250084,Marcela Barrera Jiménez,Derecho,1,Constitucional,3.08
+LE20240085,Diego Suárez Ortega,Licenciatura en Educación Infantil,10,Inclusión,2.8
+PS20230086,Camila Morales Ariza,Psicología,8,Educativa,4.25
+AE20230087,Valentina Rodríguez Vargas,Administración de Empresas,7,Marketing,4.18
+PS20240088,Diana Campos Castillo,Psicología,9,Social,4.14
+CS20240089,Diego Reyes Sánchez,Comunicación Social,4,Periodismo,4.48
+AE20240090,Alejandra Rivera Gómez,Administración de Empresas,8,Contabilidad,4.76
+CP20240091,Carlos Pérez Gómez,Contaduría Pública,4,Auditoría,3.85
+IS20240092,Nicolás Ortega López,Ingeniería de Sistemas,9,Bases de Datos,4.38
+CP20250093,Mateo García Salinas,Contaduría Pública,8,Costos,3.98
+TS20250094,Diego Ríos Sánchez,Trabajo Social,2,Familia,3.25
+NI20240095,Isabella Torres Torres,Negocios Internacionales,10,Comercio Exterior,4.56
+OD20230096,Liliana Vega Palacios,Odontología,10,Endodoncia,3.95
+CP20220097,Paola Cárdenas Guerrero,Contaduría Pública,10,Finanzas,4.55
+AE20220098,Liliana Díaz Pineda,Administración de Empresas,5,Finanzas,3.22
+MD20250099,Andrés García Vega,Medicina,10,Farmacología,1.55
+IC20240100,Carlos Guzmán Delgado,Ingeniería Civil,4,Concreto,4.47
+AE20240101,Carolina Sánchez Núñez,Administración de Empresas,3,Finanzas,3.07
+TS20240102,Paola Palacios Figueroa,Trabajo Social,10,Familia,3.28
+EN20250103,Alejandra Medina Ortega,Enfermería,9,Salud Pública,3.02
+OD20220104,Carolina Figueroa Mendoza,Odontología,5,Anatomía Dental,3.27
+NI20220105,Eduardo Cárdenas Martínez,Negocios Internacionales,5,Finanzas Internacionales,3.83
+PS20220106,Natalia Rivera Cárdenas,Psicología,8,Educativa,3.67
+DR20250107,Rodrigo Pérez Flores,Derecho,7,Constitucional,4.2
+MD20240108,Liliana Aguilar López,Medicina,2,Farmacología,3.99
+AR20250109,Melissa Herrera García,Arquitectura,9,Historia del Arte,1.99
+AR20220110,Marcela Bermúdez Peña,Arquitectura,8,Urbanismo,3.57
+MD20220111,Carlos Ruiz Guzmán,Medicina,2,Cirugía,4.35
+EN20220112,Paola Aguilar García,Enfermería,7,Farmacología,4.96
+TS20250113,Vanessa Sánchez Roa,Trabajo Social,3,Comunidad,3.64
+MD20230114,Ricardo Ríos Morales,Medicina,9,Clínica,3.24
+CP20240115,Mauricio Ramírez González,Contaduría Pública,7,Finanzas,3.5
+OD20230116,Sandra Ramos Cárdenas,Odontología,8,Ortodoncia,3.67
+PS20240117,Diana Bermúdez Núñez,Psicología,8,Neuropsicología,4.62
+PS20240118,Juan Reyes Polo,Psicología,1,Educativa,4.41
+II20220119,Juan Barrera Roa,Ingeniería Industrial,8,Producción,3.8
+EN20220120,Mateo Ruiz Pérez,Enfermería,8,Farmacología,3.83
+NI20240121,Daniela González Ríos,Negocios Internacionales,5,Tratados,4.32
+PS20250122,Luisa Serrano Núñez,Psicología,6,Evaluación,1.13
+AE20250123,Iván Serrano Vargas,Administración de Empresas,2,Gestión Humana,4.35
+CS20220124,Mateo Ruiz Flores,Comunicación Social,5,Periodismo,3.53
+II20250125,David Romero Guerrero,Ingeniería Industrial,4,Logística,4.09
+TS20230126,Mariana Rodríguez Acosta,Trabajo Social,7,Familia,4.57
+MD20220127,Vanessa Pineda Cruz,Medicina,5,Clínica,4.84
+DR20240128,Andrés González Ruiz,Derecho,10,Laboral,4.23
+TS20220129,Paola Gómez Jiménez,Trabajo Social,8,Política Social,3.68
+IS20240130,Carlos Guzmán Vargas,Ingeniería de Sistemas,7,Programación I,3.84
+CS20240131,Mauricio Hernández Palacios,Comunicación Social,8,Producción Audiovisual,4.18
+CP20220132,Iván Gómez Acosta,Contaduría Pública,3,Contabilidad General,3.72
+II20240133,Patricia Romero Ariza,Ingeniería Industrial,2,Estadística,4.09
+EN20240134,Nicolás Núñez Romero,Enfermería,9,Farmacología,3.91
+TS20220135,Ricardo Vargas Figueroa,Trabajo Social,6,Familia,4.57
+AR20240136,Julián Serrano Ariza,Arquitectura,7,Diseño I,4.01
+DR20250137,Fernando Sánchez Delgado,Derecho,5,Constitucional,3.09
+DR20230138,Valentina Acosta Aguilar,Derecho,10,Derecho Civil,4.23
+PS20230139,Alejandra Ramos Roa,Psicología,2,Psicología Clínica,4.65
+AE20230140,María Sánchez Pérez,Administración de Empresas,9,Estrategia,3.84
+PS20230141,Mauricio Guzmán Núñez,Psicología,10,Educativa,4.42
+IS20230142,Marcela Vega Ortega,Ingeniería de Sistemas,6,Algoritmos,3.62
+DR20240143,Stephanie Pérez Serrano,Derecho,9,Derecho Civil,3.59
+AR20220144,Sofía Delgado Rodríguez,Arquitectura,4,Diseño I,4.12
+IC20230145,Nicolás Salinas Díaz,Ingeniería Civil,9,Concreto,3.35
+NI20220146,Luisa Polo Torres,Negocios Internacionales,10,Idiomas,4.07
+NI20220147,Nicolás Núñez Cruz,Negocios Internacionales,3,Comercio Exterior,3.14
+IS20240148,Andrea Cárdenas Mendoza,Ingeniería de Sistemas,3,Programación I,3.17
+MD20240149,Sofía Figueroa González,Medicina,8,Cirugía,3.73
+CS20240150,Julián Acosta López,Comunicación Social,9,Opinión Pública,4.02
+AR20250151,Ricardo Medina Guerrero,Arquitectura,2,Historia del Arte,3.03
+II20240152,Rafael Torres González,Ingeniería Industrial,5,Ergonomía,4.77
+PS20220153,Vanessa Herrera Palacios,Psicología,2,Evaluación,4.11
+DR20250154,Luis Reyes Vega,Derecho,8,Laboral,4.16
+DR20250155,Miguel Barrera Cruz,Derecho,3,Derecho Civil,3.03
+CS20230156,Carolina Pérez Figueroa,Comunicación Social,6,Comunicación Digital,2.82
+IC20240157,Diana Suárez Barrera,Ingeniería Civil,7,Topografía,4.36
+DR20230158,Carlos Palacios Ramos,Derecho,2,Penal,4.11
+DR20240159,Mateo Castillo Aguilar,Derecho,2,Procesal,3.17
+OD20220160,Diana Polo Acosta,Odontología,9,Endodoncia,4.91
+CP20240161,Natalia Martínez Rivera,Contaduría Pública,5,Tributaria,2.65
+IC20220162,Eduardo Barrera Medina,Ingeniería Civil,3,Estática,4.11
+II20240163,Jorge Delgado Suárez,Ingeniería Industrial,6,Estadística,4.28
+II20220164,Camila Hernández Torres,Ingeniería Industrial,10,Investigación de Operaciones,3.83
+PS20230165,María Palacios Ruiz,Psicología,5,Evaluación,3.17
+OD20240166,Carlos Serrano Serrano,Odontología,8,Anatomía Dental,3.39
+CP20230167,Isabella García Díaz,Contaduría Pública,4,Tributaria,3.56
+II20250168,María Figueroa Guerrero,Ingeniería Industrial,3,Logística,4.25
+PS20250169,Rodrigo Castillo González,Psicología,1,Psicología Clínica,3.54
+OD20250170,Miguel Salinas Guerrero,Odontología,7,Periodoncia,3.01
+MD20220171,Miguel Flores Acosta,Medicina,6,Clínica,4.12
+IC20240172,Patricia Medina Campos,Ingeniería Civil,7,Hidráulica,3.31
+IC20230173,Sebastián Herrera Pineda,Ingeniería Civil,9,Hidráulica,3.98
+IC20240174,Adriana Torres Morales,Ingeniería Civil,3,Resistencia de Materiales,3.06
+II20250175,Liliana Roa González,Ingeniería Industrial,8,Logística,4.22
+OD20240176,Eduardo Roa Pineda,Odontología,6,Cirugía Oral,3.73
+OD20240177,Iván Ramos Ortega,Odontología,1,Endodoncia,3.18
+TS20220178,Santiago Hernández Romero,Trabajo Social,5,Intervención Social,4.25
+NI20250179,Vanessa Cárdenas Aguilar,Negocios Internacionales,1,Tratados,4.16
+IS20220180,Ricardo Herrera Torres,Ingeniería de Sistemas,8,Redes,4.54
+AE20250181,Adriana Rivera López,Administración de Empresas,8,Contabilidad,3.58
+PS20220182,Stephanie Vargas Jiménez,Psicología,6,Social,1.18
+CP20230183,Monica Jiménez Vargas,Contaduría Pública,10,Tributaria,3.27
+CS20230184,David Ramos Roa,Comunicación Social,7,Comunicación Digital,4.04
+NI20230185,Diana Jiménez Roa,Negocios Internacionales,6,Tratados,3.27
+DR20230186,Hernán Romero Martínez,Derecho,5,Penal,3.88
+II20240187,Felipe Reyes Ramírez,Ingeniería Industrial,2,Investigación de Operaciones,3.77
+AR20230188,Mauricio Campos López,Arquitectura,6,Materiales,3.58
+NI20250189,Alejandra Polo Acosta,Negocios Internacionales,3,Comercio Exterior,3.84
+CP20230190,Andrea Ruiz Acosta,Contaduría Pública,8,Finanzas,3.39
+AR20250191,Ricardo Gómez Romero,Arquitectura,10,Historia del Arte,4.39
+II20230192,Hernán Campos Vega,Ingeniería Industrial,4,Estadística,1.91
+CS20220193,Stephanie Aguilar Pérez,Comunicación Social,9,Publicidad,3.06
+TS20220194,Luis Herrera Torres,Trabajo Social,7,Política Social,4.44
+PS20240195,Valentina Vega Hernández,Psicología,9,Neuropsicología,3.54
+LE20240196,Julián Martínez Mendoza,Licenciatura en Educación Infantil,2,Desarrollo Infantil,3.11
+NI20250197,Ricardo Guzmán Ramírez,Negocios Internacionales,8,Tratados,1.15
+EN20250198,Diego Díaz Torres,Enfermería,10,Cuidado Básico,4.12
+PS20250199,Sofía Hernández Morales,Psicología,10,Psicología Clínica,3.36
+AR20230200,Rafael Núñez Martínez,Arquitectura,9,Urbanismo,3.5
+PS20220201,David Morales Salinas,Psicología,3,Evaluación,4.53
+NI20220202,Claudia Núñez Herrera,Negocios Internacionales,9,Logística,4.02
+CS20240203,Juan Romero Cruz,Comunicación Social,1,Periodismo,3.87
+OD20230204,Iván Pérez Polo,Odontología,6,Anatomía Dental,3.67
+AR20250205,Adriana Rivera Polo,Arquitectura,8,Urbanismo,4.03
+CP20220206,Cristian Delgado López,Contaduría Pública,4,Auditoría,4.66
+TS20250207,Paola Herrera Medina,Trabajo Social,9,Comunidad,2.23
+IS20240208,Carlos Castillo Polo,Ingeniería de Sistemas,6,Programación I,4.22
+LE20240209,Melissa Figueroa Ruiz,Licenciatura en Educación Infantil,7,Desarrollo Infantil,3.75
+CS20220210,Claudia Ortega Rodríguez,Comunicación Social,7,Opinión Pública,4.41
+IC20240211,Fernando Vargas Mendoza,Ingeniería Civil,2,Hidráulica,3.8
+MD20250212,Carolina Flores Guzmán,Medicina,6,Anatomía,4.46
+AR20220213,Marcela Guerrero Ortega,Arquitectura,1,Historia del Arte,3.9
+II20250214,Monica Flores Martínez,Ingeniería Industrial,10,Investigación de Operaciones,3.09
+PS20220215,Adriana Romero Romero,Psicología,10,Evaluación,3.18
+NI20230216,Stephanie Romero Ruiz,Negocios Internacionales,2,Tratados,3.66
+IS20250217,Natalia Morales Sánchez,Ingeniería de Sistemas,3,Sistemas Operativos,3.78
+CS20230218,Diego Polo Cruz,Comunicación Social,8,Comunicación Digital,3.96
+II20250219,María Gómez Sánchez,Ingeniería Industrial,2,Producción,4.72
+AR20220220,Camila Serrano Mendoza,Arquitectura,6,Materiales,3.95
+LE20240221,Andrés Pinto Pinto,Licenciatura en Educación Infantil,3,Inclusión,3.39
+IS20240222,Nicolás Morales Peña,Ingeniería de Sistemas,6,Algoritmos,4.28
+CP20250223,Marcela Rodríguez González,Contaduría Pública,7,Finanzas,3.7
+DR20250224,Eduardo González Ramírez,Derecho,2,Laboral,4.17
+OD20230225,Cristian Aguilar Pineda,Odontología,3,Ortodoncia,3.93
+CP20230226,Sofía Campos Torres,Contaduría Pública,3,Tributaria,4.61
+CP20240227,Claudia Vargas Rodríguez,Contaduría Pública,4,Auditoría,4.31
+II20230228,Camila Herrera Roa,Ingeniería Industrial,10,Producción,4.36
+IS20220229,Rafael Suárez Salinas,Ingeniería de Sistemas,1,Programación I,4.89
+NI20250230,Diego Roa Díaz,Negocios Internacionales,10,Tratados,4.25
+AR20250231,Iván Núñez Vargas,Arquitectura,5,Urbanismo,4.34
+CS20230232,Paola Delgado González,Comunicación Social,1,Opinión Pública,3.73
+DR20240233,Luisa Palacios Torres,Derecho,6,Laboral,3.15
+AE20220234,Diana Pérez Mendoza,Administración de Empresas,8,Marketing,3.57
+TS20250235,Isabella Vargas Jiménez,Trabajo Social,10,Política Social,4.95
+DR20230236,Miguel Salinas Ariza,Derecho,4,Laboral,4.73
+IC20250237,Paola Peña Martínez,Ingeniería Civil,7,Resistencia de Materiales,3.14
+OD20240238,Isabella Vargas Peña,Odontología,8,Endodoncia,1.2
+DR20240239,Nicolás Cruz Ariza,Derecho,7,Derecho Civil,3.79
+CP20250240,Felipe Romero Aguilar,Contaduría Pública,2,Finanzas,3.77
+IC20220241,Marcela Serrano Acosta,Ingeniería Civil,3,Topografía,3.99
+II20250242,Diana Romero Bermúdez,Ingeniería Industrial,4,Logística,1.07
+EN20230243,Gabriel Suárez Ríos,Enfermería,8,Urgencias,4.57
+PS20240244,Marcela Mendoza Flores,Psicología,10,Evaluación,3.91
+OD20250245,Fernando Peña Pinto,Odontología,5,Anatomía Dental,3.84
+NI20250246,Jorge Cárdenas Ramos,Negocios Internacionales,1,Idiomas,4.89
+AE20250247,Cristian Cárdenas Salinas,Administración de Empresas,1,Finanzas,3.86
+TS20220248,Cristian Jiménez Torres,Trabajo Social,4,Investigación Social,4.55
+PS20250249,Valentina Ruiz Mendoza,Psicología,3,Neuropsicología,3.89
+IS20230250,Ricardo Figueroa Ariza,Ingeniería de Sistemas,3,Sistemas Operativos,3.83
+II20240251,Claudia Jiménez Mendoza,Ingeniería Industrial,8,Logística,3.89
+NI20250252,Sandra Serrano Roa,Negocios Internacionales,5,Finanzas Internacionales,4.64
+NI20230253,Paola Reyes Ramos,Negocios Internacionales,5,Logística,3.67
+IC20250254,Sandra Ortega Vargas,Ingeniería Civil,10,Topografía,4.48
+CP20240255,Daniela Vargas López,Contaduría Pública,2,Costos,4.37
+CP20240256,Laura Gómez Núñez,Contaduría Pública,9,Auditoría,3.3
+AR20230257,Andrea Morales Hernández,Arquitectura,9,Urbanismo,1.79
+AR20220258,Gabriel Ríos Pérez,Arquitectura,3,Materiales,4.58
+AR20240259,Adriana Ríos Ríos,Arquitectura,4,Estructuras,3.53
+OD20220260,Cristian Rodríguez Roa,Odontología,4,Cirugía Oral,3.92
+II20220261,Santiago Medina Peña,Ingeniería Industrial,5,Investigación de Operaciones,3.8
+AR20250262,Luisa Vargas Delgado,Arquitectura,9,Urbanismo,4.23
+II20240263,Felipe Sánchez Suárez,Ingeniería Industrial,8,Producción,1.64
+NI20230264,Carlos Salinas Serrano,Negocios Internacionales,4,Tratados,4.45
+IC20220265,Carolina Herrera Mendoza,Ingeniería Civil,7,Resistencia de Materiales,4.74
+PS20250266,Andrea García Cruz,Psicología,4,Social,4.65
+CP20230267,Sandra Salinas García,Contaduría Pública,6,Contabilidad General,4.23
+EN20220268,Andrés Medina Serrano,Enfermería,5,Pediatría,3.61
+MD20240269,Nicolás Ríos Torres,Medicina,10,Clínica,4.46
+TS20230270,Liliana Núñez Barrera,Trabajo Social,4,Investigación Social,4.04
+DR20220271,Luis Campos Pinto,Derecho,2,Derecho Civil,4.45
+II20240272,Felipe Salinas Núñez,Ingeniería Industrial,3,Logística,3.84
+IC20250273,Gabriel Cárdenas Peña,Ingeniería Civil,9,Estática,3.76
+EN20240274,Vanessa Salinas Hernández,Enfermería,8,Cuidado Básico,3.91
+IC20250275,Mauricio Díaz Cárdenas,Ingeniería Civil,1,Hidráulica,4.27
+IS20250276,Isabella González Ríos,Ingeniería de Sistemas,5,Bases de Datos,4.38
+DR20250277,Sandra Roa Vega,Derecho,7,Laboral,3.84
+AR20220278,Rodrigo Núñez Ramírez,Arquitectura,6,Urbanismo,4.7
+TS20220279,Nicolás Ariza Reyes,Trabajo Social,1,Comunidad,3.86
+TS20230280,Carolina Núñez Jiménez,Trabajo Social,4,Familia,3.64
+IS20220281,Sandra Bermúdez Sánchez,Ingeniería de Sistemas,7,Bases de Datos,3.04
+AR20230282,Santiago Ruiz Palacios,Arquitectura,1,Diseño I,3.62
+IS20240283,Laura Bermúdez Polo,Ingeniería de Sistemas,3,Bases de Datos,4.37
+NI20230284,Miguel Salinas Palacios,Negocios Internacionales,6,Idiomas,4.49
+CP20220285,Claudia Reyes Vega,Contaduría Pública,5,Finanzas,4.94
+PS20250286,Mariana Pineda Serrano,Psicología,9,Psicología Clínica,4.97
+DR20250287,Rodrigo Jiménez Campos,Derecho,7,Penal,3.59
+TS20240288,Fernando Ríos Morales,Trabajo Social,4,Política Social,4.46
+EN20230289,Diana Vega Vega,Enfermería,9,Salud Pública,3.08
+TS20220290,Adriana Rodríguez Ruiz,Trabajo Social,6,Investigación Social,4.1
+OD20220291,Natalia Jiménez Serrano,Odontología,10,Anatomía Dental,3.3
+AE20230292,Sandra Barrera Aguilar,Administración de Empresas,8,Marketing,3.95
+IC20230293,Laura Gómez Figueroa,Ingeniería Civil,8,Concreto,4.2
+NI20250294,Andrea Aguilar Mendoza,Negocios Internacionales,5,Logística,3.68
+LE20250295,Diego Romero Herrera,Licenciatura en Educación Infantil,8,Pedagogía,4.36
+DR20250296,Liliana Mendoza Díaz,Derecho,6,Derecho Civil,3.61
+EN20250297,Daniela Martínez Cruz,Enfermería,10,Pediatría,3.13
+MD20240298,Juan Salinas Morales,Medicina,9,Farmacología,4.24
+MD20230299,Sandra Roa Figueroa,Medicina,8,Farmacología,3.29
+AR20220300,María Rivera Núñez,Arquitectura,1,Diseño I,4.83
+II20220301,Liliana García Vega,Ingeniería Industrial,4,Producción,1.96
+AR20250302,Stephanie Hernández Acosta,Arquitectura,10,Historia del Arte,2.01
+EN20240303,Jorge García Martínez,Enfermería,5,Cuidado Básico,3.85
+LE20230304,Carolina Rivera Pérez,Licenciatura en Educación Infantil,2,Desarrollo Infantil,3.21
+IC20250305,David Ortega Medina,Ingeniería Civil,6,Topografía,4.0
+TS20220306,Julián Ramos Serrano,Trabajo Social,2,Intervención Social,3.69
+IS20220307,Ricardo Hernández Pineda,Ingeniería de Sistemas,3,Algoritmos,4.32
+LE20220308,Luisa Salinas Pérez,Licenciatura en Educación Infantil,9,Desarrollo Infantil,3.35
+IS20240309,Eduardo Ríos Ortega,Ingeniería de Sistemas,2,Sistemas Operativos,3.52
+OD20250310,Miguel Martínez Díaz,Odontología,3,Anatomía Dental,3.78
+LE20240311,Eduardo Jiménez Serrano,Licenciatura en Educación Infantil,9,Lúdica,4.07
+EN20220312,Alejandra Ariza Rodríguez,Enfermería,6,Cuidado Básico,3.92
+OD20250313,Luisa Palacios Polo,Odontología,10,Periodoncia,1.52
+DR20250314,Luis Peña Reyes,Derecho,9,Laboral,3.23
+OD20230315,Juan Rodríguez Polo,Odontología,5,Anatomía Dental,3.06
+CS20240316,Gabriel Pineda Torres,Comunicación Social,7,Publicidad,3.0
+NI20220317,Paola Ruiz Romero,Negocios Internacionales,5,Finanzas Internacionales,3.17
+PS20220318,Diana Aguilar Herrera,Psicología,2,Psicología Clínica,3.55
+IS20250319,Rafael Mendoza Jiménez,Ingeniería de Sistemas,5,Algoritmos,4.36
+EN20250320,Diana Morales Salinas,Enfermería,3,Farmacología,3.12
+II20240321,María Torres González,Ingeniería Industrial,7,Ergonomía,3.89
+CS20230322,Stephanie Cruz Morales,Comunicación Social,8,Opinión Pública,3.12
+PS20250323,Melissa Suárez Acosta,Psicología,6,Social,3.91
+CP20230324,Adriana Palacios Ramírez,Contaduría Pública,6,Costos,3.98
+CS20230325,Miguel Vargas Figueroa,Comunicación Social,8,Publicidad,3.91
+LE20230326,Melissa Romero Sánchez,Licenciatura en Educación Infantil,10,Inclusión,4.59
+CS20230327,Cristian Aguilar Martínez,Comunicación Social,8,Opinión Pública,4.42
+MD20240328,Sebastián Vega Serrano,Medicina,3,Fisiología,3.58
+MD20250329,Carolina Jiménez González,Medicina,10,Cirugía,3.75
+IS20220330,Alejandra Vega Núñez,Ingeniería de Sistemas,6,Programación I,4.33
+OD20250331,David Flores Roa,Odontología,1,Periodoncia,4.72
+AE20230332,Alejandro Pérez Cruz,Administración de Empresas,9,Estrategia,3.73
+EN20240333,Monica Cárdenas Guzmán,Enfermería,3,Cuidado Básico,3.65
+II20240334,Camila Sánchez Ariza,Ingeniería Industrial,6,Estadística,3.6
+IC20250335,Ricardo Castillo Ríos,Ingeniería Civil,8,Hidráulica,1.08
+TS20220336,Gabriel Sánchez Martínez,Trabajo Social,6,Política Social,4.87
+II20250337,Claudia Rivera Aguilar,Ingeniería Industrial,6,Ergonomía,3.16
+AR20250338,Mariana Rivera Pineda,Arquitectura,7,Diseño I,4.44
+PS20230339,Luis Cárdenas Guerrero,Psicología,1,Neuropsicología,3.85
+NI20230340,Sebastián Salinas Pérez,Negocios Internacionales,9,Idiomas,3.73
+EN20250341,Diego Barrera Peña,Enfermería,6,Urgencias,3.56
+II20220342,David Delgado Acosta,Ingeniería Industrial,5,Producción,3.62
+CS20250343,Sofía Rivera Romero,Comunicación Social,3,Opinión Pública,3.79
+AR20230344,Carolina Rivera Peña,Arquitectura,9,Materiales,3.12
+OD20240345,Mariana Mendoza Ruiz,Odontología,1,Anatomía Dental,3.6
+AR20250346,Juan Aguilar Herrera,Arquitectura,8,Historia del Arte,3.92
+OD20230347,María Flores Rodríguez,Odontología,1,Periodoncia,1.43
+MD20250348,Carlos Flores Polo,Medicina,10,Cirugía,3.79
+TS20220349,Natalia Polo Núñez,Trabajo Social,6,Familia,3.99
+NI20240350,Mateo Figueroa Roa,Negocios Internacionales,4,Comercio Exterior,3.67
+NI20230351,Camila Ruiz Sánchez,Negocios Internacionales,4,Tratados,4.43
+II20230352,Marcela Pineda Guerrero,Ingeniería Industrial,10,Producción,4.4
+CP20230353,Eduardo Castillo Núñez,Contaduría Pública,10,Tributaria,4.65
+LE20230354,Eduardo Ortega Herrera,Licenciatura en Educación Infantil,2,Lúdica,5.0
+TS20230355,Adriana Ramírez Guzmán,Trabajo Social,3,Política Social,4.41
+MD20240356,Liliana Serrano Medina,Medicina,3,Clínica,3.54
+EN20240357,Cristian Rodríguez Medina,Enfermería,5,Salud Pública,4.66
+IC20240358,Alejandro Polo Ariza,Ingeniería Civil,8,Estática,4.2
+CP20240359,Carolina Díaz Peña,Contaduría Pública,6,Tributaria,3.57
+NI20220360,María Suárez Serrano,Negocios Internacionales,1,Comercio Exterior,4.42
+MD20220361,Valentina Sánchez Flores,Medicina,8,Clínica,3.28
+II20220362,Nicolás Roa Ramos,Ingeniería Industrial,5,Estadística,3.69
+PS20230363,Adriana Flores Hernández,Psicología,5,Educativa,4.35
+IC20230364,Alejandro Díaz Ríos,Ingeniería Civil,3,Concreto,4.0
+TS20230365,Alejandra Suárez Sánchez,Trabajo Social,7,Familia,3.15
+DR20240366,Sandra Pérez Pérez,Derecho,6,Penal,3.91
+II20220367,Nicolás Roa Serrano,Ingeniería Industrial,2,Logística,4.22
+CS20250368,Sandra Díaz Pineda,Comunicación Social,3,Comunicación Digital,4.43
+NI20250369,Camila Pérez Ramírez,Negocios Internacionales,2,Idiomas,4.66
+AR20230370,Nicolás Morales Ortega,Arquitectura,2,Materiales,4.36
+IS20230371,Carlos Polo Guzmán,Ingeniería de Sistemas,5,Sistemas Operativos,4.09
+IS20250372,Melissa Vargas Roa,Ingeniería de Sistemas,4,Algoritmos,3.2
+LE20240373,Rafael González Campos,Licenciatura en Educación Infantil,1,Didáctica,3.34
+EN20250374,Eduardo Vega Romero,Enfermería,3,Cuidado Básico,1.13
+LE20250375,Diego Díaz López,Licenciatura en Educación Infantil,1,Inclusión,3.86
+CS20220376,Cristian Vega Guerrero,Comunicación Social,7,Comunicación Digital,3.58
+EN20230377,Camila Ramos Rodríguez,Enfermería,4,Urgencias,3.79
+AR20240378,Liliana Roa Serrano,Arquitectura,2,Historia del Arte,4.42
+LE20220379,Isabella Morales Rodríguez,Licenciatura en Educación Infantil,7,Lúdica,4.03
+CS20220380,Rodrigo Figueroa Barrera,Comunicación Social,3,Periodismo,4.35
+EN20240381,Andrés Peña Castillo,Enfermería,9,Farmacología,3.87
+NI20240382,Natalia Ariza Sánchez,Negocios Internacionales,1,Logística,3.53
+IC20250383,Gabriel Salinas Pineda,Ingeniería Civil,8,Concreto,3.75
+II20220384,Eduardo Flores Romero,Ingeniería Industrial,5,Logística,4.06
+IS20230385,Mauricio Herrera García,Ingeniería de Sistemas,1,Programación I,3.69
+EN20230386,Daniela Rivera López,Enfermería,7,Pediatría,3.37
+OD20220387,Miguel Ortega González,Odontología,6,Endodoncia,4.03
+PS20250388,Julián Campos López,Psicología,2,Social,4.16
+IS20230389,Camila Aguilar Delgado,Ingeniería de Sistemas,6,Redes,3.65
+DR20250390,Marcela Morales Delgado,Derecho,10,Penal,4.27
+LE20220391,Andrea Torres García,Licenciatura en Educación Infantil,7,Desarrollo Infantil,3.82
+IS20240392,Alejandra García Suárez,Ingeniería de Sistemas,7,Programación I,3.39
+II20220393,Jorge Peña Hernández,Ingeniería Industrial,5,Investigación de Operaciones,4.95
+LE20250394,Claudia Vega Guzmán,Licenciatura en Educación Infantil,6,Pedagogía,3.75
+OD20220395,Iván Medina González,Odontología,10,Ortodoncia,4.07
+LE20240396,Carlos Cruz Mendoza,Licenciatura en Educación Infantil,7,Didáctica,3.62
+NI20220397,Felipe Ramírez Polo,Negocios Internacionales,10,Finanzas Internacionales,3.18
+EN20230398,Miguel Vega Sánchez,Enfermería,6,Salud Pública,3.63
+NI20220399,Sofía Rodríguez Flores,Negocios Internacionales,5,Finanzas Internacionales,4.16
+DR20220400,Camila Pinto Morales,Derecho,7,Constitucional,4.0
+EN20230401,Valentina Medina Ruiz,Enfermería,9,Cuidado Básico,3.9
+IS20230402,Nicolás Sánchez García,Ingeniería de Sistemas,4,Bases de Datos,4.19
+OD20240403,Iván Roa Rodríguez,Odontología,10,Anatomía Dental,1.12
+IC20220404,Adriana Ruiz Ramírez,Ingeniería Civil,6,Estática,4.53
+PS20220405,Eduardo Guerrero Ariza,Psicología,8,Educativa,4.09
+CP20230406,Laura Rivera Ortega,Contaduría Pública,8,Contabilidad General,4.31
+PS20250407,Adriana Vargas Peña,Psicología,9,Psicología Clínica,3.15
+LE20230408,Jorge Gómez Roa,Licenciatura en Educación Infantil,9,Inclusión,4.49
+EN20240409,Gabriel Castillo Ríos,Enfermería,8,Urgencias,3.69
+OD20220410,Mariana Martínez Mendoza,Odontología,4,Periodoncia,2.88
+OD20230411,Claudia Castillo Polo,Odontología,4,Anatomía Dental,3.1
+NI20250412,Fernando Figueroa Hernández,Negocios Internacionales,4,Idiomas,5.0
+OD20240413,Mariana Rivera Morales,Odontología,6,Endodoncia,2.33
+OD20250414,Eduardo Salinas Torres,Odontología,4,Endodoncia,3.75
+OD20220415,Camila Hernández Reyes,Odontología,4,Endodoncia,3.67
+DR20240416,Marcela Gómez Ramírez,Derecho,3,Derecho Civil,2.11
+TS20240417,Daniela Polo Sánchez,Trabajo Social,9,Intervención Social,3.97
+DR20240418,Melissa Cárdenas Pérez,Derecho,5,Penal,4.87
+AR20230419,Carolina Pineda Peña,Arquitectura,6,Materiales,4.46
+OD20250420,David Reyes Barrera,Odontología,3,Periodoncia,4.15
+CS20250421,Mariana Ariza García,Comunicación Social,10,Comunicación Digital,2.14
+OD20250422,Marcela Reyes Pineda,Odontología,2,Cirugía Oral,3.54
+AR20240423,David Mendoza Flores,Arquitectura,2,Historia del Arte,1.4
+CP20220424,Alejandra González Castillo,Contaduría Pública,2,Contabilidad General,3.87
+LE20240425,Andrés Vega Peña,Licenciatura en Educación Infantil,7,Inclusión,3.91
+AR20230426,Eduardo Roa Bermúdez,Arquitectura,4,Historia del Arte,3.34
+CP20220427,Carlos Martínez Mendoza,Contaduría Pública,2,Tributaria,3.15
+LE20240428,Sandra González Aguilar,Licenciatura en Educación Infantil,2,Inclusión,4.95
+AR20250429,Gabriel Martínez Guerrero,Arquitectura,3,Urbanismo,1.63
+EN20240430,Felipe Vega Guzmán,Enfermería,9,Pediatría,3.55
+TS20230431,Melissa Salinas Aguilar,Trabajo Social,8,Intervención Social,3.71
+OD20230432,Carlos Barrera Pineda,Odontología,8,Anatomía Dental,1.32
+TS20240433,Carlos Rodríguez Ríos,Trabajo Social,2,Familia,3.95
+EN20230434,Diego Rodríguez Roa,Enfermería,7,Pediatría,4.68
+MD20240435,Luis López Cruz,Medicina,8,Fisiología,4.28
+AR20220436,Daniela Bermúdez Guzmán,Arquitectura,2,Estructuras,4.21
+EN20250437,Liliana Cárdenas Reyes,Enfermería,1,Urgencias,3.77
+MD20220438,Ricardo Salinas Morales,Medicina,5,Clínica,4.86
+NI20230439,Hernán Salinas Campos,Negocios Internacionales,10,Comercio Exterior,4.72
+II20250440,Andrés Díaz Gómez,Ingeniería Industrial,1,Investigación de Operaciones,4.72
+CP20220441,Iván Torres Palacios,Contaduría Pública,6,Contabilidad General,3.7
+MD20250442,Miguel Ortega Campos,Medicina,1,Anatomía,3.57
+IC20220443,Patricia Cárdenas Bermúdez,Ingeniería Civil,2,Hidráulica,4.44
+AR20250444,Jorge Cruz Jiménez,Arquitectura,8,Diseño I,3.16
+CS20220445,Marcela Palacios Serrano,Comunicación Social,7,Opinión Pública,4.67
+MD20240446,Andrea Hernández Figueroa,Medicina,5,Anatomía,3.9
+TS20230447,Paola Ortega Peña,Trabajo Social,2,Política Social,3.87
+CS20220448,Cristian Mendoza Ortega,Comunicación Social,7,Producción Audiovisual,3.96
+NI20240449,Jorge Figueroa Peña,Negocios Internacionales,9,Comercio Exterior,3.58
+PS20220450,Paola Pinto Herrera,Psicología,3,Neuropsicología,3.33
+MD20240451,Isabella Morales López,Medicina,1,Fisiología,3.91
+LE20220452,Hernán Medina Pineda,Licenciatura en Educación Infantil,2,Desarrollo Infantil,3.8
+EN20240453,Mariana Ríos Cárdenas,Enfermería,6,Farmacología,4.13
+IS20220454,Alejandra Rodríguez Vargas,Ingeniería de Sistemas,7,Bases de Datos,4.39
+AE20240455,Laura Reyes Roa,Administración de Empresas,4,Estrategia,3.93
+MD20230456,Cristian Serrano García,Medicina,3,Cirugía,4.11
+CS20250457,Rafael Ramos Pinto,Comunicación Social,5,Opinión Pública,4.23
+AR20250458,Laura Delgado Ramos,Arquitectura,9,Materiales,3.2
+AR20240459,Rodrigo Romero Aguilar,Arquitectura,10,Estructuras,4.24
+DR20240460,Luisa Ortega Pineda,Derecho,5,Constitucional,3.21
+PS20230461,Andrea Hernández Palacios,Psicología,6,Psicología Clínica,4.5
+PS20230462,Diego Vega Medina,Psicología,1,Social,4.11
+LE20240463,Fernando Pineda Ríos,Licenciatura en Educación Infantil,6,Desarrollo Infantil,4.44
+MD20240464,Mariana Vargas Pérez,Medicina,3,Cirugía,4.09
+IC20240465,Monica Suárez Roa,Ingeniería Civil,4,Resistencia de Materiales,4.15
+OD20250466,Luisa Romero Cruz,Odontología,5,Anatomía Dental,3.93
+IC20230467,Patricia Cárdenas Acosta,Ingeniería Civil,8,Concreto,3.27
+IS20230468,Claudia Ramos Vega,Ingeniería de Sistemas,3,Bases de Datos,3.99
+TS20220469,Vanessa Torres Mendoza,Trabajo Social,3,Familia,3.99
+IS20240470,Miguel Pineda Hernández,Ingeniería de Sistemas,8,Bases de Datos,4.08
+NI20230471,Liliana Flores Peña,Negocios Internacionales,2,Tratados,3.71
+IS20230472,Carolina Ríos Jiménez,Ingeniería de Sistemas,1,Redes,4.95
+IS20230473,Liliana Campos Gómez,Ingeniería de Sistemas,1,Bases de Datos,4.17
+EN20240474,Nicolás Pérez Jiménez,Enfermería,10,Farmacología,1.09
+EN20240475,Carlos Delgado Ariza,Enfermería,10,Salud Pública,5.0
+NI20230476,Luisa Peña Castillo,Negocios Internacionales,4,Logística,1.43
+IS20230477,Nicolás Díaz Ariza,Ingeniería de Sistemas,10,Programación I,3.83
+CP20220478,Santiago Jiménez Pineda,Contaduría Pública,9,Finanzas,4.83
+CS20250479,Adriana Martínez Hernández,Comunicación Social,2,Opinión Pública,3.77
+AE20240480,Ricardo Guzmán Torres,Administración de Empresas,1,Estrategia,4.33
+CS20250481,Natalia Acosta Palacios,Comunicación Social,3,Periodismo,3.81
+MD20230482,Carlos Sánchez Pérez,Medicina,4,Farmacología,4.49
+CP20220483,David Pinto Vega,Contaduría Pública,3,Finanzas,3.6
+IS20220484,Ricardo Suárez Morales,Ingeniería de Sistemas,1,Programación I,4.33
+EN20220485,Daniela Rodríguez Polo,Enfermería,2,Pediatría,4.23
+IS20230486,Carlos Cruz Delgado,Ingeniería de Sistemas,2,Programación I,4.18
+CS20220487,Monica Mendoza Guerrero,Comunicación Social,2,Periodismo,1.26
+DR20240488,Adriana Flores Suárez,Derecho,8,Derecho Civil,3.67
+MD20250489,Sofía Medina Medina,Medicina,5,Clínica,4.32
+CS20230490,Andrés Sánchez Ramírez,Comunicación Social,1,Periodismo,3.8
+II20250491,Eduardo Serrano Ruiz,Ingeniería Industrial,10,Estadística,4.43
+LE20220492,Sandra Ramírez Ríos,Licenciatura en Educación Infantil,8,Lúdica,3.53
+CS20230493,Adriana Mendoza García,Comunicación Social,9,Publicidad,3.84
+AR20250494,Marcela Pérez Guerrero,Arquitectura,4,Estructuras,4.32
+IS20230495,Daniela Aguilar Acosta,Ingeniería de Sistemas,1,Sistemas Operativos,4.43
+MD20230496,Andrés González Bermúdez,Medicina,6,Farmacología,4.53
+PS20230497,Julián Aguilar Roa,Psicología,7,Psicología Clínica,3.9
+MD20220498,Luis Rodríguez Peña,Medicina,6,Clínica,4.01
+EN20220499,Melissa Vega López,Enfermería,9,Cuidado Básico,4.48
+EN20250500,Iván Ramos Herrera,Enfermería,4,Pediatría,3.53
+EN20250501,Julián Delgado Suárez,Enfermería,10,Pediatría,4.06
+IS20240502,Liliana Barrera Reyes,Ingeniería de Sistemas,6,Redes,3.69
+MD20250503,Mateo López Flores,Medicina,3,Anatomía,3.6
+MD20240504,Sofía Medina Díaz,Medicina,4,Anatomía,4.02
+IC20250505,Iván Serrano Cárdenas,Ingeniería Civil,8,Concreto,4.57
+CS20250506,María García Campos,Comunicación Social,1,Comunicación Digital,3.75
+II20220507,Mariana Guzmán Cárdenas,Ingeniería Industrial,3,Ergonomía,4.3
+PS20230508,Miguel Herrera Jiménez,Psicología,10,Social,3.67
+II20240509,Carlos Ruiz Ramírez,Ingeniería Industrial,7,Logística,4.36
+AE20240510,Diana Pineda Díaz,Administración de Empresas,4,Marketing,4.57
+EN20240511,Gabriel Roa Rivera,Enfermería,9,Cuidado Básico,4.28
+CS20240512,Patricia Salinas Barrera,Comunicación Social,7,Opinión Pública,4.26
+IS20230513,Valentina Jiménez Torres,Ingeniería de Sistemas,1,Redes,4.08
+II20240514,Carlos Serrano Cruz,Ingeniería Industrial,1,Producción,4.02
+TS20230515,Luis Pérez Acosta,Trabajo Social,9,Investigación Social,3.76
+AR20250516,Alejandra Vargas Guzmán,Arquitectura,1,Historia del Arte,3.89
+IS20240517,Monica Mendoza Aguilar,Ingeniería de Sistemas,1,Bases de Datos,4.39
+CS20230518,Luis Reyes Pineda,Comunicación Social,6,Producción Audiovisual,3.59
+II20220519,Monica González Rivera,Ingeniería Industrial,9,Ergonomía,1.53
+OD20220520,Diego Ramírez Flores,Odontología,5,Periodoncia,3.97
+OD20240521,Santiago Torres Mendoza,Odontología,1,Ortodoncia,4.28
+EN20230522,Sebastián Pinto Mendoza,Enfermería,4,Urgencias,1.96
+PS20240523,Jorge Núñez Núñez,Psicología,2,Neuropsicología,4.83
+AE20250524,Luisa Romero Vargas,Administración de Empresas,10,Contabilidad,4.49
+DR20230525,Alejandro Sánchez Barrera,Derecho,8,Procesal,4.62
+PS20250526,Santiago Serrano Mendoza,Psicología,2,Social,3.64
+EN20250527,Claudia Polo Romero,Enfermería,9,Salud Pública,2.71
+IC20230528,Felipe Mendoza Herrera,Ingeniería Civil,2,Concreto,3.81
+NI20250529,Laura Barrera Pineda,Negocios Internacionales,4,Comercio Exterior,3.33
+AR20230530,Mauricio Polo Guerrero,Arquitectura,2,Diseño I,3.67
+II20220531,Camila González Hernández,Ingeniería Industrial,5,Logística,4.46
+AR20250532,Jorge Jiménez Ruiz,Arquitectura,7,Estructuras,2.28
+CS20220533,Fernando García Roa,Comunicación Social,10,Comunicación Digital,2.61
+CP20220534,David Herrera Pérez,Contaduría Pública,5,Tributaria,4.22
+MD20230535,Melissa Barrera Martínez,Medicina,3,Fisiología,4.4
+II20240536,Fernando Vargas Pineda,Ingeniería Industrial,5,Investigación de Operaciones,3.78
+OD20250537,Sofía López García,Odontología,10,Endodoncia,3.54
+LE20230538,Laura Figueroa Figueroa,Licenciatura en Educación Infantil,6,Lúdica,4.93
+AE20240539,Daniela Flores Rivera,Administración de Empresas,10,Finanzas,3.27
+LE20250540,Eduardo Hernández Bermúdez,Licenciatura en Educación Infantil,9,Inclusión,3.27
+CS20250541,Diego Pérez Gómez,Comunicación Social,10,Publicidad,3.84
+OD20230542,Andrea Pérez Vargas,Odontología,2,Periodoncia,3.66
+OD20240543,Rodrigo Ramos Guzmán,Odontología,3,Periodoncia,4.58
+CS20240544,Miguel Morales Reyes,Comunicación Social,7,Publicidad,3.29
+DR20250545,Ricardo Delgado Ruiz,Derecho,5,Procesal,3.26
+LE20230546,Camila Ortega Ramírez,Licenciatura en Educación Infantil,9,Didáctica,4.31
+TS20220547,Sandra González Martínez,Trabajo Social,9,Investigación Social,3.88
+CP20250548,Laura López Aguilar,Contaduría Pública,9,Auditoría,3.61
+TS20230549,Cristian Cárdenas Ariza,Trabajo Social,5,Familia,3.55
+AR20230550,Stephanie Herrera García,Arquitectura,4,Materiales,3.06
+TS20250551,Eduardo Salinas Barrera,Trabajo Social,3,Comunidad,2.45
+DR20220552,Julián González Cruz,Derecho,4,Penal,3.9
+LE20220553,Juan Ríos Delgado,Licenciatura en Educación Infantil,1,Didáctica,3.39
+CP20230554,Iván Ortega Figueroa,Contaduría Pública,10,Costos,4.18
+CP20230555,Adriana González Campos,Contaduría Pública,7,Finanzas,3.91
+LE20220556,David Peña Ríos,Licenciatura en Educación Infantil,10,Inclusión,4.72
+AR20230557,Julián González Herrera,Arquitectura,5,Urbanismo,3.14
+AE20240558,Gabriel Sánchez Barrera,Administración de Empresas,7,Gestión Humana,3.74
+AR20220559,Laura Cárdenas Flores,Arquitectura,7,Urbanismo,2.09
+EN20230560,Andrés Ramírez Pineda,Enfermería,1,Cuidado Básico,3.37
+OD20240561,Claudia Medina Palacios,Odontología,1,Anatomía Dental,3.24
+AE20230562,Ricardo Ríos Flores,Administración de Empresas,7,Contabilidad,4.09
+II20250563,Rodrigo Herrera Cruz,Ingeniería Industrial,6,Logística,3.61
+IS20250564,Juan Ramírez Pérez,Ingeniería de Sistemas,4,Bases de Datos,4.09
+LE20220565,Marcela Palacios López,Licenciatura en Educación Infantil,9,Pedagogía,3.57
+LE20250566,Rafael Núñez García,Licenciatura en Educación Infantil,7,Didáctica,4.35
+NI20240567,Carolina Reyes Ríos,Negocios Internacionales,7,Tratados,4.45
+PS20240568,Alejandra Salinas Pérez,Psicología,3,Educativa,4.46
+LE20250569,Camila Vargas Palacios,Licenciatura en Educación Infantil,9,Didáctica,3.28
+IC20220570,Alejandro Salinas Campos,Ingeniería Civil,9,Topografía,4.34
+IC20250571,Miguel Vega Romero,Ingeniería Civil,3,Concreto,3.93
+OD20250572,Carolina Salinas Romero,Odontología,5,Cirugía Oral,3.89
+EN20250573,Ricardo Rivera Romero,Enfermería,9,Pediatría,4.79
+CS20220574,Cristian Pinto Medina,Comunicación Social,3,Producción Audiovisual,3.85
+EN20240575,Andrés Pérez Díaz,Enfermería,7,Urgencias,4.34
+AR20220576,Isabella Flores Jiménez,Arquitectura,1,Urbanismo,3.8
+AE20220577,Camila González Cruz,Administración de Empresas,6,Contabilidad,1.73
+EN20220578,Melissa Acosta Roa,Enfermería,5,Farmacología,4.22
+CP20220579,Felipe Barrera Campos,Contaduría Pública,4,Finanzas,3.85
+IS20230580,Marcela Flores Serrano,Ingeniería de Sistemas,6,Programación I,4.54
+DR20250581,Natalia Polo Medina,Derecho,7,Procesal,3.01
+EN20240582,Gabriel González Rodríguez,Enfermería,5,Pediatría,4.64
+LE20220583,Rafael Gómez Delgado,Licenciatura en Educación Infantil,7,Didáctica,3.2
+CP20220584,Diana González Herrera,Contaduría Pública,6,Finanzas,4.94
+MD20250585,Eduardo Cruz Guzmán,Medicina,7,Fisiología,4.48
+LE20220586,Vanessa Serrano Delgado,Licenciatura en Educación Infantil,10,Lúdica,3.03
+CS20240587,Iván Reyes Serrano,Comunicación Social,4,Opinión Pública,4.76
+AE20220588,Alejandro Guzmán Cruz,Administración de Empresas,5,Estrategia,4.41
+MD20240589,Sebastián Aguilar Rivera,Medicina,6,Fisiología,4.63
+MD20230590,Mauricio Serrano Gómez,Medicina,4,Fisiología,4.1
+DR20220591,Felipe Morales Acosta,Derecho,3,Derecho Civil,4.84
+IS20220592,Rodrigo Peña Acosta,Ingeniería de Sistemas,9,Algoritmos,3.66
+II20240593,Eduardo Ortega Peña,Ingeniería Industrial,9,Ergonomía,3.23
+MD20220594,Isabella Campos Guerrero,Medicina,9,Cirugía,3.93
+IC20250595,Cristian Rivera Delgado,Ingeniería Civil,9,Hidráulica,4.01
+IC20240596,Laura Jiménez Cárdenas,Ingeniería Civil,6,Concreto,4.09
+MD20240597,Diego Morales Ortega,Medicina,10,Farmacología,3.17
+DR20250598,Jorge Guzmán Bermúdez,Derecho,6,Constitucional,3.79
+TS20240599,Eduardo Serrano Reyes,Trabajo Social,2,Política Social,3.93
+II20220600,Felipe Torres Figueroa,Ingeniería Industrial,8,Producción,3.57
+CS20250601,Iván Campos Núñez,Comunicación Social,6,Publicidad,3.93
+CS20220602,Isabella Medina Pérez,Comunicación Social,3,Producción Audiovisual,4.24
+CS20240603,Iván Pérez Ruiz,Comunicación Social,6,Publicidad,3.78
+PS20240604,Diego Castillo Martínez,Psicología,2,Evaluación,3.23
+NI20240605,Adriana Núñez Rivera,Negocios Internacionales,5,Idiomas,4.24
+PS20240606,Mauricio Ruiz Rodríguez,Psicología,10,Educativa,4.07
+PS20250607,Andrés Pineda Suárez,Psicología,10,Psicología Clínica,3.14
+CP20250608,Miguel Mendoza Roa,Contaduría Pública,5,Tributaria,4.89
+EN20250609,Stephanie Figueroa Cárdenas,Enfermería,8,Farmacología,3.01
+CP20230610,Sandra Morales Barrera,Contaduría Pública,2,Auditoría,3.55
+IS20220611,Ricardo Aguilar Hernández,Ingeniería de Sistemas,7,Programación I,3.58
+AE20240612,Adriana Jiménez Ramos,Administración de Empresas,4,Estrategia,4.07
+AR20240613,Andrés Martínez López,Arquitectura,6,Historia del Arte,3.94
+II20230614,Natalia Aguilar Ruiz,Ingeniería Industrial,9,Logística,3.82
+EN20240615,Iván Salinas Guerrero,Enfermería,9,Pediatría,3.61
+DR20240616,Camila Ruiz Ramos,Derecho,7,Penal,3.5
+CP20220617,Liliana Ramírez Castillo,Contaduría Pública,8,Costos,4.74
+NI20230618,Alejandro Polo Guerrero,Negocios Internacionales,5,Comercio Exterior,3.59
+AE20250619,Diana Guerrero Medina,Administración de Empresas,3,Estrategia,3.03
+NI20240620,Iván Morales Campos,Negocios Internacionales,10,Idiomas,4.27
+TS20230621,Natalia Vega Gómez,Trabajo Social,2,Política Social,3.82
+CS20250622,Marcela Ruiz Ortega,Comunicación Social,10,Producción Audiovisual,3.58
+IC20240623,Fernando Martínez Rivera,Ingeniería Civil,5,Resistencia de Materiales,4.36
+IS20230624,Julián Rodríguez Torres,Ingeniería de Sistemas,8,Redes,3.89
+CS20240625,María Romero Delgado,Comunicación Social,1,Periodismo,4.48
+PS20250626,Isabella Ortega Polo,Psicología,2,Neuropsicología,3.34
+NI20250627,Juan García Sánchez,Negocios Internacionales,4,Logística,3.4
+NI20230628,Felipe Delgado Figueroa,Negocios Internacionales,2,Logística,3.98
+CS20220629,Miguel Flores Pineda,Comunicación Social,1,Publicidad,3.65
+AE20230630,Stephanie Hernández Barrera,Administración de Empresas,2,Estrategia,3.58
+PS20220631,Natalia Cárdenas Sánchez,Psicología,4,Psicología Clínica,3.85
+DR20230632,Alejandra Palacios Torres,Derecho,2,Penal,3.84
+IS20240633,Luisa Bermúdez Pineda,Ingeniería de Sistemas,1,Bases de Datos,4.4
+DR20240634,Nicolás Peña Reyes,Derecho,9,Laboral,4.01
+II20220635,Juan Castillo Ariza,Ingeniería Industrial,5,Ergonomía,4.28
+AE20230636,Fernando Guzmán Peña,Administración de Empresas,10,Contabilidad,3.87
+II20230637,Natalia Palacios Aguilar,Ingeniería Industrial,2,Ergonomía,3.63
+NI20250638,Stephanie Delgado García,Negocios Internacionales,9,Finanzas Internacionales,4.81
+AE20220639,Stephanie Polo Acosta,Administración de Empresas,6,Contabilidad,4.09
+EN20240640,Monica Peña Polo,Enfermería,3,Pediatría,3.66
+IC20230641,Mateo Campos Barrera,Ingeniería Civil,1,Resistencia de Materiales,4.1
+IS20250642,María Gómez Pérez,Ingeniería de Sistemas,10,Algoritmos,3.85
+AE20220643,Diego Hernández Romero,Administración de Empresas,10,Gestión Humana,4.6
+NI20240644,María Rodríguez Delgado,Negocios Internacionales,1,Tratados,4.45
+TS20240645,Stephanie Pinto Hernández,Trabajo Social,10,Investigación Social,1.13
+EN20220646,Paola González Díaz,Enfermería,2,Farmacología,3.59
+OD20250647,Claudia Barrera Morales,Odontología,3,Anatomía Dental,4.29
+AR20220648,Monica Delgado Guzmán,Arquitectura,7,Urbanismo,4.27
+II20250649,Hernán Suárez Barrera,Ingeniería Industrial,9,Estadística,4.78
+NI20240650,Miguel Romero Vega,Negocios Internacionales,7,Tratados,3.22
+LE20240651,Juan Polo Aguilar,Licenciatura en Educación Infantil,5,Lúdica,3.7
+OD20230652,Sandra López Vargas,Odontología,1,Periodoncia,2.87
+NI20230653,Laura Mendoza Martínez,Negocios Internacionales,5,Comercio Exterior,1.68
+LE20230654,Nicolás Cruz Romero,Licenciatura en Educación Infantil,10,Desarrollo Infantil,3.65
+LE20220655,Eduardo Medina Salinas,Licenciatura en Educación Infantil,4,Didáctica,4.09
+TS20240656,Alejandra Guzmán Salinas,Trabajo Social,2,Intervención Social,4.29
+LE20240657,Camila Polo Hernández,Licenciatura en Educación Infantil,6,Lúdica,3.93
+AR20220658,Cristian Reyes Figueroa,Arquitectura,10,Historia del Arte,2.0
+II20230659,Miguel Núñez Salinas,Ingeniería Industrial,6,Producción,2.39
+OD20220660,Melissa Ruiz Bermúdez,Odontología,10,Cirugía Oral,3.89
+IC20220661,Daniela Ramírez Suárez,Ingeniería Civil,8,Concreto,3.54
+CS20230662,Hernán Guerrero Polo,Comunicación Social,3,Opinión Pública,3.74
+EN20230663,Adriana Salinas Gómez,Enfermería,10,Farmacología,3.31
+IC20250664,Miguel Serrano Salinas,Ingeniería Civil,2,Topografía,3.6
+IS20230665,David Palacios Roa,Ingeniería de Sistemas,5,Redes,4.5
+MD20230666,Luis Acosta Torres,Medicina,1,Fisiología,4.08
+CS20230667,Sandra Rodríguez Sánchez,Comunicación Social,1,Comunicación Digital,4.93
+CS20240668,Carlos García Suárez,Comunicación Social,2,Opinión Pública,3.67
+AE20240669,Mauricio Núñez Díaz,Administración de Empresas,9,Contabilidad,3.86
+AR20250670,Daniela Guzmán Guzmán,Arquitectura,1,Materiales,4.76
+CP20240671,Diego Flores Hernández,Contaduría Pública,4,Contabilidad General,3.97
+CP20220672,Sebastián Jiménez Barrera,Contaduría Pública,6,Contabilidad General,3.94
+EN20240673,Juan Reyes Jiménez,Enfermería,2,Salud Pública,4.27
+MD20220674,Mariana Gómez Herrera,Medicina,9,Anatomía,3.21
+CS20220675,Luisa Peña Medina,Comunicación Social,3,Publicidad,4.18
+CP20240676,Paola Morales Herrera,Contaduría Pública,1,Costos,4.91
+AE20240677,Valentina Aguilar Ortega,Administración de Empresas,3,Estrategia,4.04
+OD20250678,Juan Campos Serrano,Odontología,4,Cirugía Oral,3.71
+MD20230679,Paola Palacios Suárez,Medicina,9,Fisiología,4.29
+CP20230680,Monica Gómez Ramírez,Contaduría Pública,9,Costos,4.99
+LE20240681,Daniela Roa Salinas,Licenciatura en Educación Infantil,3,Pedagogía,3.97
+TS20220682,Sofía Rivera Mendoza,Trabajo Social,3,Comunidad,4.71
+CS20230683,Jorge Ramos Ruiz,Comunicación Social,5,Producción Audiovisual,3.07
+CP20230684,Liliana Acosta Acosta,Contaduría Pública,10,Finanzas,3.27
+NI20230685,David Rodríguez Guzmán,Negocios Internacionales,8,Tratados,4.23
+TS20250686,Adriana Romero Rivera,Trabajo Social,7,Familia,3.08
+IS20250687,Santiago Vega Bermúdez,Ingeniería de Sistemas,5,Bases de Datos,4.49
+II20250688,Liliana Díaz González,Ingeniería Industrial,8,Estadística,4.44
+IS20250689,Carolina Medina Polo,Ingeniería de Sistemas,10,Redes,3.97
+EN20220690,Eduardo Palacios Núñez,Enfermería,1,Salud Pública,3.94
+PS20250691,Andrea Campos Núñez,Psicología,1,Evaluación,4.48
+PS20240692,Felipe Vargas Ruiz,Psicología,5,Educativa,3.12
+LE20250693,Isabella Guzmán Campos,Licenciatura en Educación Infantil,3,Lúdica,3.2
+LE20230694,Mariana Polo Cárdenas,Licenciatura en Educación Infantil,9,Lúdica,3.73
+LE20250695,Mariana Delgado Cárdenas,Licenciatura en Educación Infantil,4,Pedagogía,3.85
+CS20220696,Gabriel Flores Pinto,Comunicación Social,2,Periodismo,4.32
+PS20230697,Camila Campos Pinto,Psicología,9,Educativa,3.52
+TS20230698,Andrés Suárez Salinas,Trabajo Social,3,Política Social,3.28
+CS20240699,Jorge Ramos Ramos,Comunicación Social,8,Producción Audiovisual,3.05
+NI20220700,Felipe García Acosta,Negocios Internacionales,5,Logística,3.75
+AE20250701,Alejandro Palacios Peña,Administración de Empresas,4,Estrategia,3.54
+LE20240702,Rafael García Morales,Licenciatura en Educación Infantil,9,Inclusión,4.41
+II20240703,Laura Hernández Rivera,Ingeniería Industrial,1,Investigación de Operaciones,3.01
+DR20220704,Eduardo Palacios Ramos,Derecho,2,Derecho Civil,3.59
+AR20230705,Monica Vargas Acosta,Arquitectura,10,Historia del Arte,4.18
+CP20240706,Santiago Rodríguez Polo,Contaduría Pública,6,Costos,4.38
+MD20220707,Diana González Vargas,Medicina,3,Farmacología,3.71
+OD20220708,Laura Guzmán Díaz,Odontología,1,Endodoncia,4.31
+CS20240709,Camila Ríos Ariza,Comunicación Social,10,Opinión Pública,4.16
+DR20250710,Claudia Salinas Acosta,Derecho,3,Procesal,4.25
+CS20230711,Mariana Acosta Reyes,Comunicación Social,5,Periodismo,3.19
+NI20250712,Sofía Figueroa Díaz,Negocios Internacionales,10,Logística,1.66
+AR20240713,Iván Díaz García,Arquitectura,4,Estructuras,4.15
+NI20220714,Hernán Aguilar Mendoza,Negocios Internacionales,1,Idiomas,3.86
+AE20240715,Marcela Martínez Rivera,Administración de Empresas,6,Estrategia,4.9
+II20240716,Adriana Ramírez Ríos,Ingeniería Industrial,8,Ergonomía,4.21
+CP20240717,Mauricio Hernández Campos,Contaduría Pública,10,Finanzas,3.6
+IC20240718,Monica Suárez Castillo,Ingeniería Civil,3,Estática,3.69
+OD20230719,Fernando Flores Salinas,Odontología,7,Endodoncia,3.31
+CS20240720,Paola Pinto Mendoza,Comunicación Social,1,Opinión Pública,3.35
+AE20240721,Stephanie Ruiz Ramos,Administración de Empresas,9,Finanzas,3.31
+MD20220722,Cristian Gómez Rodríguez,Medicina,9,Clínica,4.58
+TS20240723,Luisa Ríos Ariza,Trabajo Social,9,Comunidad,3.35
+AE20250724,Claudia Serrano Ramírez,Administración de Empresas,1,Estrategia,4.26
+AR20220725,Alejandro Ramos López,Arquitectura,10,Estructuras,3.52
+CS20220726,Claudia Polo Barrera,Comunicación Social,5,Comunicación Digital,4.32
+AE20240727,Laura Mendoza Gómez,Administración de Empresas,5,Contabilidad,3.72
+II20220728,Sofía Ortega Torres,Ingeniería Industrial,5,Investigación de Operaciones,4.78
+DR20240729,Mateo Díaz Núñez,Derecho,9,Constitucional,3.28
+II20240730,Carlos Salinas Morales,Ingeniería Industrial,2,Logística,4.77
+MD20220731,Isabella Ramírez Martínez,Medicina,1,Clínica,1.81
+LE20250732,Mariana Pinto Palacios,Licenciatura en Educación Infantil,10,Inclusión,3.67
+AR20220733,Felipe Pinto Bermúdez,Arquitectura,9,Historia del Arte,3.55
+MD20250734,Alejandra Delgado Pérez,Medicina,5,Clínica,3.09
+PS20240735,Marcela Cruz Romero,Psicología,3,Social,3.52
+MD20230736,Ricardo Sánchez Castillo,Medicina,8,Farmacología,4.3
+PS20240737,Nicolás Herrera Pérez,Psicología,2,Evaluación,4.4
+OD20230738,Fernando Delgado Medina,Odontología,7,Endodoncia,3.06
+DR20250739,Ricardo Jiménez González,Derecho,4,Laboral,3.67
+AR20250740,Alejandra Morales Rivera,Arquitectura,2,Diseño I,3.73
+II20250741,Diana Pérez Ruiz,Ingeniería Industrial,5,Investigación de Operaciones,3.84
+DR20220742,Rafael Polo Jiménez,Derecho,8,Derecho Civil,3.06
+NI20230743,Patricia Bermúdez Pineda,Negocios Internacionales,1,Finanzas Internacionales,3.65
+AE20240744,Marcela Salinas Ruiz,Administración de Empresas,4,Marketing,3.96
+LE20220745,Paola Guerrero Pinto,Licenciatura en Educación Infantil,6,Inclusión,2.87
+IS20220746,Melissa Ramírez Vargas,Ingeniería de Sistemas,6,Programación I,4.41
+TS20230747,David Sánchez Vargas,Trabajo Social,1,Familia,4.2
+PS20250748,Miguel Pinto Jiménez,Psicología,7,Evaluación,3.07
+PS20250749,Nicolás Gómez Aguilar,Psicología,6,Neuropsicología,3.94
+IC20230750,Nicolás Ramírez García,Ingeniería Civil,1,Topografía,4.49
+AR20250751,Nicolás Rodríguez Ramírez,Arquitectura,7,Materiales,4.81
+EN20250752,Vanessa Herrera Guerrero,Enfermería,8,Pediatría,3.17
+TS20240753,Alejandro Salinas Peña,Trabajo Social,4,Familia,4.79
+MD20220754,Santiago López Salinas,Medicina,6,Cirugía,3.85
+EN20250755,Daniela Ariza Ariza,Enfermería,5,Urgencias,3.36
+AR20240756,Camila Morales Ríos,Arquitectura,2,Materiales,1.65
+MD20250757,Cristian García Ríos,Medicina,9,Cirugía,4.21
+IS20240758,Carlos Vargas Flores,Ingeniería de Sistemas,10,Sistemas Operativos,3.81
+IS20220759,Patricia Flores Salinas,Ingeniería de Sistemas,5,Redes,3.56
+II20240760,Sebastián Ortega Cruz,Ingeniería Industrial,10,Estadística,4.01
+LE20230761,Sofía Palacios Rivera,Licenciatura en Educación Infantil,10,Lúdica,3.59
+II20220762,Alejandra Morales Peña,Ingeniería Industrial,9,Estadística,4.98
+NI20250763,Rafael Torres Peña,Negocios Internacionales,7,Finanzas Internacionales,4.36
+CS20220764,Andrés Díaz Salinas,Comunicación Social,6,Publicidad,4.06
+MD20250765,Andrés Delgado Medina,Medicina,5,Cirugía,3.27
+II20250766,Juan Ríos Cruz,Ingeniería Industrial,9,Investigación de Operaciones,3.9
+EN20220767,Juan Serrano Mendoza,Enfermería,1,Urgencias,4.48
+TS20240768,Carolina Acosta Roa,Trabajo Social,5,Comunidad,3.55
+MD20230769,Adriana Cárdenas Medina,Medicina,4,Cirugía,3.85
+IS20220770,Mariana Mendoza Aguilar,Ingeniería de Sistemas,1,Programación I,3.76
+AE20240771,Monica Ruiz Castillo,Administración de Empresas,5,Finanzas,2.18
+LE20220772,Isabella Palacios Barrera,Licenciatura en Educación Infantil,4,Pedagogía,3.24
+LE20230773,Juan Barrera Bermúdez,Licenciatura en Educación Infantil,10,Pedagogía,4.13
+AR20240774,Vanessa Barrera González,Arquitectura,8,Historia del Arte,4.33
+II20240775,Cristian Mendoza Cruz,Ingeniería Industrial,2,Investigación de Operaciones,3.67
+II20220776,Isabella Cruz Cruz,Ingeniería Industrial,8,Ergonomía,4.6
+MD20230777,Melissa Rivera Roa,Medicina,2,Cirugía,4.11
+CS20220778,Adriana Pérez Ruiz,Comunicación Social,5,Periodismo,3.23
+IS20230779,Diego Polo Ruiz,Ingeniería de Sistemas,8,Programación I,4.83
+DR20220780,Natalia Torres Guzmán,Derecho,7,Procesal,4.39
+TS20230781,Ricardo Guerrero Medina,Trabajo Social,2,Intervención Social,3.84
+OD20240782,Cristian Ríos Sánchez,Odontología,9,Periodoncia,4.2
+DR20240783,Iván Roa Rodríguez,Derecho,9,Derecho Civil,4.38
+II20220784,Carlos Roa Gómez,Ingeniería Industrial,9,Ergonomía,4.15
+CS20250785,Juan Pérez Pineda,Comunicación Social,6,Periodismo,4.72
+AE20230786,Felipe Ramírez López,Administración de Empresas,1,Estrategia,3.9
+EN20220787,Adriana Ramos Peña,Enfermería,8,Cuidado Básico,3.67
+IC20250788,Sandra López Medina,Ingeniería Civil,4,Concreto,3.23
+II20220789,Sebastián López Figueroa,Ingeniería Industrial,8,Ergonomía,4.81
+II20230790,Andrea Guzmán Roa,Ingeniería Industrial,1,Investigación de Operaciones,4.91
+II20220791,Mateo Delgado Acosta,Ingeniería Industrial,10,Investigación de Operaciones,3.24
+NI20250792,Marcela Reyes González,Negocios Internacionales,4,Idiomas,4.49
+IC20230793,Monica Medina Mendoza,Ingeniería Civil,10,Hidráulica,4.4
+II20220794,Liliana López Cárdenas,Ingeniería Industrial,6,Investigación de Operaciones,3.88
+EN20250795,Andrés Guzmán Romero,Enfermería,3,Farmacología,4.52
+PS20220796,Mateo Pineda Acosta,Psicología,3,Educativa,3.0
+OD20250797,Camila Pinto Roa,Odontología,5,Ortodoncia,4.1
+MD20230798,Iván Ortega Campos,Medicina,7,Fisiología,4.02
+OD20240799,Mariana Pinto Peña,Odontología,2,Periodoncia,3.78
+IC20240800,Felipe Sánchez Campos,Ingeniería Civil,10,Concreto,3.73
+CP20230801,Iván Barrera Díaz,Contaduría Pública,1,Contabilidad General,4.34
+II20220802,Ricardo Peña Rivera,Ingeniería Industrial,1,Estadística,3.72
+MD20220803,Luisa Acosta Bermúdez,Medicina,1,Anatomía,4.59
+IC20230804,Valentina Peña Herrera,Ingeniería Civil,2,Topografía,3.66
+LE20230805,Felipe Figueroa Serrano,Licenciatura en Educación Infantil,6,Pedagogía,3.55
+PS20220806,Mauricio Vega Gómez,Psicología,4,Educativa,3.53
+LE20250807,Carolina Torres Díaz,Licenciatura en Educación Infantil,10,Desarrollo Infantil,3.57
+DR20230808,Sandra Gómez Pineda,Derecho,5,Constitucional,3.28
+IC20250809,Isabella Ortega Ramírez,Ingeniería Civil,8,Topografía,3.14
+NI20230810,Carlos Palacios Flores,Negocios Internacionales,10,Tratados,4.93
+MD20250811,Camila Vega Campos,Medicina,4,Clínica,3.87
+DR20230812,Mauricio Morales Morales,Derecho,7,Procesal,4.96
+IS20220813,Alejandro Vega López,Ingeniería de Sistemas,8,Algoritmos,3.74
+MD20220814,Alejandra Pérez Ruiz,Medicina,4,Cirugía,4.35
+DR20230815,Jorge Díaz Ramírez,Derecho,5,Derecho Civil,2.27
+TS20220816,Andrés Pinto Delgado,Trabajo Social,10,Familia,3.57
+NI20250817,Gabriel Medina Rivera,Negocios Internacionales,6,Comercio Exterior,4.04
+IS20250818,Alejandra Suárez Campos,Ingeniería de Sistemas,5,Redes,4.31
+IC20240819,Eduardo Díaz Serrano,Ingeniería Civil,10,Estática,3.96
+PS20250820,Stephanie Hernández Sánchez,Psicología,6,Evaluación,1.7
+IC20230821,Adriana Aguilar Pinto,Ingeniería Civil,9,Resistencia de Materiales,4.62
+CS20230822,Sofía Roa Ríos,Comunicación Social,10,Producción Audiovisual,3.95
+CP20220823,Hernán Serrano Guerrero,Contaduría Pública,1,Tributaria,3.74
+CS20240824,Claudia Sánchez Ríos,Comunicación Social,9,Opinión Pública,4.4
+LE20220825,Alejandra González Gómez,Licenciatura en Educación Infantil,8,Pedagogía,3.59
+CP20230826,Sebastián Pérez Flores,Contaduría Pública,2,Costos,3.08
+PS20230827,Iván Martínez Vargas,Psicología,9,Educativa,3.72
+AE20220828,Adriana Martínez Vargas,Administración de Empresas,2,Finanzas,4.26
+DR20250829,Luisa Vega Cárdenas,Derecho,6,Procesal,4.27
+CP20230830,Diana Ruiz Delgado,Contaduría Pública,10,Tributaria,3.1
+NI20230831,Ricardo Romero Vargas,Negocios Internacionales,1,Idiomas,3.98
+EN20230832,Marcela Flores Pinto,Enfermería,5,Farmacología,4.35
+AE20220833,Rodrigo Torres Flores,Administración de Empresas,2,Marketing,3.72
+EN20240834,Stephanie Rivera Díaz,Enfermería,1,Pediatría,3.18
+IC20250835,Andrés Núñez Ramos,Ingeniería Civil,1,Topografía,4.47
+CS20240836,Miguel Torres García,Comunicación Social,9,Publicidad,3.64
+II20250837,Liliana Salinas Barrera,Ingeniería Industrial,10,Estadística,4.37
+EN20240838,Santiago Ramírez Serrano,Enfermería,2,Cuidado Básico,3.92
+DR20230839,Luis Castillo Rodríguez,Derecho,1,Procesal,3.89
+IS20250840,Cristian Ortega Gómez,Ingeniería de Sistemas,2,Programación I,4.7
+OD20220841,María Mendoza Palacios,Odontología,9,Periodoncia,3.86
+DR20240842,Carolina Romero Jiménez,Derecho,1,Constitucional,3.99
+CS20250843,Diana Rodríguez Díaz,Comunicación Social,8,Opinión Pública,3.9
+II20220844,Carolina Ariza Vega,Ingeniería Industrial,10,Producción,3.19
+LE20250845,Claudia Suárez González,Licenciatura en Educación Infantil,10,Pedagogía,2.21
+EN20230846,Natalia Vega Rivera,Enfermería,8,Farmacología,3.15
+TS20240847,Diana Peña López,Trabajo Social,5,Familia,3.73
+CP20250848,Valentina García Torres,Contaduría Pública,5,Contabilidad General,4.45
+LE20220849,Jorge Rivera Peña,Licenciatura en Educación Infantil,4,Pedagogía,4.25
+DR20250850,Sebastián Palacios Figueroa,Derecho,10,Procesal,3.63
+TS20240851,Monica Ríos Guzmán,Trabajo Social,2,Investigación Social,4.01
+IS20240852,Diego Flores Cárdenas,Ingeniería de Sistemas,3,Algoritmos,4.07
+DR20240853,Andrés Hernández Ortega,Derecho,7,Derecho Civil,3.76
+NI20220854,Sebastián Herrera Gómez,Negocios Internacionales,3,Tratados,4.27
+CP20220855,Miguel Serrano Ramos,Contaduría Pública,6,Finanzas,3.91
+CP20250856,Alejandro Ramírez Campos,Contaduría Pública,6,Costos,3.96
+EN20230857,Mateo Díaz Torres,Enfermería,4,Urgencias,4.42
+EN20250858,Claudia Núñez Pinto,Enfermería,2,Salud Pública,4.56
+DR20240859,Nicolás Martínez Ríos,Derecho,5,Penal,4.44
+DR20240860,Rafael Campos Bermúdez,Derecho,3,Derecho Civil,4.06
+CS20240861,Nicolás Guzmán Torres,Comunicación Social,4,Producción Audiovisual,3.39
+NI20220862,Carolina Guzmán Bermúdez,Negocios Internacionales,2,Comercio Exterior,4.38
+IS20220863,Santiago Gómez Pérez,Ingeniería de Sistemas,9,Algoritmos,3.1
+IS20220864,Sebastián Ramos Barrera,Ingeniería de Sistemas,2,Sistemas Operativos,3.36
+IS20230865,Mariana Barrera Castillo,Ingeniería de Sistemas,2,Redes,4.67
+CS20230866,Andrés Herrera Polo,Comunicación Social,10,Comunicación Digital,3.55
+EN20230867,Patricia Bermúdez García,Enfermería,4,Pediatría,3.3
+LE20250868,Alejandro Ariza Pérez,Licenciatura en Educación Infantil,4,Didáctica,4.09
+TS20250869,Monica Pérez Rivera,Trabajo Social,6,Familia,3.09
+IC20220870,Sofía Bermúdez Mendoza,Ingeniería Civil,8,Concreto,3.3
+CS20220871,Gabriel Vargas Aguilar,Comunicación Social,1,Publicidad,3.69
+CP20230872,Vanessa Palacios Figueroa,Contaduría Pública,8,Finanzas,3.99
+LE20240873,Carolina Gómez González,Licenciatura en Educación Infantil,8,Desarrollo Infantil,2.28
+MD20220874,Monica Pérez Medina,Medicina,9,Anatomía,3.16
+LE20220875,Patricia Pérez Figueroa,Licenciatura en Educación Infantil,3,Didáctica,4.67
+AE20250876,Rafael Medina Sánchez,Administración de Empresas,7,Marketing,4.38
+NI20240877,Patricia Ortega Bermúdez,Negocios Internacionales,7,Logística,4.48
+II20220878,María Herrera Ortega,Ingeniería Industrial,8,Investigación de Operaciones,3.75
+IC20220879,Iván Ramírez Martínez,Ingeniería Civil,1,Topografía,4.49
+DR20240880,Juan Palacios Serrano,Derecho,3,Procesal,4.38
+NI20250881,Rodrigo Bermúdez Campos,Negocios Internacionales,8,Finanzas Internacionales,3.75
+DR20220882,Hernán Cruz Núñez,Derecho,9,Derecho Civil,4.94
+DR20250883,Sofía Jiménez Ruiz,Derecho,7,Laboral,1.34
+LE20250884,Rodrigo Polo Ramos,Licenciatura en Educación Infantil,3,Lúdica,3.29
+OD20250885,María Bermúdez Sánchez,Odontología,8,Ortodoncia,3.58
+MD20250886,Isabella Medina Cruz,Medicina,10,Cirugía,4.38
+IS20220887,Carlos Mendoza Hernández,Ingeniería de Sistemas,10,Bases de Datos,4.17
+NI20250888,Mauricio Cárdenas Martínez,Negocios Internacionales,6,Comercio Exterior,4.0
+AR20230889,Jorge Castillo Hernández,Arquitectura,4,Urbanismo,4.3
+IC20230890,Alejandra González Ramos,Ingeniería Civil,6,Estática,3.52
+EN20240891,Rodrigo Guerrero Salinas,Enfermería,7,Cuidado Básico,4.29
+PS20220892,Miguel Jiménez Salinas,Psicología,6,Educativa,3.27
+NI20230893,Luisa Peña Herrera,Negocios Internacionales,6,Tratados,3.98
+TS20230894,Felipe Peña Pineda,Trabajo Social,2,Comunidad,3.65
+OD20220895,Eduardo Medina Reyes,Odontología,2,Endodoncia,3.53
+AE20220896,Claudia Ríos Guerrero,Administración de Empresas,6,Marketing,3.65
+AE20250897,Rodrigo Núñez Mendoza,Administración de Empresas,7,Marketing,4.23
+LE20230898,Liliana Aguilar Rivera,Licenciatura en Educación Infantil,1,Inclusión,3.83
+LE20250899,Mauricio Delgado Ortega,Licenciatura en Educación Infantil,9,Inclusión,4.03
+II20230900,Felipe Romero Delgado,Ingeniería Industrial,4,Estadística,4.21
+TS20240901,Sebastián Pineda Díaz,Trabajo Social,7,Comunidad,4.13
+AE20230902,Rafael Morales Medina,Administración de Empresas,2,Finanzas,2.51
+EN20250903,Paola Delgado Peña,Enfermería,7,Cuidado Básico,3.11
+AR20230904,Valentina Cruz Ortega,Arquitectura,9,Diseño I,4.74
+DR20240905,Valentina Hernández Rodríguez,Derecho,10,Derecho Civil,4.7
+LE20250906,Stephanie Barrera Barrera,Licenciatura en Educación Infantil,2,Desarrollo Infantil,3.23
+AR20240907,Hernán Sánchez Campos,Arquitectura,10,Historia del Arte,4.62
+DR20250908,Sofía Polo Mendoza,Derecho,10,Penal,4.61
+CP20250909,Mateo Rivera Díaz,Contaduría Pública,8,Tributaria,4.03
+IC20250910,Fernando Romero Guzmán,Ingeniería Civil,6,Topografía,4.48
+CS20240911,Daniela Romero Ríos,Comunicación Social,6,Periodismo,4.45
+NI20230912,Santiago Figueroa Barrera,Negocios Internacionales,1,Idiomas,3.65
+IC20230913,Alejandra Romero Serrano,Ingeniería Civil,9,Topografía,3.95
+IC20240914,Melissa Cruz Ramos,Ingeniería Civil,4,Resistencia de Materiales,4.08
+LE20220915,Luis Pineda Mendoza,Licenciatura en Educación Infantil,7,Didáctica,4.41
+PS20250916,María Ríos Figueroa,Psicología,6,Psicología Clínica,4.35
+PS20240917,Hernán González Castillo,Psicología,10,Educativa,4.38
+AR20230918,Adriana Roa Rivera,Arquitectura,8,Diseño I,3.81
+IC20230919,Miguel Salinas Rodríguez,Ingeniería Civil,3,Concreto,4.38
+TS20250920,Adriana Bermúdez Ramírez,Trabajo Social,10,Comunidad,3.94
+AR20240921,Nicolás Cruz Rivera,Arquitectura,10,Estructuras,3.17
+TS20230922,Mariana Medina Jiménez,Trabajo Social,10,Intervención Social,4.96
+AE20250923,Adriana Acosta Pineda,Administración de Empresas,2,Finanzas,3.93
+PS20240924,Isabella Medina Acosta,Psicología,10,Neuropsicología,3.15
+CS20250925,Eduardo Sánchez García,Comunicación Social,9,Opinión Pública,4.25
+AE20240926,Julián Pinto Díaz,Administración de Empresas,5,Estrategia,3.72
+TS20230927,Laura Palacios Díaz,Trabajo Social,5,Familia,3.32
+AE20250928,Valentina Vargas Cruz,Administración de Empresas,10,Finanzas,3.84
+MD20240929,Vanessa Rodríguez García,Medicina,3,Clínica,4.36
+OD20220930,Gabriel Guerrero Figueroa,Odontología,5,Anatomía Dental,3.53
+OD20220931,Andrea Ríos Castillo,Odontología,10,Anatomía Dental,3.81
+DR20220932,Paola Medina Barrera,Derecho,3,Procesal,3.07
+II20240933,María Suárez Delgado,Ingeniería Industrial,2,Logística,3.63
+MD20240934,Miguel López Ramírez,Medicina,5,Clínica,3.94
+EN20250935,Marcela Bermúdez Cruz,Enfermería,6,Farmacología,4.0
+TS20220936,Liliana Torres Aguilar,Trabajo Social,8,Política Social,3.09
+II20250937,Santiago Ríos Cruz,Ingeniería Industrial,8,Investigación de Operaciones,4.96
+CS20250938,Santiago Ruiz Castillo,Comunicación Social,9,Opinión Pública,3.92
+IC20240939,Daniela Sánchez Castillo,Ingeniería Civil,4,Resistencia de Materiales,4.37
+OD20220940,Natalia Salinas Barrera,Odontología,4,Endodoncia,4.09
+MD20240941,Sebastián Morales Polo,Medicina,2,Anatomía,3.99
+OD20240942,Sofía Medina Romero,Odontología,2,Cirugía Oral,1.87
+MD20220943,Gabriel Barrera Ríos,Medicina,5,Farmacología,4.83
+CS20230944,Luis Mendoza Ariza,Comunicación Social,10,Producción Audiovisual,4.4
+CS20250945,Carlos Mendoza Hernández,Comunicación Social,2,Periodismo,3.59
+IS20230946,Cristian Medina Rodríguez,Ingeniería de Sistemas,4,Algoritmos,4.14
+IC20250947,Liliana Roa Torres,Ingeniería Civil,5,Topografía,4.46
+DR20240948,Monica Palacios Ramírez,Derecho,2,Procesal,3.18
+OD20250949,Juan Ríos Ortega,Odontología,10,Anatomía Dental,4.41
+AR20220950,Marcela Rivera Guerrero,Arquitectura,7,Diseño I,3.99
+AR20250951,Monica Reyes Roa,Arquitectura,3,Materiales,4.26
+IC20240952,Carlos Delgado Guerrero,Ingeniería Civil,8,Resistencia de Materiales,4.84
+PS20220953,Paola Morales Campos,Psicología,5,Evaluación,3.02
+PS20250954,Mateo Herrera Guerrero,Psicología,2,Evaluación,4.18
+EN20220955,Patricia Rodríguez Polo,Enfermería,1,Salud Pública,3.07
+PS20240956,Melissa López Rodríguez,Psicología,5,Evaluación,4.38
+DR20230957,Luis Acosta Cruz,Derecho,3,Penal,3.39
+PS20220958,Diego Serrano Pérez,Psicología,9,Psicología Clínica,3.51
+CS20250959,Adriana Ríos Delgado,Comunicación Social,7,Publicidad,4.49
+CS20240960,Stephanie Guzmán Serrano,Comunicación Social,7,Periodismo,3.01
+AE20230961,Sofía Martínez Guzmán,Administración de Empresas,1,Estrategia,4.32
+AE20240962,Carolina Pineda Núñez,Administración de Empresas,2,Estrategia,3.17
+CS20250963,Sofía Flores Torres,Comunicación Social,8,Opinión Pública,1.85
+OD20220964,Andrea Gómez Vargas,Odontología,7,Periodoncia,2.2
+TS20240965,Gabriel Guerrero Vega,Trabajo Social,8,Intervención Social,3.74
+LE20230966,Patricia Ariza Acosta,Licenciatura en Educación Infantil,8,Pedagogía,3.71
+CP20250967,Miguel Aguilar González,Contaduría Pública,7,Contabilidad General,3.97
+PS20230968,David Ruiz Guzmán,Psicología,1,Social,4.23
+AE20240969,Luis Reyes Herrera,Administración de Empresas,10,Contabilidad,4.36
+CS20250970,Vanessa Ramírez Vargas,Comunicación Social,7,Publicidad,4.4
+CP20250971,Andrés Acosta Díaz,Contaduría Pública,2,Auditoría,3.06
+MD20230972,María Pérez Vega,Medicina,5,Fisiología,4.0
+AR20230973,David Cruz Castillo,Arquitectura,3,Materiales,1.12
+AE20230974,Carolina Sánchez Acosta,Administración de Empresas,2,Estrategia,3.67
+NI20240975,David Polo López,Negocios Internacionales,9,Finanzas Internacionales,4.44
+CS20250976,Rafael Barrera Pérez,Comunicación Social,1,Opinión Pública,4.88
+NI20220977,Mateo Acosta Acosta,Negocios Internacionales,2,Tratados,3.25
+CS20250978,Laura Romero Flores,Comunicación Social,5,Comunicación Digital,3.94
+DR20220979,Daniela Roa Romero,Derecho,3,Penal,3.71
+TS20240980,Cristian García Morales,Trabajo Social,8,Comunidad,3.54
+PS20230981,Stephanie Pinto Bermúdez,Psicología,6,Neuropsicología,4.26
+PS20250982,Julián Ramírez Guerrero,Psicología,7,Evaluación,4.18
+NI20220983,Valentina Ruiz Torres,Negocios Internacionales,1,Comercio Exterior,3.7
+IS20220984,Cristian Flores Guerrero,Ingeniería de Sistemas,7,Bases de Datos,4.53
+LE20240985,Iván Pinto Barrera,Licenciatura en Educación Infantil,9,Lúdica,3.84
+CS20240986,Diana Ramos Ariza,Comunicación Social,6,Periodismo,4.45
+PS20230987,Marcela Torres Guzmán,Psicología,8,Evaluación,4.31
+LE20230988,Luis Guzmán Castillo,Licenciatura en Educación Infantil,7,Didáctica,3.21
+CS20240989,Juan Ariza Ariza,Comunicación Social,3,Producción Audiovisual,3.22
+AR20220990,Claudia Suárez Bermúdez,Arquitectura,3,Diseño I,4.77
+CP20220991,Diego Morales Polo,Contaduría Pública,7,Contabilidad General,4.13
+IS20250992,Hernán Castillo Sánchez,Ingeniería de Sistemas,2,Redes,3.5
+OD20230993,Luisa Morales Figueroa,Odontología,10,Periodoncia,3.83
+II20230994,Gabriel Salinas Serrano,Ingeniería Industrial,7,Investigación de Operaciones,3.79
+IC20250995,Cristian Romero Delgado,Ingeniería Civil,3,Topografía,3.02
+MD20240996,Nicolás Ríos Díaz,Medicina,2,Cirugía,3.78
+OD20250997,Cristian Medina Cruz,Odontología,8,Ortodoncia,4.47
+II20230998,Sandra Vega Flores,Ingeniería Industrial,9,Ergonomía,4.06
+IC20250999,Gabriel Herrera Campos,Ingeniería Civil,4,Topografía,1.3
+OD20221000,Diana Romero Sánchez,Odontología,7,Anatomía Dental,3.64
