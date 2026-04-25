@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Límite Dinámico: De la Secante a la Realidad</title>
+  <meta name="description" content="OVA interactiva de Cálculo Diferencial: explora cómo la recta secante se convierte en la tangente mediante límites, usando el movimiento de un automóvil.">
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+
+  <!-- ── LOADING SCREEN ─────────────────────────────────── -->
+  <div id="ova-loader" role="status" aria-live="polite" aria-label="Cargando simulador">
+    <canvas id="loader-bg" aria-hidden="true"></canvas>
+    <div class="loader-inner">
+      <img class="loader-logo"
+           src="/assets/unisimon_ai_taller/solo_logo_unisimon.jpeg"
+           alt="Universidad Simón Bolívar">
+      <h2 class="loader-title">Límite Dinámico</h2>
+      <p class="loader-sub">Iniciando simulador…</p>
+      <div class="loader-track" aria-hidden="true">
+        <div class="loader-fill"></div>
+        <div class="loader-shimmer"></div>
+      </div>
+      <p class="loader-caption">Cálculo Diferencial · Prof Antonio José Bravo</p>
+    </div>
+  </div>
+
+  <!-- Animated AI background canvas -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- ── HEADER ─────────────────────────────────────────────── -->
+  <header class="ova-header">
+    <div class="uni-strip">
+      <img
+        class="uni-logo"
+        src="/assets/unisimon_ai_taller/solo_logo_unisimon.jpeg"
+        alt="Universidad Simón Bolívar"
+      >
+      <span class="uni-text">
+        Universidad Simón Bolívar
+        <span class="uni-sep">·</span>
+        Clase de Cálculo Diferencial
+        <span class="uni-sep">·</span>
+        Prof Antonio José Bravo
+      </span>
+    </div>
+    <div class="header-body">
+      <h1>Límite Dinámico</h1>
+      <p class="subtitle">De la Secante a la Realidad — OVA Cálculo Diferencial</p>
+      <p class="signature">Por Cesar · Stivenson · Manuel · Mauricio · Jhan</p>
+    </div>
+  </header>
+
+  <!-- ── MODULE NAV (2 tabs) ────────────────────────────────── -->
+  <nav class="mod-nav" role="tablist" aria-label="Módulos de la OVA">
+    <button class="mod-btn active" data-mod="simulator" role="tab" aria-selected="true">🎮 Simulación</button>
+    <button class="mod-btn"        data-mod="eval"      role="tab" aria-selected="false">📝 Evaluación</button>
+  </nav>
+
+  <main class="ova-main">
+
+    <!-- ══ MODULE 1: SIMULADOR (activo por defecto) ══════════════ -->
+    <section id="mod-simulator" class="module active" role="tabpanel">
+
+      <!-- Phaser canvas — full-width protagonist -->
+      <div id="phaser-container" aria-label="Simulador interactivo"></div>
+
+      <!-- Compact controls bar below the game -->
+      <div class="card sim-controls-bar">
+
+        <div class="scb-left">
+          <h3>Control del Punto Móvil B</h3>
+          <div class="slider-row">
+            <span class="slider-label">t&nbsp;=&nbsp;<span id="t-val">5.00</span>&nbsp;s</span>
+            <input type="range" id="t-slider" min="20" max="59" value="50" step="1"
+                   aria-label="Tiempo t del punto móvil">
+            <span style="font-size:0.8rem;color:var(--text-dim);min-width:32px">6.0 s</span>
+          </div>
+          <p class="slider-hint">
+            Mueve hacia <strong style="color:var(--gold)">t = 3.0 s</strong>
+            · O arrastra el auto y los puntos directamente en el simulador.
+          </p>
+        </div>
+
+        <div class="scb-right">
+          <!-- SVG gauge -->
+          <div class="speedometer-container" id="speedometer-container">
+            <div class="gauge-wrap">
+              <svg class="gauge-svg" viewBox="0 0 200 110" fill="none"
+                   aria-label="Velocímetro" role="img">
+                <path d="M 10 100 A 90 90 0 0 1 190 100" stroke="#162236" stroke-width="16"/>
+                <path id="gauge-fill"
+                      d="M 10 100 A 90 90 0 0 1 190 100"
+                      stroke="#3b82f6" stroke-width="12"
+                      stroke-dasharray="283" stroke-dashoffset="220"/>
+                <line id="gauge-needle"
+                      x1="100" y1="100" x2="100" y2="18"
+                      stroke="#f97316" stroke-width="3.5" stroke-linecap="round"
+                      style="transform-origin:100px 100px;transform:rotate(-20deg)"/>
+                <circle cx="100" cy="100" r="10" fill="#0d1b2a"/>
+                <circle cx="100" cy="100" r="5"  fill="#475569"/>
+              </svg>
+              <div class="gauge-speed">
+                <span id="speed-value">8.00</span>
+                <span class="speed-unit">m/s</span>
+              </div>
+            </div>
+            <div class="speed-label" id="speed-label">→ Velocidad Promedio</div>
+          </div>
+
+          <!-- Numeric info table -->
+          <div class="speed-info">
+            <div class="info-row">
+              <span class="info-label">t (s)</span>
+              <span class="info-val" id="si-t">5.000</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">d(t) = t² (m)</span>
+              <span class="info-val" id="si-dt">25.000</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">d(3) = 9 m</span>
+              <span class="info-val">9.000</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Pendiente (m/s)</span>
+              <span class="info-val hl" id="si-slope">8.000</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /sim-controls-bar -->
+    </section>
+
+    <!-- ══ MODULE 2: EVALUACIÓN ══════════════════════════════════ -->
+    <section id="mod-eval" class="module" role="tabpanel">
+
+      <div class="card" style="margin-bottom:22px">
+        <div class="card-title"><span class="icon">📝</span> Evaluación</div>
+        <div class="card-body">
+          Responde las siguientes preguntas para verificar tu comprensión.
+          Cada respuesta incluye retroalimentación inmediata.
+        </div>
+      </div>
+
+      <div id="assessment-container"></div>
+
+      <div id="score-display" role="status" aria-live="polite">
+        <div id="score-val"></div>
+        <div id="score-pct"></div>
+        <div id="score-msg"></div>
+        <button class="btn-primary" id="restart-btn" style="margin-top:20px">
+          🔄 Intentar de Nuevo
+        </button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    OVA Cálculo Diferencial · Cesar, Stivenson, Manuel, Mauricio, Jhan ·
+    Planeado con GPT 5.5 · Implementado con Claude Sonnet · Phaser + Vite + TypeScript
+  </footer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
