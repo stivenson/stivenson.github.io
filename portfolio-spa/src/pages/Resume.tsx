@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { RichPanel, RichTabPanel, Timeline, TagList, RetroIcon } from '../components';
+import { PageShell, Section } from '../components';
+import { ScrollReveal } from '../components/motion/ScrollReveal';
 import profileData from '../data/profile.json';
 
 export function Resume() {
@@ -544,17 +546,23 @@ export function Resume() {
   ];
 
   return (
-    <div className="animate-fade-in">
-      <RichPanel title="Curriculum Vitae" icon="📄" electric>
-        <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px' }}>
-          +12 años de experiencia como Full Stack Developer, especializado en arquitecturas cloud, 
-          microservicios y desarrollo de productos bancarios. Actualmente cursando Maestría en 
-          Inteligencia Artificial en la Universidad de los Andes.
-        </p>
-      </RichPanel>
+    <PageShell>
+      <ScrollReveal>
+        <Section>
+          <RichPanel title="Curriculum Vitae" icon="📄" electric>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--rf-text-muted)', marginBottom: '16px' }}>
+              +12 años de experiencia como Full Stack Developer, especializado en arquitecturas cloud,
+              microservicios y desarrollo de productos bancarios. Actualmente cursando Maestría en
+              Inteligencia Artificial en la Universidad de los Andes.
+            </p>
+          </RichPanel>
+        </Section>
+      </ScrollReveal>
 
-      <RichTabPanel tabs={tabs} defaultTab="experience" />
-    </div>
+      <ScrollReveal delay={0.05}>
+        <RichTabPanel tabs={tabs} defaultTab="experience" />
+      </ScrollReveal>
+    </PageShell>
   );
 }
 

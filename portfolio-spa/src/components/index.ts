@@ -9,3 +9,16 @@ export { RetroIcon } from './RetroIcon';
 export { MarkdownRenderer } from './MarkdownRenderer';
 export { InteractiveSVG } from './InteractiveSVG';
 
+/* Layout primitives */
+export { PageShell } from './layout/PageShell';
+export { Section } from './layout/Section';
+
+/* Card primitives */
+export { GlowCard } from './cards/GlowCard';
+export { StatCard } from './cards/StatCard';
+export { BentoGrid } from './cards/BentoGrid';
+
+/* Motion */
+export { AnimatedPage } from './motion/AnimatedPage';
+export { ScrollReveal } from './motion/ScrollReveal';
+
