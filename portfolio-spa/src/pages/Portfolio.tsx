@@ -114,6 +114,76 @@ export function Portfolio() {
         </div>
       </RichPanel>
 
+      {/* BrainWeb SBD Panel */}
+      <RichPanel title="BrainWeb SBD — Análisis de Imágenes Médicas con IA" icon="🧬" electric>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            style={{
+              width: '80px',
+              height: '80px',
+              minWidth: '60px',
+              minHeight: '60px',
+              borderRadius: '8px',
+              background: 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '36px',
+              boxShadow: 'var(--electric-shadow)',
+              flexShrink: 0,
+            }}
+          >
+            <RetroIcon emoji="🧬" size={36} />
+          </motion.div>
+          <div style={{ flex: 1, minWidth: '200px' }}>
+            <p className="eyebrow" style={{ marginBottom: '6px' }}>Proyecto Académico · Semillero DSI · Universidad Simón Bolívar</p>
+            <h3 style={{ fontSize: '16px', marginBottom: '8px', color: 'var(--electric-cyan)', fontWeight: 600 }}>
+              Plataforma web interactiva para ciencia de datos en salud
+            </h3>
+            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.65' }}>
+              Plataforma para explorar imágenes MRI simuladas del dataset BrainWeb (McGill). Incluye
+              visor 2D multiplanar, visor 3D interactivo con Three.js, y asistente NLP que selecciona
+              volúmenes mediante lenguaje natural vía LLMs en HuggingFace. Cubre cerebro normal y
+              esclerosis múltiple con 108 volúmenes parametrizados por modalidad, ruido y RF.
+            </p>
+            <motion.a
+              href="https://project-mri-production.up.railway.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rf-button primary"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                textDecoration: 'none',
+                background: 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)',
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <RetroIcon emoji="🔗" size={16} />
+              <span>Abrir BrainWeb SBD</span>
+            </motion.a>
+            <div style={{
+              marginTop: '12px',
+              padding: '10px',
+              background: 'rgba(14,165,233,0.08)',
+              borderRadius: '6px',
+              borderLeft: '3px solid #0ea5e9',
+            }}>
+              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
+                <strong style={{ color: '#38bdf8' }}>Stack:</strong>
+                <span style={{ fontFamily: 'var(--font-mono)', marginLeft: '6px' }}>
+                  Python · Flask · React · Vite · Three.js · LLM/NLP · HuggingFace · Railway
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </RichPanel>
+
       {/* LLM Directory Panel */}
       <RichPanel title="Directorio de Interfaces - LLMs" icon="🤖" electric>
         <div style={{ 
