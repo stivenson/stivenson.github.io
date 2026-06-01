@@ -6,7 +6,7 @@ import type { ISourceOptions } from '@tsparticles/engine';
 
 const PARTICLES_CONFIG_ANIMATED: ISourceOptions = {
   particles: {
-    number: { value: 60 },
+    number: { value: 90 },
     color: { value: ['#4C59D3', '#55AAFF'] },
     opacity: { value: { min: 0.2, max: 0.55 } },
     size: { value: { min: 1.5, max: 3.5 } },
@@ -27,7 +27,7 @@ const PARTICLES_CONFIG_ANIMATED: ISourceOptions = {
 
 const PARTICLES_CONFIG_STATIC: ISourceOptions = {
   particles: {
-    number: { value: 60 },
+    number: { value: 90 },
     color: { value: ['#4C59D3', '#55AAFF'] },
     opacity: { value: { min: 0.2, max: 0.55 } },
     size: { value: { min: 1.5, max: 3.5 } },
