@@ -520,12 +520,19 @@ footer a:hover {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     flex-wrap: nowrap;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
   }
-  
+
+  .rf-tabpanel-tabs::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
   .rf-tab {
-    padding: var(--space-xs) var(--space-md);
+    padding: var(--space-xs) var(--space-sm);
     font-size: var(--font-size-xs);
     white-space: nowrap;
+    flex-shrink: 0;
   }
   
   .rf-timeline {
