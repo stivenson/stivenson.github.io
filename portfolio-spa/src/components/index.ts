@@ -21,4 +21,5 @@ export { BentoGrid } from './cards/BentoGrid';
 /* Motion */
 export { AnimatedPage } from './motion/AnimatedPage';
 export { ScrollReveal } from './motion/ScrollReveal';
+export { ParticlesBackground } from './ParticlesBackground';
 
