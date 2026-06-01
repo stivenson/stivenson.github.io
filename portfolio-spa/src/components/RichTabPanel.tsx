@@ -1,11 +1,12 @@
 import { ReactNode, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RetroIcon } from './RetroIcon';
+import { tabMorphTransition } from './motion/variants';
 
 interface Tab {
   id: string;
   label: string;
-  icon?: ReactNode | string; // Puede ser ReactNode o string (emoji)
+  icon?: ReactNode | string;
   content: ReactNode;
 }
 
@@ -27,28 +28,40 @@ export function RichTabPanel({ tabs, defaultTab }: RichTabPanelProps) {
             key={tab.id}
             className={`rf-tab ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
+            style={{ position: 'relative' }}
           >
-            {tab.icon && (
-              <span style={{ marginRight: '6px', display: 'inline-flex', alignItems: 'center' }}>
-                {typeof tab.icon === 'string' ? (
-                  <RetroIcon emoji={tab.icon} size={16} />
-                ) : (
-                  tab.icon
-                )}
-              </span>
+            {activeTab === tab.id && (
+              <motion.span
+                layoutId="tab-active-indicator"
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: 'var(--border-radius-sm) var(--border-radius-sm) 0 0',
+                  background: 'rgba(76, 89, 211, 0.15)',
+                  borderBottom: '2px solid var(--electric-blue)',
+                }}
+                transition={tabMorphTransition}
+              />
             )}
-            {tab.label}
+            <span style={{ position: 'relative', zIndex: 1, display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              {tab.icon && (
+                typeof tab.icon === 'string' ? (
+                  <RetroIcon emoji={tab.icon} size={14} />
+                ) : tab.icon
+              )}
+              {tab.label}
+            </span>
           </button>
         ))}
       </div>
       <AnimatePresence mode="wait">
-        <motion.div 
+        <motion.div
           key={activeTab}
           className="rf-tabpanel-content"
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.18 }}
         >
           {activeContent}
         </motion.div>
@@ -56,4 +69,3 @@ export function RichTabPanel({ tabs, defaultTab }: RichTabPanelProps) {
     </div>
   );
 }
-
