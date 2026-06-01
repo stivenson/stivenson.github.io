@@ -1,6 +1,6 @@
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { Header, Sidebar, RetroIcon } from './components';
+import { Header, Sidebar, RetroIcon, ParticlesBackground } from './components';
 import { AnimatedPage } from './components/motion/AnimatedPage';
 import { Dashboard, Resume, Portfolio, About, Articles, ArticleDetail } from './pages';
 import './styles/tokens.css';
@@ -30,6 +30,7 @@ function App() {
     <HashRouter>
       <div className="dark-mountain-bg">
         <div className="bg-grid" />
+        <ParticlesBackground />
       </div>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />
