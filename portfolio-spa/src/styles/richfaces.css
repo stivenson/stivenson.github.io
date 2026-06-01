@@ -1,74 +1,6 @@
-/* Electric RichFaces Design System */
-/* Inspired by classic RichFaces UI with Electric Blue modern accents */
-
-:root {
-  /* Electric Blue Palette — Dark Retro-Elegant */
-  --electric-blue: #4C59D3;
-  --electric-cyan: #55AAFF;
-  --electric-glow: rgba(76, 89, 211, 0.4);
-  --electric-shadow: 0 0 20px rgba(85, 170, 255, 0.25);
-
-  /* RichFaces Dark Palette */
-  --rf-header-start: #1a1a50;
-  --rf-header-end: #0e0e38;
-  --rf-border: #1e1e48;
-  --rf-border-dark: #141438;
-  --rf-panel-bg: #0a0a2e;
-  --rf-panel-header-text: #e8e8f0;
-  --rf-body-bg: #040320;
-  --rf-text: #e8e8f0;
-  --rf-text-muted: #9898b0;
-  --rf-link: #55AAFF;
-  --rf-link-hover: #7BC0FF;
-
-  /* Table colors */
-  --rf-table-header-bg: linear-gradient(180deg, #1a1a55 0%, #0e0e3d 100%);
-  --rf-table-row-even: #0d0d35;
-  --rf-table-row-odd: #0a0a2e;
-  --rf-table-row-hover: #15154a;
-
-  /* Tab colors */
-  --rf-tab-active-bg: linear-gradient(180deg, #0a0a2e 0%, #0d0d35 100%);
-  --rf-tab-inactive-bg: linear-gradient(180deg, #080830 0%, #060625 100%);
-  --rf-tab-border: #1e1e48;
-
-  /* Sidebar */
-  --rf-sidebar-bg: linear-gradient(180deg, #0a0a2e 0%, #060625 100%);
-  --rf-sidebar-item-hover: #15154a;
-  --rf-sidebar-item-active: #1a1a55;
-
-  /* Consolidated accent variables */
-  --card-accent-bg: rgba(76, 89, 211, 0.12);
-  --card-accent-bg-light: rgba(76, 89, 211, 0.06);
-  --card-accent-bg-lighter: rgba(76, 89, 211, 0.04);
-  --border-glow: rgba(85, 170, 255, 0.15);
-  --border-glow-strong: rgba(85, 170, 255, 0.25);
-  
-  /* Typography */
-  --font-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --font-mono: 'Consolas', 'Monaco', monospace;
-  --font-size-xs: 11px;
-  --font-size-sm: 12px;
-  --font-size-base: 13px;
-  --font-size-lg: 14px;
-  --font-size-xl: 16px;
-  --font-size-2xl: 18px;
-  --font-size-3xl: 22px;
-  
-  /* Spacing */
-  --space-xs: 4px;
-  --space-sm: 8px;
-  --space-md: 12px;
-  --space-lg: 16px;
-  --space-xl: 24px;
-  --space-2xl: 32px;
-  
-  /* Borders */
-  --border-radius-sm: 3px;
-  --border-radius-md: 5px;
-  --border-radius-lg: 8px;
-  --border-radius-panel: 6px 6px 0 0;
-}
+/* Electric RichFaces Design System — v2 Electric Terminal */
+/* tokens.css owns the :root variables; richfaces.css references them */
+/* Import order: tokens → typography → animations → richfaces */
 
 /* Global Styles */
 * {
@@ -97,21 +29,20 @@ body {
 }
 
 .rf-panel-header {
-  background: linear-gradient(180deg, var(--rf-header-start) 0%, var(--rf-header-end) 100%);
-  color: var(--rf-panel-header-text);
+  background: var(--rf-panel-bg-elevated, #0d0d38);
+  color: var(--rf-text);
   padding: var(--space-sm) var(--space-md);
   font-size: var(--font-size-lg);
   font-weight: 600;
-  border-bottom: 1px solid var(--rf-border-dark);
+  border-bottom: 1px solid var(--rf-border);
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .rf-panel-header.electric {
-  background: linear-gradient(180deg, var(--electric-blue) 0%, #0e0e38 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), var(--electric-shadow);
+  border-bottom-color: var(--electric-blue);
+  box-shadow: 0 1px 0 rgba(85, 170, 255, 0.1);
 }
 
 .rf-panel-body {
@@ -798,5 +729,99 @@ footer a:hover {
 
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* ── Bento Grid ─────────────────────────────────────────────────── */
+.bento-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(12, 1fr);
+}
+
+.bento-col-12 { grid-column: span 12; }
+.bento-col-8  { grid-column: span 8; }
+.bento-col-6  { grid-column: span 6; }
+.bento-col-4  { grid-column: span 4; }
+.bento-col-3  { grid-column: span 3; }
+
+@media (max-width: 768px) {
+  .bento-col-12,
+  .bento-col-8,
+  .bento-col-6,
+  .bento-col-4,
+  .bento-col-3 {
+    grid-column: span 12;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .bento-col-8 { grid-column: span 12; }
+  .bento-col-4,
+  .bento-col-3 { grid-column: span 6; }
+}
+
+/* ── GlowCard ───────────────────────────────────────────────────── */
+.glow-card {
+  background: var(--rf-panel-bg);
+  border: 1px solid var(--rf-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-xl);
+  position: relative;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.glow-card:hover {
+  border-color: var(--glow-border-strong, rgba(85, 170, 255, 0.25));
+  box-shadow: var(--glow-panel);
+}
+
+/* ── StatCard ───────────────────────────────────────────────────── */
+.stat-card {
+  background: var(--rf-panel-bg);
+  border: 1px solid var(--rf-border);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  cursor: default;
+}
+
+.stat-card:hover {
+  border-color: var(--glow-border-strong, rgba(85, 170, 255, 0.25));
+  box-shadow: var(--glow-panel);
+}
+
+/* ── Avatar glow ring ───────────────────────────────────────────── */
+.avatar-glow {
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--electric-blue), 0 0 0 4px rgba(76, 89, 211, 0.2);
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar-glow { animation: none; }
+}
+
+/* ── Section rhythm ─────────────────────────────────────────────── */
+.page-shell {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+.page-section {
+  margin-bottom: var(--space-section, 64px);
+}
+
+.page-section-title {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--electric-cyan);
+  margin-bottom: var(--space-lg);
 }
 

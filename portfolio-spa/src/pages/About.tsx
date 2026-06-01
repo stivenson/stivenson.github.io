@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
 import { RichPanel, RichTabPanel, RetroIcon } from '../components';
+import { PageShell } from '../components';
+import { ScrollReveal } from '../components/motion/ScrollReveal';
 import profileData from '../data/profile.json';
 
 export function About() {
@@ -210,7 +212,9 @@ export function About() {
   ];
 
   return (
-    <div className="animate-fade-in">
+    <PageShell>
+    <div>
+      <ScrollReveal>
       <RichPanel title="Sobre Mí" icon="👤" electric>
         <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <motion.div
@@ -279,38 +283,23 @@ export function About() {
       </RichPanel>
 
       <RichTabPanel tabs={tabs} defaultTab="origins" />
+    </ScrollReveal>
     </div>
+    </PageShell>
   );
 }
 
 function QuestionAnswer({ question, answer }: { question: string; answer: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      style={{
-        padding: '12px 16px',
-        background: 'var(--card-accent-bg-lighter)',
-        borderLeft: '3px solid var(--electric-blue)',
-        borderRadius: '0 6px 6px 0'
-      }}
-    >
-      <div style={{ 
-        fontWeight: 600, 
-        fontSize: '13px', 
-        marginBottom: '6px',
-        color: 'var(--electric-blue)'
-      }}>
-        {question}
-      </div>
-      <div style={{ 
-        fontSize: '13px', 
-        color: 'var(--rf-text-muted)',
-        lineHeight: '1.6'
-      }}>
-        {answer}
-      </div>
-    </motion.div>
+    <div style={{
+      padding: '14px 16px',
+      background: 'var(--card-accent-bg-light, rgba(76,89,211,0.06))',
+      borderLeft: '2px solid var(--electric-blue)',
+      borderRadius: '0 var(--border-radius-md) var(--border-radius-md) 0',
+    }}>
+      <p className="eyebrow" style={{ marginBottom: '6px' }}>{question}</p>
+      <p className="editorial" style={{ color: 'var(--rf-text)' }}>{answer}</p>
+    </div>
   );
 }
 

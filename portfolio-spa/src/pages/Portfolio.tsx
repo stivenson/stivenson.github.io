@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichPanel, RichTable, TagList, RetroIcon } from '../components';
+import { RichPanel, RichTable, TagList, RetroIcon, PageShell } from '../components';
 import profileData from '../data/profile.json';
 
 interface Repo {
@@ -82,7 +82,7 @@ export function Portfolio() {
   ];
 
   return (
-    <div className="animate-fade-in">
+    <PageShell>
       <RichPanel title="Portafolio de Proyectos" icon="📁" electric>
         <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px' }}>
           Repositorios públicos y proyectos de código abierto. Explora mi trabajo en 
@@ -544,7 +544,7 @@ export function Portfolio() {
           </div>
         </div>
       </RichPanel>
-    </div>
+    </PageShell>
   );
 }
 

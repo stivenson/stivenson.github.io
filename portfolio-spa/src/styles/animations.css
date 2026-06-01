@@ -1,0 +1,118 @@
+/* Animations — Electric Terminal v2 */
+
+/* Grid drift background */
+@keyframes grid-drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-8px, 4px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Glow pulse for avatar ring, active indicators */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(85, 170, 255, 0.3), 0 0 0 1px rgba(85, 170, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(85, 170, 255, 0.5), 0 0 0 1px rgba(85, 170, 255, 0.4);
+  }
+}
+
+/* Subtle scan line for terminal aesthetic */
+@keyframes scan-line {
+  0% { transform: translateY(-100%); opacity: 0.04; }
+  100% { transform: translateY(100vh); opacity: 0.04; }
+}
+
+/* Timeline line draw (controlled via JS/Framer) */
+@keyframes line-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Electric pulse (existing, kept) */
+@keyframes electric-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(76, 89, 211, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(76, 89, 211, 0.5), 0 0 40px rgba(85, 170, 255, 0.15); }
+}
+
+/* Mountain drift (existing, kept) */
+@keyframes mountain-drift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(-3%, 2%) rotate(1deg); }
+}
+
+@keyframes mountain-drift-reverse {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(2%, -1.5%) rotate(-0.5deg); }
+}
+
+/* Fade up (for non-Framer contexts) */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility classes */
+.animate-electric-pulse {
+  animation: electric-pulse 2s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+}
+
+/* Grid overlay for dark-mountain-bg */
+.dark-mountain-bg::before,
+.dark-mountain-bg::after {
+  animation-play-state: running;
+}
+
+/* Background grid lines layer */
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(85, 170, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(85, 170, 255, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: grid-drift 45s linear infinite;
+}
+
+/* Scan line overlay */
+.bg-scan-line {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-scan-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(85, 170, 255, 0.06), transparent);
+  animation: scan-line 8s linear infinite;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-electric-pulse,
+  .animate-glow-pulse,
+  .animate-fade-in-up,
+  .bg-grid,
+  .bg-scan-line::after,
+  .dark-mountain-bg::before,
+  .dark-mountain-bg::after {
+    animation: none !important;
+  }
+
+  .bg-grid {
+    opacity: 0.4;
+  }
+}

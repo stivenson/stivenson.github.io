@@ -1,0 +1,75 @@
+/* Typography — Electric Terminal v2 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+body {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
+  color: var(--rf-text);
+  line-height: 1.55;
+}
+
+/* Mono accent class — labels, stats, dates, tech tags */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Eyebrow — mono uppercase label above headings */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--electric-cyan);
+}
+
+/* Stat number — large mono for dashboard stats */
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-4xl);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--electric-cyan);
+}
+
+.stat-label {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--rf-text-muted);
+}
+
+/* Date / timestamp */
+.date-mono {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--rf-text-muted);
+}
+
+/* Editorial body — generous line height */
+.editorial {
+  line-height: 1.65;
+  font-size: var(--font-size-base);
+  color: var(--rf-text);
+}
+
+/* Section heading */
+.section-title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--rf-text);
+  margin-bottom: var(--space-xl);
+}
+
+/* Tech tag — mono small */
+.tech-tag {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Typography-related animations allowed */
+}
