@@ -517,15 +517,10 @@ footer a:hover {
   }
   
   .rf-tabpanel-tabs {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    flex-wrap: nowrap;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
-  }
-
-  .rf-tabpanel-tabs::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    overflow-x: visible;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding-bottom: var(--space-xs);
   }
 
   .rf-tab {
@@ -533,6 +528,14 @@ footer a:hover {
     font-size: var(--font-size-xs);
     white-space: nowrap;
     flex-shrink: 0;
+    margin-right: 0;
+    top: 0;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--rf-border);
+  }
+
+  .rf-tab.active {
+    border-color: var(--electric-blue);
   }
   
   .rf-timeline {
