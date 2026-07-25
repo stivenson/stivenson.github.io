@@ -1,9 +1,21 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+
+// Stamps the build timestamp into index.html so the deployed page always
+// carries the current build date (visible in <head>, aids cache debugging).
+function buildStamp(): Plugin {
+  return {
+    name: 'build-stamp',
+    transformIndexHtml(html) {
+      const date = new Date().toISOString()
+      return html.replace('</head>', `  <meta name="build-date" content="${date}" />\n  </head>`)
+    },
+  }
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), buildStamp()],
   base: './',
   build: {
     outDir: '../',
