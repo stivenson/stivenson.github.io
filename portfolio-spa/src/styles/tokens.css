@@ -6,6 +6,15 @@
   --electric-glow: rgba(76, 89, 211, 0.4);
   --electric-shadow: 0 0 20px rgba(85, 170, 255, 0.25);
 
+  /* Terminal signature — amber prompt + roles */
+  --term-amber: #FFB454;        /* the $ prompt — signature accent */
+  --term-cmd: #e8e8f0;          /* typed command text */
+  --term-out: #b8b8cc;          /* command output */
+  --term-key: #6f7bd6;          /* neofetch key */
+  --term-val: #55AAFF;          /* neofetch value */
+  --term-titlebar: #0c0c30;     /* window chrome */
+  --term-bg: #070622;           /* terminal body, a hair deeper than panel */
+
   /* Surfaces */
   --rf-body-bg: #040320;
   --rf-panel-bg: #0a0a2e;
@@ -54,8 +63,8 @@
   --card-accent-bg-light: rgba(76, 89, 211, 0.06);
 
   /* Typography */
-  --font-primary: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+  --font-primary: 'Space Grotesk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-mono: 'Space Mono', 'Consolas', 'Monaco', monospace;
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-base: 14px;

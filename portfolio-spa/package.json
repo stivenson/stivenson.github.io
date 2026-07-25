@@ -16,8 +16,8 @@
     "vite": "^7.2.4"
   },
   "dependencies": {
-    "@tsparticles/react": "^3",
-    "@tsparticles/slim": "^3",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
     "@types/react-syntax-highlighter": "^15.5.13",
     "framer-motion": "^12.23.25",
     "react": "^19.2.0",

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichPanel, RichTable, TagList, RetroIcon, PageShell } from '../components';
+import { RichPanel, RichTable, TagList, RetroIcon, PageShell, CommandLine } from '../components';
 import profileData from '../data/profile.json';
 
 interface Repo {
@@ -83,36 +83,13 @@ export function Portfolio() {
 
   return (
     <PageShell>
-      <RichPanel title="Portafolio de Proyectos" icon="📁" electric>
-        <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px' }}>
-          Repositorios públicos y proyectos de código abierto. Explora mi trabajo en 
-          <a 
-            href={github.profileUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ marginLeft: '4px' }}
-          >
-            GitHub (@{github.username})
-          </a>
-        </p>
-        
-        <div style={{ 
-          display: 'flex',
-          gap: '8px',
-          padding: '12px',
-          background: 'var(--card-accent-bg-light)',
-          borderRadius: '6px',
-          marginBottom: '16px'
-        }}>
-          <span style={{ fontSize: '20px' }}>👤</span>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: '14px' }}>@{github.username}</div>
-            <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-              Systems Engineer, Developer Full Stack, Open source enthusiast
-            </div>
-          </div>
-        </div>
-      </RichPanel>
+      <CommandLine command="ls ~/proyectos --all">
+        Repositorios públicos y proyectos de código abierto de{' '}
+        <a href={github.profileUrl} target="_blank" rel="noopener noreferrer">
+          @{github.username}
+        </a>{' '}
+        — Systems Engineer, Full Stack Developer, open source enthusiast.
+      </CommandLine>
 
       {/* BrainWeb SBD Panel */}
       <RichPanel title="BrainWeb SBD — Análisis de Imágenes Médicas con IA" icon="🧬" electric>

@@ -1,5 +1,4 @@
-import { motion } from 'framer-motion';
-import { RichPanel, RichTabPanel, RetroIcon } from '../components';
+import { RichTabPanel, RetroIcon, CommandLine } from '../components';
 import { PageShell } from '../components';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
 import profileData from '../data/profile.json';
@@ -213,78 +212,24 @@ export function About() {
 
   return (
     <PageShell>
-    <div>
-      <ScrollReveal>
-      <RichPanel title="Sobre Mí" icon="👤" electric>
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            style={{
-              width: '100px',
-              height: '100px',
-              minWidth: '70px',
-              minHeight: '70px',
-              borderRadius: '16px',
-              background: 'var(--electric-blue)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: 'var(--electric-shadow)',
-              flexShrink: 0
-            }}
-          >
-            <div style={{
-              width: '70%',
-              height: '70%',
-              borderRadius: '8px',
-              background: '#0a0a2e',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <div style={{
-                width: '50%',
-                height: '60%',
-                borderRadius: '6px',
-                background: 'var(--electric-blue)'
-              }} />
-            </div>
-          </motion.div>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <h2 style={{ 
-              fontSize: 'clamp(18px, 4vw, 22px)', 
-              marginBottom: '8px',
-              color: 'var(--electric-blue)'
-            }}>
-              {personal.name}
-            </h2>
-            <p style={{ fontSize: '14px', color: 'var(--rf-text-muted)', marginBottom: '12px' }}>
-              {personal.title}
-            </p>
-            <p style={{ fontSize: '13px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <RetroIcon emoji="📍" size={14} />
-              {personal.location}
-            </p>
-            <p style={{ 
-              fontSize: '13px', 
-              fontStyle: 'italic', 
-              color: 'var(--rf-text-muted)',
-              padding: '12px',
-              background: 'var(--card-accent-bg-light)',
-              borderRadius: '6px',
-              borderLeft: '3px solid var(--electric-blue)'
-            }}>
-              Ingeniero de Sistemas apasionado por la tecnología con propósito social. 
-              Creo que el código debe servir a la gente y transformar realidades.
-            </p>
-          </div>
-        </div>
-      </RichPanel>
+      <CommandLine command="whoami --about">
+        <span style={{ display: 'block', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+          <strong style={{ color: 'var(--electric-cyan)' }}>{personal.name}</strong>
+          {' — '}{personal.title}
+        </span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--font-size-sm)' }}>
+          <RetroIcon emoji="📍" size={14} />
+          {personal.location}
+        </span>
+        <span style={{ display: 'block', marginTop: '10px' }}>
+          Ingeniero de Sistemas apasionado por la tecnología con propósito social.
+          Creo que el código debe servir a la gente y transformar realidades.
+        </span>
+      </CommandLine>
 
-      <RichTabPanel tabs={tabs} defaultTab="origins" />
-    </ScrollReveal>
-    </div>
+      <ScrollReveal>
+        <RichTabPanel tabs={tabs} defaultTab="origins" />
+      </ScrollReveal>
     </PageShell>
   );
 }

@@ -8,6 +8,9 @@ export { Tag, TagList } from './Tag';
 export { RetroIcon } from './RetroIcon';
 export { MarkdownRenderer } from './MarkdownRenderer';
 export { InteractiveSVG } from './InteractiveSVG';
+export { TerminalHero } from './TerminalHero';
+export type { TermLine } from './TerminalHero';
+export { CommandLine } from './CommandLine';
 
 /* Layout primitives */
 export { PageShell } from './layout/PageShell';

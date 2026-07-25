@@ -1,6 +1,5 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { RetroIcon } from './RetroIcon';
 
 const navItems = [
   { to: '/', label: 'Dashboard' },
@@ -13,7 +12,7 @@ export function Header() {
   return (
     <header className="rf-header-bar electric">
       <div className="rf-header-title">
-        <RetroIcon emoji="⚡" size={28} />
+        <span className="brand-mark" aria-hidden="true">$_</span>
         <span className="electric-text">Stivenson Rincón</span>
         <span className="header-subtitle" style={{ fontSize: '14px', fontWeight: 400, opacity: 0.7 }}>
           | Systems Engineer & Full Stack Developer
