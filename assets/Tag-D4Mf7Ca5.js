@@ -1,0 +1,1 @@
+import{j as e}from"./react-vendor-CpG6mFnn.js";function t({children:a,electric:s=!1}){return e.jsx("span",{className:`rf-tag ${s?"electric":""}`,children:a})}function l({tags:a,electric:s=!1}){return e.jsx("div",{style:{display:"flex",flexWrap:"wrap",gap:"4px"},children:a.map(r=>e.jsx(t,{electric:s,children:r},r))})}export{l as T,t as a};
