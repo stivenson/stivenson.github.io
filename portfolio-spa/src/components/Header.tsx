@@ -56,10 +56,10 @@ export function Header() {
           href="https://scienti.minciencias.gov.co/cvlac/visualizador/generarCurriculoCv.do?cod_rh=0001402041"
           target="_blank"
           rel="noopener noreferrer"
-          className="rf-button"
-          style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+          className="rf-button primary"
+          style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
         >
-          🔬 CvLAC
+          🔬 CvLAC <span aria-hidden="true" style={{ opacity: 0.6 }}>↗</span>
         </a>
       </nav>
     </header>
