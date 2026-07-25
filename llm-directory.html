@@ -19,21 +19,21 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://stivenson.github.io/directorio_chats_llm/">
+    <meta property="og:url" content="https://stivenson.github.io/llm-directory.html">
     <meta property="og:title" content="Directorio de Chats y Dashboards de LLMs">
     <meta property="og:description"
         content="Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje.">
-    <meta property="og:image" content="https://stivenson.github.io/directorio_chats_llm/og-image.png">
+    <meta property="og:image" content="https://stivenson.github.io/og-image.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://stivenson.github.io/directorio_chats_llm/">
+    <meta property="twitter:url" content="https://stivenson.github.io/llm-directory.html">
     <meta property="twitter:title" content="Directorio de Chats y Dashboards de LLMs">
     <meta property="twitter:description"
         content="Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje.">
-    <meta property="twitter:image" content="https://stivenson.github.io/directorio_chats_llm/og-image.png">
+    <meta property="twitter:image" content="https://stivenson.github.io/og-image.png">
 
-    <link rel="canonical" href="https://stivenson.github.io/directorio_chats_llm/">
+    <link rel="canonical" href="https://stivenson.github.io/llm-directory.html">
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -42,7 +42,7 @@
       "@type": "CollectionPage",
       "name": "Directorio de Chats y Dashboards de LLMs",
       "description": "Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y herramientas de modelos de lenguaje",
-      "url": "https://stivenson.github.io/directorio_chats_llm/",
+      "url": "https://stivenson.github.io/llm-directory.html",
       "author": {
         "@type": "Person",
         "name": "Stivenson"
@@ -1318,6 +1318,374 @@
             white-space: nowrap;
         }
     </style>
+
+    <!-- Professional visual layer: keeps the generated JS contract unchanged. -->
+    <style id="professional-redesign">
+        :root {
+            --pro-ink: #172033;
+            --pro-ink-soft: #526078;
+            --pro-muted: #7b879c;
+            --pro-canvas: #f4f7fb;
+            --pro-surface: #ffffff;
+            --pro-surface-soft: #eef3f9;
+            --pro-border: #dce4ef;
+            --pro-brand: #4c59d3;
+            --pro-brand-deep: #252a73;
+            --pro-cyan: #0ea5a8;
+            --pro-coral: #f97362;
+            --pro-shadow: 0 18px 45px rgba(32, 44, 77, 0.09);
+            --pro-shadow-hover: 0 22px 55px rgba(32, 44, 77, 0.16);
+        }
+
+        html {
+            background: var(--pro-canvas);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 8% 0%, rgba(76, 89, 211, 0.08), transparent 25rem),
+                radial-gradient(circle at 92% 14%, rgba(14, 165, 168, 0.07), transparent 22rem),
+                var(--pro-canvas);
+            color: var(--pro-ink);
+            padding: 28px;
+        }
+
+        .container {
+            max-width: 1480px;
+        }
+
+        header {
+            isolation: isolate;
+            margin-bottom: 30px;
+            padding: clamp(34px, 5vw, 68px) clamp(24px, 6vw, 86px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 28px;
+            text-align: left;
+            background:
+                radial-gradient(circle at 82% 12%, rgba(14, 165, 168, 0.34), transparent 20rem),
+                radial-gradient(circle at 18% 100%, rgba(249, 115, 98, 0.18), transparent 22rem),
+                linear-gradient(132deg, #1a2057 0%, #252a73 48%, #3546a4 100%);
+            box-shadow: 0 24px 60px rgba(30, 39, 100, 0.22);
+            animation: none;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            inset: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            pointer-events: none;
+        }
+
+        header h1 {
+            position: relative;
+            z-index: 1;
+            max-width: 880px;
+            margin-bottom: 16px;
+            font-size: clamp(2.25rem, 5vw, 4.75rem);
+            line-height: 0.98;
+            letter-spacing: -0.055em;
+            text-shadow: none;
+        }
+
+        header p {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: clamp(1rem, 1.5vw, 1.2rem);
+            line-height: 1.65;
+        }
+
+        .header-badge {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px;
+            padding: 7px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #dce5ff;
+            font-size: 0.72rem;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+        }
+
+        .badge-filter-container {
+            position: sticky;
+            top: 12px;
+            z-index: 20;
+            margin: 0 0 26px;
+            justify-content: flex-start;
+        }
+
+        .badge-filter {
+            width: 100%;
+            justify-content: flex-start;
+            gap: 8px;
+            padding: 10px;
+            border: 1px solid rgba(220, 228, 239, 0.9);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.84);
+            box-shadow: 0 12px 28px rgba(32, 44, 77, 0.08);
+            backdrop-filter: blur(18px);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .badge-filter label,
+        .badge-filter input[type="radio"]:checked + label,
+        .badge-filter input[type="radio"]:checked + label:hover {
+            min-height: 36px;
+            padding: 8px 14px;
+            border: 1px solid var(--pro-border);
+            border-radius: 10px;
+            background: var(--pro-surface) !important;
+            color: var(--pro-ink-soft) !important;
+            box-shadow: none !important;
+            transform: none;
+            font-size: 0.78rem;
+            font-weight: 650;
+            transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
+        }
+
+        .badge-filter label::before,
+        .badge-filter label::after,
+        .badge-filter input[type="radio"]:checked + label::before {
+            display: none;
+        }
+
+        .badge-filter label:hover {
+            border-color: #aeb9ce !important;
+            background: var(--pro-surface-soft) !important;
+            color: var(--pro-brand-deep) !important;
+            transform: translateY(-1px);
+        }
+
+        .badge-filter input[type="radio"]:checked + label {
+            border-color: var(--pro-brand) !important;
+            background: var(--pro-brand) !important;
+            color: #ffffff !important;
+            box-shadow: 0 5px 14px rgba(76, 89, 211, 0.24) !important;
+        }
+
+        .filter-new-pill {
+            margin-left: 6px;
+            padding: 2px 5px;
+            border-radius: 5px;
+            background: #dff7ee;
+            color: #13795b;
+            font-size: 0.58rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .badge-filter input[type="radio"]:checked + label .filter-new-pill {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .masonry {
+            gap: 22px;
+            padding: 0;
+        }
+
+        .masonry-column {
+            gap: 22px;
+        }
+
+        .card {
+            border: 1px solid var(--pro-border);
+            border-radius: 18px;
+            background: var(--pro-surface);
+            box-shadow: var(--pro-shadow);
+            transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+        }
+
+        .card:hover {
+            border-color: #bdc8dc;
+            box-shadow: var(--pro-shadow-hover);
+            transform: translateY(-4px);
+        }
+
+        .card-header,
+        .card-header.brand-tinted {
+            position: relative;
+            padding: 22px 22px 20px;
+            background:
+                linear-gradient(135deg, rgba(37, 42, 115, 0.98), rgba(76, 89, 211, 0.94) 68%, var(--brand-tint, #0ea5a8));
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            bottom: 18px;
+            width: 34px;
+            height: 3px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.54);
+        }
+
+        .card-header h2 {
+            max-width: calc(100% - 34px);
+            font-size: 1.25rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .card-header .provider {
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.78rem;
+            letter-spacing: 0.04em;
+        }
+
+        .card-body {
+            padding: 20px 22px 18px;
+        }
+
+        .card-body p {
+            color: var(--pro-ink-soft);
+            font-size: 0.92rem;
+            line-height: 1.65;
+        }
+
+        .badge {
+            margin-top: 4px;
+            margin-right: 4px;
+            padding: 5px 9px;
+            border: 1px solid rgba(23, 32, 51, 0.06);
+            border-radius: 7px;
+            font-size: 0.68rem;
+            font-weight: 650;
+            letter-spacing: 0.01em;
+        }
+
+        .card-footer {
+            padding: 14px 22px 18px;
+            border-top: 1px solid var(--pro-border);
+            background: #fbfcfe;
+        }
+
+        .card-link {
+            padding: 11px 16px;
+            border-radius: 10px;
+            background: var(--pro-ink);
+            font-size: 0.86rem;
+            transition: background 180ms ease, transform 180ms ease;
+        }
+
+        .card-link:hover {
+            opacity: 1;
+            background: var(--pro-brand);
+            transform: translateY(-1px);
+        }
+
+        .new-tab-notice {
+            color: var(--pro-muted);
+            font-size: 0.7rem;
+        }
+
+        footer {
+            margin-top: 54px;
+            border: 1px solid var(--pro-border);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--pro-muted);
+            box-shadow: none;
+        }
+
+        footer a {
+            color: var(--pro-brand);
+        }
+
+        .skip-link {
+            background: var(--pro-ink);
+        }
+
+        :focus-visible {
+            outline: 3px solid rgba(14, 165, 168, 0.55);
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 14px;
+            }
+
+            header {
+                margin-bottom: 20px;
+                border-radius: 22px;
+            }
+
+            header::after {
+                inset: 10px;
+                border-radius: 16px;
+            }
+
+            .badge-filter-container {
+                top: 8px;
+                margin-bottom: 20px;
+            }
+
+            .badge-filter {
+                flex-wrap: nowrap;
+                border-radius: 13px;
+            }
+
+            .badge-filter label,
+            .badge-filter input[type="radio"]:checked + label,
+            .badge-filter input[type="radio"]:checked + label:hover {
+                flex: 0 0 auto;
+            }
+
+            .masonry {
+                gap: 14px;
+            }
+
+            .masonry-column {
+                gap: 14px;
+            }
+
+            .card-header,
+            .card-header.brand-tinted {
+                padding: 18px;
+            }
+
+            .card-body {
+                padding: 17px 18px 15px;
+            }
+
+            .card-footer {
+                padding: 12px 18px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2.35rem;
+            }
+
+            .masonry {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .card:hover,
+            .card-link:hover,
+            .badge-filter label:hover {
+                transform: none;
+            }
+        }
+    </style>
 </head>
 
 <body class="loading">
@@ -1340,10 +1708,9 @@
 
     <div class="container">
         <header>
-            <div class="header-badge">✨ Inteligencia Artificial</div>
-            <h1>🤖 Directorio de Interfaces - LLMs</h1>
-            <p>Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, dashboards y
-                herramientas de modelos de lenguaje</p>
+            <div class="header-badge">Directorio curado · Inteligencia artificial</div>
+            <h1>Explora las mejores herramientas de IA</h1>
+            <p>Una colección práctica de chats, herramientas de código, datos, creación y automatización para elegir la interfaz adecuada para cada tarea.</p>
         </header>
 
         <main id="main-content" style="padding-bottom: 120px;">
@@ -1400,7 +1767,7 @@
         <!-- Footer -->
         <footer>
             <p>
-                © 2025 Directorio de Interfaces - LLMs. Creado con ❤️ por
+                © 2026 Directorio de herramientas de IA. Creado con ❤️ por
                 <a href="https://github.com/stivenson?tab=overview&from=2019-12-01&to=2019-12-31" target="_blank"
                     rel="noopener noreferrer" class="github-link">
 
