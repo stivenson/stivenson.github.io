@@ -1,4 +1,4 @@
-import { RichTabPanel, RetroIcon, CommandLine } from '../components';
+import { RichTabPanel, Icon, CommandLine } from '../components';
 import { PageShell } from '../components';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
 import profileData from '../data/profile.json';
@@ -218,7 +218,7 @@ export function About() {
           {' — '}{personal.title}
         </span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--font-size-sm)' }}>
-          <RetroIcon emoji="📍" size={14} />
+          <Icon name="pin" size={14} />
           {personal.location}
         </span>
         <span style={{ display: 'block', marginTop: '10px' }}>

@@ -11,6 +11,8 @@ export { InteractiveSVG } from './InteractiveSVG';
 export { TerminalHero } from './TerminalHero';
 export type { TermLine } from './TerminalHero';
 export { CommandLine } from './CommandLine';
+export { Icon } from './Icon';
+export type { IconName } from './Icon';
 
 /* Layout primitives */
 export { PageShell } from './layout/PageShell';

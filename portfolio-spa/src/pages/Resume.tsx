@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichTabPanel, Timeline, TagList, RetroIcon, CommandLine } from '../components';
+import { RichTabPanel, Timeline, TagList, Icon, CommandLine } from '../components';
 import { PageShell } from '../components';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
 import profileData from '../data/profile.json';
@@ -91,7 +91,7 @@ export function Resume() {
     {
       id: 'experience',
       label: 'Experiencia Laboral',
-      icon: '💼',
+      icon: <Icon name="briefcase" size={14} />,
       content: (
         <Timeline items={experienceTimeline} />
       )
@@ -99,7 +99,7 @@ export function Resume() {
     {
       id: 'education',
       label: 'Educación',
-      icon: '🎓',
+      icon: <Icon name="cap" size={14} />,
       content: (
         <Timeline items={educationTimeline} />
       )
@@ -107,7 +107,7 @@ export function Resume() {
     {
       id: 'courses',
       label: 'Cursos',
-      icon: '📚',
+      icon: <Icon name="book" size={14} />,
       content: (
         <div>
           {sortedCourses.map((course, index) => {
@@ -158,7 +158,7 @@ export function Resume() {
     {
       id: 'academic-projects',
       label: 'Proyectos Académicos',
-      icon: '🤖',
+      icon: <Icon name="bot" size={14} />,
       content: (
         <div>
           <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px' }}>
@@ -242,10 +242,7 @@ export function Resume() {
                   fontSize: '20px',
                   flexShrink: 0
                 }}>
-                  <RetroIcon 
-                    emoji={project.tool === 'Cursor' ? '⚡' : project.tool === 'AntiGravity' ? '🚀' : '🌐'} 
-                    size={20} 
-                  />
+                  <Icon name="code" size={20} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <h4 style={{ 
@@ -296,7 +293,7 @@ export function Resume() {
                     onMouseEnter={(e) => e.currentTarget.style.textDecoration = 'underline'}
                     onMouseLeave={(e) => e.currentTarget.style.textDecoration = 'none'}
                   >
-                    <RetroIcon emoji="🔗" size={12} style={{ marginRight: '4px' }} />
+                    <Icon name="link" size={12} style={{ marginRight: '4px' }} />
                     <span style={{ fontSize: '11px' }}>{project.url.length > 50 ? project.url.substring(0, 50) + '...' : project.url}</span>
                   </a>
                 </div>
@@ -312,104 +309,31 @@ export function Resume() {
     {
       id: 'skills',
       label: 'Habilidades',
-      icon: '🛠️',
+      icon: <Icon name="cpu" size={14} />,
       content: (
-        <div style={{ display: 'grid', gap: '16px' }}>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(76,89,211,0.1)', // Azul suave
-            border: '1px solid rgba(76,89,211,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#6B7BF0', fontWeight: 600 }}>
-              Lenguajes de Programación
-            </h4>
-            <TagList tags={skills.languages} electric />
-          </div>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(123,104,238,0.1)', // Púrpura suave
-            border: '1px solid rgba(123,104,238,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#9B8AFF', fontWeight: 600 }}>
-              Frontend
-            </h4>
-            <TagList tags={skills.frontend} electric />
-          </div>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(239,68,68,0.1)', // Rojo suave
-            border: '1px solid rgba(239,68,68,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#F87171', fontWeight: 600 }}>
-              Backend
-            </h4>
-            <TagList tags={skills.backend} electric />
-          </div>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(85,170,255,0.1)', // Azul claro suave
-            border: '1px solid rgba(85,170,255,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#55AAFF', fontWeight: 600 }}>
-              Cloud & DevOps
-            </h4>
-            <TagList tags={[...skills.cloud, ...skills.devops]} electric />
-          </div>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(74,222,128,0.1)', // Verde suave
-            border: '1px solid rgba(74,222,128,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#4ADE80', fontWeight: 600 }}>
-              Bases de Datos
-            </h4>
-            <TagList tags={skills.databases} electric />
-          </div>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(245,158,11,0.1)', // Naranja suave
-            border: '1px solid rgba(245,158,11,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#F59E0B', fontWeight: 600 }}>
-              Inteligencia Artificial
-            </h4>
-            <TagList tags={skills.ai} electric />
-          </div>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(161,137,115,0.1)', // Marrón suave
-            border: '1px solid rgba(161,137,115,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#C8A882', fontWeight: 600 }}>
-              Herramientas & Otros
-            </h4>
-            <TagList tags={skills.tools} electric />
-          </div>
-          <div style={{
-            padding: '16px',
-            borderRadius: '8px',
-            background: 'rgba(152,152,176,0.1)', // Gris muy suave
-            border: '1px solid rgba(152,152,176,0.3)'
-          }}>
-            <h4 style={{ fontSize: '13px', marginBottom: '12px', color: '#B8B8D0', fontWeight: 600 }}>
-              Metodologías
-            </h4>
-            <TagList tags={skills.methodologies} electric />
-          </div>
+        <div style={{ display: 'grid', gap: '14px' }}>
+          {[
+            { label: 'Lenguajes', tags: skills.languages },
+            { label: 'Frontend', tags: skills.frontend },
+            { label: 'Backend', tags: skills.backend },
+            { label: 'Cloud & DevOps', tags: [...skills.cloud, ...skills.devops] },
+            { label: 'Bases de Datos', tags: skills.databases },
+            { label: 'Inteligencia Artificial', tags: skills.ai },
+            { label: 'Herramientas', tags: skills.tools },
+            { label: 'Metodologías', tags: skills.methodologies },
+          ].map((group) => (
+            <div key={group.label} className="skill-group">
+              <p className="eyebrow" style={{ marginBottom: '10px' }}>{group.label}</p>
+              <TagList tags={group.tags} electric />
+            </div>
+          ))}
         </div>
       )
     },
     {
       id: 'references',
       label: 'Referencias',
-      icon: '👥',
+      icon: <Icon name="user" size={14} />,
       content: (
         <div style={{ display: 'grid', gap: '16px' }}>
           {references.map((ref, index) => (

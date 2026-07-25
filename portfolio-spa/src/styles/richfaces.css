@@ -421,6 +421,18 @@ a:hover {
   text-decoration: underline;
 }
 
+/* ── Keyboard focus (a11y) ──────────────────────────────────────── */
+a:focus-visible,
+button:focus-visible,
+.rf-button:focus-visible,
+.rf-tab:focus-visible,
+.rf-tree-item:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--electric-cyan);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
 /* Footer link */
 footer a {
   color: #55AAFF !important;
@@ -974,6 +986,59 @@ footer a:hover {
 }
 
 .cmd-header-out a { color: var(--electric-cyan); }
+
+/* ── Skill group — unified surface (no per-category tints) ──────── */
+.skill-group {
+  padding: var(--space-lg);
+  background: var(--card-accent-bg-light);
+  border: 1px solid var(--rf-border);
+  border-left: 2px solid var(--electric-blue);
+  border-radius: var(--border-radius-md);
+}
+
+/* ── Unified panel icon chip (replaces per-panel gradient boxes) ── */
+.panel-icon {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: var(--border-radius-md);
+  background: var(--card-accent-bg);
+  border: 1px solid var(--glow-border-strong);
+  color: var(--electric-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Panel note (Stack / Características) — unified accent ───────── */
+.panel-note {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: var(--card-accent-bg-light);
+  border-left: 2px solid var(--electric-blue);
+  border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+  font-size: var(--font-size-xs);
+  color: var(--rf-text-muted);
+}
+.panel-note strong { color: var(--electric-cyan); }
+.panel-note ul { margin-top: 6px; padding-left: 18px; line-height: 1.8; }
+
+/* ── Terminal-style stats (git-shortlog vibe) ──────────────────── */
+.term-stats {
+  font-family: var(--font-mono);
+  background: var(--term-bg);
+  border: 1px solid var(--rf-border);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-lg) var(--space-xl);
+  font-size: var(--font-size-sm);
+  line-height: 2.1;
+}
+.term-stats .prompt-row { color: var(--rf-text-muted); margin-bottom: 4px; }
+.term-stats .prompt-row .term-prompt { color: var(--term-amber); }
+.term-stats .row { display: flex; gap: 14px; align-items: baseline; }
+.term-stats .k { color: var(--rf-text-muted); min-width: 150px; }
+.term-stats .v { color: var(--electric-cyan); font-weight: 700; }
 
 /* ── Standard action button — "terminal command" ───────────────── */
 .btn-cmd {
