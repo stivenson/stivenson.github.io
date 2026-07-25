@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { RichPanel, RichTable, TagList, RetroIcon, PageShell, CommandLine } from '../components';
+import { RichPanel, RichTable, TagList, PageShell, CommandLine, Icon } from '../components';
+import type { IconName } from '../components';
 import profileData from '../data/profile.json';
 
 interface Repo {
@@ -56,10 +57,10 @@ export function Portfolio() {
     }
   ];
 
-  const projectCategories = [
+  const projectCategories: { title: string; icon: IconName; projects: { name: string; desc: string; tech: string[] }[] }[] = [
     {
       title: 'Backend & APIs',
-      icon: '🔧',
+      icon: 'cpu',
       projects: [
         { name: 'Hapi-Study', desc: 'Servicios RESTful con Hapi.js', tech: ['Node.js', 'Hapi.js', 'REST'] },
         { name: 'example-typescript-grpc-api', desc: 'API con TypeScript y gRPC', tech: ['TypeScript', 'gRPC', 'Protocol Buffers'] },
@@ -67,14 +68,14 @@ export function Portfolio() {
     },
     {
       title: 'Lenguajes & Aprendizaje',
-      icon: '📚',
+      icon: 'book',
       projects: [
         { name: 'Rust-Study', desc: 'Ejercicios de aprendizaje de Rust', tech: ['Rust', 'Systems Programming'] },
       ]
     },
     {
       title: 'Frontend',
-      icon: '🎨',
+      icon: 'code',
       projects: [
         { name: 'Mithril-1-with-ES6-Classes-Example', desc: 'Ejemplo de Mithril con ES6', tech: ['JavaScript', 'Mithril', 'ES6'] },
       ]
@@ -92,28 +93,11 @@ export function Portfolio() {
       </CommandLine>
 
       {/* BrainWeb SBD Panel */}
-      <RichPanel title="BrainWeb SBD — Análisis de Imágenes Médicas con IA" icon="🧬" electric>
+      <RichPanel title="BrainWeb SBD — Análisis de Imágenes Médicas con IA" icon={<Icon name="activity" size={16} />} electric>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            style={{
-              width: '80px',
-              height: '80px',
-              minWidth: '60px',
-              minHeight: '60px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '36px',
-              boxShadow: 'var(--electric-shadow)',
-              flexShrink: 0,
-            }}
-          >
-            <RetroIcon emoji="🧬" size={36} />
-          </motion.div>
+          <div className="panel-icon">
+            <Icon name="activity" size={28} />
+          </div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <p className="eyebrow" style={{ marginBottom: '6px' }}>Proyecto Académico · Semillero DSI · Universidad Simón Bolívar</p>
             <h3 style={{ fontSize: '16px', marginBottom: '8px', color: 'var(--electric-cyan)', fontWeight: 600 }}>
@@ -133,52 +117,27 @@ export function Portfolio() {
             >
               Abrir BrainWeb SBD <span className="ext" aria-hidden="true">↗</span>
             </a>
-            <div style={{
-              marginTop: '12px',
-              padding: '10px',
-              background: 'rgba(14,165,233,0.08)',
-              borderRadius: '6px',
-              borderLeft: '3px solid #0ea5e9',
-            }}>
-              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-                <strong style={{ color: '#38bdf8' }}>Stack:</strong>
-                <span style={{ fontFamily: 'var(--font-mono)', marginLeft: '6px' }}>
-                  Python · Flask · React · Vite · Three.js · LLM/NLP · HuggingFace · Railway
-                </span>
-              </div>
+            <div className="panel-note">
+              <strong>Stack:</strong>
+              <span style={{ fontFamily: 'var(--font-mono)', marginLeft: '6px' }}>
+                Python · Flask · React · Vite · Three.js · LLM/NLP · HuggingFace · Railway
+              </span>
             </div>
           </div>
         </div>
       </RichPanel>
 
       {/* LLM Directory Panel */}
-      <RichPanel title="Directorio de Interfaces - LLMs" icon="🤖" electric>
+      <RichPanel title="Directorio de Interfaces - LLMs" icon={<Icon name="bot" size={16} />} electric>
         <div style={{ 
           display: 'flex', 
           gap: '16px', 
           alignItems: 'flex-start',
           flexWrap: 'wrap'
         }}>
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            style={{ 
-              width: '80px', 
-              height: '80px',
-              minWidth: '60px',
-              minHeight: '60px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, var(--electric-blue) 0%, var(--electric-cyan) 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '36px',
-              boxShadow: 'var(--electric-shadow)',
-              flexShrink: 0
-            }}
-          >
-            <RetroIcon emoji="🤖" size={36} />
-          </motion.div>
+          <div className="panel-icon">
+            <Icon name="bot" size={28} />
+          </div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{ 
               fontSize: '16px', 
@@ -201,55 +160,30 @@ export function Portfolio() {
             >
               Visitar Directorio de LLMs <span className="ext" aria-hidden="true">↗</span>
             </a>
-            <div style={{ 
-              marginTop: '12px',
-              padding: '10px',
-              background: 'var(--card-accent-bg-light)',
-              borderRadius: '6px',
-              borderLeft: '3px solid var(--electric-blue)'
-            }}>
-              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-                <strong style={{ color: 'var(--electric-cyan)' }}>✨ Características:</strong>
-                <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
-                  <li>Interfaces de chat conversacionales</li>
-                  <li>Dashboards de IA</li>
-                  <li>Herramientas de modelos de lenguaje</li>
-                  <li>Recursos organizados y actualizados</li>
-                </ul>
-              </div>
+            <div className="panel-note">
+              <strong>Características</strong>
+              <ul>
+                <li>Interfaces de chat conversacionales</li>
+                <li>Dashboards de IA</li>
+                <li>Herramientas de modelos de lenguaje</li>
+                <li>Recursos organizados y actualizados</li>
+              </ul>
             </div>
           </div>
         </div>
       </RichPanel>
 
       {/* TOC Support Panel */}
-      <RichPanel title="Soporte en Crisis TOC" icon="🧠" electric>
+      <RichPanel title="Soporte en Crisis TOC" icon={<Icon name="book" size={16} />} electric>
         <div style={{ 
           display: 'flex', 
           gap: '16px', 
           alignItems: 'flex-start',
           flexWrap: 'wrap'
         }}>
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            style={{ 
-              width: '80px', 
-              height: '80px',
-              minWidth: '60px',
-              minHeight: '60px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #7B68EE 0%, #6858DE 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '36px',
-              boxShadow: 'var(--electric-shadow)',
-              flexShrink: 0
-            }}
-          >
-            <RetroIcon emoji="🧠" size={36} />
-          </motion.div>
+          <div className="panel-icon">
+            <Icon name="book" size={28} />
+          </div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{ 
               fontSize: '16px', 
@@ -272,55 +206,30 @@ export function Portfolio() {
             >
               Acceder al Soporte TOC <span className="ext" aria-hidden="true">↗</span>
             </a>
-            <div style={{ 
-              marginTop: '12px',
-              padding: '10px',
-              background: 'rgba(123, 104, 238, 0.08)',
-              borderRadius: '6px',
-              borderLeft: '3px solid #7B68EE'
-            }}>
-              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-                <strong style={{ color: '#9B8AFF' }}>✨ Características:</strong>
-                <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
-                  <li>Interfaz de apoyo emocional con LLMs</li>
-                  <li>Almacenamiento local y privacidad garantizada</li>
-                  <li>Navegación por estados internos</li>
-                  <li>Herramienta complementaria no clínica</li>
-                </ul>
-              </div>
+            <div className="panel-note">
+              <strong>Características</strong>
+              <ul>
+                <li>Interfaz de apoyo emocional con LLMs</li>
+                <li>Almacenamiento local y privacidad garantizada</li>
+                <li>Navegación por estados internos</li>
+                <li>Herramienta complementaria no clínica</li>
+              </ul>
             </div>
           </div>
         </div>
       </RichPanel>
 
       {/* Job Search Agents Panel */}
-      <RichPanel title="Job Search Agents" icon="🔍" electric>
+      <RichPanel title="Job Search Agents" icon={<Icon name="search" size={16} />} electric>
         <div style={{ 
           display: 'flex', 
           gap: '16px', 
           alignItems: 'flex-start',
           flexWrap: 'wrap'
         }}>
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            style={{ 
-              width: '80px', 
-              height: '80px',
-              minWidth: '60px',
-              minHeight: '60px',
-              borderRadius: '8px',
-              background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '36px',
-              boxShadow: 'var(--electric-shadow)',
-              flexShrink: 0
-            }}
-          >
-            <RetroIcon emoji="🔍" size={36} />
-          </motion.div>
+          <div className="panel-icon">
+            <Icon name="search" size={28} />
+          </div>
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h3 style={{ 
               fontSize: '16px', 
@@ -342,29 +251,21 @@ export function Portfolio() {
             >
               Visitar Job Search Agents <span className="ext" aria-hidden="true">↗</span>
             </a>
-            <div style={{ 
-              marginTop: '12px',
-              padding: '10px',
-              background: 'rgba(34, 211, 238, 0.08)',
-              borderRadius: '6px',
-              borderLeft: '3px solid #22d3ee'
-            }}>
-              <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>
-                <strong style={{ color: '#22d3ee' }}>✨ Características:</strong>
-                <ul style={{ marginTop: '6px', paddingLeft: '20px', lineHeight: '1.8' }}>
-                  <li>Arquitectura multiagente con LangGraph</li>
-                  <li>Protección anti-bot avanzada</li>
-                  <li>Sistema de Agent Skills</li>
-                  <li>Matching inteligente y extracción de información</li>
-                </ul>
-              </div>
+            <div className="panel-note">
+              <strong>Características</strong>
+              <ul>
+                <li>Arquitectura multiagente con LangGraph</li>
+                <li>Protección anti-bot avanzada</li>
+                <li>Sistema de Agent Skills</li>
+                <li>Matching inteligente y extracción de información</li>
+              </ul>
             </div>
           </div>
         </div>
       </RichPanel>
 
       {/* Academic Guides Panel */}
-      <RichPanel title="Guías Académicas — Unisimón" icon="🎓" electric>
+      <RichPanel title="Guías Académicas — Unisimón" icon={<Icon name="cap" size={16} />} electric>
         <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '16px', lineHeight: '1.6' }}>
           Material académico desarrollado para la Universidad Simón Bolívar: guías, talleres y objetos virtuales de aprendizaje.
         </p>
@@ -372,8 +273,7 @@ export function Portfolio() {
           {[
             {
               category: 'Programación',
-              icon: '🐍',
-              color: '#6B7BF0',
+              icon: 'code' as IconName,
               items: [
                 {
                   title: 'Guías y Ejercicios — Python Básico',
@@ -389,8 +289,7 @@ export function Portfolio() {
             },
             {
               category: 'Matemáticas',
-              icon: '📐',
-              color: '#4ade80',
+              icon: 'cpu' as IconName,
               items: [
                 {
                   title: 'OVA — Cálculo Diferencial',
@@ -408,9 +307,9 @@ export function Portfolio() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                color: group.color,
+                color: 'var(--electric-cyan)',
               }}>
-                <span>{group.icon}</span>
+                <Icon name={group.icon} size={14} />
                 {group.category}
               </h4>
               <div className="rf-cards-grid">
@@ -427,7 +326,7 @@ export function Portfolio() {
                     whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(76, 89, 211, 0.3)' }}
                   >
                     <div className="rf-card-header" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <RetroIcon emoji="📄" size={14} />
+                      <Icon name="book" size={14} />
                       {item.title}
                     </div>
                     <div className="rf-card-body">
@@ -444,7 +343,7 @@ export function Portfolio() {
       </RichPanel>
 
       {/* Pinned Repos Table */}
-      <RichPanel title="Repositorios Destacados" icon="📌">
+      <RichPanel title="Repositorios Destacados" icon={<Icon name="folder" size={16} />}>
         <RichTable 
           columns={repoColumns}
           data={github.pinnedRepos}
@@ -453,7 +352,7 @@ export function Portfolio() {
       </RichPanel>
 
       {/* Project Categories */}
-      <RichPanel title="Proyectos por Categoría" icon="🗂️">
+      <RichPanel title="Proyectos por Categoría" icon={<Icon name="folder" size={16} />}>
         <div style={{ display: 'grid', gap: '16px' }}>
           {projectCategories.map((category, catIndex) => (
             <motion.div
@@ -470,7 +369,7 @@ export function Portfolio() {
                 gap: '8px',
                 color: 'var(--electric-blue)'
               }}>
-                <RetroIcon emoji={category.icon} size={16} />
+                <Icon name={category.icon} size={16} />
                 {category.title}
               </h4>
               <div className="rf-cards-grid">
@@ -488,7 +387,7 @@ export function Portfolio() {
                     whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(76, 89, 211, 0.3)' }}
                   >
                     <div className="rf-card-header" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <RetroIcon emoji="📦" size={16} />
+                      <Icon name="folder" size={16} />
                       {project.name}
                     </div>
                     <div className="rf-card-body">
@@ -506,51 +405,13 @@ export function Portfolio() {
       </RichPanel>
 
       {/* GitHub Stats */}
-      <RichPanel title="Contribuciones Open Source" icon="🌟">
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
-          gap: '16px',
-          textAlign: 'center'
-        }}>
-          <div style={{ 
-            padding: '20px',
-            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
-            borderRadius: '8px'
-          }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>72+</div>
-            <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>Repositorios</div>
-          </div>
-          <div style={{ 
-            padding: '20px',
-            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
-            borderRadius: '8px'
-          }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <RetroIcon emoji="🦈" size={32} />
-            </div>
-            <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>Pull Shark x3</div>
-          </div>
-          <div style={{ 
-            padding: '20px',
-            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
-            borderRadius: '8px'
-          }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <RetroIcon emoji="❄️" size={32} />
-            </div>
-            <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>Arctic Code Vault</div>
-          </div>
-          <div style={{ 
-            padding: '20px',
-            background: 'linear-gradient(135deg, rgba(76, 89, 211, 0.12) 0%, rgba(85, 170, 255, 0.12) 100%)',
-            borderRadius: '8px'
-          }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <RetroIcon emoji="💖" size={32} />
-            </div>
-            <div style={{ fontSize: '12px', color: 'var(--rf-text-muted)' }}>Public Sponsor</div>
-          </div>
+      <RichPanel title="Contribuciones Open Source" icon={<Icon name="star" size={16} />}>
+        <div className="term-stats">
+          <div className="prompt-row"><span className="term-prompt">$</span> gh api /users/{github.username} --achievements</div>
+          <div className="row"><span className="k">repos_públicos</span><span className="v">72+</span></div>
+          <div className="row"><span className="k">Pull Shark</span><span className="v">×3</span></div>
+          <div className="row"><span className="k">Arctic Code Vault</span><span className="v">unlocked</span></div>
+          <div className="row"><span className="k">Public Sponsor</span><span className="v">active</span></div>
         </div>
       </RichPanel>
     </PageShell>

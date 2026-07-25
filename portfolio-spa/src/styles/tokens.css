@@ -37,8 +37,8 @@
 
   /* Text */
   --rf-text: #e8e8f0;
-  --rf-text-muted: #9898b0;
-  --rf-text-faint: #5a5a80;
+  --rf-text-muted: #9898b0;   /* ~6.7:1 on body bg — AA */
+  --rf-text-faint: #8888aa;   /* raised from #5a5a80 (2.8:1, failed) → ~5:1 AA */
   --rf-link: #55AAFF;
   --rf-link-hover: #7BC0FF;
 
