@@ -125,24 +125,14 @@ export function Portfolio() {
               volúmenes mediante lenguaje natural vía LLMs en HuggingFace. Cubre cerebro normal y
               esclerosis múltiple con 108 volúmenes parametrizados por modalidad, ruido y RF.
             </p>
-            <motion.a
+            <a
               href="https://project-mri-production.up.railway.app/"
               target="_blank"
               rel="noopener noreferrer"
-              className="rf-button primary"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                textDecoration: 'none',
-                background: 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)',
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="btn-cmd"
             >
-              <RetroIcon emoji="🔗" size={16} />
-              <span>Abrir BrainWeb SBD</span>
-            </motion.a>
+              Abrir BrainWeb SBD <span className="ext" aria-hidden="true">↗</span>
+            </a>
             <div style={{
               marginTop: '12px',
               padding: '10px',
@@ -203,23 +193,14 @@ export function Portfolio() {
               dashboards y herramientas de modelos de lenguaje. Una recopilación cuidadosamente 
               organizada de las mejores herramientas y plataformas de IA disponibles.
             </p>
-            <motion.a
+            <a
               href="https://stivenson.github.io/llm-directory.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="rf-button primary"
-              style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                textDecoration: 'none'
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="btn-cmd"
             >
-              <RetroIcon emoji="🔗" size={16} />
-              <span>Visitar Directorio de LLMs</span>
-            </motion.a>
+              Visitar Directorio de LLMs <span className="ext" aria-hidden="true">↗</span>
+            </a>
             <div style={{ 
               marginTop: '12px',
               padding: '10px',
@@ -283,24 +264,14 @@ export function Portfolio() {
               basada en andamiaje cognitivo y navegación por estados internos, implementada como interfaz digital no clínica 
               de apoyo personal, complementaria —no sustitutiva— al tratamiento profesional.
             </p>
-            <motion.a
+            <a
               href="https://stivenson.github.io/toc_support.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="rf-button primary"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                textDecoration: 'none',
-                background: 'linear-gradient(135deg, #7B68EE 0%, #6858DE 100%)',
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="btn-cmd"
             >
-              <RetroIcon emoji="🔗" size={16} />
-              <span>Acceder al Soporte TOC</span>
-            </motion.a>
+              Acceder al Soporte TOC <span className="ext" aria-hidden="true">↗</span>
+            </a>
             <div style={{ 
               marginTop: '12px',
               padding: '10px',
@@ -363,23 +334,14 @@ export function Portfolio() {
               Sistema inteligente de búsqueda de empleo que utiliza agentes LangGraph para buscar trabajos en múltiples fuentes, 
               extraer información de contacto y generar un reporte HTML interactivo.
             </p>
-            <motion.a
+            <a
               href="https://github.com/stivenson/job_search_agents"
               target="_blank"
               rel="noopener noreferrer"
-              className="rf-button primary"
-              style={{ 
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                textDecoration: 'none'
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="btn-cmd"
             >
-              <RetroIcon emoji="🔗" size={16} />
-              <span>Visitar Job Search Agents</span>
-            </motion.a>
+              Visitar Job Search Agents <span className="ext" aria-hidden="true">↗</span>
+            </a>
             <div style={{ 
               marginTop: '12px',
               padding: '10px',

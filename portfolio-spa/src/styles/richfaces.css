@@ -970,3 +970,59 @@ footer a:hover {
 
 .cmd-header-out a { color: var(--electric-cyan); }
 
+/* ── Standard action button — "terminal command" ───────────────── */
+.btn-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 9px 16px;
+  color: var(--electric-cyan);
+  background: rgba(85, 170, 255, 0.06);
+  border: 1px solid var(--glow-border-strong);
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-base), background var(--transition-base),
+    border-color var(--transition-base), box-shadow var(--transition-base),
+    transform var(--transition-base);
+}
+
+/* amber run-glyph — the one signature touch */
+.btn-cmd::before {
+  content: '\25B8'; /* ▸ */
+  color: var(--term-amber);
+  font-weight: 700;
+}
+
+.btn-cmd .ext {
+  font-size: 0.9em;
+  opacity: 0.55;
+  transition: transform var(--transition-base);
+}
+
+.btn-cmd:hover {
+  color: #fff;
+  background: linear-gradient(180deg, rgba(85, 170, 255, 0.22) 0%, rgba(76, 89, 211, 0.22) 100%);
+  border-color: var(--electric-cyan);
+  box-shadow: var(--electric-shadow);
+  transform: translateY(-1px);
+  text-decoration: none;
+}
+.btn-cmd:hover .ext { transform: translate(2px, -2px); opacity: 0.9; }
+.btn-cmd:active { transform: translateY(0); }
+
+.btn-cmd:focus-visible {
+  outline: 2px solid var(--electric-cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-cmd, .btn-cmd .ext { transition: none; }
+  .btn-cmd:hover { transform: none; }
+  .btn-cmd:hover .ext { transform: none; }
+}
+
