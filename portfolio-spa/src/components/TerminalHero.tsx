@@ -25,6 +25,13 @@ export function TerminalHero({ path, shell, lines }: TerminalHeroProps) {
   const [pos, setPos] = useState(() => (reduced ? { line: lines.length, char: 0 } : { line: 0, char: 0 }));
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
+  // Reduced motion: skip typing and show the full transcript at once.
+  // (useReducedMotion resolves asynchronously, so the useState initializer
+  // above can miss it on first render — this effect corrects it.)
+  useEffect(() => {
+    if (reduced) setPos({ line: lines.length, char: 0 });
+  }, [reduced, lines.length]);
+
   useEffect(() => {
     if (reduced) return;
     const { line, char } = pos;
