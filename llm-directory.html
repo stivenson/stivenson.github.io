@@ -1357,6 +1357,10 @@
 
         header {
             isolation: isolate;
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+            align-items: center;
+            gap: clamp(22px, 4vw, 72px);
             margin-bottom: 30px;
             padding: clamp(34px, 5vw, 68px) clamp(24px, 6vw, 86px);
             border: 1px solid rgba(255, 255, 255, 0.16);
@@ -1382,7 +1386,7 @@
         header h1 {
             position: relative;
             z-index: 1;
-            max-width: 880px;
+            max-width: 760px;
             margin-bottom: 16px;
             font-size: clamp(2.25rem, 5vw, 4.75rem);
             line-height: 0.98;
@@ -1397,6 +1401,168 @@
             color: rgba(255, 255, 255, 0.78);
             font-size: clamp(1rem, 1.5vw, 1.2rem);
             line-height: 1.65;
+        }
+
+        .hero-copy {
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero-visual {
+            position: relative;
+            z-index: 2;
+            min-height: 290px;
+            isolation: isolate;
+        }
+
+        .hero-visual::before {
+            content: '';
+            position: absolute;
+            inset: 14% 8%;
+            z-index: -2;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(86, 214, 218, 0.2), transparent 66%);
+            filter: blur(14px);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 7% 4%;
+            z-index: -1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 18px 18px;
+            mask-image: radial-gradient(ellipse, #000 20%, transparent 72%);
+            opacity: 0.32;
+        }
+
+        .hero-orbits {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            animation: hero-orbit-drift 22s linear infinite;
+        }
+
+        .hero-orbit-line {
+            fill: none;
+            stroke: rgba(184, 231, 255, 0.4);
+            stroke-width: 1;
+            stroke-dasharray: 4 8;
+        }
+
+        .hero-orbit-line--accent {
+            stroke: rgba(255, 255, 255, 0.22);
+            stroke-dasharray: 2 10;
+        }
+
+        .hero-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            display: flex;
+            width: 104px;
+            height: 104px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.58);
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 32% 24%, #ffffff 0 4%, transparent 5%),
+                radial-gradient(circle at 35% 30%, #53e3df 0%, #4c59d3 42%, #252a73 78%);
+            box-shadow: 0 0 0 12px rgba(126, 216, 255, 0.08), 0 0 45px rgba(48, 217, 220, 0.42);
+            color: #ffffff;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-orb strong {
+            font-size: 1.65rem;
+            line-height: 1;
+            letter-spacing: -0.08em;
+        }
+
+        .hero-orb small {
+            color: rgba(255, 255, 255, 0.76);
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .hero-node {
+            position: absolute;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 11px;
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 20px rgba(10, 18, 57, 0.16);
+            color: #f6f8ff;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            backdrop-filter: blur(10px);
+            animation: hero-node-float 5s ease-in-out infinite;
+        }
+
+        .hero-node::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--node-color, #53e3df);
+            box-shadow: 0 0 10px var(--node-color, #53e3df);
+        }
+
+        .hero-node--chat {
+            top: 10%;
+            left: 7%;
+            --node-color: #f9b86a;
+            animation-delay: -1.2s;
+        }
+
+        .hero-node--code {
+            top: 4%;
+            right: 10%;
+            --node-color: #7ee7ff;
+            animation-delay: -2.5s;
+        }
+
+        .hero-node--data {
+            right: 2%;
+            bottom: 16%;
+            --node-color: #a9f2bc;
+            animation-delay: -3.6s;
+        }
+
+        .hero-node--agents {
+            bottom: 4%;
+            left: 14%;
+            --node-color: #f4a7ff;
+            animation-delay: -0.4s;
+        }
+
+        .hero-node--creative {
+            top: 45%;
+            left: 0;
+            --node-color: #ff9d8e;
+            animation-delay: -4.2s;
+        }
+
+        @keyframes hero-node-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-7px); }
+        }
+
+        @keyframes hero-orbit-drift {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .header-badge {
@@ -1629,11 +1795,32 @@
             header {
                 margin-bottom: 20px;
                 border-radius: 22px;
+                grid-template-columns: 1fr;
+                gap: 4px;
             }
 
             header::after {
                 inset: 10px;
                 border-radius: 16px;
+            }
+
+            .hero-visual {
+                min-height: 190px;
+                margin-top: -6px;
+            }
+
+            .hero-node {
+                padding: 6px 9px;
+                font-size: 0.61rem;
+            }
+
+            .hero-orb {
+                width: 82px;
+                height: 82px;
+            }
+
+            .hero-orb strong {
+                font-size: 1.35rem;
             }
 
             .badge-filter-container {
@@ -1694,6 +1881,11 @@
             .badge-filter label:hover {
                 transform: none;
             }
+
+            .hero-orbits,
+            .hero-node {
+                animation: none;
+            }
         }
     </style>
 </head>
@@ -1718,9 +1910,25 @@
 
     <div class="container">
         <header>
-            <div class="header-badge">Directorio curado · Inteligencia artificial</div>
-            <h1>Explora las mejores herramientas de IA</h1>
-            <p>Una colección práctica de chats, herramientas de código, datos, creación y automatización para elegir la interfaz adecuada para cada tarea.</p>
+            <div class="hero-copy">
+                <div class="header-badge">Directorio curado · Inteligencia artificial</div>
+                <h1>Explora las mejores herramientas de IA</h1>
+                <p>Una colección práctica de chats, herramientas de código, datos, creación y automatización para elegir la interfaz adecuada para cada tarea.</p>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+                <div class="hero-grid"></div>
+                <svg class="hero-orbits" viewBox="0 0 420 300" role="presentation">
+                    <ellipse class="hero-orbit-line" cx="210" cy="150" rx="178" ry="72" transform="rotate(-18 210 150)"></ellipse>
+                    <ellipse class="hero-orbit-line hero-orbit-line--accent" cx="210" cy="150" rx="142" ry="112" transform="rotate(36 210 150)"></ellipse>
+                    <ellipse class="hero-orbit-line" cx="210" cy="150" rx="108" ry="158" transform="rotate(76 210 150)"></ellipse>
+                </svg>
+                <div class="hero-orb"><strong>✦ IA</strong><small>explorar</small></div>
+                <span class="hero-node hero-node--chat">Chat</span>
+                <span class="hero-node hero-node--code">Código</span>
+                <span class="hero-node hero-node--data">Datos</span>
+                <span class="hero-node hero-node--agents">Agentes</span>
+                <span class="hero-node hero-node--creative">Creatividad</span>
+            </div>
         </header>
 
         <main id="main-content" style="padding-bottom: 120px;">
