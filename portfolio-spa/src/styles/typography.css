@@ -1,5 +1,5 @@
-/* Typography — Electric Terminal v2 */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Typography — Researcher Terminal v3 */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 body {
   font-family: var(--font-primary);
