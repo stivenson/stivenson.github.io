@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { TagList, GlowCard, TerminalHero } from '../components';
+import { AIOrbitScene, TagList, GlowCard, TerminalHero } from '../components';
 import type { TermLine } from '../components';
 import { PageShell, Section } from '../components';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
@@ -39,13 +39,16 @@ export function Dashboard() {
 
   return (
     <PageShell>
-      {/* Hero — self-typing terminal (signature) */}
-      <Section>
-        <TerminalHero
-          path="stivenson@cucuta:~/perfil"
-          shell="zsh"
-          lines={heroLines}
-        />
+      {/* Hero — signature terminal + professional AI orbit */}
+      <Section className="portfolio-hero-section">
+        <div className="portfolio-hero-grid">
+          <TerminalHero
+            path="stivenson@cucuta:~/perfil"
+            shell="zsh"
+            lines={heroLines}
+          />
+          <AIOrbitScene />
+        </div>
       </Section>
 
       {/* Tech stack */}

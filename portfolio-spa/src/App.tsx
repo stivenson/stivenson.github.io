@@ -53,6 +53,12 @@ function App() {
   return (
     <HashRouter>
       <div className="dark-mountain-bg">
+        <div className="cosmic-nebula" aria-hidden="true" />
+        <div className="cosmic-planet cosmic-planet--violet" aria-hidden="true">
+          <span className="cosmic-planet-ring" />
+        </div>
+        <div className="cosmic-planet cosmic-planet--cyan" aria-hidden="true" />
+        <div className="cosmic-moon" aria-hidden="true" />
         <div className="bg-grid" />
         <Suspense fallback={null}>
           <ParticlesBackground />

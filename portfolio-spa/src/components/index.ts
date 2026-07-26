@@ -10,6 +10,7 @@ export { MarkdownRenderer } from './MarkdownRenderer';
 export { InteractiveSVG } from './InteractiveSVG';
 export { TerminalHero } from './TerminalHero';
 export type { TermLine } from './TerminalHero';
+export { AIOrbitScene } from './AIOrbitScene';
 export { CommandLine } from './CommandLine';
 export { Icon } from './Icon';
 export type { IconName } from './Icon';
@@ -27,4 +28,3 @@ export { BentoGrid } from './cards/BentoGrid';
 export { AnimatedPage } from './motion/AnimatedPage';
 export { ScrollReveal } from './motion/ScrollReveal';
 export { ParticlesBackground } from './ParticlesBackground';
-
