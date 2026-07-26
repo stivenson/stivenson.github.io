@@ -143,6 +143,7 @@ body {
   border-radius: var(--border-radius-md);
   padding: var(--space-sm);
   min-width: 200px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .rf-sidebar-header {
@@ -161,8 +162,29 @@ body {
   box-shadow: var(--electric-shadow);
 }
 
+.sidebar-header-mark {
+  color: var(--term-amber);
+  font-size: 12px;
+  text-shadow: 0 0 10px rgba(255, 180, 84, 0.8);
+}
+
+.sidebar-header-status {
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--electric-cyan);
+  box-shadow: 0 0 0 3px rgba(85, 170, 255, 0.14), 0 0 12px rgba(85, 170, 255, 0.85);
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: 3px;
+}
+
 .rf-tree-item {
-  padding: var(--space-sm) var(--space-md);
+  min-width: 0;
+  padding: 9px var(--space-md);
   cursor: pointer;
   border-radius: var(--border-radius-sm);
   display: flex;
@@ -171,18 +193,37 @@ body {
   font-size: var(--font-size-sm);
   color: var(--rf-text);
   text-decoration: none;
-  transition: all 0.15s ease;
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
 
 .rf-tree-item:hover {
-  background: var(--rf-sidebar-item-hover);
+  background: linear-gradient(90deg, rgba(76, 89, 211, 0.2), rgba(85, 170, 255, 0.06));
+  border-color: rgba(85, 170, 255, 0.16);
+  transform: translateX(2px);
 }
 
 .rf-tree-item.active {
-  background: var(--rf-sidebar-item-active);
+  background: linear-gradient(90deg, rgba(76, 89, 211, 0.34), rgba(85, 170, 255, 0.09));
+  border-color: rgba(85, 170, 255, 0.24);
   color: var(--electric-blue);
   font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--electric-blue);
+  box-shadow: inset 3px 0 0 var(--electric-cyan), 0 0 18px rgba(76, 89, 211, 0.13);
+}
+
+.sidebar-nav-link .rf-tree-icon,
+.sidebar-site-icon {
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  border: 1px solid rgba(85, 170, 255, 0.14);
+  border-radius: 6px;
+  background: rgba(3, 3, 21, 0.34);
+}
+
+.sidebar-nav-link.active .rf-tree-icon {
+  border-color: rgba(85, 170, 255, 0.3);
+  background: rgba(85, 170, 255, 0.1);
 }
 
 .rf-tree-icon {
@@ -192,6 +233,89 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 14px;
+}
+
+.sidebar-sites {
+  position: relative;
+  overflow: hidden;
+  margin-top: 24px;
+  padding: 13px 10px 10px;
+  border: 1px solid rgba(85, 170, 255, 0.2);
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(145deg, rgba(19, 20, 66, 0.92), rgba(8, 8, 36, 0.98));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+.sidebar-sites::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--electric-cyan), transparent);
+  opacity: 0.7;
+}
+
+.sidebar-sites-glow {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.sidebar-sites-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 4px 8px;
+}
+
+.sidebar-sites-heading .eyebrow {
+  margin: 0;
+  color: var(--electric-cyan);
+  letter-spacing: 1.2px;
+}
+
+.sidebar-sites-count {
+  color: var(--rf-text-faint);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.sidebar-site-link {
+  position: relative;
+  min-height: 39px;
+  padding: 6px 7px;
+  font-size: 12px;
+  border-color: transparent;
+}
+
+.sidebar-site-link:hover {
+  transform: translateX(2px);
+}
+
+.sidebar-site-label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-site-badge {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 2px 5px;
+  border: 1px solid rgba(255, 180, 84, 0.4);
+  border-radius: 5px;
+  background: rgba(245, 158, 11, 0.78);
+  color: #080619;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  line-height: 1.1;
 }
 
 /* Buttons — terminal nav (header) */
@@ -355,11 +479,16 @@ body {
 }
 
 .rf-layout-sidebar {
-  width: 220px;
+  width: 248px;
   flex-shrink: 0;
   background: var(--rf-sidebar-bg);
   border-right: 1px solid var(--rf-border);
   padding: var(--space-md);
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .rf-layout-main {
@@ -467,6 +596,9 @@ footer a:hover {
     border-right: none;
     border-bottom: 1px solid var(--rf-border);
     padding: var(--space-sm);
+    position: static;
+    height: auto;
+    overflow: visible;
   }
   
   .rf-layout-main {
@@ -592,6 +724,10 @@ footer a:hover {
     font-size: var(--font-size-base);
     padding: var(--space-xs) var(--space-sm);
   }
+
+  .sidebar-sites {
+    margin-top: 16px;
+  }
   
   .rf-tree-item {
     padding: var(--space-xs) var(--space-sm);
@@ -602,7 +738,7 @@ footer a:hover {
 /* Tablet */
 @media (min-width: 769px) and (max-width: 1024px) {
   .rf-layout-sidebar {
-    width: 180px;
+    width: 208px;
   }
   
   .rf-layout-main {

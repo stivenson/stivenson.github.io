@@ -28,6 +28,7 @@ const externalSites: ExternalSite[] = [
   { href: 'https://github.com/stivenson', icon: '🔗', label: 'GitHub Profile' },
   { href: 'https://stivenson.github.io/toc_support.html', icon: '🧠', label: 'Soporte TOC', badge: 'app web' },
   { href: 'https://github.com/stivenson/job_search_agents', icon: '🔍', label: 'Job Search Agents' },
+  { href: 'https://project-mri-production.up.railway.app/', icon: '🔬', label: 'Project MRI', badge: 'app web' },
   { href: 'https://stivenson.github.io/llm-directory.html', icon: '🤖', label: 'Directorio LLMs', badge: 'app web' },
 ];
 
@@ -36,9 +37,12 @@ export function Sidebar() {
     <aside className="rf-layout-sidebar">
       <div className="rf-sidebar">
         <div className="rf-sidebar-header electric">
-          Navegación
+          <span className="sidebar-header-mark" aria-hidden="true">✦</span>
+          <span>Navegación</span>
+          <span className="sidebar-header-status" aria-label="Sitio online" />
         </div>
         <motion.nav
+          className="sidebar-nav"
           style={{ marginTop: '8px' }}
           variants={staggerContainer}
           initial="hidden"
@@ -49,7 +53,7 @@ export function Sidebar() {
               <NavLink
                 to={item.path}
                 end={item.path === '/'}
-                className={({ isActive }) => `rf-tree-item ${isActive ? 'active' : ''}`}
+                className={({ isActive }) => `rf-tree-item sidebar-nav-link ${isActive ? 'active' : ''}`}
                 style={{ position: 'relative' }}
               >
                 {({ isActive }) => (
@@ -79,13 +83,13 @@ export function Sidebar() {
         </motion.nav>
 
         <motion.div
-          className="glow-card"
-          style={{ marginTop: '24px', padding: '12px', position: 'relative', overflow: 'hidden' }}
+          className="sidebar-sites"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.3 }}
         >
           <motion.div
+            className="sidebar-sites-glow"
             style={{
               position: 'absolute',
               inset: 0,
@@ -96,32 +100,26 @@ export function Sidebar() {
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
           <div style={{ position: 'relative', zIndex: 1 }}>
-            <p className="eyebrow" style={{ marginBottom: '8px' }}>Mis Sitios</p>
+            <div className="sidebar-sites-heading">
+              <p className="eyebrow">Mis Sitios</p>
+              <span className="sidebar-sites-count">{externalSites.length} enlaces</span>
+            </div>
             {externalSites.map((site) => (
               <a
                 key={site.href}
                 href={site.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rf-tree-item"
-                style={{ fontSize: '12px' }}
+                className="rf-tree-item sidebar-site-link"
+                title={`Abrir ${site.label}`}
               >
-                <span className="rf-tree-icon">
+                <span className="rf-tree-icon sidebar-site-icon">
                   <RetroIcon emoji={site.icon} size={16} />
                 </span>
-                {site.label}
+                <span className="sidebar-site-label">{site.label}</span>
                 {site.badge && (
                   <motion.span
-                    style={{
-                      fontSize: '8px',
-                      padding: '1px 5px',
-                      borderRadius: '8px',
-                      background: '#f59e0b',
-                      color: '#000',
-                      fontWeight: 700,
-                      marginLeft: '6px',
-                      letterSpacing: '0.3px',
-                    }}
+                    className="sidebar-site-badge"
                     animate={{ opacity: [1, 0.45, 1] }}
                     transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
                   >
