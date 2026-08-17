@@ -1,9 +1,14 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { Components } from 'react-markdown';
 import { InteractiveSVG } from './InteractiveSVG';
+import { LazyIframe } from './LazyIframe';
+import 'katex/dist/katex.min.css';
 
 interface MarkdownRendererProps {
   content: string;
@@ -183,7 +188,14 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         />
       );
     },
-    
+
+    // OVAs incrustadas: iframes de HTML propio servido desde /ovas/.
+    // LazyIframe difiere la descarga hasta que el bloque se acerca al
+    // viewport, para que el articulo se lea sin esperar a las OVAs.
+    iframe: ({ node, src, title, style, ...props }: any) => (
+      <LazyIframe src={src} title={title} style={style} {...props} />
+    ),
+
     // Código inline
     code: ({ node, inline, className, children, ...props }: any) => {
       const match = /language-(\w+)/.exec(className || '');
@@ -358,7 +370,8 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
     <div className="markdown-content" style={{ maxWidth: '100%' }}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeRaw, rehypeKatex]}
         components={components}
       >
         {content}

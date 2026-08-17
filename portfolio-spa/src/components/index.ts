@@ -8,6 +8,7 @@ export { Tag, TagList } from './Tag';
 export { RetroIcon } from './RetroIcon';
 export { MarkdownRenderer } from './MarkdownRenderer';
 export { InteractiveSVG } from './InteractiveSVG';
+export { LazyIframe } from './LazyIframe';
 export { TerminalHero } from './TerminalHero';
 export type { TermLine } from './TerminalHero';
 export { AIOrbitScene } from './AIOrbitScene';

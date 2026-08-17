@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relación entre la Integral de Densidad y el Plano Cartesiano</title>
+    <script src="./vendor/tailwind.min.js"></script>
+    <link href="./vendor/fonts.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'Fira Code', monospace; }
+        .highlight-glow {
+            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.6));
+            transition: all 0.3s ease;
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-3 md:p-8 flex flex-col items-center">
+
+    <div class="max-w-5xl w-full bg-slate-800/80 backdrop-blur border border-slate-700/60 rounded-2xl p-4 md:p-8 shadow-2xl">
+        
+        <header class="text-center mb-6 md:mb-8">
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="inline-block px-3 py-1 bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold uppercase tracking-widest rounded-full">
+                    Visualización Geométrica
+                </span>
+            </div>
+            <h1 class="text-2xl md:text-4xl font-bold text-white mb-2">
+                ¿Qué representa cada parte de la Integral en el Plano Cartesiano?
+            </h1>
+            <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+                Interactúa con la gráfica y ajusta los límites para ver qué representa cada símbolo de la integral sobre el plano cartesiano.
+            </p>
+        </header>
+
+        <div class="bg-slate-900/90 rounded-xl p-4 md:p-6 mb-8 border border-slate-700 flex flex-col items-center justify-center">
+            <div class="text-xs text-slate-400 mb-3 uppercase tracking-wider font-semibold">Ecuación de Probabilidad Continua</div>
+            
+            <div class="flex flex-wrap items-center justify-center gap-1 md:gap-2 text-lg md:text-3xl font-bold code-font py-2">
+                <!-- Probability Label -->
+                <span id="term-prob" class="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 cursor-pointer hover:scale-105 transition-transform" title="Probabilidad total resultante (Área bajo la curva)">
+                    P(<span id="term-a-in-prob" class="text-rose-400">a</span> ≤ X ≤ <span id="term-b-in-prob" class="text-cyan-400">b</span>)
+                </span>
+                
+                <span class="text-slate-400">=</span>
+                
+                <!-- Integral Symbol -->
+                <div id="term-integral" class="relative group cursor-pointer px-1 py-1 rounded bg-purple-500/20 text-purple-400 border border-purple-500/40 hover:scale-105 transition-transform">
+                    <span class="text-2xl md:text-4xl leading-none">∫</span>
+                    <!-- Upper Limit -->
+                    <span id="term-b-limit" class="absolute -top-3 -right-2 text-xs md:text-sm text-cyan-400 font-bold bg-slate-900 px-1 rounded border border-cyan-500/40">b</span>
+                    <!-- Lower Limit -->
+                    <span id="term-a-limit" class="absolute -bottom-3 -right-2 text-xs md:text-sm text-rose-400 font-bold bg-slate-900 px-1 rounded border border-rose-500/40">a</span>
+                </div>
+
+                <span class="w-2"></span>
+
+                <!-- Function p(x) -->
+                <span id="term-px" class="px-2 py-1 rounded bg-violet-500/20 text-violet-300 border border-violet-500/40 cursor-pointer hover:scale-105 transition-transform" title="Función de Densidad p(x) - Altura">
+                    p(x)
+                </span>
+
+                <!-- Differential dx -->
+                <span id="term-dx" class="px-2 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 cursor-pointer hover:scale-105 transition-transform" title="Diferencial dx (base microscópica)">
+                    dx
+                </span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-8">
+            
+            <!-- SVG Plot Area (2 cols on large screen) -->
+            <div class="lg:col-span-2 bg-slate-950 rounded-xl p-4 border border-slate-700/80 relative flex flex-col items-center">
+                <div class="w-full flex justify-between items-center text-xs text-slate-400 mb-2 px-2">
+                    <span class="font-medium text-slate-300">Plano Cartesiano: Curva de Densidad p(x)</span>
+                    <span class="text-emerald-400 font-mono font-semibold" id="prob-value">Área = P = 0.8385 (83.85%)</span>
+                </div>
+
+                <svg id="cartesian-svg" viewBox="0 0 700 400" class="w-full h-auto overflow-visible select-none">
+                    <defs>
+                        <!-- Gradient for Area Under Curve -->
+                        <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#10b981" stop-opacity="0.65" />
+                            <stop offset="100%" stop-color="#059669" stop-opacity="0.15" />
+                        </linearGradient>
+
+                        <!-- Pattern for Differential dx strip -->
+                        <pattern id="stripPattern" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                            <line x1="0" y1="0" x2="0" y2="6" stroke="#f59e0b" stroke-width="2" opacity="0.6"/>
+                        </pattern>
+                    </defs>
+
+                    <!-- Grid Lines -->
+                    <g id="grid-lines" stroke="#334155" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"></g>
+
+                    <!-- Axes -->
+                    <!-- X Axis -->
+                    <line x1="50" y1="340" x2="660" y2="340" stroke="#94a3b8" stroke-width="2.5" />
+                    <polygon points="665,340 655,335 655,345" fill="#94a3b8" />
+                    <text x="670" y="344" fill="#94a3b8" font-size="14" font-weight="bold" font-family="Inter">X</text>
+
+                    <!-- Y Axis -->
+                    <line x1="350" y1="350" x2="350" y2="30" stroke="#94a3b8" stroke-width="2.5" />
+                    <polygon points="350,25 345,35 355,35" fill="#94a3b8" />
+                    <text x="350" y="18" fill="#94a3b8" font-size="14" font-weight="bold" text-anchor="middle" font-family="Inter">Y (Densidad p(x))</text>
+
+                    <!-- Area under curve (Integral result) -->
+                    <path id="integral-area" fill="url(#areaGradient)" stroke="none" class="transition-all duration-150" />
+
+                    <!-- PDF Curve p(x) -->
+                    <path id="pdf-curve" fill="none" stroke="#a855f7" stroke-width="4" stroke-linejoin="round" />
+
+                    <!-- Limit Line A (Lower) -->
+                    <g id="group-limit-a">
+                        <line id="line-a" x1="0" y1="0" x2="0" y2="0" stroke="#f43f5e" stroke-width="3" stroke-dasharray="5 3" />
+                        <circle id="point-a" cx="0" cy="0" r="5" fill="#f43f5e" />
+                        <text id="label-a" x="0" y="365" fill="#f43f5e" font-size="14" font-weight="bold" text-anchor="middle">a = -1.0</text>
+                    </g>
+
+                    <!-- Limit Line B (Upper) -->
+                    <g id="group-limit-b">
+                        <line id="line-b" x1="0" y1="0" x2="0" y2="0" stroke="#06b6d4" stroke-width="3" stroke-dasharray="5 3" />
+                        <circle id="point-b" cx="0" cy="0" r="5" fill="#06b6d4" />
+                        <text id="label-b" x="0" y="365" fill="#06b6d4" font-size="14" font-weight="bold" text-anchor="middle">b = 1.5</text>
+                    </g>
+
+                    <!-- Differential Strip dx -->
+                    <g id="group-dx">
+                        <rect id="rect-dx" x="0" y="0" width="16" height="0" fill="#f59e0b" opacity="0.35" stroke="#f59e0b" stroke-width="1.5" />
+                        <line id="height-px" x1="0" y1="0" x2="0" y2="0" stroke="#8b5cf6" stroke-width="3" />
+                        <text id="label-dx" x="0" y="382" fill="#f59e0b" font-size="12" font-weight="bold" text-anchor="middle">dx</text>
+                        <text id="label-px-height" x="0" y="0" fill="#c084fc" font-size="12" font-weight="bold">p(x)</text>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="flex flex-col justify-between gap-4 bg-slate-900/60 p-5 rounded-xl border border-slate-700">
+                <div>
+                    <h3 class="text-sm font-semibold text-slate-200 uppercase tracking-wide mb-4">Ajuste de Límites [a, b]</h3>
+                    
+                    <!-- Slider Limit A -->
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-bold text-rose-400">Pared Izquierda (x = a):</label>
+                            <span id="val-a-display" class="text-xs font-mono font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">-1.00</span>
+                        </div>
+                        <input type="range" id="slider-a" min="-3.0" max="3.0" step="0.1" value="-1.0" class="w-full accent-rose-500 cursor-pointer">
+                    </div>
+
+                    <!-- Slider Limit B -->
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-xs font-bold text-cyan-400">Pared Derecha (x = b):</label>
+                            <span id="val-b-display" class="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">1.50</span>
+                        </div>
+                        <input type="range" id="slider-b" min="-3.0" max="3.0" step="0.1" value="1.5" class="w-full accent-cyan-500 cursor-pointer">
+                    </div>
+
+                    <!-- Toggle dx strip -->
+                    <div class="pt-3 border-t border-slate-700/80 mb-4">
+                        <label class="flex items-center gap-2 cursor-pointer text-xs font-medium text-amber-400">
+                            <input type="checkbox" id="check-show-dx" checked class="rounded bg-slate-800 border-slate-600 text-amber-500 focus:ring-0">
+                            Mostrar rectángulo infinitesimal (p(x) · dx)
+                        </label>
+                    </div>
+
+                    <!-- Quick Preset Buttons -->
+                    <div class="pt-3 border-t border-slate-700/80">
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase block mb-2">Atajos Rápida Regla Empírica:</span>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button id="btn-preset-1sd" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 px-1 rounded border border-slate-600 transition-colors text-center">
+                                ±1σ (68.3%)
+                            </button>
+                            <button id="btn-preset-2sd" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 px-1 rounded border border-slate-600 transition-colors text-center">
+                                ±2σ (95.4%)
+                            </button>
+                            <button id="btn-preset-3sd" class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 px-1 rounded border border-slate-600 transition-colors text-center">
+                                ±3σ (99.7%)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs text-slate-400 leading-relaxed">
+                    <p class="font-semibold text-slate-300 mb-1">💡 Regla clave:</p>
+                    <p>La probabilidad es el <strong class="text-emerald-400">área verde</strong>. Nunca leas la probabilidad en la altura vertical directamente; siempre calcula la superficie encerrada entre <strong class="text-rose-400">a</strong> y <strong class="text-cyan-400">b</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            
+            <!-- Card 1: Eje X y Límites -->
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-rose-500/30 hover:border-rose-500 transition-colors">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-cyan-500 inline-block"></span>
+                    <h4 class="font-bold text-sm text-white">Límites <span class="text-rose-400">a</span> y <span class="text-cyan-400">b</span></h4>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Son las <strong>"paredes verticales"</strong> sobre el eje horizontal <strong>X</strong>. Delimitan el intervalo específico del cual queremos conocer la probabilidad de ocurrencia.
+                </p>
+            </div>
+
+            <!-- Card 2: Curva p(x) -->
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-violet-500/30 hover:border-violet-500 transition-colors">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full bg-purple-500 inline-block"></span>
+                    <h4 class="font-bold text-sm text-white">Curva <span class="text-violet-400">p(x)</span></h4>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Es el techo del gráfico. Representa la <strong>altura o densidad</strong> en cada punto <i>x</i>. Muestra dónde se concentra mayor probabilidad de la variable.
+                </p>
+            </div>
+
+            <!-- Card 3: Ancho dx -->
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-amber-500/30 hover:border-amber-500 transition-colors">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                    <h4 class="font-bold text-sm text-white">Diferencial <span class="text-amber-400">dx</span></h4>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Es la <strong>base microscópica</strong> de un rectángulo. Al multiplicar la altura <i>p(x)</i> por la base <i>dx</i>, obtienes el área de una franja delgadísima.
+                </p>
+            </div>
+
+            <!-- Card 4: Símbolo Integral -->
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-purple-500/30 hover:border-purple-500 transition-colors">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full bg-purple-400 inline-block"></span>
+                    <h4 class="font-bold text-sm text-white">Símbolo Integral <span class="text-purple-400">∫</span></h4>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Es la <strong>sumatoria continua</strong>. "Pega" o suma infinitos rectángulos diminutos adyacentes (p(x) · dx) desde el punto a hasta el punto b.
+                </p>
+            </div>
+
+            <!-- Card 5: Área Sombreada -->
+            <div class="p-4 rounded-xl bg-slate-900/80 border border-emerald-500/30 hover:border-emerald-500 transition-colors md:col-span-2 lg:col-span-2">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                    <h4 class="font-bold text-sm text-white">Área Sombreada = <span class="text-emerald-400">Probabilidad P(a ≤ X ≤ b)</span></h4>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Es el <strong>resultado numérico final</strong> de la integral. Toda la superficie encerrada debajo de la curva morada, arriba del eje X, entre la pared roja a y la pared azul b equivale a la probabilidad deseada. Si sumaras desde -∞ hasta +∞, el área total sería exactamente <strong>1.0 (100%)</strong>.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        const svg = document.getElementById('cartesian-svg');
+        const sliderA = document.getElementById('slider-a');
+        const sliderB = document.getElementById('slider-b');
+        const valADisplay = document.getElementById('val-a-display');
+        const valBDisplay = document.getElementById('val-b-display');
+        const termAInProb = document.getElementById('term-a-in-prob');
+        const termBInProb = document.getElementById('term-b-in-prob');
+        const termALimit = document.getElementById('term-a-limit');
+        const termBLimit = document.getElementById('term-b-limit');
+        const probValueDisplay = document.getElementById('prob-value');
+        const checkShowDx = document.getElementById('check-show-dx');
+
+
+        let currentProbValue = 0;
+
+        // Coordinate space mapping parameters
+        const xMin = -3.5, xMax = 3.5;
+        const yMin = 0.0, yMax = 0.45;
+        const svgWidth = 700, svgHeight = 400;
+        const paddingLeft = 60, paddingRight = 40;
+        const paddingTop = 40, paddingBottom = 60;
+
+        const plotWidth = svgWidth - paddingLeft - paddingRight;
+        const plotHeight = svgHeight - paddingTop - paddingBottom;
+
+        function toSvgX(x) {
+            return paddingLeft + ((x - xMin) / (xMax - xMin)) * plotWidth;
+        }
+
+        function toSvgY(y) {
+            return svgHeight - paddingBottom - ((y - yMin) / (yMax - yMin)) * plotHeight;
+        }
+
+        function pdf(x) {
+            return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
+        }
+
+        function calculateIntegral(a, b) {
+            if (a > b) return 0;
+            const n = 200;
+            const h = (b - a) / n;
+            let sum = pdf(a) + pdf(b);
+
+            for (let i = 1; i < n; i++) {
+                const x = a + i * h;
+                sum += (i % 2 === 0 ? 2 : 4) * pdf(x);
+            }
+            return (h / 3) * sum;
+        }
+
+        function drawGrid() {
+            const gridGroup = document.getElementById('grid-lines');
+            gridGroup.innerHTML = '';
+
+            for (let x = -3; x <= 3; x += 1) {
+                const sx = toSvgX(x);
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', sx);
+                line.setAttribute('y1', paddingTop);
+                line.setAttribute('x2', sx);
+                line.setAttribute('y2', svgHeight - paddingBottom);
+                gridGroup.appendChild(line);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', sx);
+                text.setAttribute('y', svgHeight - paddingBottom + 20);
+                text.setAttribute('fill', '#64748b');
+                text.setAttribute('font-size', '12');
+                text.setAttribute('text-anchor', 'middle');
+                text.textContent = x.toString();
+                gridGroup.appendChild(text);
+            }
+        }
+
+        function updatePlot() {
+            let a = parseFloat(sliderA.value);
+            let b = parseFloat(sliderB.value);
+
+            if (a > b) {
+                if (document.activeElement === sliderA) {
+                    b = a;
+                    sliderB.value = b;
+                } else {
+                    a = b;
+                    sliderA.value = a;
+                }
+            }
+
+            valADisplay.textContent = a.toFixed(2);
+            valBDisplay.textContent = b.toFixed(2);
+            termAInProb.textContent = a.toFixed(1);
+            termBInProb.textContent = b.toFixed(1);
+            termALimit.textContent = a.toFixed(1);
+            termBLimit.textContent = b.toFixed(1);
+
+
+            document.getElementById('label-a').textContent = `a = ${a.toFixed(1)}`;
+            document.getElementById('label-b').textContent = `b = ${b.toFixed(1)}`;
+
+            // 1. PDF Curve p(x)
+            const numPoints = 300;
+            let pathD = '';
+            for (let i = 0; i <= numPoints; i++) {
+                const x = xMin + (i / numPoints) * (xMax - xMin);
+                const y = pdf(x);
+                const sx = toSvgX(x);
+                const sy = toSvgY(y);
+                pathD += (i === 0 ? `M ${sx} ${sy}` : ` L ${sx} ${sy}`);
+            }
+            document.getElementById('pdf-curve').setAttribute('d', pathD);
+
+            // 2. Shaded Area under Curve [a, b]
+            const areaPoints = 150;
+            let areaD = `M ${toSvgX(a)} ${toSvgY(0)}`;
+            for (let i = 0; i <= areaPoints; i++) {
+                const x = a + (i / areaPoints) * (b - a);
+                const y = pdf(x);
+                areaD += ` L ${toSvgX(x)} ${toSvgY(y)}`;
+            }
+            areaD += ` L ${toSvgX(b)} ${toSvgY(0)} Z`;
+            document.getElementById('integral-area').setAttribute('d', areaD);
+
+            // 3. Limit Line A
+            const svgA = toSvgX(a);
+            const pdfA = pdf(a);
+            const lineA = document.getElementById('line-a');
+            lineA.setAttribute('x1', svgA);
+            lineA.setAttribute('y1', toSvgY(0));
+            lineA.setAttribute('x2', svgA);
+            lineA.setAttribute('y2', toSvgY(pdfA));
+
+            const pointA = document.getElementById('point-a');
+            pointA.setAttribute('cx', svgA);
+            pointA.setAttribute('cy', toSvgY(pdfA));
+
+            const labelA = document.getElementById('label-a');
+            labelA.setAttribute('x', svgA);
+
+            // 4. Limit Line B
+            const svgB = toSvgX(b);
+            const pdfB = pdf(b);
+            const lineB = document.getElementById('line-b');
+            lineB.setAttribute('x1', svgB);
+            lineB.setAttribute('y1', toSvgY(0));
+            lineB.setAttribute('x2', svgB);
+            lineB.setAttribute('y2', toSvgY(pdfB));
+
+            const pointB = document.getElementById('point-b');
+            pointB.setAttribute('cx', svgB);
+            pointB.setAttribute('cy', toSvgY(pdfB));
+
+            const labelB = document.getElementById('label-b');
+            labelB.setAttribute('x', svgB);
+
+            // 5. Differential Strip dx
+            const groupDx = document.getElementById('group-dx');
+            if (checkShowDx.checked && (b - a) >= 0.2) {
+                groupDx.style.display = 'block';
+                const xMid = (a + b) / 2;
+                const pdfMid = pdf(xMid);
+                const dxWidth = 14;
+                const svgMid = toSvgX(xMid);
+
+                const rectDx = document.getElementById('rect-dx');
+                rectDx.setAttribute('x', svgMid - dxWidth / 2);
+                rectDx.setAttribute('y', toSvgY(pdfMid));
+                rectDx.setAttribute('width', dxWidth);
+                rectDx.setAttribute('height', toSvgY(0) - toSvgY(pdfMid));
+
+                const heightPx = document.getElementById('height-px');
+                heightPx.setAttribute('x1', svgMid);
+                heightPx.setAttribute('y1', toSvgY(0));
+                heightPx.setAttribute('x2', svgMid);
+                heightPx.setAttribute('y2', toSvgY(pdfMid));
+
+                const labelDx = document.getElementById('label-dx');
+                labelDx.setAttribute('x', svgMid);
+
+                const labelPxHeight = document.getElementById('label-px-height');
+                labelPxHeight.setAttribute('x', svgMid + 8);
+                labelPxHeight.setAttribute('y', toSvgY(pdfMid / 2));
+            } else {
+                groupDx.style.display = 'none';
+            }
+
+            // 6. Calculate Probability
+            currentProbValue = calculateIntegral(a, b);
+            probValueDisplay.textContent = `Área = P = ${currentProbValue.toFixed(4)} (${(currentProbValue * 100).toFixed(2)}%)`;
+        }
+
+        sliderA.addEventListener('input', updatePlot);
+        sliderB.addEventListener('input', updatePlot);
+        checkShowDx.addEventListener('change', updatePlot);
+
+        // Presets
+        document.getElementById('btn-preset-1sd')?.addEventListener('click', () => {
+            sliderA.value = -1.0;
+            sliderB.value = 1.0;
+            updatePlot();
+        });
+        document.getElementById('btn-preset-2sd')?.addEventListener('click', () => {
+            sliderA.value = -2.0;
+            sliderB.value = 2.0;
+            updatePlot();
+        });
+        document.getElementById('btn-preset-3sd')?.addEventListener('click', () => {
+            sliderA.value = -3.0;
+            sliderB.value = 3.0;
+            updatePlot();
+        });
+
+        // Initial Plot setup
+        drawGrid();
+        updatePlot();
+    </script>
+</body>
+</html>
