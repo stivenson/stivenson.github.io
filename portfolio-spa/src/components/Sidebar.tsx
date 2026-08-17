@@ -1,7 +1,9 @@
-import { NavLink } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { RetroIcon } from './RetroIcon';
 import { staggerContainer, staggerItem } from './motion/variants';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 interface NavItem {
   path: string;
@@ -32,9 +34,94 @@ const externalSites: ExternalSite[] = [
   { href: 'https://stivenson.github.io/llm-directory.html', icon: '🤖', label: 'Directorio LLMs', badge: 'app web' },
 ];
 
+/** Rutas donde el sidebar se repliega en un panel al entrar desde movil. */
+function isReadingRoute(pathname: string): boolean {
+  return pathname === '/articles' || pathname.startsWith('/articles/');
+}
+
 export function Sidebar() {
+  const { pathname } = useLocation();
+  const isNarrow = useMediaQuery('(max-width: 768px)');
+  const [open, setOpen] = useState(false);
+  const asideRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  // En las rutas de lectura el menu estorba: quien llega quiere el texto, no
+  // la navegacion. Solo en pantallas estrechas — en escritorio sobra sitio.
+  const isDrawer = isNarrow && isReadingRoute(pathname);
+
+  // Al navegar (o al ensanchar la ventana) el panel debe cerrarse: si no,
+  // queda abierto sobre la pagina nueva o convertido otra vez en columna fija.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname, isDrawer]);
+
+  useEffect(() => {
+    if (!isDrawer || !open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', onKeyDown);
+
+    // Sin esto la pagina de detras sigue desplazandose bajo el panel.
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    asideRef.current?.focus();
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      // Devolver el foco al boton evita que el lector de pantalla (o el
+      // tabulador) vuelva al principio del documento al cerrar.
+      toggleRef.current?.focus();
+    };
+  }, [isDrawer, open]);
+
   return (
-    <aside className="rf-layout-sidebar">
+    <>
+      {isDrawer && (
+        <div className="sidebar-drawer-bar">
+          <button
+            ref={toggleRef}
+            type="button"
+            className="sidebar-drawer-toggle"
+            aria-expanded={open}
+            aria-controls="sidebar-nav-panel"
+            aria-label={open ? 'Cerrar navegación' : 'Abrir navegación'}
+            onClick={() => setOpen((value) => !value)}
+          >
+            <span className="sidebar-drawer-burger" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+            <span>Navegación</span>
+          </button>
+        </div>
+      )}
+
+      {isDrawer && open && (
+        <div
+          className="sidebar-drawer-backdrop"
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        ref={asideRef}
+        id="sidebar-nav-panel"
+        className={`rf-layout-sidebar${isDrawer ? ' rf-layout-sidebar--drawer' : ''}${
+          isDrawer && open ? ' is-open' : ''
+        }`}
+        // Cerrado y fuera de pantalla, el panel no debe recibir foco ni ser
+        // anunciado. Fuera del modo panel es un sidebar normal y visible.
+        aria-hidden={isDrawer && !open}
+        inert={isDrawer && !open}
+        tabIndex={isDrawer ? -1 : undefined}
+      >
       <div className="rf-sidebar">
         <div className="rf-sidebar-header electric">
           <span className="sidebar-header-mark" aria-hidden="true">✦</span>
@@ -131,6 +218,7 @@ export function Sidebar() {
           </div>
         </motion.div>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

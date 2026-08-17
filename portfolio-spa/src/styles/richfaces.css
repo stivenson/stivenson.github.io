@@ -585,6 +585,103 @@ footer a:hover {
   box-shadow: var(--electric-shadow);
 }
 
+/* -- Sidebar como panel deslizante ---------------------------------
+   Solo se activa en las rutas de lectura y en pantallas estrechas: ahi
+   el sidebar apilado empuja el contenido fuera de la primera pantalla.
+   El componente decide cuando poner la clase; el breakpoint vive aqui. */
+.sidebar-drawer-bar,
+.sidebar-drawer-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar-drawer-bar {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    padding: var(--space-sm);
+    background: color-mix(in srgb, var(--rf-body-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rf-border);
+  }
+
+  .sidebar-drawer-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    color: var(--rf-text);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm, 13px);
+    background: var(--rf-panel-bg);
+    border: 1px solid var(--rf-border);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+  }
+
+  .sidebar-drawer-toggle:hover {
+    border-color: var(--electric-blue);
+  }
+
+  .sidebar-drawer-toggle:focus-visible {
+    outline: 2px solid var(--electric-cyan);
+    outline-offset: 2px;
+  }
+
+  .sidebar-drawer-burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 16px;
+    height: 12px;
+  }
+
+  .sidebar-drawer-burger span {
+    display: block;
+    height: 2px;
+    background: var(--electric-cyan);
+    border-radius: 1px;
+  }
+
+  .sidebar-drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(4, 3, 32, 0.6);
+  }
+
+  /* Doble clase a proposito: el bloque responsive de mas abajo declara
+     .rf-layout-sidebar { position: static } y va despues en el fichero.
+     Con la misma especificidad ganaria el, y el panel no se fijaria. */
+  .rf-layout-sidebar.rf-layout-sidebar--drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    width: min(300px, 85vw);
+    /* dvh y no vh: con vh la barra de direcciones del movil recorta. */
+    height: 100dvh;
+    padding: var(--space-md);
+    border-right: 1px solid var(--rf-border);
+    border-bottom: none;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease;
+  }
+
+  .rf-layout-sidebar.rf-layout-sidebar--drawer.is-open {
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rf-layout-sidebar.rf-layout-sidebar--drawer {
+      transition: none;
+    }
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .rf-layout {
