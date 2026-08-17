@@ -207,11 +207,71 @@
   transition: filter 0.2s ease;
 }
 
-/* Estilos adicionales para contenido Markdown */
+/* ── Contenido Markdown: medida de lectura + breakout ─────────────
+   La prosa se limita a ~68ch (rango recomendado 45-75; WCAG 1.4.8
+   fija 80 como maximo). Lineas mas largas rompen el "return sweep":
+   el ojo pierde la referencia al saltar al inicio de la siguiente.
+
+   Rejilla de 3 columnas — el contenido normal cae en la del medio,
+   y lo que necesita aire (OVAs, codigo, formulas) pide la completa. */
+   Escala de tres tramos en vez de un salto directo texto -> completo:
+   texto (~578px) / ancho (900px, 1.55x) / completo (1152px). Reservar
+   el tramo extremo mantiene la jerarquia legible — si todo desborda al
+   maximo, ese maximo deja de significar nada. */
 .markdown-content {
-  max-width: 100%;
+  --measure: min(68ch, 100%);
+  --wide: 900px;
+
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(0, 1fr)
+    [wide-start] minmax(0, max(0px, (var(--wide) - var(--measure)) / 2))
+    [text-start] var(--measure) [text-end]
+    minmax(0, max(0px, (var(--wide) - var(--measure)) / 2)) [wide-end]
+    minmax(0, 1fr) [full-end];
   word-wrap: break-word;
 }
+
+.markdown-content > * {
+  grid-column: text;
+  min-width: 0;
+}
+
+/* OVAs y bloques de codigo: tramo intermedio. Ambos ganan con ancho
+   (la OVA tiene grafica y controles en paralelo), pero ninguno lo
+   necesita a 1152px.
+   LazyIframe marca su contenedor con .markdown-breakout porque el
+   <iframe> real no existe hasta que el bloque entra en viewport. */
+.markdown-content > .markdown-breakout,
+.markdown-content > iframe,
+.markdown-content > pre {
+  grid-column: wide;
+}
+
+/* Formulas en display: se quedan en la columna de texto. Forman parte
+   del hilo del discurso, no son ilustraciones — alejarlas del parrafo
+   que las introduce rompe la continuidad de lectura. */
+.markdown-content > .katex-display {
+  grid-column: text;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 4px;
+}
+
+/* KaTeX calcula su geometria asumiendo content-box: las alturas que emite
+   (radicales, barras de fraccion, cajas de \boxed) no incluyen borde ni
+   padding. El reset global `* { box-sizing: border-box }` de richfaces.css
+   se los mete dentro y descuadra el trazado.
+   KaTeX si declara border-box en .fbox y .angl; esas reglas suyas tienen
+   mas especificidad que este `.katex *`, asi que siguen mandando. */
+.katex,
+.katex * {
+  box-sizing: content-box;
+}
+
+/* Las tablas se quedan en la columna de texto. El componente `table`
+   del renderer ya las envuelve en un div con overflow-x, asi que una
+   tabla ancha hace scroll dentro sin romper la rejilla. */
 
 .markdown-content img {
   max-width: 100%;

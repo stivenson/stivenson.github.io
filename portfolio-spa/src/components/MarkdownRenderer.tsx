@@ -75,14 +75,17 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     ),
     
     // Párrafos
+    // Cuerpo del articulo: 17px sobre una medida de ~68ch (ver .markdown-content
+    // en retro-modern.css). Alineado a la izquierda: justificar sin motor de
+    // guionado abre rios de espacio en blanco, y a medida estrecha se nota mas.
     p: ({ node, ...props }) => (
-      <p 
+      <p
         style={{
-          fontSize: '15px',
-          lineHeight: 1.8,
+          fontSize: '17px',
+          lineHeight: 1.7,
           color: 'var(--rf-text)',
-          marginBottom: '16px',
-          textAlign: 'justify'
+          marginBottom: '20px',
+          textAlign: 'left'
         }}
         {...props}
       />
@@ -90,34 +93,34 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     
     // Listas
     ul: ({ node, ...props }) => (
-      <ul 
+      <ul
         style={{
           marginLeft: '24px',
-          marginBottom: '16px',
-          fontSize: '15px',
-          lineHeight: 1.8,
+          marginBottom: '20px',
+          fontSize: '17px',
+          lineHeight: 1.7,
           color: 'var(--rf-text)'
         }}
         {...props}
       />
     ),
     ol: ({ node, ...props }) => (
-      <ol 
+      <ol
         style={{
           marginLeft: '24px',
-          marginBottom: '16px',
-          fontSize: '15px',
-          lineHeight: 1.8,
+          marginBottom: '20px',
+          fontSize: '17px',
+          lineHeight: 1.7,
           color: 'var(--rf-text)'
         }}
         {...props}
       />
     ),
     li: ({ node, ...props }) => (
-      <li 
+      <li
         style={{
           marginBottom: '8px',
-          lineHeight: 1.8
+          lineHeight: 1.7
         }}
         {...props}
       />
@@ -239,9 +242,11 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       );
     },
     
-    // Bloques de código (pre) - se maneja en el componente code
+    // Bloques de código (pre) - se maneja en el componente code.
+    // .markdown-breakout los saca de la columna de texto para que no
+    // haya scroll horizontal en el codigo.
     pre: ({ node, children, ...props }: any) => (
-      <div style={{ marginBottom: '20px' }} {...props}>
+      <div className="markdown-breakout" style={{ marginBottom: '20px' }} {...props}>
         {children}
       </div>
     ),

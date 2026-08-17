@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { RichPanel, RetroIcon, MarkdownRenderer } from '../components';
+import { RichPanel, RetroIcon, MarkdownRenderer, PageShell } from '../components';
 import { getArticleBySlug, getAllArticles } from '../data/articles';
 
 export function ArticleDetail() {
@@ -58,7 +58,7 @@ export function ArticleDetail() {
   const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;
 
   return (
-    <div className="animate-fade-in">
+    <PageShell className="animate-fade-in">
       {/* Botón volver */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -277,6 +277,6 @@ export function ArticleDetail() {
           )}
         </motion.div>
       )}
-    </div>
+    </PageShell>
   );
 }

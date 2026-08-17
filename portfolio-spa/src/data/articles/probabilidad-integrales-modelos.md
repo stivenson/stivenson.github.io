@@ -34,7 +34,7 @@ $$
 
 Pasa el cursor por cada símbolo —el signo integral, $p(x)$, $dx$, los límites $a$ y $b$— y observa qué parte de la gráfica se ilumina. Mueve los límites para ver cómo cambia el área.
 
-<iframe src="/ovas/plano-cartesiano-integral.html" title="OVA: anatomía de la integral en el plano cartesiano" loading="lazy" style="width:100%;min-height:820px;border:0;"></iframe>
+<iframe src="/ovas/plano-cartesiano-integral.html" title="OVA: anatomía de la integral en el plano cartesiano" loading="lazy" style="width:100%;border:0;"></iframe>
 
 Cada símbolo tiene un significado geométrico concreto: $p(x)$ es la altura, $dx$ es una base microscópica, el signo $\int$ suma infinitos rectángulos de área $p(x)\,dx$, y los límites $a$ y $b$ marcan dónde empieza y termina esa suma. El resto del artículo desarrolla estas piezas una por una.
 
@@ -80,7 +80,7 @@ $$
 
 Explora la media, la desviación estándar y los límites del intervalo. La zona sombreada es la probabilidad $P(a\leq X\leq b)$.
 
-<iframe src="/ovas/normal-probability.html" title="OVA: distribución normal y probabilidad como área" loading="lazy" style="width:100%;min-height:520px;border:0;"></iframe>
+<iframe src="/ovas/normal-probability.html" title="OVA: distribución normal y probabilidad como área" loading="lazy" style="width:100%;border:0;"></iframe>
 
 La densidad normal tiene la forma:
 
@@ -170,7 +170,7 @@ $$
 
 Modifica el coeficiente, el exponente y el límite superior. Observa simultáneamente la curva, el área sombreada, la antiderivada y el valor acumulado.
 
-<iframe src="/ovas/integral-area.html" title="OVA: integral como área y antiderivada" loading="lazy" style="width:100%;min-height:520px;border:0;"></iframe>
+<iframe src="/ovas/integral-area.html" title="OVA: integral como área y antiderivada" loading="lazy" style="width:100%;border:0;"></iframe>
 
 Para una función potencia:
 
@@ -308,7 +308,7 @@ Las constantes $15$ y $45/4$ corresponden a dos formas equivalentes de escribir 
 
 Mueve $C$ y observa cómo cambia la curva. El punto $(1,8)$ queda fijo como referencia; la solución que pasa exactamente por él usa $C=15$ en la forma normalizada.
 
-<iframe src="/ovas/ode-separable.html" title="OVA: solución de una ecuación diferencial separable" loading="lazy" style="width:100%;min-height:520px;border:0;"></iframe>
+<iframe src="/ovas/ode-separable.html" title="OVA: solución de una ecuación diferencial separable" loading="lazy" style="width:100%;border:0;"></iframe>
 
 La derivada de la solución normalizada verifica la ecuación:
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 interface LazyIframeProps {
@@ -7,21 +7,30 @@ interface LazyIframeProps {
   style?: CSSProperties;
 }
 
+/** Altura reservada antes de medir, para no desplazar el texto al cargar. */
+const PLACEHOLDER_HEIGHT = 520;
+
 /**
- * Iframe que solo pide su documento cuando esta cerca del viewport.
+ * Iframe que (a) solo pide su documento cuando esta cerca del viewport y
+ * (b) se ajusta a la altura real de su contenido.
  *
  * El atributo nativo loading="lazy" deja la decision al heuristico del
  * navegador, que en Chrome precarga con un margen muy amplio. Aqui el `src`
  * no se asigna hasta que IntersectionObserver confirma la cercania, asi que
  * las OVAs se descargan a medida que el lector baja por el articulo.
  *
- * El contenedor reserva la altura final desde el primer render para que la
- * aparicion del iframe no desplace el texto.
+ * La altura se mide del documento incrustado en vez de fijarse a ojo: las
+ * OVAs se sirven desde el mismo origen, asi que podemos leer su alto y
+ * seguirlo con un ResizeObserver. Resultado: nunca aparece scroll vertical
+ * dentro del iframe, y tampoco sobra hueco por debajo. Si el documento
+ * fuera de otro origen, el acceso lanza y se conserva la altura reservada.
  */
 export function LazyIframe({ src, title, style }: LazyIframeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLIFrameElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [height, setHeight] = useState<number | null>(null);
 
   useEffect(() => {
     const node = containerRef.current;
@@ -50,38 +59,95 @@ export function LazyIframe({ src, title, style }: LazyIframeProps) {
     return () => observer.disconnect();
   }, []);
 
-  const frameStyle: CSSProperties = {
-    width: '100%',
-    height: '100%',
-    minHeight: 'inherit',
-    border: 0,
-    display: 'block',
-    opacity: loaded ? 1 : 0,
-    transition: 'opacity 400ms ease',
-  };
+  const measure = useCallback(() => {
+    const doc = frameRef.current?.contentDocument;
+    const body = doc?.body;
+    const win = frameRef.current?.contentWindow;
+    if (!body || !win) return;
+
+    // Se mide el <body>, nunca documentElement.scrollHeight: ese devuelve
+    // max(viewport, contenido), y como el viewport del iframe es la altura
+    // que acabamos de fijar, la medida se realimenta y crece sin parar.
+    // La altura del body si depende solo de su contenido.
+    const style = win.getComputedStyle(body);
+    const next = Math.ceil(
+      body.getBoundingClientRect().height +
+        parseFloat(style.marginTop || '0') +
+        parseFloat(style.marginBottom || '0')
+    );
+    if (next <= 0) return;
+
+    // Ademas se ignoran las variaciones de 1px: bastan para encadenar otra
+    // notificacion del ResizeObserver y dejar la altura oscilando.
+    setHeight((prev) => (prev !== null && Math.abs(prev - next) <= 1 ? prev : next));
+  }, []);
+
+  // El contenido se reacomoda al mover los sliders o al cambiar el ancho, asi
+  // que la altura se sigue en vivo en lugar de medirse una sola vez. Va en un
+  // efecto y no en onLoad porque React ignora lo que devuelve un manejador de
+  // eventos, y el observer quedaria sin desconectar al desmontar.
+  useEffect(() => {
+    if (!loaded) return;
+    measure();
+
+    const doc = frameRef.current?.contentDocument;
+    const win = frameRef.current?.contentWindow;
+    if (!doc?.body) return;
+
+    win?.addEventListener('resize', measure);
+
+    if (typeof ResizeObserver === 'undefined') {
+      return () => win?.removeEventListener('resize', measure);
+    }
+
+    // Solo el body: observar documentElement lo despertaria en cada cambio
+    // de altura del propio iframe, realimentando el ciclo sin aportar nada.
+    const observer = new ResizeObserver(measure);
+    observer.observe(doc.body);
+
+    return () => {
+      observer.disconnect();
+      win?.removeEventListener('resize', measure);
+    };
+  }, [loaded, measure]);
 
   return (
     <div
       ref={containerRef}
+      className="markdown-breakout"
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '520px',
         margin: '24px 0',
         border: '1px solid rgba(85, 170, 255, 0.15)',
         borderRadius: '8px',
         overflow: 'hidden',
         background: 'var(--rf-panel-bg, #0a0a2e)',
         ...style,
+        // Tras medir, la altura real manda sobre cualquier min-height que
+        // venga del Markdown: sin hueco sobrante y sin scroll interno.
+        height: height ?? undefined,
+        minHeight: height ?? style?.minHeight ?? PLACEHOLDER_HEIGHT,
       }}
     >
       {shouldLoad && (
         <iframe
+          ref={frameRef}
           src={src}
           title={title}
           loading="lazy"
           onLoad={() => setLoaded(true)}
-          style={frameStyle}
+          // Solo se desactiva el scroll una vez conocemos la altura real.
+          // Hacerlo antes recortaria el contenido si la medicion fallara.
+          scrolling={height ? 'no' : undefined}
+          style={{
+            width: '100%',
+            height: height ? `${height}px` : '100%',
+            border: 0,
+            display: 'block',
+            opacity: loaded ? 1 : 0,
+            transition: 'opacity 400ms ease',
+          }}
         />
       )}
 
