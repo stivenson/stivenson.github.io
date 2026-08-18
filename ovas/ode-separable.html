@@ -827,8 +827,10 @@ svg {
       --foreground: #e8eef7;
       --muted-foreground: #a8b5c7;
       --border: #334155;
-      --viz-series-1: #38bdf8;
-      --viz-series-2: #a78bfa;
+      /* Paleta compartida con la OVA del plano cartesiano: el color
+         identifica el concepto, no el orden de la serie. */
+      --viz-series-1: #a855f7; /* curva / funcion */
+      --viz-series-2: #10b981; /* area acumulada */
       color: var(--foreground);
       background: var(--background);
       border: 1px solid var(--border);
