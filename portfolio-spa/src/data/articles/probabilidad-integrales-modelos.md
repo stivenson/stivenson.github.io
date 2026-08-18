@@ -37,7 +37,7 @@ $$
 
 Pasa el cursor por cada símbolo —el signo integral, $\textcolor{#a855f7}{f(x)}$, $\textcolor{#f59e0b}{dx}$, los límites $\textcolor{#f43f5e}{a}$ y $\textcolor{#06b6d4}{b}$— y observa qué parte de la gráfica se ilumina. Mueve los límites para ver cómo cambia el área.
 
-<iframe src="/ovas/plano-cartesiano-integral.html" title="OVA: anatomía de la integral en el plano cartesiano" loading="lazy" style="width:100%;border:0;"></iframe>
+<iframe src="/ovas/plano-cartesiano-integral.html" title="OVA: anatomía de la integral en el plano cartesiano" loading="lazy"></iframe>
 
 Cada símbolo tiene un significado geométrico concreto, y **cada uno conserva su color en todas las visualizaciones del artículo**:
 
@@ -153,7 +153,7 @@ Por eso la constante importa al describir una familia de funciones, pero no al c
 
 Modifica el coeficiente, el exponente y el límite superior. Observa simultáneamente la curva, el área sombreada, la antiderivada y el valor acumulado.
 
-<iframe src="/ovas/integral-area.html" title="OVA: integral como área y antiderivada" loading="lazy" style="width:100%;border:0;"></iframe>
+<iframe src="/ovas/integral-area.html" title="OVA: integral como área y antiderivada" loading="lazy"></iframe>
 
 Para una función potencia:
 
@@ -182,7 +182,7 @@ Con esto ya tenemos las dos piezas: sabemos qué significa acumular área y sabe
 
 Explora la media, la desviación estándar y los límites del intervalo. La zona sombreada es la probabilidad $P(a\leq X\leq b)$.
 
-<iframe src="/ovas/normal-probability.html" title="OVA: distribución normal y probabilidad como área" loading="lazy" style="width:100%;border:0;"></iframe>
+<iframe src="/ovas/normal-probability.html" title="OVA: distribución normal y probabilidad como área" loading="lazy"></iframe>
 
 La curva violeta que ves arriba es esta función —la densidad normal:
 
@@ -320,7 +320,7 @@ Las constantes $15$ y $45/4$ corresponden a dos formas equivalentes de escribir 
 
 Mueve $C$ y observa cómo cambia la curva. El punto $(1,8)$ queda fijo como referencia; la solución que pasa exactamente por él usa $C=15$ en la forma normalizada.
 
-<iframe src="/ovas/ode-separable.html" title="OVA: solución de una ecuación diferencial separable" loading="lazy" style="width:100%;border:0;"></iframe>
+<iframe src="/ovas/ode-separable.html" title="OVA: solución de una ecuación diferencial separable" loading="lazy"></iframe>
 
 La derivada de la solución normalizada verifica la ecuación:
 

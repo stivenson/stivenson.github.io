@@ -258,6 +258,36 @@
   padding-block: 4px;
 }
 
+/* Marco de las OVAs. Vive aqui y no en el componente para que la regla de
+   pantalla estrecha pueda anularlo — un estilo inline ganaria siempre. */
+.lazy-frame {
+  position: relative;
+  width: 100%;
+  margin: 24px 0;
+  overflow: hidden;
+  background: var(--rf-panel-bg, #0a0a2e);
+  border-radius: 8px;
+  /* Sin borde a proposito: el componente declaraba uno, pero el
+     `border:0` del atributo style en el Markdown lo venia anulando.
+     Se conserva el aspecto que el articulo ya tiene publicado. */
+  border: 0;
+}
+
+/* En movil el ancho es el recurso escaso: entre el padding de .rf-layout-main
+   y el de .page-shell se van 32px por lado, y dentro la OVA aun aplica el
+   suyo. Las OVAs salen a sangre para recuperar ese espacio; sin bordes
+   laterales ni radio, porque a sangre no tienen contra que apoyarse. */
+@media (max-width: 768px) {
+  .markdown-content > .lazy-frame {
+    /* Escapa el padding de .page-shell y el de .rf-layout-main. Con
+       `width: auto` el ancho lo fijan los margenes, no un 100% que
+       sumado a margenes negativos desbordaria por la derecha. */
+    margin-inline: calc(-1 * (var(--shell-pad-x, 0px) + var(--space-sm)));
+    width: auto;
+    border-radius: 0;
+  }
+}
+
 /* KaTeX calcula su geometria asumiendo content-box: las alturas que emite
    (radicales, barras de fraccion, cajas de \boxed) no incluyen borde ni
    padding. El reset global `* { box-sizing: border-box }` de richfaces.css

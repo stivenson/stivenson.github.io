@@ -1168,9 +1168,19 @@ footer a:hover {
 
 /* ── Section rhythm ─────────────────────────────────────────────── */
 .page-shell {
+  /* Expuesto como variable para que el contenido a sangre sepa cuanto
+     margen negativo necesita para escapar de este padding. */
+  --shell-pad-x: var(--space-xl);
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--space-2xl) var(--space-xl);
+  padding: var(--space-2xl) var(--shell-pad-x);
+}
+
+@media (max-width: 768px) {
+  .page-shell {
+    --shell-pad-x: var(--space-md);
+    padding: var(--space-lg) var(--shell-pad-x);
+  }
 }
 
 .page-section {

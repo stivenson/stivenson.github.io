@@ -114,15 +114,11 @@ export function LazyIframe({ src, title, style }: LazyIframeProps) {
   return (
     <div
       ref={containerRef}
-      className="markdown-breakout"
+      className="markdown-breakout lazy-frame"
+      // Marco, margenes y radio viven en CSS (.lazy-frame) para que la regla
+      // de pantalla estrecha pueda sacar la OVA a sangre: un estilo inline
+      // ganaria siempre a la media query. Aqui solo lo que es dinamico.
       style={{
-        position: 'relative',
-        width: '100%',
-        margin: '24px 0',
-        border: '1px solid rgba(85, 170, 255, 0.15)',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        background: 'var(--rf-panel-bg, #0a0a2e)',
         ...style,
         // Tras medir, la altura real manda sobre cualquier min-height que
         // venga del Markdown: sin hueco sobrante y sin scroll interno.
