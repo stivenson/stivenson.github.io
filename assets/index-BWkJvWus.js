@@ -1,4 +1,4 @@
-const b=`---
+const g=`---
 title: "Agent Skills vs. MCP: ¿Competencia o Complemento? Una Mirada Profunda a la Arquitectura de Agentes IA"
 date: "2026-01-27"
 slug: "agent-skills-vs-mcp"
@@ -141,7 +141,7 @@ Aquellos que entiendan y dominen esta arquitectura combinada estarán mejor posi
 *   **Sitio Oficial de MCP**: [modelcontextprotocol.io](https://modelcontextprotocol.io)
 *   **Artículo "Agent Skills - a thin alternative to the Model Context Protocol?"**: [tty4.dev](https://tty4.dev/development/2025-12-13-skills-or-mcp)
 *   **Artículo sobre seguridad en MCP**: [Model Context Protocol has prompt injection security problems](https://simonw.substack.com/p/model-context-protocol-has-prompt)
-`,$=`---
+`,f=`---
 title: "Probabilidad e integrales: del área bajo una curva a la incertidumbre"
 date: "2026-08-17"
 slug: "probabilidad-integrales-modelos"
@@ -165,21 +165,37 @@ La respuesta conecta tres ideas:
 2. una **función de distribución o de densidad**;
 3. una **integral**, que permite acumular probabilidad sobre un intervalo.
 
-El capítulo 3 de [*Deep Learning*](https://www.deeplearningbook.org/contents/prob.html) presenta la probabilidad como un marco para representar incertidumbre y distingue entre variables aleatorias, distribuciones discretas y densidades continuas. Aquí usaremos esa base y la conectaremos con los ejercicios de cálculo que hemos venido resolviendo.
+El capítulo 3 de [*Deep Learning*](https://www.deeplearningbook.org/contents/prob.html) presenta la probabilidad como un marco para representar incertidumbre y distingue entre variables aleatorias, distribuciones discretas y densidades continuas. Partiremos de esa base y la conectaremos con las herramientas de cálculo que hacen falta para usarla: antiderivadas, integrales definidas y ecuaciones diferenciales separables.
 
-## **🗺️ OVA 0: anatomía de la notación**
+## **🗺️ OVA 1: anatomía de la notación**
 
 Antes de entrar en las definiciones, conviene ver el mapa completo. Toda la ruta de este artículo cabe en una sola expresión:
 
 $$
-P(a\\leq X\\leq b)=\\int_a^b p(x)\\,dx
+\\textcolor{#10b981}{P(\\textcolor{#f43f5e}{a}\\leq X\\leq \\textcolor{#06b6d4}{b})}
+=
+\\int_{\\textcolor{#f43f5e}{a}}^{\\textcolor{#06b6d4}{b}}
+\\textcolor{#a855f7}{f(x)}\\,\\textcolor{#f59e0b}{dx}
 $$
 
-Pasa el cursor por cada símbolo —el signo integral, $p(x)$, $dx$, los límites $a$ y $b$— y observa qué parte de la gráfica se ilumina. Mueve los límites para ver cómo cambia el área.
+Pasa el cursor por cada símbolo —el signo integral, $\\textcolor{#a855f7}{f(x)}$, $\\textcolor{#f59e0b}{dx}$, los límites $\\textcolor{#f43f5e}{a}$ y $\\textcolor{#06b6d4}{b}$— y observa qué parte de la gráfica se ilumina. Mueve los límites para ver cómo cambia el área.
 
 <iframe src="/ovas/plano-cartesiano-integral.html" title="OVA: anatomía de la integral en el plano cartesiano" loading="lazy" style="width:100%;border:0;"></iframe>
 
-Cada símbolo tiene un significado geométrico concreto: $p(x)$ es la altura, $dx$ es una base microscópica, el signo $\\int$ suma infinitos rectángulos de área $p(x)\\,dx$, y los límites $a$ y $b$ marcan dónde empieza y termina esa suma. El resto del artículo desarrolla estas piezas una por una.
+Cada símbolo tiene un significado geométrico concreto, y **cada uno conserva su color en todas las visualizaciones del artículo**:
+
+| Símbolo | Color | Qué es en la gráfica |
+|---|---|---|
+| $\\textcolor{#a855f7}{f(x)}$ | violeta | la **curva**: la altura en cada punto |
+| $\\textcolor{#f59e0b}{dx}$ | ámbar | la **base microscópica** de cada rectángulo |
+| $\\int$ | — | la **suma** de infinitos rectángulos $\\textcolor{#a855f7}{f(x)}\\,\\textcolor{#f59e0b}{dx}$ |
+| $\\textcolor{#f43f5e}{a}$ | rosa | la **pared izquierda**: dónde empieza |
+| $\\textcolor{#06b6d4}{b}$ | cian | la **pared derecha**: dónde termina |
+| $\\textcolor{#10b981}{P}$ | esmeralda | el **área sombreada**: el resultado |
+
+Altura por base, sumado desde una pared hasta la otra, da el área. Y ese área **es** la probabilidad.
+
+> **Sobre la notación:** la visualización escribe la densidad como $\\textcolor{#a855f7}{p(x)}$ y en el resto del artículo la llamaremos $\\textcolor{#a855f7}{f(x)}$. Son el mismo objeto —fíjate en que comparten color—; la letra cambia según el texto que consultes.
 
 ## **🎲 Variable aleatoria no significa “variable misteriosa”**
 
@@ -201,34 +217,120 @@ Ejemplo: el número de caras al lanzar tres monedas.
 
 ### **Variable continua**
 
-Si $X$ puede tomar cualquier valor dentro de un intervalo, usamos una función de densidad:
+Si $X$ puede tomar cualquier valor dentro de un intervalo, usamos una **función de densidad**, que escribiremos $f(x)$ —o $f_X(x)$ cuando haga falta recordar de qué variable estamos hablando.
+
+Aquí aparece la diferencia fundamental: **$\\textcolor{#a855f7}{f(x)}$ no es la probabilidad de que $X=x$**. La curva violeta es una *altura*, no una probabilidad. Para una variable continua, la probabilidad de un único punto es normalmente cero. La probabilidad —lo verde— se obtiene acumulando área:
 
 $$
-f_X(x)
+\\textcolor{#10b981}{P(\\textcolor{#f43f5e}{a}\\leq X\\leq \\textcolor{#06b6d4}{b})}
+=
+\\int_{\\textcolor{#f43f5e}{a}}^{\\textcolor{#06b6d4}{b}}
+\\textcolor{#a855f7}{f(x)}\\,\\textcolor{#f59e0b}{dx}
 $$
 
-Aquí aparece una diferencia fundamental:
+### **Qué hace que una función sea una densidad**
+
+No cualquier función sirve. Una densidad debe cumplir tres condiciones:
+
+1. $\\textcolor{#a855f7}{f(x)}\\geq 0$;
+2. su dominio contiene los valores posibles de $X$;
+3. el área total es uno:
 
 $$
-f_X(x)
+\\int_{-\\infty}^{\\infty}\\textcolor{#a855f7}{f(x)}\\,\\textcolor{#f59e0b}{dx}=\\textcolor{#10b981}{1}
 $$
 
-no es directamente la probabilidad de que $X=x$. Para una variable continua, la probabilidad de un único punto es normalmente cero. La probabilidad se obtiene acumulando área:
+La tercera condición es la **normalización**. Si el área total fuera mayor que uno, estaríamos asignando más del cien por ciento de probabilidad.
+
+Esto también explica por qué una densidad puede tener valores mayores que uno: **la altura violeta y el área verde son cosas distintas**. $\\textcolor{#a855f7}{f(x)}$ puede valer 3 en un punto sin que nada se rompa; lo que nunca puede pasar de uno es $\\textcolor{#10b981}{\\text{el área}}$ acumulada de un evento.
+
+## **🧩 Antiderivada e integral indefinida**
+
+Toda la sección anterior descansa sobre una integral, así que conviene detenerse en cómo funciona antes de aplicarla a un caso concreto.
+
+> En esta sección y la siguiente, $f(x)$ es **una función cualquiera**, no necesariamente una densidad: las reglas del cálculo valen para todas por igual.
+
+Para entender por qué la integral acumula área conviene recordar su relación con la derivada. Una función $F(x)$ es una antiderivada de $f(x)$ si:
 
 $$
-P(a\\leq X\\leq b)=\\int_a^b f_X(x)\\,dx
+F'(x)=f(x)
 $$
 
-## **📐 OVA 1: la densidad normal y el área que sí representa probabilidad**
+La integral indefinida representa la familia completa de antiderivadas:
+
+$$
+\\int f(x)\\,dx=F(x)+C
+$$
+
+Por ejemplo:
+
+$$
+\\int 2x\\,dx=x^2+C
+$$
+
+porque:
+
+$$
+\\frac{d}{dx}(x^2+C)=2x
+$$
+
+La constante $C$ aparece porque todas las funciones $x^2+C$ tienen la misma derivada.
+
+En cambio, una integral definida produce un número: exactamente el área verde entre las dos paredes.
+
+$$
+\\int_{\\textcolor{#f43f5e}{a}}^{\\textcolor{#06b6d4}{b}} f(x)\\,\\textcolor{#f59e0b}{dx}
+=
+\\textcolor{#10b981}{F(\\textcolor{#06b6d4}{b})-F(\\textcolor{#f43f5e}{a})}
+$$
+
+Aquí la constante desaparece:
+
+$$
+[F(b)+C]-[F(a)+C]=F(b)-F(a)
+$$
+
+Por eso la constante importa al describir una familia de funciones, pero no al calcular un área concreta.
+
+## **📊 OVA 2: la integral como acumulación**
+
+Modifica el coeficiente, el exponente y el límite superior. Observa simultáneamente la curva, el área sombreada, la antiderivada y el valor acumulado.
+
+<iframe src="/ovas/integral-area.html" title="OVA: integral como área y antiderivada" loading="lazy" style="width:100%;border:0;"></iframe>
+
+Para una función potencia:
+
+$$
+f(x)=ax^n
+$$
+
+la regla es:
+
+$$
+\\int ax^n\\,dx
+=
+a\\frac{x^{n+1}}{n+1}+C
+\\qquad n\\neq -1
+$$
+
+El caso $n=-1$ es especial, porque la regla anterior dividiría entre cero:
+
+$$
+\\int\\frac{1}{x}\\,dx=\\ln|x|+C
+$$
+
+Con esto ya tenemos las dos piezas: sabemos qué significa acumular área y sabemos calcularla. Volvamos a la probabilidad.
+
+## **📐 OVA 3: la densidad normal y el área que sí representa probabilidad**
 
 Explora la media, la desviación estándar y los límites del intervalo. La zona sombreada es la probabilidad $P(a\\leq X\\leq b)$.
 
 <iframe src="/ovas/normal-probability.html" title="OVA: distribución normal y probabilidad como área" loading="lazy" style="width:100%;border:0;"></iframe>
 
-La densidad normal tiene la forma:
+La curva violeta que ves arriba es esta función —la densidad normal:
 
 $$
-f(x)=\\frac{1}{\\sigma\\sqrt{2\\pi}}
+\\textcolor{#a855f7}{f(x)}=\\frac{1}{\\sigma\\sqrt{2\\pi}}
 \\exp\\left(-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2\\right)
 $$
 
@@ -258,107 +360,14 @@ $$
 Por eso, para una variable normal:
 
 $$
-P(a\\leq X\\leq b)
+\\textcolor{#10b981}{P(\\textcolor{#f43f5e}{a}\\leq X\\leq \\textcolor{#06b6d4}{b})}
 =
-\\Phi\\left(\\frac{b-\\mu}{\\sigma}\\right)
+\\Phi\\left(\\frac{\\textcolor{#06b6d4}{b}-\\mu}{\\sigma}\\right)
 -
-\\Phi\\left(\\frac{a-\\mu}{\\sigma}\\right)
+\\Phi\\left(\\frac{\\textcolor{#f43f5e}{a}-\\mu}{\\sigma}\\right)
 $$
 
-La calculadora o Python pueden devolver el valor numérico, pero el significado sigue siendo geométrico: **una diferencia de áreas bajo la curva**.
-
-## **🧩 Antiderivada e integral indefinida**
-
-Para entender por qué la integral acumula área conviene recordar su relación con la derivada.
-
-Una función $F(x)$ es una antiderivada de $f(x)$ si:
-
-$$
-F'(x)=f(x)
-$$
-
-La integral indefinida representa la familia completa de antiderivadas:
-
-$$
-\\int f(x)\\,dx=F(x)+C
-$$
-
-Por ejemplo:
-
-$$
-\\int 2x\\,dx=x^2+C
-$$
-
-porque:
-
-$$
-\\frac{d}{dx}(x^2+C)=2x
-$$
-
-La constante $C$ aparece porque todas las funciones $x^2+C$ tienen la misma derivada.
-
-En cambio, una integral definida produce un número:
-
-$$
-\\int_a^b f(x)\\,dx=F(b)-F(a)
-$$
-
-Aquí la constante desaparece:
-
-$$
-[F(b)+C]-[F(a)+C]=F(b)-F(a)
-$$
-
-## **📊 OVA 2: la integral como acumulación**
-
-Modifica el coeficiente, el exponente y el límite superior. Observa simultáneamente la curva, el área sombreada, la antiderivada y el valor acumulado.
-
-<iframe src="/ovas/integral-area.html" title="OVA: integral como área y antiderivada" loading="lazy" style="width:100%;border:0;"></iframe>
-
-Para una función potencia:
-
-$$
-f(x)=ax^n
-$$
-
-la regla es:
-
-$$
-\\int ax^n\\,dx
-=
-a\\frac{x^{n+1}}{n+1}+C
-\\qquad n\\neq -1
-$$
-
-El caso $n=-1$ es especial:
-
-$$
-\\int\\frac{1}{x}\\,dx=\\ln|x|+C
-$$
-
-La lección práctica es sencilla: cuando la variable aparece en el denominador, muchas veces podemos reescribirla como potencia negativa:
-
-$$
-\\frac{3}{x^2}=3x^{-2}
-$$
-
-Pero si hay una suma en el denominador, no existe una regla general que permita “separar” el cociente. Primero hay que simplificar, hacer una sustitución, dividir polinomios o utilizar otra técnica.
-
-## **🔔 De la densidad a la probabilidad**
-
-Una densidad debe cumplir tres condiciones:
-
-1. $f(x)\\geq 0$;
-2. su dominio contiene los valores posibles de $X$;
-3. el área total es uno:
-
-$$
-\\int_{-\\infty}^{\\infty}f(x)\\,dx=1
-$$
-
-La tercera condición es la normalización. Si el área total fuera mayor que uno, estaríamos asignando más del cien por ciento de probabilidad.
-
-Esto también explica por qué una densidad puede tener valores mayores que uno. La altura de $f(x)$ no tiene que ser una probabilidad; lo que debe quedar entre cero y uno es el área acumulada de un evento.
+La calculadora o Python pueden devolver el valor numérico, pero el significado sigue siendo geométrico: **una diferencia de áreas bajo la curva**. Es la misma resta $F(\\textcolor{#06b6d4}{b})-F(\\textcolor{#f43f5e}{a})$ de la sección anterior, con $\\Phi$ haciendo de antiderivada.
 
 ## **🧮 Python: calcular una probabilidad normal**
 
@@ -378,19 +387,22 @@ probabilidad -= norm.cdf(a, loc=mu, scale=sigma)
 print(probabilidad)
 ~~~~
 
-La operación implementada es exactamente:
+Las variables \`a\` y \`b\` del código son las mismas paredes $\\textcolor{#f43f5e}{a}$ y $\\textcolor{#06b6d4}{b}$ que mueves con los deslizadores, y \`norm.cdf\` es $\\Phi$. La operación implementada es exactamente:
 
 $$
-\\Phi\\left(\\frac{b-\\mu}{\\sigma}\\right)
+\\textcolor{#10b981}{
+\\Phi\\left(\\frac{\\textcolor{#06b6d4}{b}-\\mu}{\\sigma}\\right)
 -
-\\Phi\\left(\\frac{a-\\mu}{\\sigma}\\right)
+\\Phi\\left(\\frac{\\textcolor{#f43f5e}{a}-\\mu}{\\sigma}\\right)}
 $$
 
-La biblioteca evita hacer manualmente la aproximación numérica, pero no reemplaza la interpretación matemática.
+Cuatro formas de decir lo mismo: el **área verde** de la gráfica, la **integral** $\\int_{\\textcolor{#f43f5e}{a}}^{\\textcolor{#06b6d4}{b}}\\textcolor{#a855f7}{f(x)}\\,\\textcolor{#f59e0b}{dx}$, la **diferencia de acumuladas** de arriba, y las tres líneas de Python. La biblioteca evita hacer manualmente la aproximación numérica, pero no reemplaza la interpretación matemática.
 
 ## **🧠 Una conexión adicional: ecuaciones diferenciales separables**
 
-En nuestros ejercicios apareció la ecuación:
+Hasta aquí la integral ha servido para **acumular**: convertir una densidad en probabilidad. Pero la misma operación resuelve un problema distinto: **recuperar una función a partir de su tasa de cambio**. Ese es el terreno de las ecuaciones diferenciales, y vale la pena verlo porque ahí la constante de integración deja de ser un detalle y pasa a decidir cuál de todas las soluciones posibles es la nuestra.
+
+Tomemos una ecuación diferencial separable como esta:
 
 $$
 \\frac{dy}{dx}=\\sqrt[3]{\\frac{x}{y}}
@@ -447,7 +459,7 @@ $$
 
 Las constantes $15$ y $45/4$ corresponden a dos formas equivalentes de escribir la misma solución.
 
-## **📈 OVA 3: una familia de soluciones**
+## **📈 OVA 4: una familia de soluciones**
 
 Mueve $C$ y observa cómo cambia la curva. El punto $(1,8)$ queda fijo como referencia; la solución que pasa exactamente por él usa $C=15$ en la forma normalizada.
 
@@ -513,11 +525,13 @@ La conexión central es esta:
 
 $$
 \\boxed{
-\\text{densidad}
-\\xrightarrow{\\text{integrar}}
-\\text{probabilidad acumulada}
+\\textcolor{#a855f7}{\\text{densidad}}
+\\xrightarrow{\\textcolor{#f59e0b}{\\text{integrar}}}
+\\textcolor{#10b981}{\\text{probabilidad acumulada}}
 }
 $$
+
+Violeta la altura, ámbar la operación que la acumula, verde el resultado. Los mismos tres colores que llevas viendo desde la primera gráfica.
 
 La antiderivada ayuda a calcular integrales; la integral convierte una densidad en probabilidad; la normal estándar permite comparar valores con una escala común; y las ecuaciones diferenciales muestran cómo una tasa de cambio puede definir toda una familia de soluciones.
 
@@ -527,5 +541,5 @@ La probabilidad no es solo una tabla de porcentajes. Es una forma de razonar sob
 
 - [Goodfellow, Bengio y Courville — *Deep Learning*, capítulo 3: Probability and Information Theory](https://www.deeplearningbook.org/contents/prob.html)
 - [SciPy — scipy.stats.norm](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html)
-`;function f(a){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=a.match(n);if(!o)throw new Error("Invalid frontmatter format");const c=o[1],p=o[2],i={},g=c.split(`
-`);for(const s of g){const t=s.indexOf(":");if(t===-1)continue;const r=s.substring(0,t).trim();let e=s.substring(t+1).trim();if((e.startsWith('"')&&e.endsWith('"')||e.startsWith("'")&&e.endsWith("'"))&&(e=e.slice(1,-1)),r==="tags"){const d=e.match(/\[(.*?)\]/);d&&(i.tags=d[1].split(",").map(l=>l.trim().replace(/^["']|["']$/g,"")).filter(l=>l.length>0))}else r==="date"?i.date=e:r==="slug"?i.slug=e:r==="title"?i.title=e:r==="description"&&(i.description=e)}return{frontmatter:i,body:p}}function u(a){const{frontmatter:n,body:o}=f(a);return{metadata:n,content:o}}const m=[u(b),u($)];function v(a){return m.find(n=>n.metadata.slug===a)}function y(){return[...m].sort((a,n)=>{const o=new Date(a.metadata.date).getTime();return new Date(n.metadata.date).getTime()-o})}export{v as a,y as g};
+`;function $(a){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=a.match(n);if(!o)throw new Error("Invalid frontmatter format");const c=o[1],p=o[2],r={},b=c.split(`
+`);for(const s of b){const t=s.indexOf(":");if(t===-1)continue;const i=s.substring(0,t).trim();let e=s.substring(t+1).trim();if((e.startsWith('"')&&e.endsWith('"')||e.startsWith("'")&&e.endsWith("'"))&&(e=e.slice(1,-1)),i==="tags"){const d=e.match(/\[(.*?)\]/);d&&(r.tags=d[1].split(",").map(l=>l.trim().replace(/^["']|["']$/g,"")).filter(l=>l.length>0))}else i==="date"?r.date=e:i==="slug"?r.slug=e:i==="title"?r.title=e:i==="description"&&(r.description=e)}return{frontmatter:r,body:p}}function u(a){const{frontmatter:n,body:o}=$(a);return{metadata:n,content:o}}const m=[u(g),u(f)];function v(a){return m.find(n=>n.metadata.slug===a)}function x(){return[...m].sort((a,n)=>{const o=new Date(a.metadata.date).getTime();return new Date(n.metadata.date).getTime()-o})}export{v as a,x as g};
