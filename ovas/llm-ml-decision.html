@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>¿Qué papel juega el LLM en tu modelo?</title>
+<style>
+/* Lengua de color compartida con las demas OVAs del sitio:
+   violeta = lo que genera el LLM · esmeralda = lo que se entrena y se mide
+   cian = los datos · ambar = coste · rosa = advertencia */
+:root {
+  --llm:   #a855f7;
+  --model: #10b981;
+  --data:  #06b6d4;
+  --cost:  #f59e0b;
+  --risk:  #f43f5e;
+
+  --text:  #e8e8f0;
+  --muted: #9a9ac0;
+  --line:  rgba(85, 170, 255, 0.16);
+  --panel: rgba(255, 255, 255, 0.035);
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  /* Transparente: el marco .lazy-frame del articulo pone el fondo, asi no
+     hay costura si ese color cambia. */
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  /* Ni una barra vertical propia: el contenedor mide este <body> y ajusta
+     su altura, asi que el scroll del iframe siempre sobra. */
+  overflow-y: hidden;
+}
+
+.wrap { padding: 22px; }
+
+h1 {
+  font-size: 17px;
+  margin: 0 0 4px;
+  letter-spacing: 0.01em;
+}
+
+.sub {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ── Leyenda ─────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  font-size: 11.5px;
+  font-family: var(--mono);
+  color: var(--muted);
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+/* ── Rejilla principal ───────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0 0 15px;
+}
+
+legend {
+  padding: 0;
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-family: var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.opts { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.opt {
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.opt:hover { color: var(--text); border-color: rgba(85, 170, 255, 0.4); }
+.opt[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--data);
+  background: color-mix(in srgb, var(--data) 16%, transparent);
+}
+.opt:focus-visible { outline: 2px solid var(--data); outline-offset: 2px; }
+
+/* ── Panel de resultado ──────────────────────────────────── */
+.result {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 18px;
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.badge {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid;
+}
+
+.cost-chip {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cost);
+  border: 1px solid color-mix(in srgb, var(--cost) 45%, transparent);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+
+.block { margin-bottom: 14px; }
+.block:last-child { margin-bottom: 0; }
+
+.block-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.block-body { font-size: 14px; }
+.block-body code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.why {
+  border-left: 2px solid var(--line);
+  padding-left: 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.warn {
+  border: 1px solid color-mix(in srgb, var(--risk) 42%, transparent);
+  background: color-mix(in srgb, var(--risk) 9%, transparent);
+  border-radius: 8px;
+  padding: 11px 13px;
+  font-size: 13px;
+}
+.warn .block-label { color: var(--risk); }
+.warn p { margin: 0 0 7px; }
+.warn p:last-child { margin-bottom: 0; }
+
+@media (max-width: 720px) {
+  .wrap { padding: 16px 14px; }
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .result { padding: 14px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>¿Qué papel juega el LLM en tu modelo?</h1>
+  <p class="sub">Describe tu situación. La recomendación separa siempre dos cosas: qué aporta el LLM y qué modelo hace realmente la predicción.</p>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--llm)"></i> lo genera el LLM</span>
+    <span><i class="dot" style="background:var(--model)"></i> se entrena y se mide</span>
+    <span><i class="dot" style="background:var(--data)"></i> los datos</span>
+    <span><i class="dot" style="background:var(--cost)"></i> coste</span>
+    <span><i class="dot" style="background:var(--risk)"></i> advertencia</span>
+  </div>
+
+  <div class="grid">
+    <form id="controls" aria-label="Parámetros de tu problema"></form>
+
+    <section class="result" aria-live="polite" aria-atomic="true">
+      <div class="badge-row">
+        <span class="badge" id="badge"></span>
+        <span class="cost-chip" id="cost"></span>
+      </div>
+
+      <div class="block">
+        <div class="block-label" style="color:var(--llm)">
+          <i class="dot" style="background:var(--llm)"></i> Qué aporta el LLM
+        </div>
+        <div class="block-body" id="llm-role"></div>
+      </div>
+
+      <div class="block">
+        <div class="block-label" style="color:var(--model)">
+          <i class="dot" style="background:var(--model)"></i> Qué modelo predice de verdad
+        </div>
+        <div class="block-body" id="model-role"></div>
+      </div>
+
+      <div class="block why" id="why"></div>
+
+      <div class="block warn" id="warn" hidden>
+        <div class="block-label">
+          <i class="dot" style="background:var(--risk)"></i> Antes de seguir
+        </div>
+        <div id="warn-body"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const FIELDS = [
+    { key: 'modalidad', label: 'Tipo de dato', value: 'tabular', options: [
+      ['tabular', 'Tabular'], ['texto', 'Texto'], ['imagen', 'Imagen'], ['multimodal', 'Multimodal'],
+    ]},
+    { key: 'filas', label: 'Cuántas filas / ejemplos', value: 'm', options: [
+      ['xs', '< 1k'], ['s', '1k – 10k'], ['m', '10k – 1M'], ['l', '> 1M'],
+    ]},
+    { key: 'semantica', label: 'Las columnas significan algo (edad, ciudad…)', value: 'si', options: [
+      ['si', 'Sí'], ['no', 'No / anónimas'],
+    ]},
+    { key: 'presupuesto', label: 'Presupuesto de cómputo', value: 'medio', options: [
+      ['bajo', 'Bajo'], ['medio', 'Medio'], ['alto', 'Alto'],
+    ]},
+    { key: 'privacidad', label: 'Los datos no pueden salir de casa', value: 'no', options: [
+      ['no', 'Pueden salir'], ['si', 'No pueden'],
+    ]},
+  ];
+
+  const STRATEGIES = {
+    A: { name: 'A · el LLM construye', color: 'var(--llm)' },
+    B: { name: 'B · el LLM es una pieza', color: 'var(--llm)' },
+    C: { name: 'C · el LLM enseña', color: 'var(--llm)' },
+    N: { name: 'Sin LLM en el bucle', color: 'var(--model)' },
+  };
+
+  const state = Object.fromEntries(FIELDS.map((f) => [f.key, f.value]));
+
+  /* ── Reglas ────────────────────────────────────────────────
+     Cada rama devuelve estrategia, papel del LLM, modelo real,
+     el porqué, coste y las advertencias que apliquen. Las
+     advertencias transversales (privacidad, presupuesto) se
+     añaden despues, para que no haya que repetirlas en cada rama. */
+  function recommend(s) {
+    const big = s.filas === 'm' || s.filas === 'l';
+    const small = s.filas === 'xs' || s.filas === 's';
+    const sem = s.semantica === 'si';
+    const out = { warns: [] };
+
+    if (s.modalidad === 'tabular') {
+      if (small) {
+        out.strategy = sem ? 'B' : 'N';
+        out.llm = sem
+          ? '<strong>CAAFE</strong>: le describes el dataset en prosa y propone features nuevas — un IMC a partir de peso y talla, si una fecha cae en festivo. Verifica cada una contra validación y descarta las que no mejoran.'
+          : 'Poco o nada. Sin nombres de columna con significado el LLM no tiene contexto del que tirar: le estás pidiendo ideas sobre <code>x1, x2, x3</code>.';
+        out.model = '<strong>TabPFN v2</strong> como primer baseline — predice in-context, sin entrenar — y <strong>AutoGluon</strong> como control.';
+        out.why = 'Por debajo de 10k filas el modelo fundacional tabular suele ganar a un GBDT afinado y cuesta tres líneas de código. Empieza por ahí y que el resto tenga que superarlo.';
+        out.cost = 'bajo';
+        if (!sem) out.warns.push('Mide TabPFN v2 y AutoGluon antes de añadir ninguna capa de LLM. Si no puedes hacer la ablación, no sabrás si aportó.');
+      } else if (sem) {
+        out.strategy = 'B';
+        out.llm = '<strong>CAAFE</strong> o <strong>LLM-FE</strong> para features con conocimiento de dominio. Es lo único que el LLM aporta aquí que ningún AutoML clásico puede: sabe qué es un festivo, un código postal o un diagnóstico.';
+        out.model = '<strong>LightGBM / CatBoost</strong> afinado con Optuna. El GBDT sigue siendo el modelo, con o sin LLM delante.';
+        out.why = 'A este volumen las features valen más que el algoritmo, y la semántica de las columnas es información que no está en los números.';
+        out.cost = s.filas === 'l' ? 'alto' : 'medio';
+        if (s.filas === 'l') out.warns.push('Con más de 1M de filas, valida cada feature propuesta sobre una submuestra antes de recalcular sobre el dataset completo.');
+      } else {
+        out.strategy = 'N';
+        out.llm = 'Nada demostrable. Este es el caso donde la evidencia va en contra.';
+        out.model = '<strong>LightGBM / CatBoost</strong> con búsqueda clásica (TPE o bayesiana), <em>sembrada con la configuración por defecto</em>.';
+        out.why = 'En tabular sin semántica el LLM no tiene contexto que aportar ni ventaja como optimizador.';
+        out.cost = s.filas === 'l' ? 'alto' : 'bajo';
+        out.warns.push('En pruebas con presupuesto igualado, un asesor LLM de hiperparámetros parece ganar por su primera evaluación (88.7% frente al 83.7% de random search) — pero ese punto es la <em>configuración por defecto</em>, evaluada antes de la primera llamada al modelo. Sus propuestas reales suman +0.4 pp en validación cruzada y −0.01 pp en test (p = 0.92).');
+        if (s.filas === 'l') out.warns.push('Además, aquí cada iteración del bucle es cara: entrenar sobre más de 1M de filas. Un agente que itera 20 veces multiplica esa factura.');
+      }
+    } else if (s.modalidad === 'texto') {
+      if (small) {
+        out.strategy = 'C';
+        out.llm = 'Fábrica de datos: etiqueta lo que no está etiquetado y genera ejemplos sintéticos para las clases raras. En destilación, produce tripletas <code>(entrada, razonamiento, salida)</code>.';
+        out.model = 'Un <strong>encoder pequeño afinado</strong> (DeBERTa, MiniLM). Se entrena con los datos del LLM, pero en producción el LLM ya no está en el camino.';
+        out.why = 'Es cómo se construyó la ola de modelos pequeños fuertes de 2025-2026. Sale barato de servir y no depende de una API.';
+        out.cost = 'bajo';
+        out.warns.push('El LLM es buen <em>asistente</em> de anotación y mal anotador autónomo. Enseñarle su etiqueta a un humano sube la confianza de esa persona sin acelerarla, y ancla su juicio. Audita una muestra a ciegas.');
+        out.warns.push('El modelo más fuerte no siempre es el mejor profesor: compara al menos dos generadores antes de fijar uno.');
+      } else {
+        out.strategy = 'B';
+        out.llm = '<strong>Embeddings congelados</strong>: el LLM convierte cada texto en un vector y ahí termina su papel. Sin fine-tuning y sin llamadas en producción si cacheas.';
+        out.model = 'Un clasificador ligero sobre el embedding, o el <strong>encoder afinado</strong> si tienes etiquetas de sobra.';
+        out.why = 'Con este volumen ya tienes señal propia: el conocimiento del mundo que aporta el LLM pesa menos que tus etiquetas.';
+        out.cost = 'medio';
+        out.warns.push('Prueba el modelo de embedding <em>pequeño</em> primero: MiniLM, con unos 22M de parámetros, supera a modelos mucho mayores en varios escenarios. Aquí el tamaño no ordena la calidad.');
+      }
+    } else if (s.modalidad === 'imagen') {
+      if (small || s.presupuesto !== 'alto') {
+        out.strategy = small ? 'C' : 'N';
+        out.llm = small
+          ? 'Generación dirigida para las clases con pocos ejemplos, y descripción de los casos difíciles para guiar la aumentación.'
+          : 'Poco. Con este volumen el transfer learning convencional ya resuelve.';
+        out.model = '<strong>Transfer learning</strong> sobre una red preentrenada (timm), o <strong>AutoGluon multimodal</strong> si prefieres no elegir arquitectura.';
+        out.why = small
+          ? 'Con pocas imágenes el cuello de botella son los ejemplos, no la arquitectura.'
+          : 'Con muchas imágenes y presupuesto contenido, afinar una red preentrenada gana en relación resultado/coste a cualquier búsqueda automática.';
+        out.cost = small ? 'bajo' : 'medio';
+        if (small) out.warns.push('Los datos sintéticos arrastran los sesgos del generador. Mide siempre sobre un conjunto de test <em>real</em>, nunca sintético.');
+      } else {
+        out.strategy = 'A';
+        out.llm = '<strong>MLE-STAR</strong> escribe el pipeline entero: busca en la web arquitecturas vigentes en vez de tirar de lo que recuerda, y refina por ablación el bloque de mayor impacto.';
+        out.model = 'La red que el agente seleccione y afine. El agente no predice: escribe el código que entrena al que predice.';
+        out.why = 'Con presupuesto alto y un problema abierto, la búsqueda automatizada explora más combinaciones de las que probarías a mano.';
+        out.cost = 'alto';
+      }
+    } else {
+      out.strategy = 'A';
+      out.llm = '<strong>AutoGluon Assistant / MLZero</strong>: describes la tarea en lenguaje natural y el sistema percibe los datos, escribe el código, lo ejecuta y se depura solo. Cero configuración.';
+      out.model = 'El pipeline que genere — normalmente AutoGluon por debajo, con su apilado y sus ensamblados.';
+      out.why = 'Cuando hay que coser tabular, texto e imagen en un mismo modelo, el trabajo aburrido es el pegamento. Ahí es donde el agente ahorra horas de verdad.';
+      out.cost = s.presupuesto === 'bajo' ? 'alto' : 'medio';
+    }
+
+    /* Transversales */
+    if (out.strategy === 'A' && s.presupuesto === 'bajo') {
+      out.warns.push('Has marcado presupuesto bajo y esto recomienda un agente. Para calibrar: en MLE-bench cada intento dispone de 36 vCPU, 440 GB de RAM, una A10 de 24 GB y hasta <strong>24 horas</strong>. El bucle cobra por iteración.');
+    }
+    if (s.privacidad === 'si') {
+      out.warns.push('Los datos no salen: descarta cualquier agente o API externa. Queda AutoML local (AutoGluon, MLJAR), TabPFN en tu máquina, o un LLM autoalojado — pero cuenta con que el modelo autoalojado será más flojo que el frontera que verías en los papers.');
+    }
+    if (s.presupuesto === 'alto' && out.strategy !== 'A') {
+      out.warns.push('<em>Opcional:</em> con presupuesto alto puedes lanzar además un agente (MLE-STAR, R&D-Agent) como segunda opinión. Pero la comparación válida es contra el baseline de arriba, no contra nada.');
+    }
+
+    return out;
+  }
+
+  /* ── Render ──────────────────────────────────────────────── */
+  const $ = (id) => document.getElementById(id);
+
+  function buildControls() {
+    const form = $('controls');
+    for (const field of FIELDS) {
+      const fs = document.createElement('fieldset');
+      const lg = document.createElement('legend');
+      lg.textContent = field.label;
+      fs.appendChild(lg);
+
+      const box = document.createElement('div');
+      box.className = 'opts';
+      for (const [value, label] of field.options) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.textContent = label;
+        b.dataset.key = field.key;
+        b.dataset.value = value;
+        b.setAttribute('aria-pressed', String(state[field.key] === value));
+        b.addEventListener('click', () => {
+          state[field.key] = value;
+          for (const sib of box.querySelectorAll('.opt')) {
+            sib.setAttribute('aria-pressed', String(sib.dataset.value === value));
+          }
+          render();
+        });
+        box.appendChild(b);
+      }
+      fs.appendChild(box);
+      form.appendChild(fs);
+    }
+  }
+
+  function render() {
+    const r = recommend(state);
+    const strat = STRATEGIES[r.strategy];
+
+    const badge = $('badge');
+    badge.textContent = strat.name;
+    badge.style.color = strat.color;
+    badge.style.borderColor = `color-mix(in srgb, ${strat.color} 45%, transparent)`;
+    badge.style.background = `color-mix(in srgb, ${strat.color} 12%, transparent)`;
+
+    $('cost').textContent = `coste ${r.cost}`;
+    $('llm-role').innerHTML = r.llm;
+    $('model-role').innerHTML = r.model;
+    $('why').innerHTML = r.why;
+
+    const warn = $('warn');
+    if (r.warns.length) {
+      $('warn-body').innerHTML = r.warns.map((w) => `<p>${w}</p>`).join('');
+      warn.hidden = false;
+    } else {
+      warn.hidden = true;
+    }
+  }
+
+  buildControls();
+  render();
+})();
+</script>
+</body>
+</html>

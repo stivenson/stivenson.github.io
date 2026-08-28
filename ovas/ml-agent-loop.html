@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>El bucle de un agente que construye modelos</title>
+<style>
+/* Misma lengua de color que el resto de OVAs del sitio:
+   violeta = lo escribe el LLM · esmeralda = lo devuelve la ejecucion
+   cian = los datos · ambar = coste · rosa = un checker frena el paso */
+:root {
+  --llm:   #a855f7;
+  --model: #10b981;
+  --data:  #06b6d4;
+  --cost:  #f59e0b;
+  --risk:  #f43f5e;
+
+  --text:  #e8e8f0;
+  --muted: #9a9ac0;
+  --line:  rgba(85, 170, 255, 0.16);
+  --panel: rgba(255, 255, 255, 0.035);
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  /* El contenedor del articulo mide este <body> y ajusta la altura del
+     iframe, asi que una barra vertical propia siempre sobra. */
+  overflow-y: hidden;
+}
+
+.wrap { padding: 22px; }
+
+h1 { font-size: 17px; margin: 0 0 4px; }
+.sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  font-size: 11.5px;
+  font-family: var(--mono);
+  color: var(--muted);
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+/* ── Mapa SVG ────────────────────────────────────────────── */
+.map { width: 100%; height: auto; display: block; margin-bottom: 18px; }
+.map text { font-family: var(--sans); fill: var(--text); }
+.map .n-box {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke: var(--line);
+  stroke-width: 1;
+  transition: fill 200ms ease, stroke 200ms ease;
+}
+.map .n-num { font-family: var(--mono); font-size: 11px; fill: var(--muted); }
+.map .n-label { font-size: 13px; }
+.map .n-sub { font-size: 10.5px; fill: var(--muted); font-family: var(--mono); }
+.map .flow { stroke: var(--line); stroke-width: 1.5; fill: none; }
+.map .flow-note { font-size: 10px; fill: var(--muted); font-family: var(--mono); }
+.map .phase { font-size: 10px; fill: var(--muted); font-family: var(--mono); letter-spacing: 0.12em; }
+.map g.is-active .n-box { stroke-width: 2; }
+.map g.is-done .n-box { stroke: rgba(85, 170, 255, 0.3); }
+
+@media (max-width: 720px) { .map { display: none; } }
+
+/* ── Fichas de paso (navegacion, en todos los anchos) ────── */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+.chip:hover { color: var(--text); }
+.chip .idx { font-family: var(--mono); font-size: 10.5px; opacity: 0.75; }
+.chip[aria-current='true'] { color: var(--text); }
+.chip:focus-visible { outline: 2px solid var(--data); outline-offset: 2px; }
+
+/* ── Detalle del paso ────────────────────────────────────── */
+.detail {
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+.detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.detail-title { font-size: 16px; font-weight: 600; margin: 0; }
+.detail-tag {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+.detail p { margin: 0 0 9px; font-size: 14px; }
+.detail p:last-child { margin-bottom: 0; }
+.detail code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ── Contadores y controles ──────────────────────────────── */
+.meters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.meter {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+.meter b { color: var(--text); font-size: 14px; margin-left: 4px; font-weight: 600; }
+.meter.is-cost { border-color: color-mix(in srgb, var(--cost) 40%, transparent); color: var(--cost); }
+.meter.is-cost b { color: var(--cost); }
+
+.controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  padding: 8px 15px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+.btn:hover { border-color: rgba(85, 170, 255, 0.42); background: rgba(255, 255, 255, 0.04); }
+.btn:focus-visible { outline: 2px solid var(--data); outline-offset: 2px; }
+.btn.is-primary { border-color: color-mix(in srgb, var(--data) 50%, transparent); color: var(--data); }
+
+.foot {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 11px;
+}
+
+@media (max-width: 720px) {
+  .wrap { padding: 16px 14px; }
+  .detail { padding: 13px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>El bucle de un agente que construye modelos</h1>
+  <p class="sub">El ciclo de MLE-STAR, paso a paso. Fíjate en quién produce cada cosa — y en el contador de entrenamientos.</p>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--llm)"></i> lo escribe el LLM</span>
+    <span><i class="dot" style="background:var(--model)"></i> lo devuelve la ejecución</span>
+    <span><i class="dot" style="background:var(--data)"></i> los datos</span>
+    <span><i class="dot" style="background:var(--risk)"></i> un checker frena el paso</span>
+    <span><i class="dot" style="background:var(--cost)"></i> coste acumulado</span>
+  </div>
+
+  <svg class="map" viewBox="0 0 860 300" role="img"
+       aria-label="Diagrama del ciclo: arranque con búsqueda web, solución inicial y checker de uso de datos; bucle de ejecutar, ablación, refinar y checker de fuga; cierre con ensamblado.">
+    <defs>
+      <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="rgba(85,170,255,0.5)"/>
+      </marker>
+    </defs>
+
+    <text class="phase" x="20" y="20">ARRANQUE · UNA VEZ</text>
+    <text class="phase" x="20" y="116">BUCLE · SE REPITE</text>
+    <text class="phase" x="650" y="220">CIERRE</text>
+
+    <g id="node-1"><rect class="n-box" x="20" y="34" width="250" height="52" rx="8"/>
+      <text class="n-num" x="34" y="53">01</text>
+      <text class="n-label" x="34" y="70">Búsqueda web</text>
+      <text class="n-sub" x="255" y="53" text-anchor="end">modelos vigentes</text></g>
+
+    <g id="node-2"><rect class="n-box" x="300" y="34" width="250" height="52" rx="8"/>
+      <text class="n-num" x="314" y="53">02</text>
+      <text class="n-label" x="314" y="70">Solución inicial</text>
+      <text class="n-sub" x="535" y="53" text-anchor="end">script completo</text></g>
+
+    <g id="node-3"><rect class="n-box" x="580" y="34" width="260" height="52" rx="8"/>
+      <text class="n-num" x="594" y="53">03</text>
+      <text class="n-label" x="594" y="70">Checker de uso de datos</text>
+      <text class="n-sub" x="825" y="53" text-anchor="end">¿usa todo?</text></g>
+
+    <g id="node-4"><rect class="n-box" x="20" y="130" width="190" height="52" rx="8"/>
+      <text class="n-num" x="34" y="149">04</text>
+      <text class="n-label" x="34" y="166">Ejecutar</text></g>
+
+    <g id="node-5"><rect class="n-box" x="230" y="130" width="190" height="52" rx="8"/>
+      <text class="n-num" x="244" y="149">05</text>
+      <text class="n-label" x="244" y="166">Ablación por bloque</text></g>
+
+    <g id="node-6"><rect class="n-box" x="440" y="130" width="190" height="52" rx="8"/>
+      <text class="n-num" x="454" y="149">06</text>
+      <text class="n-label" x="454" y="166">Refinar el bloque</text></g>
+
+    <g id="node-7"><rect class="n-box" x="650" y="130" width="190" height="52" rx="8"/>
+      <text class="n-num" x="664" y="149">07</text>
+      <text class="n-label" x="664" y="166">Checker de fuga</text></g>
+
+    <g id="node-8"><rect class="n-box" x="650" y="228" width="190" height="52" rx="8"/>
+      <text class="n-num" x="664" y="247">08</text>
+      <text class="n-label" x="664" y="264">Ensamblar</text></g>
+
+    <path class="flow" d="M270,60 L294,60" marker-end="url(#ah)"/>
+    <path class="flow" d="M550,60 L574,60" marker-end="url(#ah)"/>
+    <path class="flow" d="M710,86 L710,102 Q710,108 704,108 L121,108 Q115,108 115,114 L115,124" marker-end="url(#ah)"/>
+    <path class="flow" d="M210,156 L224,156" marker-end="url(#ah)"/>
+    <path class="flow" d="M420,156 L434,156" marker-end="url(#ah)"/>
+    <path class="flow" d="M630,156 L644,156" marker-end="url(#ah)"/>
+    <path class="flow" d="M700,182 L700,200 Q700,206 694,206 L121,206 Q115,206 115,200 L115,188" marker-end="url(#ah)"/>
+    <path class="flow" d="M800,182 L800,222" marker-end="url(#ah)"/>
+    <text class="flow-note" x="400" y="200">otra iteración</text>
+    <text class="flow-note" x="790" y="211" text-anchor="end">presupuesto agotado</text>
+  </svg>
+
+  <div class="chips" id="chips" role="tablist" aria-label="Pasos del ciclo"></div>
+
+  <section class="detail" id="detail" aria-live="polite" aria-atomic="true">
+    <div class="detail-head">
+      <h2 class="detail-title" id="d-title"></h2>
+      <span class="detail-tag" id="d-tag"></span>
+    </div>
+    <div id="d-body"></div>
+  </section>
+
+  <div class="meters">
+    <span class="meter">iteración<b id="m-iter">1</b></span>
+    <span class="meter is-cost">entrenamientos lanzados<b id="m-trains">0</b></span>
+  </div>
+
+  <div class="controls">
+    <button type="button" class="btn" id="prev">← Anterior</button>
+    <button type="button" class="btn is-primary" id="next">Siguiente →</button>
+    <button type="button" class="btn" id="auto">Reproducir</button>
+    <button type="button" class="btn" id="reset">Reiniciar</button>
+  </div>
+
+  <p class="foot">
+    Cada paso esmeralda entrena de verdad. En MLE-bench, un intento dispone de 36 vCPU, 440 GB de RAM,
+    una A10 de 24 GB y hasta 24 horas — y el agente lo gasta iterando. Ese es el coste que hay que
+    poner enfrente de la mejora que produce.
+  </p>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const ROLE = {
+    llm:   { color: 'var(--llm)',   label: 'lo escribe el LLM' },
+    model: { color: 'var(--model)', label: 'lo devuelve la ejecución' },
+    data:  { color: 'var(--data)',  label: 'los datos' },
+    risk:  { color: 'var(--risk)',  label: 'checker' },
+  };
+
+  const STEPS = [
+    { n: 1, short: 'Búsqueda web', role: 'data', trains: 0,
+      title: 'Búsqueda web',
+      body: `<p>Antes de escribir nada, el agente <strong>busca en la web</strong> qué se está usando hoy para una tarea como la tuya.</p>
+             <p>Parece un detalle y es la idea central: sin esto, el modelo parte de lo que recuerda de su preentrenamiento — y ese recuerdo está congelado en una fecha. Con búsqueda, el punto de partida es una arquitectura que alguien está usando ahora.</p>` },
+
+    { n: 2, short: 'Solución inicial', role: 'llm', trains: 0,
+      title: 'Solución inicial',
+      body: `<p>El LLM escribe un <strong>script completo</strong>: carga los datos, prepara features, entrena, evalúa, guarda predicciones.</p>
+             <p>Todavía no vale nada. Es una hipótesis en forma de código.</p>` },
+
+    { n: 3, short: 'Uso de datos', role: 'risk', trains: 0,
+      title: 'Checker de uso de datos',
+      body: `<p>Un agente aparte revisa el script contra la descripción de la tarea: <strong>¿está usando todos los ficheros que le diste?</strong></p>
+             <p>Es un fallo tan común como tonto — le entregas tres tablas y entrena solo con la primera. Si detecta que sobra alguna, reescribe el script para incorporarla.</p>` },
+
+    { n: 4, short: 'Ejecutar', role: 'model', trains: 1,
+      title: 'Ejecutar',
+      body: `<p>Se corre el script. Sale una <strong>métrica de validación real</strong>, medida sobre datos, no estimada por nadie.</p>
+             <p>Aquí está la diferencia entre este bucle y pedirle ideas a un chat: la función de <em>fitness</em> es la ejecución. Si el código falla, un agente depurador lo corrige e insiste hasta que arranca o se agotan los intentos.</p>` },
+
+    { n: 5, short: 'Ablación', role: 'model', trains: 4,
+      title: 'Ablación por bloque',
+      body: `<p>En lugar de reescribir el script entero, el agente mide <strong>cuánto aporta cada bloque</strong>: el preprocesado, la ingeniería de features, el modelo, el ensamblado.</p>
+             <p>Cada medición es otro entrenamiento — por eso el contador salta de golpe. Lo que se compra con ese gasto es saber <em>dónde</em> tocar en vez de tocar a ciegas.</p>` },
+
+    { n: 6, short: 'Refinar', role: 'llm', trains: 0,
+      title: 'Refinar el bloque de mayor impacto',
+      body: `<p>El LLM reescribe <strong>solo el bloque que la ablación señaló</strong>, y prueba varias variantes de ese bloque.</p>
+             <p>Cambiar una pieza a la vez es lo que hace el resultado atribuible: si mejora, sabes por qué.</p>` },
+
+    { n: 7, short: 'Fuga de datos', role: 'risk', trains: 0,
+      title: 'Checker de fuga de datos',
+      body: `<p>Otro agente revisa el preprocesado buscando <strong>fuga</strong>: un escalador ajustado sobre train y test juntos, una imputación que usa el futuro, una feature construida a partir de la etiqueta.</p>
+             <p>Es el fallo más caro del oficio, porque no rompe nada: da una métrica preciosa en validación y un modelo inservible en producción. Si detecta fuga, genera una versión corregida antes de ejecutar.</p>` },
+
+    { n: 8, short: 'Ensamblar', role: 'llm', trains: 1,
+      title: 'Ensamblar candidatos',
+      body: `<p>Cuando se agota el presupuesto, el agente combina las soluciones que fue guardando. No con un voto por mayoría: <strong>propone él mismo la estrategia de ensamblado</strong> y la refina en los intentos siguientes.</p>
+             <p>Ese es el pipeline que se entrega. Nótese qué modelo predice al final: un GBDT, una red preentrenada, un apilado de ambos. <em>El LLM nunca fue el modelo — escribió el código que lo entrena.</em></p>` },
+  ];
+
+  const MAX_ITER = 3;
+  const AUTO_MS = 2600;
+
+  const $ = (id) => document.getElementById(id);
+  let idx = 0;
+  let iter = 1;
+  let trains = 0;
+  let timer = null;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Recorre el ciclo real: tras el paso 7 vuelve al 4 mientras quede
+     presupuesto, y solo entonces sale al ensamblado. */
+  function advance() {
+    const step = STEPS[idx];
+    if (step.n === 7 && iter < MAX_ITER) {
+      iter += 1;
+      idx = 3;
+    } else if (step.n === 8) {
+      idx = 0; iter = 1; trains = 0;
+      render();
+      return;
+    } else {
+      idx += 1;
+    }
+    trains += STEPS[idx].trains;
+    render();
+  }
+
+  function retreat() {
+    if (idx === 0) return;
+    trains = Math.max(0, trains - STEPS[idx].trains);
+    idx -= 1;
+    // Al salir del bucle hacia atras el contador de iteracion pierde sentido:
+    // los pasos de arranque solo ocurren en la primera vuelta.
+    if (idx < 3) iter = 1;
+    render();
+  }
+
+  function jump(target) {
+    stopAuto();
+    idx = target;
+    iter = 1;
+    // Coste acumulado equivalente a haber llegado hasta aqui en la 1.ª vuelta.
+    trains = STEPS.slice(0, target + 1).reduce((sum, s) => sum + s.trains, 0);
+    render();
+  }
+
+  function stopAuto() {
+    if (timer) { clearInterval(timer); timer = null; }
+    $('auto').textContent = 'Reproducir';
+  }
+
+  function toggleAuto() {
+    if (timer) { stopAuto(); return; }
+    $('auto').textContent = 'Pausar';
+    timer = setInterval(advance, AUTO_MS);
+  }
+
+  function buildChips() {
+    const box = $('chips');
+    STEPS.forEach((s, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip';
+      b.innerHTML = `<span class="idx">0${s.n}</span><span>${s.short}</span>`;
+      b.addEventListener('click', () => jump(i));
+      box.appendChild(b);
+    });
+  }
+
+  function render() {
+    const step = STEPS[idx];
+    const role = ROLE[step.role];
+
+    // Fichas
+    [...$('chips').children].forEach((chip, i) => {
+      const active = i === idx;
+      chip.setAttribute('aria-current', String(active));
+      chip.style.color = active ? 'var(--text)' : '';
+      chip.style.borderColor = active ? ROLE[STEPS[i].role].color : '';
+      chip.style.background = active
+        ? `color-mix(in srgb, ${ROLE[STEPS[i].role].color} 15%, transparent)`
+        : '';
+    });
+
+    // Mapa
+    STEPS.forEach((s, i) => {
+      const g = document.getElementById(`node-${s.n}`);
+      if (!g) return;
+      const box = g.querySelector('.n-box');
+      const active = i === idx;
+      g.classList.toggle('is-active', active);
+      g.classList.toggle('is-done', i < idx);
+      box.style.stroke = active ? ROLE[s.role].color : '';
+      box.style.fill = active ? `color-mix(in srgb, ${ROLE[s.role].color} 14%, transparent)` : '';
+    });
+
+    // Detalle
+    $('d-title').textContent = `${step.n}. ${step.title}`;
+    const tag = $('d-tag');
+    tag.textContent = role.label;
+    tag.style.color = role.color;
+    tag.style.borderColor = `color-mix(in srgb, ${role.color} 45%, transparent)`;
+    $('d-body').innerHTML = step.body;
+    $('detail').style.borderLeftColor = role.color;
+
+    // Contadores
+    $('m-iter').textContent = String(iter);
+    $('m-trains').textContent = String(trains);
+
+    $('prev').disabled = idx === 0;
+    $('prev').style.opacity = idx === 0 ? '0.4' : '';
+  }
+
+  buildChips();
+  trains = STEPS[0].trains;
+  render();
+
+  $('next').addEventListener('click', () => { stopAuto(); advance(); });
+  $('prev').addEventListener('click', () => { stopAuto(); retreat(); });
+  $('auto').addEventListener('click', toggleAuto);
+  $('reset').addEventListener('click', () => {
+    stopAuto();
+    idx = 0; iter = 1; trains = STEPS[0].trains;
+    render();
+  });
+
+  if (reduceMotion) $('auto').hidden = true;
+})();
+</script>
+</body>
+</html>
