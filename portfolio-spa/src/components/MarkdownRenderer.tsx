@@ -76,8 +76,13 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     
     // Párrafos
     // Cuerpo del articulo: 17px sobre una medida de ~68ch (ver .markdown-content
-    // en retro-modern.css). Alineado a la izquierda: justificar sin motor de
-    // guionado abre rios de espacio en blanco, y a medida estrecha se nota mas.
+    // en retro-modern.css).
+    //
+    // El texto va justificado, pero solo funciona acompañado de `hyphens`.
+    // Justificar sin guionado reparte el sobrante en los espacios y abre rios
+    // de blanco, y a esta medida se nota mucho; con el guionado activado el
+    // navegador parte palabras y las lineas quedan parejas. El idioma lo toma
+    // del `lang="es"` del documento, que es lo que elige el diccionario.
     p: ({ node, ...props }) => (
       <p
         style={{
@@ -85,7 +90,11 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           lineHeight: 1.7,
           color: 'var(--rf-text)',
           marginBottom: '20px',
-          textAlign: 'left'
+          textAlign: 'justify',
+          hyphens: 'auto',
+          // Evita que una palabra larga o una URL desborde la columna
+          // cuando el guionado no encuentra donde partir.
+          overflowWrap: 'break-word'
         }}
         {...props}
       />
