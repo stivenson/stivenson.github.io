@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Atajos y fuga: qué está mirando tu modelo</title>
+<style>
+/* Misma lengua de color que el articulo:
+   cian = los datos · esmeralda = lo honesto · rosa = el atajo, la fuga
+   violeta = la etiqueta · ambar = tu codigo */
+:root {
+  --px:    #06b6d4;
+  --ok:    #10b981;
+  --err:   #f43f5e;
+  --lbl:   #a855f7;
+  --code:  #f59e0b;
+
+  --text:  #e8e8f0;
+  --muted: #9a9ac0;
+  --line:  rgba(85, 170, 255, 0.16);
+  --panel: rgba(255, 255, 255, 0.035);
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-y: hidden;
+}
+
+.wrap { padding: 22px; }
+
+h1 { font-size: 17px; margin: 0 0 4px; }
+.sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+
+h2 {
+  font-size: 12px;
+  font-family: var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 11px;
+  font-weight: 500;
+}
+
+.caja {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+/* ── Barras de atajos ────────────────────────────────────── */
+.fila {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) 116px;
+  gap: 11px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+@media (max-width: 620px) {
+  .fila { grid-template-columns: minmax(0, 1fr) 108px; }
+  .fila .nom { grid-column: 1 / -1; margin-bottom: -3px; }
+}
+
+.nom { font-size: 12.5px; }
+.nom code {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+.pista {
+  position: relative;
+  height: 21px;
+  border-radius: 5px;
+  background: rgba(255,255,255,0.055);
+  overflow: hidden;
+}
+.pista i {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  border-radius: 5px;
+  transition: width 420ms cubic-bezier(.22,.61,.36,1);
+}
+.pista .base {
+  position: absolute; top: -3px; bottom: -3px;
+  width: 2px;
+  background: var(--muted);
+  opacity: 0.75;
+}
+
+.pct {
+  font-family: var(--mono);
+  font-size: 13px;
+  text-align: right;
+}
+
+.sello {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+.sello.vive { color: var(--err); background: color-mix(in srgb, var(--err) 17%, transparent); }
+.sello.muere { color: var(--ok); background: color-mix(in srgb, var(--ok) 15%, transparent); }
+
+.leyenda {
+  margin: 11px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--muted);
+}
+.leyenda b { color: var(--text); font-weight: 600; }
+
+/* ── Interruptor de preprocesado ─────────────────────────── */
+.opts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 13px; }
+
+.opt {
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit; font-size: 12px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.opt:hover { color: var(--text); border-color: rgba(85,170,255,0.4); }
+.opt[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--px);
+  background: color-mix(in srgb, var(--px) 16%, transparent);
+}
+.opt:focus-visible { outline: 2px solid var(--px); outline-offset: 2px; }
+
+/* ── Partición ───────────────────────────────────────────── */
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 12px;
+}
+@media (max-width: 560px) {
+  .rejilla { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.pac {
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 6px 4px;
+  text-align: center;
+}
+.pac.parte {
+  border-color: var(--err);
+  background: color-mix(in srgb, var(--err) 13%, transparent);
+}
+
+.pac .id {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.ojos { display: flex; gap: 3px; justify-content: center; }
+
+.ojo {
+  width: 15px; height: 15px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 8.5px;
+  line-height: 15px;
+  color: #05041f;
+  font-weight: 700;
+}
+.ojo.tr { background: var(--px); }
+.ojo.te { background: var(--code); }
+
+.marcador {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 11px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.dato .k {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+.dato .v { font-family: var(--mono); font-size: 19px; }
+.dato .v.mal { color: var(--err); }
+.dato .v.bien { color: var(--ok); }
+.dato .n { font-size: 11px; color: var(--muted); }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>¿Qué está mirando tu modelo?</h1>
+  <p class="sub">Dos maneras de sacar buena nota sin haber aprendido nada de glaucoma.</p>
+
+  <div class="caja">
+    <h2>1 · El atajo — medido sobre las 705 imágenes de ACRIMA</h2>
+
+    <div class="opts" id="grpPre" role="group" aria-label="Preprocesado aplicado">
+      <button class="opt" type="button" data-pre="crudo" aria-pressed="true">tal cual viene</button>
+      <button class="opt" type="button" data-pre="resize" aria-pressed="false">tras redimensionar a 224×224</button>
+    </div>
+
+    <div id="barras"></div>
+
+    <p class="leyenda" id="leyenda"></p>
+  </div>
+
+  <div class="caja">
+    <h2>2 · La fuga — 8 pacientes, los dos ojos de cada uno</h2>
+
+    <div class="opts" id="grpPart" role="group" aria-label="Forma de partir">
+      <button class="opt" type="button" data-part="imagen" aria-pressed="true">partir por imagen</button>
+      <button class="opt" type="button" data-part="paciente" aria-pressed="false">partir por paciente</button>
+      <button class="opt" type="button" id="rebarajar">barajar de nuevo</button>
+    </div>
+
+    <div class="rejilla" id="rejilla"></div>
+
+    <div class="marcador">
+      <div class="dato">
+        <span class="k">pacientes en ambos lados</span>
+        <span class="v" id="mPart"></span>
+        <span class="n" id="mPartN"></span>
+      </div>
+      <div class="dato">
+        <span class="k">imágenes de prueba contaminadas</span>
+        <span class="v" id="mCont"></span>
+        <span class="n">el otro ojo ya se vio al entrenar</span>
+      </div>
+      <div class="dato">
+        <span class="k">prueba realmente independiente</span>
+        <span class="v" id="mLimpio"></span>
+        <span class="n" id="mLimpioN"></span>
+      </div>
+    </div>
+
+    <p class="leyenda" id="leyPart"></p>
+  </div>
+
+  <p class="sr" id="live" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── Panel 1 · atajos ─────────────────────────────────────
+  // Todas las cifras salen de medir las 705 imagenes de ACRIMA. El umbral
+  // optimo se busca sobre el propio conjunto, asi que son cotas superiores
+  // optimistas: la cuestion no es el decimal, es que sean tan altas.
+  var ATAJOS = [
+    { nom: 'Nada: siempre “glaucoma”', cod: 'la clase mayoritaria',
+      crudo: 56.2, resize: 56.2, muere: false, base: true },
+    { nom: 'El color medio', cod: 'umbral sobre (R − B)',
+      crudo: 65.7, resize: 65.7, muere: false },
+    { nom: 'El peso del archivo', cod: 'umbral sobre os.path.getsize()',
+      crudo: 81.4, resize: null, muere: true },
+    { nom: 'El tamaño de la imagen', cod: 'umbral sobre width ≥ 427',
+      crudo: 86.8, resize: null, muere: true }
+  ];
+
+  var estado = { pre: 'crudo', part: 'imagen', semilla: 7 };
+
+  function pintarBarras() {
+    var cont = document.getElementById('barras');
+    cont.innerHTML = '';
+    var resize = estado.pre === 'resize';
+
+    ATAJOS.forEach(function (a) {
+      var v = resize ? a.resize : a.crudo;
+      var muerto = v === null;
+
+      var f = document.createElement('div');
+      f.className = 'fila';
+
+      var nom = document.createElement('div');
+      nom.className = 'nom';
+      nom.innerHTML = a.nom + '<code>' + a.cod + '</code>';
+
+      var pista = document.createElement('div');
+      pista.className = 'pista';
+      var i = document.createElement('i');
+      i.style.width = (muerto ? 0 : v) + '%';
+      i.style.background = a.base
+        ? 'rgba(255,255,255,0.16)'
+        : 'linear-gradient(90deg, color-mix(in srgb, var(--err) 55%, transparent), var(--err))';
+      pista.appendChild(i);
+      // Marca de referencia: el clasificador tonto.
+      var b = document.createElement('span');
+      b.className = 'base';
+      b.style.left = '56.2%';
+      pista.appendChild(b);
+
+      var pct = document.createElement('div');
+      pct.className = 'pct';
+      pct.innerHTML = muerto
+        ? '<span class="sello muere">se borra</span>'
+        : v.toFixed(1).replace('.', ',') + ' %'
+          + (a.base ? '' : '<span class="sello vive">sobrevive</span>');
+
+      f.appendChild(nom); f.appendChild(pista); f.appendChild(pct);
+      cont.appendChild(f);
+    });
+
+    document.getElementById('leyenda').innerHTML = resize
+      ? '<b>Redimensionar borra dos atajos de tres.</b> El tamaño y el peso del archivo desaparecen '
+        + 'en cuanto todo pasa a 224×224. Pero el color no: sigue sacando <b>65,7 %</b>, casi diez puntos '
+        + 'por encima del clasificador tonto, sin mirar una sola estructura anatómica. '
+        + 'La línea vertical marca ese 56,2 % de referencia.'
+      : '<b>Sin tocar un solo píxel de anatomía</b>, el ancho de la imagen acierta el <b>86,8 %</b>: '
+        + 'en ACRIMA las glaucomatosas miden 668 px de media y las sanas 353. Las dos clases se '
+        + 'capturaron de formas distintas, y eso queda escrito en el archivo. '
+        + 'Cambia al preprocesado y mira cuáles sobreviven.';
+
+    document.getElementById('live').textContent = resize
+      ? 'Tras redimensionar, solo sobrevive el atajo del color, con 65,7 por ciento.'
+      : 'Sin preprocesar, el tamaño de la imagen acierta el 86,8 por ciento.';
+  }
+
+  // ── Panel 2 · particion ──────────────────────────────────
+  var N_PAC = 8;
+
+  // Generador reproducible: la misma semilla da siempre el mismo reparto.
+  function rng(s) {
+    return function () {
+      s = (s * 1664525 + 1013904223) % 4294967296;
+      return s / 4294967296;
+    };
+  }
+
+  function repartir() {
+    var r = rng(estado.semilla);
+    var pac = [];
+    if (estado.part === 'imagen') {
+      // Cada ojo cae a un lado por su cuenta: el paciente puede partirse.
+      for (var i = 0; i < N_PAC; i++) {
+        pac.push([r() < 0.5 ? 'te' : 'tr', r() < 0.5 ? 'te' : 'tr']);
+      }
+    } else {
+      // El paciente entero cae del mismo lado.
+      for (var j = 0; j < N_PAC; j++) {
+        var lado = r() < 0.5 ? 'te' : 'tr';
+        pac.push([lado, lado]);
+      }
+    }
+    return pac;
+  }
+
+  function pintarParticion() {
+    var pac = repartir();
+    var rej = document.getElementById('rejilla');
+    rej.innerHTML = '';
+
+    var partidos = 0, contaminadas = 0, enPrueba = 0;
+
+    pac.forEach(function (ojos, i) {
+      var parte = ojos[0] !== ojos[1];
+      if (parte) partidos++;
+      ojos.forEach(function (o) {
+        if (o === 'te') {
+          enPrueba++;
+          if (parte) contaminadas++;
+        }
+      });
+
+      var d = document.createElement('div');
+      d.className = 'pac' + (parte ? ' parte' : '');
+      d.innerHTML = '<span class="id">pac ' + String(i + 1).padStart(2, '0') + '</span>'
+        + '<span class="ojos">'
+        + '<span class="ojo ' + ojos[0] + '">' + (ojos[0] === 'tr' ? 'E' : 'P') + '</span>'
+        + '<span class="ojo ' + ojos[1] + '">' + (ojos[1] === 'tr' ? 'E' : 'P') + '</span>'
+        + '</span>';
+      d.setAttribute('title', 'Paciente ' + (i + 1) + (parte ? ': partido entre entrenamiento y prueba' : ''));
+      rej.appendChild(d);
+    });
+
+    var limpio = enPrueba - contaminadas;
+
+    var mPart = document.getElementById('mPart');
+    mPart.textContent = partidos + ' de ' + N_PAC;
+    mPart.className = 'v ' + (partidos ? 'mal' : 'bien');
+
+    // Valor esperado exacto al partir por imagen: cada paciente se parte con
+    // probabilidad 1/2, asi que se esperan N/2 pacientes divididos.
+    document.getElementById('mPartN').textContent = estado.part === 'imagen'
+      ? 'se esperan ' + (N_PAC / 2) + ' de media'
+      : 'partiendo por paciente, nunca ocurre';
+
+    var mCont = document.getElementById('mCont');
+    mCont.textContent = contaminadas + ' de ' + enPrueba;
+    mCont.className = 'v ' + (contaminadas ? 'mal' : 'bien');
+
+    var mLimpio = document.getElementById('mLimpio');
+    var frac = enPrueba ? Math.round(100 * limpio / enPrueba) : 100;
+    mLimpio.textContent = frac + ' %';
+    mLimpio.className = 'v ' + (frac === 100 ? 'bien' : 'mal');
+    document.getElementById('mLimpioN').textContent =
+      limpio + ' de ' + enPrueba + ' imágenes de prueba';
+
+    document.getElementById('leyPart').innerHTML = estado.part === 'imagen'
+      ? '<b>E</b> = entrenamiento, <b>P</b> = prueba. En rojo, los pacientes que caen a los dos lados. '
+        + 'Los dos ojos de una persona se fotografían el mismo día, con la misma cámara y comparten '
+        + 'gran parte de la anatomía: reconocer el ojo derecho después de haber visto el izquierdo no es '
+        + 'diagnosticar, es recordar. La nota sube y no significa nada.'
+      : '<b>Ningún paciente se parte.</b> La nota baja — y esa es la buena. Es la única que estima lo que '
+        + 'pasará con una persona que el modelo no ha visto nunca. Bases como PAPILA traen los dos ojos '
+        + 'de cada paciente precisamente para que puedas partir así.';
+  }
+
+  // ── Cableado ─────────────────────────────────────────────
+  function grupo(id, alPulsar) {
+    var g = document.getElementById(id);
+    g.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.opt');
+      if (!b || !g.contains(b) || !b.hasAttribute('aria-pressed')) return;
+      Array.prototype.forEach.call(g.querySelectorAll('.opt[aria-pressed]'), function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      alPulsar(b);
+    });
+  }
+
+  grupo('grpPre', function (b) { estado.pre = b.dataset.pre; pintarBarras(); });
+  grupo('grpPart', function (b) { estado.part = b.dataset.part; pintarParticion(); });
+
+  document.getElementById('rebarajar').addEventListener('click', function () {
+    estado.semilla = (estado.semilla * 31 + 17) % 100000;
+    pintarParticion();
+  });
+
+  pintarBarras();
+  pintarParticion();
+})();
+</script>
+</body>
+</html>

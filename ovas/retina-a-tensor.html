@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>De la retina al tensor</title>
+<style>
+/* Lengua de color compartida con el articulo:
+   cian = el pixel, los datos · esmeralda = el tensor bien formado
+   rosa = lo que rompe · violeta = la etiqueta, lo clinico
+   ambar = codigo que escribes tu */
+:root {
+  --px:    #06b6d4;
+  --ok:    #10b981;
+  --err:   #f43f5e;
+  --lbl:   #a855f7;
+  --code:  #f59e0b;
+
+  --text:  #e8e8f0;
+  --muted: #9a9ac0;
+  --line:  rgba(85, 170, 255, 0.16);
+  --panel: rgba(255, 255, 255, 0.035);
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  /* Transparente: el marco .lazy-frame del articulo pone el fondo. */
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  /* Sin barra propia: el contenedor mide este <body> y ajusta su altura. */
+  overflow-y: hidden;
+}
+
+.wrap { padding: 22px; }
+
+h1 { font-size: 17px; margin: 0 0 4px; letter-spacing: 0.01em; }
+.sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+
+/* ── Controles ───────────────────────────────────────────── */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 13px 18px;
+  padding: 14px 15px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+
+legend {
+  padding: 0;
+  margin-bottom: 6px;
+  font-size: 10.5px;
+  font-family: var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.opts { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.opt {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.opt:hover { color: var(--text); border-color: rgba(85, 170, 255, 0.4); }
+.opt[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--px);
+  background: color-mix(in srgb, var(--px) 16%, transparent);
+}
+.opt:focus-visible { outline: 2px solid var(--px); outline-offset: 2px; }
+
+input[type=range] { width: 100%; accent-color: var(--px); margin: 4px 0 0; }
+
+.rangeval {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--px);
+}
+
+/* ── Escenario ───────────────────────────────────────────── */
+.stage {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 640px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+}
+
+.mapa, .zoomBox {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 10px;
+}
+
+.caption {
+  margin: 0 0 7px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  /* Los pixeles se muestran tal cual: si el navegador los suaviza,
+     el lector ve una interpolacion en vez del dato. */
+  image-rendering: pixelated;
+}
+
+#mapa { cursor: crosshair; }
+#zoom { cursor: crosshair; touch-action: none; }
+
+.hint { margin: 7px 0 0; font-size: 11.5px; color: var(--muted); }
+
+/* ── Lectura del tensor ──────────────────────────────────── */
+.readout {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 13px 15px;
+}
+
+.shape {
+  font-family: var(--mono);
+  font-size: 14px;
+  margin: 0 0 12px;
+  color: var(--ok);
+}
+.shape .dim { color: var(--text); }
+.shape .k { color: var(--muted); }
+
+.reps { display: grid; gap: 7px; }
+
+.rep {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+@media (max-width: 520px) {
+  .rep { grid-template-columns: minmax(0, 1fr); gap: 1px; }
+}
+
+.rep .lab { color: var(--muted); font-size: 11px; }
+.rep .val { color: var(--px); word-break: break-word; }
+.rep.norm .val { color: var(--code); }
+
+.swatch {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.25);
+  vertical-align: -1px;
+  margin-right: 7px;
+}
+
+.nota {
+  margin: 13px 0 0;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.nota strong { color: var(--text); font-weight: 600; }
+.nota .g { color: var(--ok); }
+
+.sr {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>De la retina a los números</h1>
+  <p class="sub">Una CNN nunca ve la fotografía. Ve esto. Acércate hasta que aparezcan los valores.</p>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Imagen</legend>
+      <div class="opts" id="grpImg" role="group" aria-label="Imagen">
+        <button class="opt" type="button" data-img="glaucoma" aria-pressed="true">glaucoma</button>
+        <button class="opt" type="button" data-img="normal" aria-pressed="false">normal</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Canal</legend>
+      <div class="opts" id="grpCanal" role="group" aria-label="Canal">
+        <button class="opt" type="button" data-ch="rgb" aria-pressed="true">RGB</button>
+        <button class="opt" type="button" data-ch="0" aria-pressed="false">R</button>
+        <button class="opt" type="button" data-ch="1" aria-pressed="false">G</button>
+        <button class="opt" type="button" data-ch="2" aria-pressed="false">B</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Acercamiento — <span class="rangeval" id="zoomVal">32 px de lado</span></legend>
+      <input type="range" id="zoomRange" min="3" max="120" value="32" step="1"
+             aria-label="Lado de la región visible, en píxeles">
+    </fieldset>
+  </div>
+
+  <div class="stage">
+    <div class="mapa">
+      <p class="caption">La imagen entera</p>
+      <canvas id="mapa" width="380" height="380"
+              aria-label="Imagen completa del fondo de ojo. Haz clic para elegir la región."></canvas>
+      <p class="hint">Haz clic para mover la lupa.</p>
+    </div>
+
+    <div class="zoomBox">
+      <p class="caption">Lo que hay dentro</p>
+      <canvas id="zoom" width="620" height="620"
+              aria-label="Región ampliada. Cada cuadro es un píxel con su valor."></canvas>
+      <p class="hint" id="zoomHint">Acércate por debajo de 18 px de lado para ver los números.</p>
+    </div>
+  </div>
+
+  <div class="readout">
+    <p class="shape" id="shape"></p>
+
+    <div class="reps" id="reps">
+      <div class="rep">
+        <span class="lab">píxel elegido</span>
+        <span class="val" id="rPos"></span>
+      </div>
+      <div class="rep">
+        <span class="lab">uint8 · [0, 255]</span>
+        <span class="val" id="rU8"></span>
+      </div>
+      <div class="rep">
+        <span class="lab">float32 · x / 255</span>
+        <span class="val" id="rF32"></span>
+      </div>
+      <div class="rep norm">
+        <span class="lab">normalizado · (x−μ)/σ</span>
+        <span class="val" id="rNorm"></span>
+      </div>
+    </div>
+
+    <p class="nota" id="nota"></p>
+  </div>
+
+  <p class="sr" id="live" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Estadisticas de ImageNet. Son las que usa cualquier modelo preentrenado,
+  // y por eso son las que apareceran en el codigo del articulo.
+  var MEAN = [0.485, 0.456, 0.406];
+  var STD  = [0.229, 0.224, 0.225];
+
+  var FUENTES = {
+    glaucoma: 'img/retina-glaucoma.jpg',
+    normal:   'img/retina-normal.jpg'
+  };
+
+  var mapa = document.getElementById('mapa');
+  var zoom = document.getElementById('zoom');
+  var mctx = mapa.getContext('2d');
+  var zctx = zoom.getContext('2d', { willReadFrequently: true });
+
+  var estado = {
+    img: 'glaucoma',
+    canal: 'rgb',
+    lado: 32,       // lado de la region visible, en pixeles de origen
+    cx: 0, cy: 0,   // centro de la region, en pixeles de origen
+    sel: null       // pixel elegido {x, y}
+  };
+
+  var origen = null;   // { w, h, data }  pixeles crudos de la imagen actual
+  var cache = {};
+
+  // ── Carga ────────────────────────────────────────────────
+  function cargar(nombre, hecho) {
+    if (cache[nombre]) { hecho(cache[nombre]); return; }
+    var im = new Image();
+    im.decoding = 'async';
+    im.onload = function () {
+      var c = document.createElement('canvas');
+      c.width = im.naturalWidth;
+      c.height = im.naturalHeight;
+      var cx = c.getContext('2d', { willReadFrequently: true });
+      cx.drawImage(im, 0, 0);
+      var d;
+      try {
+        d = cx.getImageData(0, 0, c.width, c.height);
+      } catch (e) {
+        // Solo pasa si el documento se abre con file://, donde el canvas
+        // queda contaminado. Servido por HTTP es mismo origen y no ocurre.
+        d = null;
+      }
+      cache[nombre] = { w: c.width, h: c.height, data: d, el: im };
+      hecho(cache[nombre]);
+    };
+    im.onerror = function () { hecho(null); };
+    im.src = FUENTES[nombre];
+  }
+
+  function px(x, y, c) {
+    if (!origen || !origen.data) return 0;
+    x = Math.max(0, Math.min(origen.w - 1, x));
+    y = Math.max(0, Math.min(origen.h - 1, y));
+    return origen.data.data[(y * origen.w + x) * 4 + c];
+  }
+
+  // Devuelve el color a pintar segun el canal elegido. Aislar un canal se
+  // muestra en gris: pintarlo de su propio color sugiere que el dato es ese
+  // color, cuando en realidad es una sola matriz de intensidades.
+  function colorDe(x, y) {
+    if (estado.canal === 'rgb') {
+      return [px(x, y, 0), px(x, y, 1), px(x, y, 2)];
+    }
+    var v = px(x, y, +estado.canal);
+    return [v, v, v];
+  }
+
+  // ── Dibujo ───────────────────────────────────────────────
+  function region() {
+    var L = estado.lado;
+    var x0 = Math.round(estado.cx - L / 2);
+    var y0 = Math.round(estado.cy - L / 2);
+    x0 = Math.max(0, Math.min(origen.w - L, x0));
+    y0 = Math.max(0, Math.min(origen.h - L, y0));
+    return { x0: x0, y0: y0, L: L };
+  }
+
+  function pintarMapa() {
+    var W = mapa.width;
+    mctx.clearRect(0, 0, W, W);
+    if (!origen) return;
+
+    if (estado.canal === 'rgb') {
+      mctx.drawImage(origen.el, 0, 0, W, W);
+    } else {
+      // Un canal suelto se pinta a mano, en escala de grises.
+      var out = mctx.createImageData(W, W);
+      var c = +estado.canal;
+      for (var j = 0; j < W; j++) {
+        for (var i = 0; i < W; i++) {
+          var sx = Math.floor(i * origen.w / W);
+          var sy = Math.floor(j * origen.h / W);
+          var v = px(sx, sy, c);
+          var o = (j * W + i) * 4;
+          out.data[o] = out.data[o + 1] = out.data[o + 2] = v;
+          out.data[o + 3] = 255;
+        }
+      }
+      mctx.putImageData(out, 0, 0);
+    }
+
+    // Marco de la lupa
+    var r = region();
+    var k = W / origen.w;
+    mctx.strokeStyle = '#06b6d4';
+    mctx.lineWidth = 2;
+    mctx.strokeRect(r.x0 * k, r.y0 * k, r.L * k, r.L * k);
+    mctx.strokeStyle = 'rgba(4, 3, 32, 0.75)';
+    mctx.lineWidth = 1;
+    mctx.strokeRect(r.x0 * k - 1.5, r.y0 * k - 1.5, r.L * k + 3, r.L * k + 3);
+  }
+
+  function pintarZoom() {
+    var W = zoom.width;
+    zctx.clearRect(0, 0, W, W);
+    if (!origen) return;
+
+    var r = region();
+    var s = W / r.L;                  // lado en pantalla de cada pixel
+    var numeros = s >= 34;            // solo cabe el texto si el cuadro es grande
+
+    for (var j = 0; j < r.L; j++) {
+      for (var i = 0; i < r.L; i++) {
+        var c = colorDe(r.x0 + i, r.y0 + j);
+        zctx.fillStyle = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+        zctx.fillRect(i * s, j * s, Math.ceil(s), Math.ceil(s));
+      }
+    }
+
+    // Rejilla: hace visible que esto son celdas discretas, no una foto.
+    if (s >= 9) {
+      zctx.strokeStyle = 'rgba(4, 3, 32, 0.35)';
+      zctx.lineWidth = 1;
+      for (var g = 0; g <= r.L; g++) {
+        zctx.beginPath(); zctx.moveTo(g * s, 0); zctx.lineTo(g * s, W); zctx.stroke();
+        zctx.beginPath(); zctx.moveTo(0, g * s); zctx.lineTo(W, g * s); zctx.stroke();
+      }
+    }
+
+    if (numeros) {
+      zctx.textAlign = 'center';
+      zctx.textBaseline = 'middle';
+      var unico = estado.canal !== 'rgb';
+      zctx.font = (unico ? Math.min(22, s * 0.34) : Math.min(13, s * 0.2)) +
+                  'px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+
+      for (var jj = 0; jj < r.L; jj++) {
+        for (var ii = 0; ii < r.L; ii++) {
+          var v = colorDe(r.x0 + ii, r.y0 + jj);
+          // Texto claro u oscuro segun la luminancia de la celda.
+          var lum = 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+          zctx.fillStyle = lum > 130 ? 'rgba(8,6,30,0.92)' : 'rgba(255,255,255,0.94)';
+          var mx = ii * s + s / 2;
+          var my = jj * s + s / 2;
+          if (unico) {
+            zctx.fillText(String(v[0]), mx, my);
+          } else {
+            var rgb = [px(r.x0 + ii, r.y0 + jj, 0),
+                       px(r.x0 + ii, r.y0 + jj, 1),
+                       px(r.x0 + ii, r.y0 + jj, 2)];
+            zctx.fillText(String(rgb[0]), mx, my - s * 0.26);
+            zctx.fillText(String(rgb[1]), mx, my);
+            zctx.fillText(String(rgb[2]), mx, my + s * 0.26);
+          }
+        }
+      }
+    }
+
+    // Pixel elegido
+    if (estado.sel) {
+      var sx = estado.sel.x - r.x0;
+      var sy = estado.sel.y - r.y0;
+      if (sx >= 0 && sy >= 0 && sx < r.L && sy < r.L) {
+        zctx.strokeStyle = '#f59e0b';
+        zctx.lineWidth = Math.max(2, s * 0.09);
+        zctx.strokeRect(sx * s, sy * s, s, s);
+      }
+    }
+  }
+
+  // ── Lectura ──────────────────────────────────────────────
+  function pintarLectura() {
+    var shape = document.getElementById('shape');
+    if (!origen) { shape.textContent = ''; return; }
+
+    var unico = estado.canal !== 'rgb';
+    var nom = ['R', 'G', 'B'];
+
+    shape.innerHTML =
+      '<span class="k">x.shape</span> = (<span class="dim">' + origen.h +
+      '</span>, <span class="dim">' + origen.w + '</span>' +
+      (unico ? '' : ', <span class="dim">3</span>') + ')' +
+      '   <span class="k">x.dtype</span> = uint8' +
+      '   <span class="k">valores</span> = ' + (origen.w * origen.h * (unico ? 1 : 3)).toLocaleString('es');
+
+    var s = estado.sel;
+    if (!s) return;
+
+    document.getElementById('rPos').textContent =
+      'x[' + s.y + ', ' + s.x + ']' + (unico ? '  canal ' + nom[+estado.canal] : '');
+
+    var vals = unico ? [px(s.x, s.y, +estado.canal)]
+                     : [px(s.x, s.y, 0), px(s.x, s.y, 1), px(s.x, s.y, 2)];
+
+    var sw = unico
+      ? ''
+      : '<span class="swatch" style="background: rgb(' + vals.join(',') + ')"></span>';
+
+    document.getElementById('rU8').innerHTML = sw + '[' + vals.join(', ') + ']';
+    document.getElementById('rF32').textContent =
+      '[' + vals.map(function (v) { return (v / 255).toFixed(3); }).join(', ') + ']';
+
+    var idx = unico ? [+estado.canal] : [0, 1, 2];
+    document.getElementById('rNorm').textContent =
+      '[' + vals.map(function (v, k) {
+        var c = idx[k];
+        return ((v / 255 - MEAN[c]) / STD[c]).toFixed(3);
+      }).join(', ') + ']';
+
+    var nota = document.getElementById('nota');
+    if (unico) {
+      var c = +estado.canal;
+      nota.innerHTML = c === 1
+        ? '<strong>El canal verde.</strong> Es donde mejor se ven los vasos y el borde del disco: '
+          + 'la hemoglobina absorbe con fuerza en esa banda, así que el contraste entre vaso y fondo es el mayor de los tres. '
+          + 'Por eso muchos trabajos de retina trabajan solo con <span class="g">G</span>.'
+        : '<strong>Canal ' + nom[c] + ' aislado.</strong> Ahora el tensor tiene una dimensión menos. '
+          + 'Fíjate en que el canal ' + nom[c] + ' aporta mucho menos detalle estructural que el verde: '
+          + 'el rojo se satura y el azul casi no recibe luz en una retina.';
+    } else {
+      nota.innerHTML = '<strong>Tres matrices apiladas.</strong> Lo que llamamos “color” son tres números por '
+        + 'posición. La red no recibe una imagen: recibe este bloque de enteros — y hasta que no lo pases '
+        + 'a <span class="g">float</span> y lo normalices, no está listo para entrenar.';
+    }
+
+    document.getElementById('live').textContent =
+      'Píxel fila ' + s.y + ', columna ' + s.x + '. Valores ' + vals.join(', ') + '.';
+  }
+
+  function pintar() { pintarMapa(); pintarZoom(); pintarLectura(); }
+
+  // ── Interacción ──────────────────────────────────────────
+  function desdeEvento(el, ev) {
+    var b = el.getBoundingClientRect();
+    var t = (ev.touches && ev.touches[0]) || ev;
+    return {
+      u: (t.clientX - b.left) / b.width,
+      v: (t.clientY - b.top) / b.height
+    };
+  }
+
+  mapa.addEventListener('pointerdown', function (ev) {
+    if (!origen) return;
+    var p = desdeEvento(mapa, ev);
+    estado.cx = Math.round(p.u * origen.w);
+    estado.cy = Math.round(p.v * origen.h);
+    estado.sel = { x: estado.cx, y: estado.cy };
+    pintar();
+  });
+
+  zoom.addEventListener('pointerdown', function (ev) {
+    if (!origen) return;
+    ev.preventDefault();
+    var r = region();
+    var p = desdeEvento(zoom, ev);
+    estado.sel = {
+      x: r.x0 + Math.min(r.L - 1, Math.floor(p.u * r.L)),
+      y: r.y0 + Math.min(r.L - 1, Math.floor(p.v * r.L))
+    };
+    pintar();
+  });
+
+  var zr = document.getElementById('zoomRange');
+  zr.addEventListener('input', function () {
+    estado.lado = +zr.value;
+    document.getElementById('zoomVal').textContent = estado.lado + ' px de lado';
+    document.getElementById('zoomHint').textContent = (620 / estado.lado) >= 34
+      ? 'Cada cuadro es un píxel. Los tres números son R, G y B.'
+      : 'Acércate por debajo de 18 px de lado para ver los números.';
+    pintar();
+  });
+
+  function grupo(id, alPulsar) {
+    var g = document.getElementById(id);
+    g.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.opt');
+      if (!b || !g.contains(b)) return;
+      Array.prototype.forEach.call(g.querySelectorAll('.opt'), function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      alPulsar(b);
+    });
+  }
+
+  grupo('grpCanal', function (b) {
+    estado.canal = b.dataset.ch;
+    pintar();
+  });
+
+  grupo('grpImg', function (b) {
+    estado.img = b.dataset.img;
+    iniciar();
+  });
+
+  function iniciar() {
+    cargar(estado.img, function (o) {
+      if (!o) return;
+      origen = o;
+      // Arranca centrado: en ACRIMA el disco optico esta en el centro del recorte.
+      estado.cx = Math.round(o.w / 2);
+      estado.cy = Math.round(o.h / 2);
+      estado.sel = { x: estado.cx, y: estado.cy };
+      pintar();
+    });
+  }
+
+  iniciar();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>El pipeline de preprocesado, paso a paso</title>
+<style>
+/* Misma lengua de color que el articulo:
+   cian = el pixel, los datos · esmeralda = el tensor bien formado
+   rosa = lo que rompe · violeta = la etiqueta · ambar = tu codigo */
+:root {
+  --px:    #06b6d4;
+  --ok:    #10b981;
+  --err:   #f43f5e;
+  --lbl:   #a855f7;
+  --code:  #f59e0b;
+
+  --text:  #e8e8f0;
+  --muted: #9a9ac0;
+  --line:  rgba(85, 170, 255, 0.16);
+  --panel: rgba(255, 255, 255, 0.035);
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-y: hidden;
+}
+
+.wrap { padding: 22px; }
+
+h1 { font-size: 17px; margin: 0 0 4px; }
+.sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 13px 18px;
+  padding: 14px 15px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+fieldset[disabled] { opacity: 0.4; }
+
+legend {
+  padding: 0; margin-bottom: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.opts { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.opt {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit; font-size: 12px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.opt:hover { color: var(--text); border-color: rgba(85, 170, 255, 0.4); }
+.opt[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--px);
+  background: color-mix(in srgb, var(--px) 16%, transparent);
+}
+.opt[aria-pressed='true'][data-romper]:not([data-romper='no']) {
+  border-color: var(--err);
+  background: color-mix(in srgb, var(--err) 18%, transparent);
+}
+.opt:focus-visible { outline: 2px solid var(--px); outline-offset: 2px; }
+.opt:disabled { cursor: not-allowed; }
+
+/* ── Escalera de pasos ───────────────────────────────────── */
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 16px;
+}
+@media (max-width: 620px) {
+  .pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.paso {
+  text-align: left;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.paso:hover { color: var(--text); }
+.paso[aria-pressed='true'] {
+  color: var(--text);
+  border-left-color: var(--code);
+  background: color-mix(in srgb, var(--code) 10%, transparent);
+}
+.paso:focus-visible { outline: 2px solid var(--px); outline-offset: 2px; }
+
+.paso .n {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  color: var(--code);
+}
+.paso .t { display: block; font-size: 12.5px; margin-top: 2px; }
+
+/* ── Escenario ───────────────────────────────────────────── */
+.stage {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 700px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+}
+
+.vista, .datos {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 12px;
+}
+
+.caption {
+  margin: 0 0 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  image-rendering: pixelated;
+  background: rgba(0,0,0,0.25);
+}
+
+.vnota { margin: 8px 0 0; font-size: 11.5px; color: var(--muted); }
+
+/* ── Celda de codigo ─────────────────────────────────────── */
+pre {
+  margin: 0 0 12px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--code);
+  border-radius: 7px;
+  background: rgba(4, 3, 32, 0.5);
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+  color: var(--text);
+}
+pre .c { color: var(--muted); }
+pre .f { color: var(--code); }
+
+/* ── Lectura del tensor ──────────────────────────────────── */
+.campos { display: grid; gap: 6px; }
+
+.campo {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+.campo .k { color: var(--muted); font-size: 11px; }
+.campo .v { color: var(--ok); word-break: break-word; }
+.campo.mal .v { color: var(--err); }
+
+.barra {
+  position: relative;
+  height: 7px;
+  margin-top: 9px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.07);
+  overflow: hidden;
+}
+.barra i {
+  position: absolute;
+  top: 0; bottom: 0;
+  background: linear-gradient(90deg, var(--px), var(--ok));
+  border-radius: 4px;
+}
+.barra.mal i { background: linear-gradient(90deg, var(--err), var(--code)); }
+
+.escala {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.aviso {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-radius: 7px;
+  border: 1px solid color-mix(in srgb, var(--err) 45%, transparent);
+  background: color-mix(in srgb, var(--err) 11%, transparent);
+  font-size: 12.5px;
+}
+.aviso[hidden] { display: none; }
+.aviso code {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--err);
+}
+
+.nota {
+  margin: 13px 0 0;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.nota strong { color: var(--text); font-weight: 600; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>El pipeline, paso a paso</h1>
+  <p class="sub">La misma imagen atravesando las cinco transformaciones. Mira cómo cambia la forma.</p>
+
+  <div class="controls">
+    <fieldset>
+      <legend>Imagen de partida</legend>
+      <div class="opts" id="grpSrc" role="group" aria-label="Imagen de partida">
+        <button class="opt" type="button" data-src="acrima" aria-pressed="true">recorte 379×379</button>
+        <button class="opt" type="button" data-src="hrf" aria-pressed="false">retina 3504×2336</button>
+      </div>
+    </fieldset>
+
+    <fieldset id="fsInterp">
+      <legend>Interpolación al reducir</legend>
+      <div class="opts" id="grpInterp" role="group" aria-label="Interpolación">
+        <button class="opt" type="button" data-interp="nearest" aria-pressed="false">nearest</button>
+        <button class="opt" type="button" data-interp="low" aria-pressed="false">bilinear</button>
+        <button class="opt" type="button" data-interp="high" aria-pressed="true">area</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Romper algo a propósito</legend>
+      <div class="opts" id="grpRomper" role="group" aria-label="Errores">
+        <button class="opt" type="button" data-romper="no" aria-pressed="true">nada</button>
+        <button class="opt" type="button" data-romper="sin255" aria-pressed="false">sin /255</button>
+        <button class="opt" type="button" data-romper="doble" aria-pressed="false">normalizar 2×</button>
+        <button class="opt" type="button" data-romper="canal" aria-pressed="false">sin eje de canal</button>
+      </div>
+    </fieldset>
+  </div>
+
+  <div class="pasos" id="pasos" role="group" aria-label="Pasos del pipeline"></div>
+
+  <div class="stage">
+    <div class="vista">
+      <p class="caption">El tensor, dibujado</p>
+      <canvas id="lienzo" width="440" height="440" aria-label="Vista del tensor en el paso actual"></canvas>
+      <p class="vnota" id="vnota"></p>
+    </div>
+
+    <div class="datos">
+      <pre id="codigo"></pre>
+
+      <div class="campos">
+        <div class="campo"><span class="k">shape</span><span class="v" id="fShape"></span></div>
+        <div class="campo"><span class="k">dtype</span><span class="v" id="fType"></span></div>
+        <div class="campo" id="cRango"><span class="k">min … max</span><span class="v" id="fRango"></span></div>
+        <div class="campo"><span class="k">media</span><span class="v" id="fMedia"></span></div>
+        <div class="campo"><span class="k">memoria</span><span class="v" id="fMem"></span></div>
+      </div>
+
+      <div class="barra" id="barra"><i id="barraI"></i></div>
+      <div class="escala"><span id="e0"></span><span id="e1"></span></div>
+
+      <div class="aviso" id="aviso" hidden></div>
+      <p class="nota" id="nota"></p>
+    </div>
+  </div>
+
+  <p class="sr" id="live" role="status" aria-live="polite"></p>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var MEAN = [0.485, 0.456, 0.406];
+  var STD  = [0.229, 0.224, 0.225];
+  var DEST = 224;      // lado al que redimensiona el pipeline
+  var LOTE = 32;       // tamano de lote
+
+  var FUENTES = {
+    acrima: { url: 'img/retina-glaucoma.jpg', w: 379,  h: 379,  et: '379×379' },
+    // El archivo se sirve reescalado para no cargar 2 MB, pero el original
+    // de HRF mide 3504x2336 y esas son las cifras que se muestran.
+    hrf:    { url: 'img/fondo-completo.jpg',  w: 3504, h: 2336, et: '3504×2336' }
+  };
+
+  var PASOS = [
+    { n: '1', t: 'abrir',        cap: 'El archivo, ya decodificado' },
+    { n: '2', t: 'redimensionar', cap: 'Tras forzar 224×224' },
+    { n: '3', t: 'a float',      cap: 'Mismo dibujo, otro tipo' },
+    { n: '4', t: 'normalizar',   cap: 'Reescalado solo para poder verlo' },
+    { n: '5', t: 'apilar lote',  cap: 'Una imagen del lote' }
+  ];
+
+  var estado = { src: 'acrima', interp: 'high', romper: 'no', paso: 0 };
+  var cache = {};
+  var base = null;      // ImageData 224x224 tras redimensionar
+
+  var lienzo = document.getElementById('lienzo');
+  var lctx = lienzo.getContext('2d', { willReadFrequently: true });
+
+  // ── Pasos ────────────────────────────────────────────────
+  var cont = document.getElementById('pasos');
+  PASOS.forEach(function (p, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'paso';
+    b.setAttribute('aria-pressed', String(i === 0));
+    b.innerHTML = '<span class="n">[' + p.n + ']</span><span class="t">' + p.t + '</span>';
+    b.addEventListener('click', function () { estado.paso = i; pintar(); });
+    cont.appendChild(b);
+  });
+
+  // ── Carga y redimensionado ───────────────────────────────
+  function cargar(hecho) {
+    var f = FUENTES[estado.src];
+    if (cache[estado.src]) { hecho(cache[estado.src]); return; }
+    var im = new Image();
+    im.decoding = 'async';
+    im.onload = function () { cache[estado.src] = im; hecho(im); };
+    im.onerror = function () { hecho(null); };
+    im.src = f.url;
+  }
+
+  function redimensionar(im) {
+    var c = document.createElement('canvas');
+    c.width = DEST; c.height = DEST;
+    var x = c.getContext('2d', { willReadFrequently: true });
+    if (estado.interp === 'nearest') {
+      x.imageSmoothingEnabled = false;
+    } else {
+      x.imageSmoothingEnabled = true;
+      x.imageSmoothingQuality = estado.interp;   // 'low' ~ bilinear · 'high' ~ area
+    }
+    // Se estira a un cuadrado a proposito: es lo que hace resize((224,224))
+    // y por eso una retina 3:2 sale deformada.
+    x.drawImage(im, 0, 0, DEST, DEST);
+    try { return x.getImageData(0, 0, DEST, DEST); } catch (e) { return null; }
+  }
+
+  // ── Estadisticas reales del tensor en cada paso ──────────
+  function estadisticas() {
+    if (!base) return null;
+    var d = base.data, n = DEST * DEST;
+    var paso = estado.paso, rot = estado.romper;
+    var mn = Infinity, mx = -Infinity, suma = 0, cuenta = 0;
+
+    for (var i = 0; i < n; i++) {
+      for (var c = 0; c < 3; c++) {
+        var v = d[i * 4 + c];
+        if (paso >= 2) {
+          v = v / 255;
+          if (rot === 'sin255') v = d[i * 4 + c];      // se salta la division
+        }
+        if (paso >= 3) {
+          v = (v - MEAN[c]) / STD[c];
+          if (rot === 'doble') v = (v - MEAN[c]) / STD[c];
+        }
+        if (v < mn) mn = v;
+        if (v > mx) mx = v;
+        suma += v; cuenta++;
+      }
+    }
+    return { min: mn, max: mx, media: suma / cuenta };
+  }
+
+  // ── Dibujo ───────────────────────────────────────────────
+  function pintarLienzo() {
+    var W = lienzo.width;
+    lctx.clearRect(0, 0, W, W);
+    if (!base) return;
+
+    var st = estadisticas();
+    var out = lctx.createImageData(DEST, DEST);
+    var paso = estado.paso;
+
+    for (var i = 0; i < DEST * DEST; i++) {
+      for (var c = 0; c < 3; c++) {
+        var v = base.data[i * 4 + c];
+        if (paso >= 3) {
+          // Los valores normalizados salen de [0,255]; para poder verlos
+          // se reescala el rango completo a la pantalla. Es solo para mirar.
+          var x = v / 255;
+          if (estado.romper === 'sin255') x = v;
+          x = (x - MEAN[c]) / STD[c];
+          if (estado.romper === 'doble') x = (x - MEAN[c]) / STD[c];
+          v = Math.round(255 * (x - st.min) / (st.max - st.min || 1));
+        }
+        out.data[i * 4 + c] = v;
+      }
+      out.data[i * 4 + 3] = 255;
+    }
+
+    var tmp = document.createElement('canvas');
+    tmp.width = tmp.height = DEST;
+    tmp.getContext('2d').putImageData(out, 0, 0);
+
+    lctx.imageSmoothingEnabled = false;
+    if (paso === 0) {
+      // El paso 1 muestra el original completo, aun sin redimensionar.
+      var im = cache[estado.src];
+      var f = FUENTES[estado.src];
+      var k = Math.min(W / f.w, W / f.h);
+      var dw = f.w * k, dh = f.h * k;
+      lctx.imageSmoothingEnabled = true;
+      lctx.drawImage(im, (W - dw) / 2, (W - dh) / 2, dw, dh);
+    } else {
+      lctx.drawImage(tmp, 0, 0, W, W);
+    }
+
+    if (paso === 4) {
+      // Se insinua la pila del lote con dos siluetas detras.
+      lctx.globalAlpha = 0.28;
+      lctx.drawImage(tmp, 14, -14, W, W);
+      lctx.globalAlpha = 0.16;
+      lctx.drawImage(tmp, 28, -28, W, W);
+      lctx.globalAlpha = 1;
+    }
+  }
+
+  function fmt(v) {
+    if (!isFinite(v)) return '—';
+    return Math.abs(v) >= 100 || Number.isInteger(v) ? String(Math.round(v)) : v.toFixed(3);
+  }
+
+  function pintarDatos() {
+    var f = FUENTES[estado.src];
+    var paso = estado.paso, rot = estado.romper;
+    var st = estadisticas();
+    if (!st) return;
+
+    var canal = (rot === 'canal' && paso >= 1);
+    var shape, tipo, bytes, codigo;
+
+    if (paso === 0) {
+      shape = '(' + f.h + ', ' + f.w + ', 3)';
+      tipo = 'uint8';
+      bytes = f.w * f.h * 3;
+      codigo = '<span class="c"># El archivo comprimido pasa a ser una matriz de enteros</span>\n'
+             + 'img = Image.<span class="f">open</span>(ruta).<span class="f">convert</span>("RGB")\n'
+             + 'x   = np.<span class="f">asarray</span>(img)';
+    } else if (paso === 1) {
+      shape = canal ? '(' + DEST + ', ' + DEST + ')' : '(' + DEST + ', ' + DEST + ', 3)';
+      tipo = 'uint8';
+      bytes = DEST * DEST * (canal ? 1 : 3);
+      codigo = '<span class="c"># Toda la red exige el mismo tamaño: lo fija Flatten, no la convolución</span>\n'
+             + 'img = img.<span class="f">resize</span>((224, 224))\n'
+             + 'x   = np.<span class="f">asarray</span>(img)';
+    } else if (paso === 2) {
+      shape = canal ? '(' + DEST + ', ' + DEST + ')' : '(' + DEST + ', ' + DEST + ', 3)';
+      tipo = 'float32';
+      bytes = DEST * DEST * (canal ? 1 : 3) * 4;
+      codigo = rot === 'sin255'
+        ? '<span class="c"># Falta la división: los valores siguen llegando a 255</span>\n'
+          + 'x = x.<span class="f">astype</span>("float32")'
+        : '<span class="c"># De enteros a decimales, y al rango [0, 1]</span>\n'
+          + 'x = x.<span class="f">astype</span>("float32") / 255.0';
+    } else if (paso === 3) {
+      shape = canal ? '(' + DEST + ', ' + DEST + ')' : '(' + DEST + ', ' + DEST + ', 3)';
+      tipo = 'float32';
+      bytes = DEST * DEST * (canal ? 1 : 3) * 4;
+      codigo = '<span class="c"># Media y desviación de ImageNet: las del modelo preentrenado</span>\n'
+             + 'MEAN = np.<span class="f">array</span>([0.485, 0.456, 0.406], "float32")\n'
+             + 'STD  = np.<span class="f">array</span>([0.229, 0.224, 0.225], "float32")\n'
+             + 'x = (x - MEAN) / STD' + (rot === 'doble' ? '\nx = (x - MEAN) / STD  <span class="c"># otra vez, sin querer</span>' : '');
+    } else {
+      shape = canal ? '(' + LOTE + ', ' + DEST + ', ' + DEST + ')'
+                    : '(' + LOTE + ', ' + DEST + ', ' + DEST + ', 3)';
+      tipo = 'float32';
+      bytes = LOTE * DEST * DEST * (canal ? 1 : 3) * 4;
+      codigo = '<span class="c"># La cuarta dimensión es el lote. Keras espera NHWC.</span>\n'
+             + 'lote = np.<span class="f">stack</span>(imagenes)   <span class="c"># 32 imágenes ya preparadas</span>';
+    }
+
+    document.getElementById('codigo').innerHTML = codigo;
+    document.getElementById('fShape').textContent = shape;
+    document.getElementById('fType').textContent = tipo;
+    document.getElementById('fRango').textContent = fmt(st.min) + ' … ' + fmt(st.max);
+    document.getElementById('fMedia').textContent = fmt(st.media);
+    document.getElementById('fMem').textContent =
+      bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MB' : Math.round(bytes / 1024) + ' KB';
+
+    // Barra de rango: donde cae [min,max] dentro de una escala de referencia.
+    var lo = Math.min(-3, st.min), hi = Math.max(3, st.max);
+    if (paso <= 1) { lo = 0; hi = 255; }
+    else if (paso === 2 && rot !== 'sin255') { lo = 0; hi = 1; }
+    var i0 = (st.min - lo) / (hi - lo), i1 = (st.max - lo) / (hi - lo);
+    var barra = document.getElementById('barra');
+    var malRango = (paso >= 3 && (st.max > 8 || st.min < -8)) ||
+                   (paso === 2 && rot === 'sin255');
+    barra.classList.toggle('mal', malRango);
+    document.getElementById('cRango').classList.toggle('mal', malRango);
+    document.getElementById('barraI').style.left = (i0 * 100).toFixed(1) + '%';
+    document.getElementById('barraI').style.width = Math.max(1.5, (i1 - i0) * 100).toFixed(1) + '%';
+    document.getElementById('e0').textContent = fmt(lo);
+    document.getElementById('e1').textContent = fmt(hi);
+
+    // Avisos de los fallos provocados
+    var aviso = document.getElementById('aviso');
+    var msg = '';
+    if (rot === 'sin255' && paso >= 2) {
+      msg = '<strong>Sin dividir entre 255.</strong> Tras normalizar, los valores llegan a ~'
+          + fmt(st.max) + ' en vez de ~2,6. Keras no protesta: el modelo entrena, '
+          + 'converge mal y nadie ve el error. Es el fallo más común y el más silencioso.';
+    } else if (rot === 'doble' && paso >= 3) {
+      msg = '<strong>Normalizado dos veces.</strong> Suele pasar al combinar tu propio código con '
+          + 'una capa <code>Rescaling</code> o un <code>preprocess_input</code> que ya lo hacía. '
+          + 'El rango se dispara a ' + fmt(st.min) + ' … ' + fmt(st.max) + '.';
+    } else if (rot === 'canal' && paso >= 1) {
+      msg = '<strong>Falta el eje de canal.</strong> Este sí revienta, y menos mal: '
+          + '<code>Input(shape=(224, 224, 3))</code> recibe <code>' + shape + '</code>. '
+          + 'Es el mismo motivo por el que MNIST necesita ese <code>.reshape(…, 28, 28, 1)</code>.';
+    }
+    aviso.hidden = !msg;
+    aviso.innerHTML = msg;
+
+    var vn = { 0: 'Tamaño original: ' + f.et + '.',
+               1: 'Ahora 224×224' + (estado.src === 'hrf' ? ' — y aplastada: la retina era 3:2.' : '.'),
+               2: 'El dibujo no cambia; el tipo de dato sí.',
+               3: 'Ya no hay “colores”: hay números centrados en cero.',
+               4: '32 imágenes iguales de forma, apiladas.' }[paso];
+    document.getElementById('vnota').textContent = vn;
+    document.getElementById('lienzo').setAttribute('aria-label', PASOS[paso].cap);
+
+    var nota = document.getElementById('nota');
+    if (paso === 1 && estado.interp === 'nearest' && estado.src === 'hrf') {
+      nota.innerHTML = '<strong>Aliasing.</strong> Con <em>nearest</em> se tira el 99 % de los píxeles sin mirarlos: '
+        + 'los vasos finos aparecen rotos o desaparecen. Al reducir mucho hay que promediar, no muestrear.';
+    } else if (paso === 1) {
+      nota.innerHTML = '<strong>La forma es un contrato.</strong> Las capas convolucionales aceptan cualquier tamaño; '
+        + 'lo que fija la entrada es el <code>Flatten</code> que va antes de la capa densa.';
+    } else if (paso === 4) {
+      nota.innerHTML = '<strong>' + (LOTE * DEST * DEST * 3 * 4 / 1048576).toFixed(1) + ' MB por lote</strong>, '
+        + 'solo de entrada. Las activaciones intermedias multiplican esa cifra varias veces: por eso el '
+        + 'tamaño de lote es lo primero que se baja cuando la GPU se queda sin memoria.';
+    } else {
+      nota.innerHTML = '<strong>El mismo dato, cuatro veces.</strong> Nada de esto cambia lo que se ve; '
+        + 'cambia lo que la red recibe. Y ahí es donde se decide si aprende.';
+    }
+
+    document.getElementById('live').textContent =
+      'Paso ' + (paso + 1) + ', ' + PASOS[paso].t + '. Forma ' + shape + ', tipo ' + tipo + '.';
+  }
+
+  function pintar() {
+    Array.prototype.forEach.call(cont.children, function (b, i) {
+      b.setAttribute('aria-pressed', String(i === estado.paso));
+    });
+    document.getElementById('fsInterp').disabled = estado.paso === 0;
+    pintarLienzo();
+    pintarDatos();
+  }
+
+  function grupo(id, alPulsar) {
+    var g = document.getElementById(id);
+    g.addEventListener('click', function (ev) {
+      var b = ev.target.closest('.opt');
+      if (!b || !g.contains(b)) return;
+      Array.prototype.forEach.call(g.querySelectorAll('.opt'), function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      alPulsar(b);
+    });
+  }
+
+  grupo('grpInterp', function (b) {
+    estado.interp = b.dataset.interp;
+    recalcular();
+  });
+  grupo('grpRomper', function (b) {
+    estado.romper = b.dataset.romper;
+    pintar();
+  });
+  grupo('grpSrc', function (b) {
+    estado.src = b.dataset.src;
+    recalcular();
+  });
+
+  function recalcular() {
+    cargar(function (im) {
+      if (!im) return;
+      base = redimensionar(im);
+      pintar();
+    });
+  }
+
+  recalcular();
+})();
+</script>
+</body>
+</html>
