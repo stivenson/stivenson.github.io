@@ -102,7 +102,11 @@ input[type=range] { width: 100%; accent-color: var(--px); margin: 4px 0 0; }
 /* ── Escenario ───────────────────────────────────────────── */
 .stage {
   display: grid;
-  grid-template-columns: 210px minmax(0, 1fr);
+  /* El canvas ampliado es cuadrado, asi que su altura la fija su ancho. Se
+     reparte el espacio entre las dos columnas en vez de dejar el mapa fijo
+     en 210px: el panel de zoom deja de dispararse a lo alto y el mapa
+     aprovecha el hueco que le sobraba al lado. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
   gap: 16px;
   align-items: start;
 }
@@ -218,8 +222,8 @@ canvas {
     <fieldset>
       <legend>Imagen</legend>
       <div class="opts" id="grpImg" role="group" aria-label="Imagen">
-        <button class="opt" type="button" data-img="glaucoma" aria-pressed="true">glaucoma</button>
-        <button class="opt" type="button" data-img="normal" aria-pressed="false">normal</button>
+        <button class="opt" type="button" data-img="glaucoma" aria-pressed="true">ojo con glaucoma</button>
+        <button class="opt" type="button" data-img="normal" aria-pressed="false">ojo sano</button>
       </div>
     </fieldset>
 

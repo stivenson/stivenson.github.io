@@ -131,6 +131,32 @@ h2 {
 }
 .leyenda b { color: var(--text); font-weight: 600; }
 
+/* Clave de simbolos, arriba del grafico: los sellos y la linea de
+   referencia se explicaban en un parrafo por debajo, o sea despues de
+   haberlos tenido que interpretar a ciegas. */
+.clave {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: -3px 0 12px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.clave .ll { display: inline-flex; align-items: center; gap: 6px; }
+.clave .ll i {
+  display: inline-block;
+  width: 13px; height: 13px;
+  border-radius: 3px;
+  font-style: normal;
+  flex: none;
+}
+/* La marca de referencia es una linea de 2px en el grafico: en la clave
+   tiene que verse igual, no como un cuadrado mas. */
+.clave .ll i.lbase { width: 2px; height: 15px; border-radius: 0; background: var(--muted); opacity: 0.75; }
+.clave .ll i.lvive { border: 1px solid var(--err); background: color-mix(in srgb, var(--err) 17%, transparent); }
+.clave .ll i.lparte { border: 1px solid var(--err); background: color-mix(in srgb, var(--err) 13%, transparent); }
+.clave .ojo { text-align: center; line-height: 13px; }
+
 /* ── Interruptor de preprocesado ─────────────────────────── */
 .opts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 13px; }
 
@@ -240,6 +266,11 @@ h2 {
       <button class="opt" type="button" data-pre="resize" aria-pressed="false">tras redimensionar a 224×224</button>
     </div>
 
+    <p class="clave">
+      <span class="ll"><i class="lbase"></i>la línea marca 56,2 % — lo que acierta decir siempre “glaucoma”</span>
+      <span class="ll"><i class="lvive"></i><b>sobrevive</b>&nbsp;= el atajo sigue en pie tras el preprocesado elegido</span>
+    </p>
+
     <div id="barras"></div>
 
     <p class="leyenda" id="leyenda"></p>
@@ -253,6 +284,12 @@ h2 {
       <button class="opt" type="button" data-part="paciente" aria-pressed="false">partir por paciente</button>
       <button class="opt" type="button" id="rebarajar">barajar de nuevo</button>
     </div>
+
+    <p class="clave">
+      <span class="ll"><i class="ojo tr">E</i>ojo en entrenamiento</span>
+      <span class="ll"><i class="ojo te">P</i>ojo en prueba</span>
+      <span class="ll"><i class="lparte"></i>paciente con un ojo a cada lado</span>
+    </p>
 
     <div class="rejilla" id="rejilla"></div>
 
@@ -361,11 +398,11 @@ h2 {
       ? '<b>Redimensionar le quita a la red el acceso a dos atajos de tres.</b> El tamaño y el peso del '
         + 'archivo ya no están en lo que el modelo ve cuando todo llega como tensor de 224×224. '
         + 'El color sí: sigue sacando <b>64,4 %</b> en partición independiente, ocho puntos por encima del '
-        + 'clasificador tonto, sin mirar una sola estructura anatómica. La línea vertical marca ese 56,2 %. '
+        + 'clasificador tonto, sin mirar una sola estructura anatómica. '
         + '<br><br>Matiz: borra el acceso directo, no toda la huella. Una imagen que venía de 1420 px y otra '
         + 'de 300 llegan a 224 con nitidez y artefactos de compresión distintos.'
       : '<b>Sin tocar un solo píxel de anatomía</b>, el ancho de la imagen acierta el <b>86,1 %</b> en '
-        + 'partición independiente: en ACRIMA las glaucomatosas miden 668 px de media y las sanas 353. '
+        + 'partición independiente: en ACRIMA los ojos con glaucoma miden 668 px de media y los sanos 353. '
         + 'Las dos clases se capturaron de formas distintas, y eso queda escrito en el archivo. '
         + 'Cambia al preprocesado y mira cuáles sobreviven.';
 
@@ -457,8 +494,7 @@ h2 {
       limpio + ' de ' + enPrueba + ' imágenes de prueba';
 
     document.getElementById('leyPart').innerHTML = estado.part === 'imagen'
-      ? '<b>E</b> = entrenamiento, <b>P</b> = prueba. En rojo, los pacientes que caen a los dos lados. '
-        + 'Los dos ojos de una persona se fotografían el mismo día, con la misma cámara y comparten '
+      ? '<b>Los dos ojos de una persona</b> se fotografían el mismo día, con la misma cámara y comparten '
         + 'gran parte de la anatomía: reconocer el ojo derecho después de haber visto el izquierdo no es '
         + 'diagnosticar, es recordar. La nota sube y no significa nada.'
       : '<b>Ningún paciente se parte.</b> La nota baja — y esa es la buena. Es la única que estima lo que '
@@ -466,8 +502,8 @@ h2 {
         + 'de cada paciente precisamente para que puedas partir así.';
     document.getElementById('leyPart').innerHTML += estado.part === 'imagen'
       ? '<br><br>Aquí el reparto es 50/50 porque se ve mejor. Con el 80/20 habitual se parten menos '
-        + 'pacientes —2·0,8·0,2 = <b>32 %</b>— pero es peor de otra forma: para cada imagen de prueba, la '
-        + 'probabilidad de que su otro ojo esté en entrenamiento es <b>0,8</b>.'
+        + 'pacientes (<b>32 %</b>), pero cada imagen de prueba tiene <b>0,8</b> de probabilidad de que su '
+        + 'otro ojo esté en entrenamiento: peor, no mejor.'
       : '';
   }
 

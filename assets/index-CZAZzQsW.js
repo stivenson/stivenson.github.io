@@ -1749,9 +1749,9 @@ Casi todo el material sobre redes convolucionales empieza en la arquitectura: cu
 X_train, X_test = X_train / 255.0, X_test / 255.0
 \`\`\`
 
-Con MNIST eso basta, porque MNIST viene resuelto: 70.000 imágenes, todas de 28×28, un solo canal, ya partidas en entrenamiento y prueba. Ese conjunto está *diseñado* para que el preprocesado no estorbe.
+Con MNIST eso basta, porque MNIST viene resuelto: 70.000 imágenes, todas de 28×28, un solo canal, ya partidas en <span class="gl"><input type="checkbox" id="gl-conjuntos" class="gl-c"><label for="gl-conjuntos" class="gl-t">entrenamiento y prueba</label><span class="gl-m"><label for="gl-conjuntos" class="gl-bg"></label><span class="gl-b"><b>Entrenamiento, validación y prueba</b><span>Los datos se parten en tres montones con papeles distintos. <b>Entrenamiento</b> es lo único que el modelo mira para ajustar sus pesos. <b>Validación</b> es lo que miras tú mientras decides cuántas capas, qué tamaño de entrada o cuándo parar. <b>Prueba</b> se abre una sola vez, al final, para reportar la cifra.</span><span>Si eliges algo mirando el conjunto de prueba, deja de ser prueba: se convierte en validación, y tu cifra final ya no estima nada. Por eso MNIST solo trae dos montones y la validación la recortas tú del entrenamiento.</span><label for="gl-conjuntos" class="gl-x">Entendido</label></span></span></span>. Ese conjunto está *diseñado* para que el preprocesado no estorbe.
 
-Un conjunto real no se parece a eso. Este artículo usa **ACRIMA**, 705 fotografías de fondo de ojo etiquetadas como glaucomatosas o normales, y en él vas a encontrar 258 tamaños distintos, la etiqueta escondida en el nombre del archivo, dos archivos que un \`glob\` mal escrito pierde en silencio, y —esto es lo importante— **pistas que permiten acertar el 86,8 % de los diagnósticos sin mirar un solo píxel de anatomía**.
+Un conjunto real no se parece a eso. Este artículo usa **ACRIMA**, 705 fotografías de <span class="gl"><input type="checkbox" id="gl-fondo" class="gl-c"><label for="gl-fondo" class="gl-t">fondo de ojo</label><span class="gl-m"><label for="gl-fondo" class="gl-bg"></label><span class="gl-b"><b>Fondo de ojo (retinografía)</b><span>Es la fotografía de la pared interna del ojo, tomada con una cámara que ilumina y enfoca a través de la pupila. Se ve la retina anaranjada, la malla de vasos, y una zona clara y redonda —el <b>disco óptico</b>— por donde sale el nervio hacia el cerebro.</span><span>Es la prueba más barata y extendida para cribar glaucoma, y por eso casi todos los conjuntos públicos son de este tipo. No mide presión ni campo visual: solo muestra la forma del nervio.</span><label for="gl-fondo" class="gl-x">Entendido</label></span></span></span> con **dos etiquetas y nada más**: **ojo con glaucoma** (396 imágenes) u **ojo sano** (309). Esa es toda la tarea — mirar una retina y decidir en cuál de los dos montones va. Y en ese conjunto vas a encontrar 258 tamaños distintos, la etiqueta escondida en el nombre del archivo, dos archivos que un \`glob\` mal escrito pierde en silencio, y —esto es lo importante— **pistas que permiten acertar el 86,8 % de los diagnósticos sin mirar un solo píxel de anatomía**.
 
 La tesis del artículo es esa última parte:
 
@@ -1764,7 +1764,7 @@ Todo el código de aquí abajo vive también en un notebook ejecutable — **es 
 <div class="nb-cell nb-md">
 
 <div class="flujo">
-<div class="fp" style="--fc:#06b6d4"><b>1 · El archivo</b><code>Im318_g_ACRIMA.jpg</code><em>19.781 bytes comprimidos</em></div>
+<div class="fp" style="--fc:#06b6d4"><b>1 · El archivo</b><code>Im318_g_ACRIMA.jpg</code><em>19.781 bytes · la <b>_g_</b> dice “glaucoma”</em></div>
 <div class="fp" style="--fc:#06b6d4"><b>2 · Decodificar</b><code>np.asarray(img)</code><em>(379, 379, 3) uint8</em></div>
 <div class="fp" style="--fc:#22c1c3"><b>3 · Redimensionar</b><code>img.resize((224, 224))</code><em>(224, 224, 3) uint8</em></div>
 <div class="fp" style="--fc:#3ecf9a"><b>4 · A decimales</b><code>x.astype("float32") / 255</code><em>rango [0, 1]</em></div>
@@ -1774,13 +1774,15 @@ Todo el código de aquí abajo vive también en un notebook ejecutable — **es 
 
 Seis pasos. Los tres primeros deciden **qué información sobrevive**; los tres últimos, **en qué escala llega**. Vamos uno por uno, y al final volvemos a mirar el diagrama con otros ojos.
 
+Al final de esa cadena, cada retina llega convertida en números y con una sola cosa pegada a ella: su etiqueta, \`1\` si es un **ojo con glaucoma** y \`0\` si es un **ojo sano**. Todo lo que sigue existe para que esos números conserven lo que distingue un montón del otro — y para que no conserven, sin darte cuenta, algo que los distingue por accidente.
+
 </div>
 
 <div class="nb-cell nb-md">
 
 ## 1. El archivo no es la imagen
 
-Un \`.jpg\` no contiene píxeles. Contiene **instrucciones para reconstruirlos**: coeficientes de una transformada del coseno, cuantizados y comprimidos. Es un formato de compresión, no un formato de datos.
+Un \`.jpg\` no contiene píxeles. Contiene **instrucciones para reconstruirlos**: coeficientes de una <span class="gl"><input type="checkbox" id="gl-dct" class="gl-c"><label for="gl-dct" class="gl-t">transformada del coseno</label><span class="gl-m"><label for="gl-dct" class="gl-bg"></label><span class="gl-b"><b>Transformada del coseno (DCT)</b><span>JPEG parte la imagen en bloques de 8×8 píxeles y describe cada bloque como una suma de ondas: primero el tono medio, después los detalles cada vez más finos. Guardar esos coeficientes en vez de los píxeles no ahorra nada por sí solo — lo que ahorra es <b>cuantizarlos</b>: redondear los coeficientes finos hasta que muchos quedan en cero.</span><span>Por eso JPEG pierde información y por eso el archivo pesa 20 KB mientras el tensor pesa 431 KB. Ese redondeo es también el origen de los bloques cuadrados que se ven en fotos muy comprimidas.</span><label for="gl-dct" class="gl-x">Entendido</label></span></span></span>, cuantizados y comprimidos. Es un formato de compresión, no un formato de datos.
 
 Por eso \`Image.open()\` es tan rápido: no decodifica nada. Solo lee la cabecera y te devuelve un objeto perezoso. Los números aparecen cuando pides el array.
 
@@ -1853,9 +1855,14 @@ La segunda: entre \`uint8\` y \`float32\` normalizado no cambia el dibujo, cambi
 
 Antes de tocar un píxel hay que resolver algo más aburrido y más peligroso: de dónde sale \`y\`.
 
-En MNIST viene servido, \`(X_train, y_train), (X_test, y_test) = mnist.load_data()\`. En ACRIMA la etiqueta está **en el nombre del archivo**, y su documentación lo dice así: el nombre lleva \`_g_\` si la imagen es patológica y solo \`_\` si es normal.
+En MNIST viene servido, \`(X_train, y_train), (X_test, y_test) = mnist.load_data()\`. En ACRIMA la etiqueta está **en el nombre del archivo**, y su documentación lo dice así: el nombre lleva \`_g_\` si la imagen es de un **ojo con glaucoma**, y solo \`_\` si es de un **ojo sano**.
 
-Es decir: **la clase sana se identifica por ausencia**. Esto, que parece un detalle, es la primera trampa.
+| Nombre del archivo | Etiqueta | \`y\` |
+|---|---|---|
+| \`Im318_g_ACRIMA.jpg\` | ojo con glaucoma | \`1\` |
+| \`Im013_ACRIMA.jpg\` | ojo sano | \`0\` |
+
+Es decir: **la clase sana no se marca, se deduce de que no está marcada**. Esto, que parece un detalle tipográfico, es la primera trampa.
 
 </div>
 
@@ -1929,7 +1936,7 @@ Proporción de glaucoma  : <b>56.7%</b></div>
 
 > 💡 **Lección clave:** cuando la etiqueta vive en el nombre del archivo, el cargador de datos es código crítico. Cuenta siempre las clases justo después de construir \`y\`, y compáralo con lo que dice la documentación del conjunto. Un \`np.bincount\` de una línea te ahorra días.
 
-Sobre el conjunto completo esa proporción es 396 glaucomatosas frente a 309 normales — **56,2 % contra 43,8 %**. Guárdate ese 56,2 %: va a volver.
+Sobre el conjunto completo esa proporción es 396 ojos con glaucoma frente a 309 ojos sanos — **56,2 % contra 43,8 %**. Guárdate ese 56,2 %: va a volver.
 
 </div>
 
@@ -2025,7 +2032,7 @@ Siete mil veces peor. Eso no demuestra por sí solo que el modelo vaya a fallar,
 La salida no es entrenar más rato. Son tres decisiones, y las tres son de preprocesado o de arquitectura:
 
 1. **Bajar el tamaño de entrada.** A 96×96, ese \`Dense\` cae a 460.900 parámetros.
-2. **Cambiar \`Flatten\` por \`GlobalAveragePooling2D\`**, que promedia cada mapa de activación y devuelve un vector de longitud igual al número de filtros — 32, independientemente del tamaño de entrada. El modelo entero pasa a **8.590 parámetros**: 293 veces menos que con \`Flatten\`, y sigue aceptando imágenes de 224×224.
+2. **Cambiar \`Flatten\` por \`GlobalAveragePooling2D\`**, que promedia cada <span class="gl"><input type="checkbox" id="gl-activacion" class="gl-c"><label for="gl-activacion" class="gl-t">mapa de activación</label><span class="gl-m"><label for="gl-activacion" class="gl-bg"></label><span class="gl-b"><b>Mapa de activación</b><span>Cada filtro de una capa convolucional recorre la imagen entera y deja una rejilla de números: alto por ancho, un valor por posición, que dice cuánto se parece esa zona al patrón que el filtro busca. Esa rejilla es el <b>mapa de activación</b> de ese filtro.</span><span>Es la salida de la capa y la entrada de la siguiente. Una capa con 32 filtros produce 32 mapas apilados — el mismo formato que los tres canales de color, solo que ahora los canales ya no son rojo, verde y azul, sino patrones aprendidos.</span><label for="gl-activacion" class="gl-x">Entendido</label></span></span></span> y devuelve un vector de longitud igual al número de filtros — 32, independientemente del tamaño de entrada. El modelo entero pasa a **8.590 parámetros**: 293 veces menos que con \`Flatten\`, y sigue aceptando imágenes de 224×224.
 3. <span class="gl"><input type="checkbox" id="gl-transfer" class="gl-c"><label for="gl-transfer" class="gl-t">Aprendizaje por transferencia</label><span class="gl-m"><label for="gl-transfer" class="gl-bg"></label><span class="gl-b"><b>Aprendizaje por transferencia</b><span>Consiste en partir de una red ya entrenada con millones de imágenes genéricas y reaprovechar lo que aprendió: bordes, texturas, formas. Se congelan esas capas y solo se entrena una cabeza nueva para tu problema.</span><span>Con 705 imágenes es casi siempre la opción correcta, porque las capas útiles ya vienen ajustadas y tú solo estimas unos pocos miles de parámetros.</span><label for="gl-transfer" class="gl-x">Entendido</label></span></span></span>, que es lo que se hace de verdad con 705 imágenes: congelar un extractor ya entrenado y ajustar solo la cabeza.
 
 > 💡 **Lección clave:** el tamaño al que redimensionas no es un parámetro estético. Multiplica o divide la capacidad del modelo, y con conjuntos pequeños esa es la diferencia entre aprender y memorizar.
@@ -2138,7 +2145,7 @@ mal  :  -123.68 …  <span class="err">-103.37   amplitud   20.31</span></div>
 
 <div class="nb-cell nb-md">
 
-Fíjate en la amplitud: pasa de **255 a 20**. Al haber dividido antes, toda la imagen entra en el rango \`[0, 1]\` y lo único que hace \`preprocess_input\` es restarle la media de ImageNet, así que las tres bandas se apilan en una franja estrecha y negativa. Todas las imágenes acaban pareciéndose entre sí.
+Fíjate en la amplitud: pasa de **255 a 20**. Al haber dividido antes, toda la imagen entra en el rango \`[0, 1]\` y lo único que hace \`preprocess_input\` es restarle la media de <span class="gl"><input type="checkbox" id="gl-imagenet" class="gl-c"><label for="gl-imagenet" class="gl-t">ImageNet</label><span class="gl-m"><label for="gl-imagenet" class="gl-bg"></label><span class="gl-b"><b>ImageNet</b><span>Es el conjunto de imágenes con el que se entrenaron casi todas las redes preentrenadas que descargas: más de un millón de fotos cotidianas repartidas en mil categorías —perros, coches, setas, instrumentos—. Ninguna es médica.</span><span>Su media y su desviación por canal se publicaron con esas redes, y <code>preprocess_input</code> las aplica para que la entrada llegue en la misma escala en la que el modelo aprendió. Si vas a usar sus pesos, usa también sus constantes: no calcules las tuyas.</span><label for="gl-imagenet" class="gl-x">Entendido</label></span></span></span>, así que las tres bandas se apilan en una franja estrecha y negativa. Todas las imágenes acaban pareciéndose entre sí.
 
 Keras no protesta. El entrenamiento arranca, la pérdida baja un poco y se estanca. Ese es el aspecto que tiene este error.
 
@@ -2152,7 +2159,7 @@ En la OVA de arriba tienes el interruptor **“romper algo a propósito”**: pr
 
 ## 6. El eje de canal, y la cuarta dimensión
 
-Keras trabaja en **NHWC** (\`channels_last\`): lote, alto, ancho, canal. PyTorch usa NCHW. No hay ninguno mejor; son convenciones distintas heredadas de cómo se optimizó cada biblioteca, y lo único que importa es no mezclarlas.
+Keras trabaja en **NHWC** (\`channels_last\`): <span class="gl"><input type="checkbox" id="gl-lote" class="gl-c"><label for="gl-lote" class="gl-t">lote</label><span class="gl-m"><label for="gl-lote" class="gl-bg"></label><span class="gl-b"><b>Lote (<i>batch</i>)</b><span>Una red no se entrena imagen a imagen ni con todo el conjunto de golpe: procesa <b>lotes</b> de 16, 32 o 64 imágenes, calcula el error medio del lote y actualiza los pesos una vez con él. Por eso la entrada tiene cuatro dimensiones y no tres.</span><span>El tamaño del lote afecta a dos cosas a la vez: cuánta memoria de GPU necesitas y cuánto ruido tiene cada actualización. Lotes grandes van más rápido y son más estables; lotes pequeños caben en menos memoria y a veces generalizan mejor.</span><label for="gl-lote" class="gl-x">Entendido</label></span></span></span>, alto, ancho, canal. PyTorch usa NCHW. No hay ninguno mejor; son convenciones distintas heredadas de cómo se optimizó cada biblioteca, y lo único que importa es no mezclarlas.
 
 Este es el motivo de esa línea que aparece en todos los laboratorios de MNIST y que nadie explica:
 
@@ -2200,9 +2207,9 @@ Memoria         : <b>18.4 MiB</b></div>
 
 <div class="nb-cell nb-md">
 
-18,4 MiB para 32 imágenes —19,3 MB si cuentas en potencias de diez— y eso es solo **la entrada**. Cada capa convolucional guarda su mapa de activaciones para poder calcular gradientes en la retropropagación, así que la memoria real durante el entrenamiento es varias veces esa cifra.
+18,4 MiB para 32 imágenes —19,3 MB si cuentas en potencias de diez— y eso es solo **la entrada**. Cada capa convolucional guarda su mapa de activaciones para poder calcular gradientes en la <span class="gl"><input type="checkbox" id="gl-backprop" class="gl-c"><label for="gl-backprop" class="gl-t">retropropagación</label><span class="gl-m"><label for="gl-backprop" class="gl-bg"></label><span class="gl-b"><b>Retropropagación</b><span>Entrenar es repetir dos pasadas. En la de <b>ida</b> la imagen atraviesa las capas y sale una predicción, que se compara con la etiqueta y da un error. En la de <b>vuelta</b> ese error se reparte hacia atrás, capa por capa, calculando cuánto habría bajado el error si cada peso hubiera sido un poco distinto: eso es el <b>gradiente</b>. Después cada peso se mueve un paso en esa dirección.</span><span>No es magia ni nada nuevo: es la regla de la cadena de cálculo diferencial aplicada capa a capa. Y tiene un coste en memoria que sorprende: para repartir el error hacia atrás hay que recordar lo que salió de cada capa en la ida, así que todos los mapas de activación del lote siguen ocupando RAM hasta que la pasada de vuelta termina.</span><label for="gl-backprop" class="gl-x">Entendido</label></span></span></span>, así que la memoria real durante el entrenamiento es varias veces esa cifra.
 
-Por eso lo primero que se baja cuando la GPU se queda sin memoria es el tamaño de lote. Y por eso el tamaño de lote no es solo un hiperparámetro de optimización: es una restricción de hardware que acabas eligiendo por el tamaño al que decidiste redimensionar, tres pasos antes.
+Por eso lo primero que se baja cuando la GPU se queda sin memoria es el tamaño de lote. Y por eso el tamaño de lote no es solo un <span class="gl"><input type="checkbox" id="gl-hiper" class="gl-c"><label for="gl-hiper" class="gl-t">hiperparámetro</label><span class="gl-m"><label for="gl-hiper" class="gl-bg"></label><span class="gl-b"><b>Hiperparámetro</b><span>Los <b>parámetros</b> los aprende el modelo: son los 2.514.190 pesos que salen de entrenar. Los <b>hiperparámetros</b> los eliges tú antes de entrenar y el modelo no los toca: tamaño de lote, tasa de aprendizaje, número de capas, tamaño de entrada.</span><span>Se ajustan probando y midiendo en el conjunto de validación — nunca en el de prueba. El tamaño al que redimensionas es uno de ellos, aunque casi nadie lo trate como tal.</span><label for="gl-hiper" class="gl-x">Entendido</label></span></span></span> de optimización: es una restricción de hardware que acabas eligiendo por el tamaño al que decidiste redimensionar, tres pasos antes.
 
 </div>
 
@@ -2274,9 +2281,9 @@ Clasificador tonto             : 56.2%</div>
 
 **86,8 % con una sola comparación de números enteros.** \`if ancho >= 427: "glaucoma"\`. Sin abrir la imagen, sin ver un vaso, sin saber qué es un disco óptico.
 
-Las imágenes glaucomatosas de ACRIMA miden 668 píxeles de lado de media; las normales, 353. Las dos clases se capturaron o se recortaron de maneras sistemáticamente distintas, y eso quedó grabado en las dimensiones del archivo. No es fraude ni descuido de los autores: es lo normal cuando un conjunto se compone reuniendo material clínico recogido en distintos momentos. Pero significa que **hay una vía para acertar que no pasa por la enfermedad**.
+Las imágenes de ojos con glaucoma de ACRIMA miden 668 píxeles de lado de media; las de ojos sanos, 353. Las dos clases se capturaron o se recortaron de maneras sistemáticamente distintas, y eso quedó grabado en las dimensiones del archivo. No es fraude ni descuido de los autores: es lo normal cuando un conjunto se compone reuniendo material clínico recogido en distintos momentos. Pero significa que **hay una vía para acertar que no pasa por la enfermedad**.
 
-Ese umbral se elige mirando las mismas imágenes que luego se puntúan, así que sobreestima. La objeción es justa, y se responde midiendo: ajustando el umbral en el 70 % de las imágenes y evaluándolo en el 30 % restante, estratificado y promediando 200 particiones, el atajo del ancho sigue acertando el **86,1 % ± 2,0**, el del peso el **81,0 % ± 2,4** y el del color el **64,4 % ± 2,3**. No era un artefacto de la búsqueda.
+Ese umbral se elige mirando las mismas imágenes que luego se puntúan, así que sobreestima. La objeción es justa, y se responde midiendo: ajustando el umbral en el 70 % de las imágenes y evaluándolo en el 30 % restante, <span class="gl"><input type="checkbox" id="gl-estratificado" class="gl-c"><label for="gl-estratificado" class="gl-t">estratificado</label><span class="gl-m"><label for="gl-estratificado" class="gl-bg"></label><span class="gl-b"><b>Partición estratificada</b><span>Partir <b>estratificando</b> significa repartir cada clase por separado, de modo que la proporción glaucoma/normal sea la misma en entrenamiento y en prueba que en el conjunto entero.</span><span>Sin eso, con 705 imágenes y azar puro, una partición puede quedar con muchas más glaucomatosas que la otra, y entonces no sabes si la diferencia de acierto viene del método o del reparto. Es lo que hace <code>stratify=y</code> en <code>train_test_split</code>.</span><label for="gl-estratificado" class="gl-x">Entendido</label></span></span></span> y promediando 200 particiones, el atajo del ancho sigue acertando el **86,1 % ± 2,0**, el del peso el **81,0 % ± 2,4** y el del color el **64,4 % ± 2,3**. No era un artefacto de la búsqueda.
 
 El script que produce estas cuatro cifras está en el repositorio, es de una página y corre en unos segundos: [\`datasets/medir_atajos.py\`](https://github.com/stivenson/stivenson.github.io/blob/main/datasets/medir_atajos.py). Se le pasa la carpeta de imágenes y devuelve la tabla completa, in-sample y held-out.
 
@@ -2380,4 +2387,4 @@ Si te llevas una sola cosa, que sea esta: antes de entrenar nada, comprueba qué
 
 </div>
 `;function x(e){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=e.match(n);if(!o)throw new Error("Invalid frontmatter format");const u=o[1],b=o[2],s={},g=u.split(`
-`);for(const l of g){const t=l.indexOf(":");if(t===-1)continue;const r=l.substring(0,t).trim();let a=l.substring(t+1).trim();if((a.startsWith('"')&&a.endsWith('"')||a.startsWith("'")&&a.endsWith("'"))&&(a=a.slice(1,-1)),r==="tags"){const p=a.match(/\[(.*?)\]/);p&&(s.tags=p[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?s.date=a:r==="slug"?s.slug=a:r==="title"?s.title=a:r==="description"&&(s.description=a)}return{frontmatter:s,body:b}}function i(e){const{frontmatter:n,body:o}=x(e);return{metadata:n,content:o}}const m=[i(f),i(v),i(y),i(h),i(q)];function d(e){return new Date(`${e}T00:00:00`)}function L(e){return d(e).toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})}function E(e){return m.find(n=>n.metadata.slug===e)}function P(){return[...m].sort((e,n)=>{const o=d(e.metadata.date).getTime();return d(n.metadata.date).getTime()-o})}export{E as a,L as f,P as g};
+`);for(const i of g){const t=i.indexOf(":");if(t===-1)continue;const r=i.substring(0,t).trim();let a=i.substring(t+1).trim();if((a.startsWith('"')&&a.endsWith('"')||a.startsWith("'")&&a.endsWith("'"))&&(a=a.slice(1,-1)),r==="tags"){const p=a.match(/\[(.*?)\]/);p&&(s.tags=p[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?s.date=a:r==="slug"?s.slug=a:r==="title"?s.title=a:r==="description"&&(s.description=a)}return{frontmatter:s,body:b}}function l(e){const{frontmatter:n,body:o}=x(e);return{metadata:n,content:o}}const m=[l(f),l(v),l(y),l(h),l(q)];function d(e){return new Date(`${e}T00:00:00`)}function L(e){return d(e).toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})}function E(e){return m.find(n=>n.metadata.slug===e)}function P(){return[...m].sort((e,n)=>{const o=d(e.metadata.date).getTime();return d(n.metadata.date).getTime()-o})}export{E as a,L as f,P as g};
