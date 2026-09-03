@@ -1,6 +1,7 @@
 import agentSkillsVsMcp from './agent-skills-vs-mcp.md?raw';
 import probabilidadIntegrales from './probabilidad-integrales-modelos.md?raw';
 import llmParaConstruirModelosMl from './llm-para-construir-modelos-ml.md?raw';
+import primeraApiConBaseDeDatos from './primera-api-con-base-de-datos.md?raw';
 
 export interface ArticleMetadata {
   title: string;
@@ -83,7 +84,8 @@ function processArticle(content: string): Article {
 export const articles: Article[] = [
   processArticle(agentSkillsVsMcp),
   processArticle(probabilidadIntegrales),
-  processArticle(llmParaConstruirModelosMl)
+  processArticle(llmParaConstruirModelosMl),
+  processArticle(primeraApiConBaseDeDatos)
 ];
 
 // Helper para obtener un artículo por slug
