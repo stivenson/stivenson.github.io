@@ -120,6 +120,8 @@ h2 {
 .sello.vive { color: var(--err); background: color-mix(in srgb, var(--err) 17%, transparent); }
 .sello.muere { color: var(--ok); background: color-mix(in srgb, var(--ok) 15%, transparent); }
 
+.err-sd { font-size: 10px; color: var(--muted); }
+
 .leyenda {
   margin: 11px 0 0;
   padding-top: 10px;
@@ -231,7 +233,7 @@ h2 {
   <p class="sub">Dos maneras de sacar buena nota sin haber aprendido nada de glaucoma.</p>
 
   <div class="caja">
-    <h2>1 · El atajo — medido sobre las 705 imágenes de ACRIMA</h2>
+    <h2>1 · El atajo — 705 imágenes, umbral ajustado en el 70 % y evaluado en el 30 %</h2>
 
     <div class="opts" id="grpPre" role="group" aria-label="Preprocesado aplicado">
       <button class="opt" type="button" data-pre="crudo" aria-pressed="true">tal cual viene</button>
@@ -286,15 +288,19 @@ h2 {
   // Todas las cifras salen de medir las 705 imagenes de ACRIMA. El umbral
   // optimo se busca sobre el propio conjunto, asi que son cotas superiores
   // optimistas: la cuestion no es el decimal, es que sean tan altas.
+  // Cifras producidas por datasets/medir_atajos.py sobre las 705 imagenes.
+  // `crudo` es el mejor umbral buscado sobre las mismas imagenes que puntua
+  // (optimista); `out` es la media de 200 particiones estratificadas 70/30,
+  // ajustando el umbral solo en el 70 %. Esa segunda es la que vale.
   var ATAJOS = [
     { nom: 'Nada: siempre “glaucoma”', cod: 'la clase mayoritaria',
-      crudo: 56.2, resize: 56.2, muere: false, base: true },
+      crudo: 56.2, out: null, resize: 56.2, base: true },
     { nom: 'El color medio', cod: 'umbral sobre (R − B)',
-      crudo: 65.7, resize: 65.7, muere: false },
+      crudo: 65.7, out: 64.2, sd: 2.9, resize: 65.7 },
     { nom: 'El peso del archivo', cod: 'umbral sobre os.path.getsize()',
-      crudo: 81.4, resize: null, muere: true },
+      crudo: 81.4, out: 80.7, sd: 2.2, resize: null },
     { nom: 'El tamaño de la imagen', cod: 'umbral sobre width ≥ 427',
-      crudo: 86.8, resize: null, muere: true }
+      crudo: 86.8, out: 86.1, sd: 2.0, resize: null }
   ];
 
   var estado = { pre: 'crudo', part: 'imagen', semilla: 7 };
@@ -306,7 +312,10 @@ h2 {
 
     ATAJOS.forEach(function (a) {
       var v = resize ? a.resize : a.crudo;
-      var muerto = v === null;
+      var sinAcceso = v === null;
+      // Se pinta la cifra honesta cuando existe; el clasificador tonto no
+      // tiene umbral que ajustar, asi que su unica cifra es la directa.
+      var mostrar = sinAcceso ? null : (a.out !== null && a.out !== undefined ? a.out : v);
 
       var f = document.createElement('div');
       f.className = 'fila';
@@ -318,7 +327,7 @@ h2 {
       var pista = document.createElement('div');
       pista.className = 'pista';
       var i = document.createElement('i');
-      i.style.width = (muerto ? 0 : v) + '%';
+      i.style.width = (sinAcceso ? 0 : mostrar) + '%';
       i.style.background = a.base
         ? 'rgba(255,255,255,0.16)'
         : 'linear-gradient(90deg, color-mix(in srgb, var(--err) 55%, transparent), var(--err))';
@@ -331,23 +340,33 @@ h2 {
 
       var pct = document.createElement('div');
       pct.className = 'pct';
-      pct.innerHTML = muerto
-        ? '<span class="sello muere">se borra</span>'
-        : v.toFixed(1).replace('.', ',') + ' %'
+      if (sinAcceso) {
+        pct.innerHTML = '<span class="sello muere">sin acceso</span>';
+      } else {
+        pct.innerHTML = mostrar.toFixed(1).replace('.', ',') + ' %'
+          + (a.sd ? '<br><span class="err-sd">± ' + a.sd.toFixed(1).replace('.', ',') + '</span>' : '')
           + (a.base ? '' : '<span class="sello vive">sobrevive</span>');
+      }
+      pct.title = a.base
+        ? 'Sin umbral que ajustar: la cifra es exacta.'
+        : 'Umbral óptimo sobre todo el conjunto: ' + a.crudo.toFixed(1).replace('.', ',') + ' %.'
+          + (a.out ? ' Ajustado en el 70 % y evaluado en el 30 % restante: ' +
+                     a.out.toFixed(1).replace('.', ',') + ' %.' : '');
 
       f.appendChild(nom); f.appendChild(pista); f.appendChild(pct);
       cont.appendChild(f);
     });
 
     document.getElementById('leyenda').innerHTML = resize
-      ? '<b>Redimensionar borra dos atajos de tres.</b> El tamaño y el peso del archivo desaparecen '
-        + 'en cuanto todo pasa a 224×224. Pero el color no: sigue sacando <b>65,7 %</b>, casi diez puntos '
-        + 'por encima del clasificador tonto, sin mirar una sola estructura anatómica. '
-        + 'La línea vertical marca ese 56,2 % de referencia.'
-      : '<b>Sin tocar un solo píxel de anatomía</b>, el ancho de la imagen acierta el <b>86,8 %</b>: '
-        + 'en ACRIMA las glaucomatosas miden 668 px de media y las sanas 353. Las dos clases se '
-        + 'capturaron de formas distintas, y eso queda escrito en el archivo. '
+      ? '<b>Redimensionar le quita a la red el acceso a dos atajos de tres.</b> El tamaño y el peso del '
+        + 'archivo ya no están en lo que el modelo ve cuando todo llega como tensor de 224×224. '
+        + 'El color sí: sigue sacando <b>64,2 %</b> en partición independiente, ocho puntos por encima del '
+        + 'clasificador tonto, sin mirar una sola estructura anatómica. La línea vertical marca ese 56,2 %. '
+        + '<br><br>Matiz: borra el acceso directo, no toda la huella. Una imagen que venía de 1420 px y otra '
+        + 'de 300 llegan a 224 con nitidez y artefactos de compresión distintos.'
+      : '<b>Sin tocar un solo píxel de anatomía</b>, el ancho de la imagen acierta el <b>86,1 %</b> en '
+        + 'partición independiente: en ACRIMA las glaucomatosas miden 668 px de media y las sanas 353. '
+        + 'Las dos clases se capturaron de formas distintas, y eso queda escrito en el archivo. '
         + 'Cambia al preprocesado y mira cuáles sobreviven.';
 
     document.getElementById('live').textContent = resize
@@ -420,8 +439,10 @@ h2 {
 
     // Valor esperado exacto al partir por imagen: cada paciente se parte con
     // probabilidad 1/2, asi que se esperan N/2 pacientes divididos.
+    // Un paciente de dos ojos queda partido con probabilidad 2p(1-p). Aqui el
+    // reparto es mitad y mitad, que es justo donde esa expresion es maxima.
     document.getElementById('mPartN').textContent = estado.part === 'imagen'
-      ? 'se esperan ' + (N_PAC / 2) + ' de media'
+      ? 'reparto 50/50: 2p(1−p) = 0,5 → ' + (N_PAC / 2) + ' de media'
       : 'partiendo por paciente, nunca ocurre';
 
     var mCont = document.getElementById('mCont');
@@ -443,6 +464,11 @@ h2 {
       : '<b>Ningún paciente se parte.</b> La nota baja — y esa es la buena. Es la única que estima lo que '
         + 'pasará con una persona que el modelo no ha visto nunca. Bases como PAPILA traen los dos ojos '
         + 'de cada paciente precisamente para que puedas partir así.';
+    document.getElementById('leyPart').innerHTML += estado.part === 'imagen'
+      ? '<br><br>Aquí el reparto es 50/50 porque se ve mejor. Con el 80/20 habitual se parten menos '
+        + 'pacientes —2·0,8·0,2 = <b>32 %</b>— pero es peor de otra forma: para cada imagen de prueba, la '
+        + 'probabilidad de que su otro ojo esté en entrenamiento es <b>0,8</b>.'
+      : '';
   }
 
   // ── Cableado ─────────────────────────────────────────────

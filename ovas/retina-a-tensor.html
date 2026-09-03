@@ -484,7 +484,9 @@ canvas {
       '</span>, <span class="dim">' + origen.w + '</span>' +
       (unico ? '' : ', <span class="dim">3</span>') + ')' +
       '   <span class="k">x.dtype</span> = uint8' +
-      '   <span class="k">valores</span> = ' + (origen.w * origen.h * (unico ? 1 : 3)).toLocaleString('es');
+      '   <span class="k">valores</span> = ' + (origen.w * origen.h * (unico ? 1 : 3)).toLocaleString('es') +
+      (unico ? '   <span class="k">→ para Conv2D:</span> x[..., ' + estado.canal + ':' +
+               (+estado.canal + 1) + ']' : '');
 
     var s = estado.sel;
     if (!s) return;
@@ -513,13 +515,17 @@ canvas {
     var nota = document.getElementById('nota');
     if (unico) {
       var c = +estado.canal;
-      nota.innerHTML = c === 1
-        ? '<strong>El canal verde.</strong> Es donde mejor se ven los vasos y el borde del disco: '
-          + 'la hemoglobina absorbe con fuerza en esa banda, así que el contraste entre vaso y fondo es el mayor de los tres. '
-          + 'Por eso muchos trabajos de retina trabajan solo con <span class="g">G</span>.'
+      var aviso = ' <strong>Cuidado con la forma:</strong> al quedarte con un canal, '
+        + '<code>x[..., ' + c + ']</code> devuelve <code>(H, W)</code> y <code>Conv2D</code> la rechaza. '
+        + 'Usa <code>x[..., ' + c + ':' + (c + 1) + ']</code>, que conserva el eje y da <code>(H, W, 1)</code>.';
+      nota.innerHTML = (c === 1
+        ? '<strong>El canal verde.</strong> Es donde mejor contrasta la estructura vascular: '
+          + 'la hemoglobina absorbe con fuerza en esa banda, así que la diferencia entre vaso y fondo es la mayor de los tres. '
+          + 'Por eso muchos trabajos de segmentación de vasos usan solo <span class="g">G</span> — aunque para glaucoma '
+          + 'la palidez del disco y el color del anillo también cuentan, y ahí tirar canales pierde señal.'
         : '<strong>Canal ' + nom[c] + ' aislado.</strong> Ahora el tensor tiene una dimensión menos. '
           + 'Fíjate en que el canal ' + nom[c] + ' aporta mucho menos detalle estructural que el verde: '
-          + 'el rojo se satura y el azul casi no recibe luz en una retina.';
+          + 'el rojo se satura y el azul casi no recibe luz en una retina.') + aviso;
     } else {
       nota.innerHTML = '<strong>Tres matrices apiladas.</strong> Lo que llamamos “color” son tres números por '
         + 'posición. La red no recibe una imagen: recibe este bloque de enteros — y hasta que no lo pases '

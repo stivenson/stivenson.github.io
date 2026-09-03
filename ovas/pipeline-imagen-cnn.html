@@ -271,11 +271,11 @@ pre .f { color: var(--code); }
     </fieldset>
 
     <fieldset id="fsInterp">
-      <legend>Interpolación al reducir</legend>
-      <div class="opts" id="grpInterp" role="group" aria-label="Interpolación">
-        <button class="opt" type="button" data-interp="nearest" aria-pressed="false">nearest</button>
-        <button class="opt" type="button" data-interp="low" aria-pressed="false">bilinear</button>
-        <button class="opt" type="button" data-interp="high" aria-pressed="true">area</button>
+      <legend>Remuestreo al reducir</legend>
+      <div class="opts" id="grpInterp" role="group" aria-label="Remuestreo">
+        <button class="opt" type="button" data-interp="nearest" aria-pressed="false">sin suavizado</button>
+        <button class="opt" type="button" data-interp="low" aria-pressed="false">suavizado bajo</button>
+        <button class="opt" type="button" data-interp="high" aria-pressed="true">suavizado alto</button>
       </div>
     </fieldset>
 
@@ -330,11 +330,12 @@ pre .f { color: var(--code); }
   var DEST = 224;      // lado al que redimensiona el pipeline
   var LOTE = 32;       // tamano de lote
 
+  // `w` y `h` describen el archivo que se sirve de verdad, para que la forma
+  // y las estadisticas del paso 1 hablen del mismo tensor. `orig` es el
+  // tamaño con el que sale de la camara, que es el dato pedagogico.
   var FUENTES = {
-    acrima: { url: 'img/retina-glaucoma.jpg', w: 379,  h: 379,  et: '379×379' },
-    // El archivo se sirve reescalado para no cargar 2 MB, pero el original
-    // de HRF mide 3504x2336 y esas son las cifras que se muestran.
-    hrf:    { url: 'img/fondo-completo.jpg',  w: 3504, h: 2336, et: '3504×2336' }
+    acrima: { url: 'img/retina-glaucoma.jpg', w: 379, h: 379, et: '379×379', orig: null },
+    hrf:    { url: 'img/fondo-completo.jpg',  w: 760, h: 507, et: '760×507', orig: '3504×2336' }
   };
 
   var PASOS = [
@@ -348,6 +349,7 @@ pre .f { color: var(--code); }
   var estado = { src: 'acrima', interp: 'high', romper: 'no', paso: 0 };
   var cache = {};
   var base = null;      // ImageData 224x224 tras redimensionar
+  var crudo = null;     // ImageData del archivo tal cual se decodifico
 
   var lienzo = document.getElementById('lienzo');
   var lctx = lienzo.getContext('2d', { willReadFrequently: true });
@@ -379,11 +381,16 @@ pre .f { color: var(--code); }
     var c = document.createElement('canvas');
     c.width = DEST; c.height = DEST;
     var x = c.getContext('2d', { willReadFrequently: true });
+    // El canvas no expone los metodos de una libreria de imagen: solo deja
+    // apagar el suavizado o pedir tres niveles de calidad, y cada navegador
+    // elige el filtro. Por eso los botones se llaman por lo que se pide
+    // —sin suavizado / bajo / alto— y no "nearest / bilinear / area", que
+    // seria prometer un algoritmo concreto que nadie garantiza.
     if (estado.interp === 'nearest') {
-      x.imageSmoothingEnabled = false;
+      x.imageSmoothingEnabled = false;           // esto si es vecino mas proximo
     } else {
       x.imageSmoothingEnabled = true;
-      x.imageSmoothingQuality = estado.interp;   // 'low' ~ bilinear · 'high' ~ area
+      x.imageSmoothingQuality = estado.interp;   // 'low' | 'high'
     }
     // Se estira a un cuadrado a proposito: es lo que hace resize((224,224))
     // y por eso una retina 3:2 sale deformada.
@@ -392,9 +399,13 @@ pre .f { color: var(--code); }
   }
 
   // ── Estadisticas reales del tensor en cada paso ──────────
+  // En el paso 1 aun no se ha redimensionado nada, asi que min, max y media
+  // tienen que salir de los pixeles del archivo tal y como se decodifico.
+  // Leerlos de `base` daria las cifras del tensor de 224x224, que es otro dato.
   function estadisticas() {
-    if (!base) return null;
-    var d = base.data, n = DEST * DEST;
+    var fuente = estado.paso === 0 ? crudo : base;
+    if (!fuente) return null;
+    var d = fuente.data, n = (fuente.width * fuente.height);
     var paso = estado.paso, rot = estado.romper;
     var mn = Infinity, mx = -Infinity, suma = 0, cuenta = 0;
 
@@ -486,9 +497,10 @@ pre .f { color: var(--code); }
     var shape, tipo, bytes, codigo;
 
     if (paso === 0) {
-      shape = '(' + f.h + ', ' + f.w + ', 3)';
+      var W0 = crudo ? crudo.width : f.w, H0 = crudo ? crudo.height : f.h;
+      shape = '(' + H0 + ', ' + W0 + ', 3)';
       tipo = 'uint8';
-      bytes = f.w * f.h * 3;
+      bytes = W0 * H0 * 3;
       codigo = '<span class="c"># El archivo comprimido pasa a ser una matriz de enteros</span>\n'
              + 'img = Image.<span class="f">open</span>(ruta).<span class="f">convert</span>("RGB")\n'
              + 'x   = np.<span class="f">asarray</span>(img)';
@@ -531,7 +543,7 @@ pre .f { color: var(--code); }
     document.getElementById('fRango').textContent = fmt(st.min) + ' … ' + fmt(st.max);
     document.getElementById('fMedia').textContent = fmt(st.media);
     document.getElementById('fMem').textContent =
-      bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MB' : Math.round(bytes / 1024) + ' KB';
+      bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MiB' : Math.round(bytes / 1024) + ' KiB';
 
     // Barra de rango: donde cae [min,max] dentro de una escala de referencia.
     var lo = Math.min(-3, st.min), hi = Math.max(3, st.max);
@@ -567,7 +579,9 @@ pre .f { color: var(--code); }
     aviso.hidden = !msg;
     aviso.innerHTML = msg;
 
-    var vn = { 0: 'Tamaño original: ' + f.et + '.',
+    var vn = { 0: f.orig
+                    ? 'Archivo servido a ' + f.et + '; el original de HRF mide ' + f.orig + '.'
+                    : 'Tamaño del archivo: ' + f.et + '.',
                1: 'Ahora 224×224' + (estado.src === 'hrf' ? ' — y aplastada: la retina era 3:2.' : '.'),
                2: 'El dibujo no cambia; el tipo de dato sí.',
                3: 'Ya no hay “colores”: hay números centrados en cero.',
@@ -577,13 +591,15 @@ pre .f { color: var(--code); }
 
     var nota = document.getElementById('nota');
     if (paso === 1 && estado.interp === 'nearest' && estado.src === 'hrf') {
-      nota.innerHTML = '<strong>Aliasing.</strong> Con <em>nearest</em> se tira el 99 % de los píxeles sin mirarlos: '
-        + 'los vasos finos aparecen rotos o desaparecen. Al reducir mucho hay que promediar, no muestrear.';
+      nota.innerHTML = '<strong>Aliasing.</strong> Sin suavizado se toma un píxel de cada bloque y se tira el resto '
+        + 'sin mirarlo: los vasos finos aparecen rotos o desaparecen. Al reducir mucho hay que promediar, no muestrear. '
+        + 'Ojo con los nombres: en <code>tf.image.resize</code> el método por defecto es <code>bilinear</code>, y '
+        + '<code>antialias=True</code> ensancha su filtro — no lo convierte en <code>area</code>.';
     } else if (paso === 1) {
       nota.innerHTML = '<strong>La forma es un contrato.</strong> Las capas convolucionales aceptan cualquier tamaño; '
         + 'lo que fija la entrada es el <code>Flatten</code> que va antes de la capa densa.';
     } else if (paso === 4) {
-      nota.innerHTML = '<strong>' + (LOTE * DEST * DEST * 3 * 4 / 1048576).toFixed(1) + ' MB por lote</strong>, '
+      nota.innerHTML = '<strong>' + (LOTE * DEST * DEST * 3 * 4 / 1048576).toFixed(1) + ' MiB por lote</strong>, '
         + 'solo de entrada. Las activaciones intermedias multiplican esa cifra varias veces: por eso el '
         + 'tamaño de lote es lo primero que se baja cuando la GPU se queda sin memoria.';
     } else {
@@ -629,9 +645,19 @@ pre .f { color: var(--code); }
     recalcular();
   });
 
+  function sinTocar(im) {
+    var c = document.createElement('canvas');
+    c.width = im.naturalWidth;
+    c.height = im.naturalHeight;
+    var x = c.getContext('2d', { willReadFrequently: true });
+    x.drawImage(im, 0, 0);
+    try { return x.getImageData(0, 0, c.width, c.height); } catch (e) { return null; }
+  }
+
   function recalcular() {
     cargar(function (im) {
       if (!im) return;
+      crudo = sinTocar(im);
       base = redimensionar(im);
       pintar();
     });
