@@ -297,6 +297,8 @@ La tesis del artículo es esa última parte:
 
 > Una CNN no ve una imagen. Ve un **tensor**: forma fija, rango acotado, ejes en un orden concreto. Convertir un archivo en ese tensor no es fontanería — es donde decides **qué puede aprender el modelo y qué atajos le dejas tomar**.
 
+Todo el código de aquí abajo vive también en un notebook ejecutable — **es el que se está socializando**, y se abre en Google Colab de un clic, sin instalar nada: [**`glaucoma_preprocesado.ipynb`**](https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/glaucoma_preprocesado.ipynb). Descarga los datos solo, corre entero con *Entorno de ejecución → Ejecutar todas*, y reproduce cada cifra de este artículo.
+
 </div>
 
 <div class="nb-cell nb-md">
@@ -814,7 +816,7 @@ Clasificador tonto             : 56.2%</div>
 
 Las imágenes glaucomatosas de ACRIMA miden 668 píxeles de lado de media; las normales, 353. Las dos clases se capturaron o se recortaron de maneras sistemáticamente distintas, y eso quedó grabado en las dimensiones del archivo. No es fraude ni descuido de los autores: es lo normal cuando un conjunto se compone reuniendo material clínico recogido en distintos momentos. Pero significa que **hay una vía para acertar que no pasa por la enfermedad**.
 
-Ese umbral se elige mirando las mismas imágenes que luego se puntúan, así que sobreestima. La objeción es justa, y se responde midiendo: ajustando el umbral en el 70 % de las imágenes y evaluándolo en el 30 % restante, estratificado y promediando 200 particiones, el atajo del ancho sigue acertando el **86,1 % ± 2,0**, el del peso el **80,7 % ± 2,2** y el del color el **64,2 % ± 2,9**. No era un artefacto de la búsqueda.
+Ese umbral se elige mirando las mismas imágenes que luego se puntúan, así que sobreestima. La objeción es justa, y se responde midiendo: ajustando el umbral en el 70 % de las imágenes y evaluándolo en el 30 % restante, estratificado y promediando 200 particiones, el atajo del ancho sigue acertando el **86,1 % ± 2,0**, el del peso el **81,0 % ± 2,4** y el del color el **64,4 % ± 2,3**. No era un artefacto de la búsqueda.
 
 El script que produce estas cuatro cifras está en el repositorio, es de una página y corre en unos segundos: [`datasets/medir_atajos.py`](https://github.com/stivenson/stivenson.github.io/blob/main/datasets/medir_atajos.py). Se le pasa la carpeta de imágenes y devuelve la tabla completa, in-sample y held-out.
 
@@ -832,7 +834,7 @@ Redimensionar **le quita a la red el acceso directo** a los atajos del ancho y d
 
 Conviene no exagerarlo: borra el acceso directo, no toda la huella. Una imagen que venía de 1420 píxeles y otra que venía de 300 no llegan iguales a 224 — se diferencian en nitidez, en el ruido de compresión del JPEG original y en los artefactos que deja el propio reescalado. Un modelo con capacidad suficiente puede reaprender el origen por ahí.
 
-Y el color **sobrevive sin más**. Un umbral sobre la diferencia media entre el canal rojo y el azul acierta el 65,7 % in-sample y el **64,2 %** en partición independiente — ocho puntos por encima del clasificador tonto, y redimensionar no lo toca. Las imágenes glaucomatosas de ACRIMA son sistemáticamente más anaranjadas.
+Y el color **sobrevive sin más**. Un umbral sobre la diferencia media entre el canal rojo y el azul acierta el 65,7 % in-sample y el **64,4 %** en partición independiente — ocho puntos por encima del clasificador tonto, y redimensionar no lo toca. Las imágenes glaucomatosas de ACRIMA son sistemáticamente más anaranjadas.
 
 > 💡 **Lección clave:** el preprocesado decide a qué atajos les quitas el acceso. Antes de creerte una métrica, mide qué acierta un modelo trivial que solo vea los metadatos: tamaño, peso, color medio. Si tu CNN no supera eso por un margen amplio, no has demostrado nada.
 
@@ -910,6 +912,7 @@ Si te llevas una sola cosa, que sea esta: antes de entrenar nada, comprueba qué
 
 - [`datasets/medir_atajos.py`](https://github.com/stivenson/stivenson.github.io/blob/main/datasets/medir_atajos.py) — mide los tres atajos, in-sample y en partición independiente. Se le pasa la carpeta de imágenes.
 - [`datasets/acrima_mini.zip`](https://github.com/stivenson/stivenson.github.io/blob/main/datasets/acrima_mini.zip) — el subconjunto de 60 imágenes que usan las celdas de este artículo, con los tamaños originales intactos.
+- [`notebooks/glaucoma_preprocesado.ipynb`](https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/glaucoma_preprocesado.ipynb) — el notebook completo, ejecutable en Colab de arriba a abajo.
 
 <em>Las imágenes de fondo de ojo de este artículo se redistribuyen bajo CC BY 4.0. La atribución completa está en <a href="https://github.com/stivenson/stivenson.github.io/blob/main/datasets/README.md">datasets/README.md</a>.</em>
 
