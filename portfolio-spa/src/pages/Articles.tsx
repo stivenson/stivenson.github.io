@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { RichPanel, RetroIcon, Tag } from '../components';
 import { PageShell, GlowCard } from '../components';
 import { staggerContainer, staggerItem } from '../components/motion/variants';
-import { getAllArticles } from '../data/articles';
+import { getAllArticles, formatArticleDate } from '../data/articles';
 
 export function Articles() {
   const articles = getAllArticles();
@@ -52,11 +52,7 @@ export function Articles() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <span className="date-mono" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <RetroIcon emoji="📅" size={13} />
-                        {new Date(article.metadata.date).toLocaleDateString('es-ES', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
+                        {formatArticleDate(article.metadata.date)}
                       </span>
                       <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--electric-blue)', fontFamily: 'var(--font-mono)' }}>
                         Leer →

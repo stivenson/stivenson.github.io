@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { RichPanel, RetroIcon, MarkdownRenderer, PageShell } from '../components';
-import { getArticleBySlug, getAllArticles } from '../data/articles';
+import { getArticleBySlug, getAllArticles, formatArticleDate } from '../data/articles';
 
 export function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -113,11 +113,7 @@ export function ArticleDetail() {
               gap: '6px'
             }}>
               <RetroIcon emoji="📅" size={14} />
-              {new Date(article.metadata.date).toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              })}
+              {formatArticleDate(article.metadata.date)}
             </span>
             <span style={{ color: 'rgba(85, 170, 255, 0.4)' }}>•</span>
             <div style={{

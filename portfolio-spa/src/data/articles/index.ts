@@ -92,6 +92,28 @@ export const articles: Article[] = [
   processArticle(primeraApiConBaseDeDatos)
 ];
 
+/**
+ * Convierte la fecha del frontmatter ("2026-09-02") en un Date local.
+ *
+ * `new Date("2026-09-02")` sigue la norma de ISO 8601 y lo interpreta como
+ * medianoche UTC. Al formatearlo en una zona al oeste de Greenwich —Colombia
+ * es UTC-5— el resultado retrocede un dia y el articulo aparece publicado la
+ * vispera. Anadir la hora obliga a leerlo como fecha local, que es lo que
+ * significa en el frontmatter.
+ */
+export function parseArticleDate(date: string): Date {
+  return new Date(`${date}T00:00:00`);
+}
+
+/** Fecha lista para mostrar, en español y sin el desfase de zona horaria. */
+export function formatArticleDate(date: string): string {
+  return parseArticleDate(date).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
 // Helper para obtener un artículo por slug
 export function getArticleBySlug(slug: string): Article | undefined {
   return articles.find(article => article.metadata.slug === slug);
@@ -100,8 +122,8 @@ export function getArticleBySlug(slug: string): Article | undefined {
 // Helper para obtener todos los artículos ordenados por fecha (más reciente primero)
 export function getAllArticles(): Article[] {
   return [...articles].sort((a, b) => {
-    const dateA = new Date(a.metadata.date).getTime();
-    const dateB = new Date(b.metadata.date).getTime();
+    const dateA = parseArticleDate(a.metadata.date).getTime();
+    const dateB = parseArticleDate(b.metadata.date).getTime();
     return dateB - dateA;
   });
 }
