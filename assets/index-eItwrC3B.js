@@ -1,4 +1,4 @@
-const g=`---
+const f=`---
 title: "Agent Skills vs. MCP: ¿Competencia o Complemento? Una Mirada Profunda a la Arquitectura de Agentes IA"
 date: "2026-01-27"
 slug: "agent-skills-vs-mcp"
@@ -141,7 +141,7 @@ Aquellos que entiendan y dominen esta arquitectura combinada estarán mejor posi
 *   **Sitio Oficial de MCP**: [modelcontextprotocol.io](https://modelcontextprotocol.io)
 *   **Artículo "Agent Skills - a thin alternative to the Model Context Protocol?"**: [tty4.dev](https://tty4.dev/development/2025-12-13-skills-or-mcp)
 *   **Artículo sobre seguridad en MCP**: [Model Context Protocol has prompt injection security problems](https://simonw.substack.com/p/model-context-protocol-has-prompt)
-`,f=`---
+`,v=`---
 title: "Probabilidad e integrales: del área bajo una curva a la incertidumbre"
 date: "2026-08-17"
 slug: "probabilidad-integrales-modelos"
@@ -541,7 +541,7 @@ La probabilidad no es solo una tabla de porcentajes. Es una forma de razonar sob
 
 - [Goodfellow, Bengio y Courville — *Deep Learning*, capítulo 3: Probability and Information Theory](https://www.deeplearningbook.org/contents/prob.html)
 - [SciPy — scipy.stats.norm](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.norm.html)
-`,v=`---
+`,y=`---
 title: "Construir modelos de ML con LLM: mapa del campo y qué funciona de verdad"
 date: "2026-08-25"
 slug: "llm-para-construir-modelos-ml"
@@ -861,7 +861,7 @@ Y la constante que atraviesa las tres: **el LLM casi nunca es el modelo.** Es el
 **Panorámicas**
 - [Large Language Model-based Data Science Agent: A Survey](https://arxiv.org/abs/2508.02744)
 - [Open-source AutoML projects in 2026](https://mljar.com/blog/open-source-automl-projects-in-2026/)
-`,y=`---
+`,q=`---
 title: "Tu primera API con base de datos: la teoría antes que el framework"
 date: "2026-09-02"
 slug: "primera-api-con-base-de-datos"
@@ -1458,7 +1458,7 @@ Lo que no tiene sentido es la tercera vía por omisión: escribir a mano, endpoi
 - [psycopg 3 — pool de conexiones](https://www.psycopg.org/psycopg3/docs/advanced/pool.html)
 - [PostgreSQL — Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
 - [PostgreSQL — Constraints](https://www.postgresql.org/docs/current/ddl-constraints.html)
-`,q=`---
+`,h=`---
 title: "De la retina al tensor: preparar imágenes para entrenar una CNN"
 date: "2026-09-02"
 slug: "imagen-a-tensor-cnn-glaucoma"
@@ -1646,6 +1646,10 @@ tags: ["CNN", "Deep Learning", "Visión por Computador", "Python", "Glaucoma", "
    <code>, porque el renderer intercepta esa etiqueta y la trataria como
    bloque resaltado dentro de la propia etiqueta. */
 .gl-t .gl-k { font-family: var(--nb-mono, monospace); font-size: 0.92em; }
+
+/* Un identificador largo dentro de un parrafo no puede empujar la columna:
+   se le permite partir aunque quede feo, antes que desbordar la pantalla. */
+.colab-nb code { overflow-wrap: anywhere; }
 .gl-t:hover { color: #8cc6ff; border-bottom-color: #8cc6ff; }
 .gl-c:focus-visible + .gl-t { outline: 2px solid var(--electric-cyan, #55AAFF); outline-offset: 2px; }
 
@@ -1758,7 +1762,7 @@ La tesis del artículo es esa última parte:
 <div class="nb-cell nb-md">
 
 <div class="flujo">
-<div class="fp" style="--fc:#06b6d4"><b>1 · El archivo</b><code>Im318_g_ACRIMA.jpg</code><em>13 KB comprimidos</em></div>
+<div class="fp" style="--fc:#06b6d4"><b>1 · El archivo</b><code>Im318_g_ACRIMA.jpg</code><em>19.781 bytes comprimidos</em></div>
 <div class="fp" style="--fc:#06b6d4"><b>2 · Decodificar</b><code>np.asarray(img)</code><em>(379, 379, 3) uint8</em></div>
 <div class="fp" style="--fc:#22c1c3"><b>3 · Redimensionar</b><code>img.resize((224, 224))</code><em>(224, 224, 3) uint8</em></div>
 <div class="fp" style="--fc:#3ecf9a"><b>4 · A decimales</b><code>x.astype("float32") / 255</code><em>rango [0, 1]</em></div>
@@ -1835,7 +1839,7 @@ Merece la pena verlo de cerca una vez, porque después vas a pasar meses habland
 
 Dos cosas que se ven ahí y que conviene retener.
 
-La primera: **el canal verde es el que lleva la información**. La hemoglobina absorbe fuertemente en esa banda, así que los vasos aparecen oscuros sobre un fondo claro y el contraste es el mayor de los tres. El rojo se satura —la retina *es* roja— y el azul apenas recibe luz. Por eso una parte de la literatura de fondo de ojo trabaja solo con \`G\`, y por eso pasar a escala de grises promediando los tres canales es peor que quedarse con el verde.
+La primera: **el canal verde es el que mejor contrasta la estructura vascular**. La hemoglobina absorbe fuertemente en esa banda, así que los vasos aparecen oscuros sobre un fondo claro y el contraste es el mayor de los tres. El rojo se satura —la retina *es* roja— y el azul apenas recibe luz. Por eso una parte de la literatura de fondo de ojo trabaja solo con \`G\`, y por eso pasar a escala de grises promediando los tres canales es peor que quedarse con el verde.
 
 La segunda: entre \`uint8\` y \`float32\` normalizado no cambia el dibujo, cambia **la escala en la que la red recibe los números**. Y eso sí cambia el entrenamiento.
 
@@ -1931,9 +1935,11 @@ Sobre el conjunto completo esa proporción es 396 glaucomatosas frente a 309 nor
 
 ## 4. La forma fija: por qué hay que redimensionar
 
-Las 705 imágenes de ACRIMA vienen en **258 tamaños distintos**, desde 178×178 hasta 1420×1420. Ninguna red acepta eso.
+Las 705 imágenes de ACRIMA vienen en **258 tamaños distintos**, desde 178×178 hasta 1420×1420. Con esa arquitectura no puedes entrenar sobre ellas tal cual.
 
 Y conviene entender por qué, porque casi siempre se explica mal. **Las <span class="gl"><input type="checkbox" id="gl-conv" class="gl-c"><label for="gl-conv" class="gl-t">capas convolucionales</label><span class="gl-m"><label for="gl-conv" class="gl-bg"></label><span class="gl-b"><b>Convolución</b><span>Una <b>convolución</b> desliza una ventanita de pesos —el <i>filtro</i> o <i>kernel</i>, típicamente de 3×3— por toda la imagen, y en cada posición multiplica y suma.</span><span>La gracia es que los mismos pesos se reutilizan en todas las posiciones: por eso una capa con 32 filtros de 3×3 sobre 3 canales necesita solo 896 parámetros, y por eso funciona igual sea cual sea el tamaño de la imagen.</span><label for="gl-conv" class="gl-x">Entendido</label></span></span></span> no necesitan un tamaño fijo**: un filtro de 3×3 se desliza igual sobre una imagen de 200 píxeles que sobre una de 1400. Lo que fija la entrada es lo que viene después: el <span class="gl"><input type="checkbox" id="gl-flatten" class="gl-c"><label for="gl-flatten" class="gl-t"><span class="gl-k">Flatten</span></label><span class="gl-m"><label for="gl-flatten" class="gl-bg"></label><span class="gl-b"><b>Flatten</b><span><b>Flatten</b> coge el bloque de activaciones que sale de las convoluciones —por ejemplo 28×28×32— y lo estira en un vector plano de 25.088 números, para poder enchufarlo a una capa densa.</span><span>Es el punto exacto donde el modelo deja de aceptar cualquier tamaño: ese 25.088 depende del tamaño de entrada, y la capa densa que viene después tiene un número de pesos fijo.</span><label for="gl-flatten" class="gl-x">Entendido</label></span></span></span> que aplana el mapa de activaciones antes de la capa densa. Esa capa densa tiene un número concreto de pesos, y ese número depende del tamaño de entrada.
+
+Conviene ser preciso, porque hay dos exigencias distintas y solo una es negociable. Una red **totalmente convolucional** —la que sustituye el \`Flatten\` por un \`GlobalAveragePooling2D\`— sí admite imágenes de tamaños distintos, porque el promediado devuelve un vector cuya longitud es el número de filtros y no depende de la resolución. Lo que nunca es negociable es el **lote**: apilar 32 imágenes en un solo array obliga a que las 32 compartan forma. Así que redimensionar es inevitable para entrenar por lotes; que además lo exija la capa densa es cosa de esta arquitectura concreta.
 
 Aquí es donde la decisión deja de ser fontanería. Esta es la arquitectura de un laboratorio típico de CNN, aplicada primero a MNIST y después, sin cambiar nada más que el tamaño de entrada, a fondo de ojo:
 
@@ -2002,7 +2008,7 @@ Retina (224, 224, 3)    Flatten= 25088 Dense(100)= 2,508,900  total= <b>2,514,19
 
 <div class="nb-cell nb-md">
 
-**La misma arquitectura, letra por letra.** Solo cambia el tamaño de entrada, y los parámetros pasan de 34.710 a 2.514.190: **72 veces más**. Las capas convolucionales aportan 5.088 parámetros en ambos casos; los otros 2,5 millones están todos en una sola capa densa alimentada por el \`Flatten\`.
+**La misma arquitectura, letra por letra.** Solo cambia el tamaño de entrada, y los parámetros pasan de 34.710 a 2.514.190: **72 veces más**. Las capas convolucionales apenas notan el cambio —4.800 parámetros en MNIST y 5.088 en retina, y la diferencia son solo los dos canales de color extra del primer filtro—; los otros 2,5 millones están todos en una sola capa densa alimentada por el \`Flatten\`.
 
 Ahora júntalo con la otra mitad del problema:
 
@@ -2012,7 +2018,7 @@ Ahora júntalo con la otra mitad del problema:
 | Parámetros | 34.710 | 2.514.190 |
 | **Parámetros por imagen** | **0,6** | **4.457** |
 
-Siete mil veces peor. Con esos números el modelo no aprende a detectar glaucoma: <span class="gl"><input type="checkbox" id="gl-sobreajuste" class="gl-c"><label for="gl-sobreajuste" class="gl-t">memoriza</label><span class="gl-m"><label for="gl-sobreajuste" class="gl-bg"></label><span class="gl-b"><b>Sobreajuste</b><span>Hay <b>sobreajuste</b> cuando el modelo tiene tantos parámetros libres que puede almacenar las respuestas de las imágenes de entrenamiento en lugar de aprender la regla que las explica.</span><span>Se detecta mirando las dos curvas: el acierto en entrenamiento sigue subiendo mientras el de validación se estanca o empeora.</span><label for="gl-sobreajuste" class="gl-x">Entendido</label></span></span></span> las 564 imágenes. Y lo hará con un \`accuracy\` de entrenamiento cercano a 1, que es exactamente el aspecto que tiene el éxito.
+Siete mil veces peor. Eso no demuestra por sí solo que el modelo vaya a fallar, pero sí que tiene margen de sobra para <span class="gl"><input type="checkbox" id="gl-sobreajuste" class="gl-c"><label for="gl-sobreajuste" class="gl-t">memorizar</label><span class="gl-m"><label for="gl-sobreajuste" class="gl-bg"></label><span class="gl-b"><b>Sobreajuste</b><span>Hay <b>sobreajuste</b> cuando el modelo tiene tantos parámetros libres que puede almacenar las respuestas de las imágenes de entrenamiento en lugar de aprender la regla que las explica.</span><span>Se detecta mirando las dos curvas: el acierto en entrenamiento sigue subiendo mientras el de validación se estanca o empeora.</span><label for="gl-sobreajuste" class="gl-x">Entendido</label></span></span></span> las 564 imágenes en lugar de aprender la regla que las separa. El riesgo de sobreajuste es altísimo, y se confirma —o se descarta— de una sola manera: mirando las dos curvas de entrenamiento y validación y evaluando en una partición que el modelo no haya visto. Si el acierto de entrenamiento se acerca a 1 mientras el de validación se estanca, ya tienes la respuesta.
 
 La salida no es entrenar más rato. Son tres decisiones, y las tres son de preprocesado o de arquitectura:
 
@@ -2032,9 +2038,19 @@ Reducir de 1420×1420 a 224 significa tirar el **97,5 %** de los píxeles. La fo
 
 - **\`nearest\`** toma un píxel de cada 6 y descarta el resto sin mirarlos. Los vasos finos —de uno o dos píxeles de ancho— aparecen rotos o desaparecen. Es <span class="gl"><input type="checkbox" id="gl-aliasing" class="gl-c"><label for="gl-aliasing" class="gl-t">aliasing</label><span class="gl-m"><label for="gl-aliasing" class="gl-bg"></label><span class="gl-b"><b>Aliasing</b><span>El <b>aliasing</b> aparece al reducir una imagen tomando muestras sueltas en lugar de promediar: los detalles más finos que el nuevo espaciado no desaparecen sin más, se convierten en patrones falsos.</span><span>Es el mismo efecto por el que las ruedas de un coche parecen girar hacia atrás en el cine, o por el que una camisa de rayas finas vibra en la pantalla.</span><label for="gl-aliasing" class="gl-x">Entendido</label></span></span></span>: estructura real que se pierde o, peor, que se convierte en un patrón falso.
 - **\`bilinear\`** promedia los cuatro vecinos. Mejor, pero al reducir mucho sigue ignorando la mayoría de los píxeles del bloque de origen.
-- **\`area\`** promedia *todos* los píxeles que caen en cada celda de destino. Es lo correcto al reducir, y es lo que hace \`tf.image.resize(..., antialias=True)\`.
+- **\`area\`** promedia *todos* los píxeles que caen en cada celda de destino. Es lo correcto al reducir mucho.
 
-Hay algo más, y ACRIMA lo esquiva por suerte: sus imágenes son cuadradas. Un fondo de ojo completo no lo es. La imagen de HRF que verás abajo mide 3504×2336 —relación 3:2— y \`resize((224, 224))\` la **aplasta**. El disco óptico deja de ser redondo, y el <span class="gl"><input type="checkbox" id="gl-cd" class="gl-c"><label for="gl-cd" class="gl-t">cociente copa/disco</label><span class="gl-m"><label for="gl-cd" class="gl-bg"></label><span class="gl-b"><b>Cociente copa/disco</b><span>El <b>disco óptico</b> es la zona por donde el nervio óptico sale del ojo; se ve como un círculo claro. Dentro tiene una depresión central más pálida, la <b>copa</b>.</span><span>El glaucoma daña las fibras nerviosas, así que la copa se agranda respecto al disco. La razón entre sus diámetros —el cociente copa/disco— es la medida que usa un oftalmólogo: por encima de ~0,6 hay sospecha.</span><label for="gl-cd" class="gl-x">Entendido</label></span></span></span>, que es *la* medida clínica del glaucoma, queda medido sobre una elipse deformada.
+Y aquí hay una trampa que conviene no repetir. \`tf.image.resize\` usa **\`bilinear\` por defecto**, y \`antialias=True\` **no lo cambia a \`area\`**: lo que hace es ensanchar el filtro de muestreo del método que hayas elegido, para que tenga en cuenta los píxeles que de otro modo se saltaría. La documentación es explícita en que con \`area\` el argumento *no tiene ningún efecto*, porque ese método ya promedia todo. Así que hay dos formas correctas de reducir, y son distintas:
+
+\`\`\`python
+# Bilinear con filtro antialias: el metodo sigue siendo bilinear.
+x = tf.image.resize(img, [224, 224], antialias=True)
+
+# Promediado por area: hay que pedirlo por su nombre.
+x = tf.image.resize(img, [224, 224], method="area")
+\`\`\`
+
+Hay algo más, y ACRIMA lo esquiva por suerte: sus imágenes son cuadradas. Un fondo de ojo completo no lo es. La imagen de HRF que verás abajo mide 3504×2336 —relación 3:2— y \`resize((224, 224))\` la **aplasta**. El disco óptico deja de ser redondo, y el <span class="gl"><input type="checkbox" id="gl-cd" class="gl-c"><label for="gl-cd" class="gl-t">cociente copa/disco</label><span class="gl-m"><label for="gl-cd" class="gl-bg"></label><span class="gl-b"><b>Cociente copa/disco</b><span>El <b>disco óptico</b> es la zona por donde el nervio óptico sale del ojo; se ve como un círculo claro. Dentro tiene una depresión central más pálida, la <b>copa</b>.</span><span>El glaucoma daña las fibras nerviosas, así que la copa tiende a agrandarse respecto al disco. La razón entre sus diámetros —el cociente copa/disco— es uno de los indicadores que mira un oftalmólogo, y por sí solo no diagnostica: depende del tamaño del disco (un disco grande y sano puede dar un cociente alto) y se interpreta junto al anillo neurorretiniano, la capa de fibras nerviosas, la presión intraocular y el campo visual.</span><label for="gl-cd" class="gl-x">Entendido</label></span></span></span>, que es *la* medida clínica del glaucoma, queda medido sobre una elipse deformada.
 
 </div>
 
@@ -2063,8 +2079,8 @@ Son dos operaciones distintas y conviene no confundirlas:
 # no una estadística del conjunto. Se puede aplicar antes de partir sin riesgo.
 x = x.astype("float32") / 255.0
 
-# Paso 2 — centrar y tipificar. Media y desviación de ImageNet, que son las
-# que espera cualquier extractor preentrenado.
+# Paso 2 — centrar y tipificar. OJO: estas constantes son las de torchvision,
+# la convención de PyTorch. NO son universales (ver la celda siguiente).
 MEAN = np.array([0.485, 0.456, 0.406], dtype="float32")
 STD  = np.array([0.229, 0.224, 0.225], dtype="float32")
 
@@ -2081,7 +2097,17 @@ print(f"rango: {x.min():.2f} … {x.max():.2f}   media: {x.mean():.3f}")
 
 La distinción importa mucho más de lo que parece. **Dividir entre 255 es seguro** porque 255 no se mide en tus datos: es el techo del tipo \`uint8\`. **Calcular la media y la desviación sobre el conjunto entero, en cambio, es medir tus datos** — y si lo haces antes de partir, las estadísticas de tus imágenes de prueba entran en el preprocesado del entrenamiento. Es una <span class="gl"><input type="checkbox" id="gl-fuga" class="gl-c"><label for="gl-fuga" class="gl-t">fuga</label><span class="gl-m"><label for="gl-fuga" class="gl-bg"></label><span class="gl-b"><b>Fuga de datos</b><span>Hay <b>fuga</b> cuando información del conjunto de prueba se cuela en el entrenamiento. El modelo aprovecha algo que en el mundo real no tendría, y su nota deja de predecir cómo se comportará.</span><span>Las dos formas típicas: calcular estadísticas de preprocesado sobre todos los datos antes de partir, y repartir imágenes del mismo paciente entre entrenamiento y prueba.</span><label for="gl-fuga" class="gl-x">Entendido</label></span></span></span> pequeña, pero es una fuga, y es gratis evitarla: calcula sobre entrenamiento, aplica a todo.
 
-Si usas un modelo preentrenado el problema desaparece, porque las constantes vienen de ImageNet y no de tu conjunto. Pero entonces aparece otro:
+Si usas un modelo preentrenado, esa fuga desaparece: las constantes vienen del conjunto con el que se entrenó, no del tuyo. Pero aparece otro problema, y es más gordo de lo que parece.
+
+**No hay un preprocesado estándar.** Las constantes de arriba son las de \`torchvision\`, la convención de PyTorch: escalar a \`[0,1]\` y tipificar por canal. Keras no hace eso por defecto. Cada familia de modelos trae su propia función \`preprocess_input\`, y en \`keras.applications\` conviven tres modos distintos:
+
+| Modo | Qué hace | Rango de salida | Ejemplo |
+|---|---|---|---|
+| \`caffe\` | RGB→BGR y resta \`[103.939, 116.779, 123.68]\`. **No divide entre 255** | ≈ −124 … 151 | ResNet50, VGG16 |
+| \`tf\` | Escala a \`[-1, 1]\` | −1 … 1 | MobileNet, Inception, EfficientNet |
+| \`torch\` | Escala a \`[0,1]\` y tipifica con la media y desviación de arriba | ≈ −2,1 … 2,6 | DenseNet |
+
+\`ResNet50\` usa **\`caffe\`**, que es el modo por defecto. O sea: si copias las constantes de un tutorial de PyTorch y se las das a un ResNet de Keras, el modelo recibe números en una escala que no ha visto nunca. Compruébalo siempre en la documentación de *tu* modelo:
 
 </div>
 
@@ -2089,11 +2115,15 @@ Si usas un modelo preentrenado el problema desaparece, porque las constantes vie
 
 \`\`\`python
 # El fallo más común de todos, y el más silencioso.
-# preprocess_input espera la imagen CRUDA: ya resta la media de ImageNet.
+# preprocess_input de ResNet50 espera la imagen CRUDA en [0, 255]:
+# ya se encarga él de pasar a BGR y restar la media. No hay que dividir antes.
 from tensorflow.keras.applications.resnet50 import preprocess_input
 
-x_bien = preprocess_input(cruda.copy())           # uint8 sin tocar, como se espera
-x_mal  = preprocess_input(cruda.copy() / 255.0)   # ya dividida: normalizada dos veces
+# Se parte de la imagen sin tocar, ya redimensionada a 224x224.
+cruda = np.asarray(Image.open(ruta).resize((224, 224)), dtype="float32")
+
+x_bien = preprocess_input(cruda.copy())           # como se espera
+x_mal  = preprocess_input(cruda.copy() / 255.0)   # ya dividida: preprocesada dos veces
 
 for nombre, v in [("bien", x_bien), ("mal ", x_mal)]:
     print(f"{nombre} : {v.min():8.2f} … {v.max():8.2f}   amplitud {v.max() - v.min():7.2f}")
@@ -2125,10 +2155,11 @@ Keras trabaja en **NHWC** (\`channels_last\`): lote, alto, ancho, canal. PyTorch
 Este es el motivo de esa línea que aparece en todos los laboratorios de MNIST y que nadie explica:
 
 \`\`\`python
-X_train.reshape((60000, 28, 28, 1))
+# El resultado hay que guardarlo: reshape NO modifica el array original.
+X_train = X_train.reshape((60000, 28, 28, 1))
 \`\`\`
 
-MNIST se distribuye en escala de grises, así que su array llega con forma \`(60000, 28, 28)\` — sin eje de canal. \`Conv2D\` exige uno. El \`reshape\` no mueve ni un dato: solo declara “esto tiene un canal”.
+MNIST se distribuye en escala de grises, así que su array llega con forma \`(60000, 28, 28)\` — sin eje de canal. \`Conv2D\` exige uno, y añadir un eje de longitud 1 no cambia ni un valor: solo declara “esto tiene un canal”. Sobre un array contiguo como este, NumPy devuelve una vista y no copia nada; en general \`reshape\` copia si no puede describir la nueva forma sobre la memoria existente.
 
 Con imágenes en color no hace falta, porque el eje ya viene. Pero el error simétrico sí ocurre: convertir a escala de grises y perder el eje sin darte cuenta. A diferencia de los fallos de rango, **este sí revienta**, y hay que agradecerlo:
 
@@ -2137,22 +2168,37 @@ Con imágenes en color no hace falta, porque el eje ya viene. Pero el error sim�
 <div class="nb-cell nb-code" data-exec="7">
 
 \`\`\`python
+def preparar(ruta, lado=224):
+    """
+    Aplica el pipeline completo a una imagen y devuelve su tensor.
+
+    Parámetros de entrada:
+    ruta = ruta a la imagen
+    lado = tamaño de salida, en píxeles
+
+    Parámetros de salida:
+    x = np.ndarray (lado, lado, 3) float32, escalado y tipificado
+    """
+    img = Image.open(ruta).convert("RGB").resize((lado, lado))
+    x = np.asarray(img, dtype="float32") / 255.0
+    return (x - MEAN) / STD
+
 lote = np.stack([preparar(r) for r in rutas[:32]])   # 32 imágenes ya preparadas
 
 print(f"Tamaño del lote : {lote.shape}")
 print(f"Tipo            : {lote.dtype}")
-print(f"Memoria         : {lote.nbytes / 1024**2:.1f} MB")
+print(f"Memoria         : {lote.nbytes / 1024**2:.1f} MiB")
 \`\`\`
 
 <div class="nb-out">Tamaño del lote : <b>(32, 224, 224, 3)</b>
 Tipo            : float32
-Memoria         : <b>19.3 MB</b></div>
+Memoria         : <b>18.4 MiB</b></div>
 
 </div>
 
 <div class="nb-cell nb-md">
 
-19,3 MB para 32 imágenes, y eso es solo **la entrada**. Cada capa convolucional guarda su mapa de activaciones para poder calcular gradientes en la retropropagación, así que la memoria real durante el entrenamiento es varias veces esa cifra.
+18,4 MiB para 32 imágenes —19,3 MB si cuentas en potencias de diez— y eso es solo **la entrada**. Cada capa convolucional guarda su mapa de activaciones para poder calcular gradientes en la retropropagación, así que la memoria real durante el entrenamiento es varias veces esa cifra.
 
 Por eso lo primero que se baja cuando la GPU se queda sin memoria es el tamaño de lote. Y por eso el tamaño de lote no es solo un hiperparámetro de optimización: es una restricción de hardware que acabas eligiendo por el tamaño al que decidiste redimensionar, tres pasos antes.
 
@@ -2170,22 +2216,22 @@ La segunda es de dominio, y aquí es donde la mayoría de los tutoriales copian 
 
 | Transformación | En fondo de ojo | Por qué |
 |---|---|---|
-| Volteo horizontal | <span class="c-ok">**segura**</span> | Convierte un ojo derecho en algo parecido a un izquierdo. Ambos existen en el conjunto |
+| Volteo horizontal | <span class="c-ok">**válida si la etiqueta no depende de la lateralidad**</span> | Convierte un ojo derecho en algo parecido a un izquierdo, y ambos existen en el conjunto. Deja de valer si tu variable objetivo distingue ojo izquierdo de derecho |
 | Rotación suave (±10°) | <span class="c-ok">**segura**</span> | La cámara no siempre queda perfectamente alineada |
 | Brillo y contraste leves | <span class="c-ok">**segura**</span> | La iluminación varía de verdad entre capturas |
 | Volteo vertical | <span class="c-err">**dudosa**</span> | Invierte arriba y abajo. Los haces de fibras nerviosas tienen una orientación anatómica fija |
-| Recorte agresivo | <span class="c-err">**peligrosa**</span> | Puede dejar fuera el borde del disco, que es donde está el diagnóstico |
+| Recorte agresivo | <span class="c-err">**peligrosa**</span> | Puede dejar fuera el borde del disco y el anillo neurorretiniano, donde está buena parte de la señal |
 | Deformación de la relación de aspecto | <span class="c-err">**peligrosa**</span> | El cociente copa/disco es una razón geométrica. Estirar la imagen lo falsea |
 
-El color merece un párrafo aparte, porque tiene dos caras. Un *color jitter* fuerte destruye señal: el glaucoma se diagnostica por el aspecto del anillo neurorretiniano y por la palidez del disco, y eso es información cromática. Pero, como vas a ver ahora mismo, **en ACRIMA el color también es un atajo** — y una perturbación moderada es justo lo que impide que el modelo se agarre a él.
+El color merece un párrafo aparte, porque tiene dos caras. Un *color jitter* fuerte destruye señal: el aspecto del anillo neurorretiniano y la palidez del disco son parte de lo que mira el especialista, y eso es información cromática. Pero, como vas a ver ahora mismo, **en ACRIMA el color también es un atajo** — y una perturbación moderada es justo lo que impide que el modelo se agarre a él.
 
 </div>
 
 <div class="nb-cell nb-md">
 
-## Hallazgo 1 — ¿Por qué un accuracy del 97 % no dice nada?
+## Hallazgo 1 — Por qué un accuracy alto no basta
 
-Los trabajos publicados sobre ACRIMA reportan cifras muy altas, por encima del 95 %. Antes de celebrarlo, la comparación obligatoria: <span class="gl"><input type="checkbox" id="gl-baseline" class="gl-c"><label for="gl-baseline" class="gl-t">el clasificador tonto</label><span class="gl-m"><label for="gl-baseline" class="gl-bg"></label><span class="gl-b"><b>Línea base</b><span>Una <b>línea base</b> es el modelo más tonto que se puede escribir, y sirve para saber qué significa una cifra. El clásico responde siempre la clase más frecuente sin mirar los datos.</span><span>En scikit-learn es <code>DummyClassifier</code>. Si tu red no le saca una ventaja clara, no ha aprendido nada aunque su acierto suene bien.</span><label for="gl-baseline" class="gl-x">Entendido</label></span></span></span>, el que ignora la imagen y responde siempre la clase mayoritaria.
+Antes de celebrar cualquier cifra, la comparación obligatoria: <span class="gl"><input type="checkbox" id="gl-baseline" class="gl-c"><label for="gl-baseline" class="gl-t">el clasificador tonto</label><span class="gl-m"><label for="gl-baseline" class="gl-bg"></label><span class="gl-b"><b>Línea base</b><span>Una <b>línea base</b> es el modelo más tonto que se puede escribir, y sirve para saber qué significa una cifra. El clásico responde siempre la clase más frecuente sin mirar los datos.</span><span>En scikit-learn es <code>DummyClassifier</code>. Si tu red no le saca una ventaja clara, no ha aprendido nada aunque su acierto suene bien.</span><label for="gl-baseline" class="gl-x">Entendido</label></span></span></span>, el que ignora la imagen y responde siempre la clase mayoritaria.
 
 Como el 56,2 % de ACRIMA es glaucoma, ese clasificador acierta el **56,2 %** sin mirar nada. Ese es el suelo real, no el 50 % que uno supone por costumbre.
 
@@ -2196,22 +2242,26 @@ Pero el suelo verdadero está mucho más arriba, y esto es lo que encontré al m
 <div class="nb-cell nb-code" data-exec="8">
 
 \`\`\`python
-from PIL import Image
+# ¿Cuánto se puede acertar SIN mirar la anatomía? Solo con el ancho del archivo.
+# Se recargan las rutas y las etiquetas juntas, para que y corresponda
+# siempre a las imágenes que se están midiendo.
+rutas, y = cargar_rutas("acrima")          # ACRIMA completa, 705 imágenes
 
-# ¿Cuánto se puede acertar SIN mirar la anatomía? Solo con el tamaño del archivo.
-lados = np.array([Image.open(r).size[0] for r in rutas_completas])
+anchos = np.array([Image.open(r).size[0] for r in rutas])
 
-print(f"lado medio, glaucoma : {lados[y == 1].mean():.1f} px")
-print(f"lado medio, normal   : {lados[y == 0].mean():.1f} px")
+print(f"ancho medio, glaucoma : {anchos[y == 1].mean():.1f} px")
+print(f"ancho medio, normal   : {anchos[y == 0].mean():.1f} px")
 
-# Se busca el mejor umbral posible sobre esa única variable.
-mejor = max(((lados >= t) == (y == 1)).mean() for t in np.unique(lados))
+# Mejor umbral posible sobre esa única variable, buscado sobre estas mismas
+# imágenes. Es una cota superior optimista: ver la nota de abajo.
+mejor = max(((anchos >= t) == (y == 1)).mean() for t in np.unique(anchos))
+
 print(f"\\nRegla 'si es grande, glaucoma' : {mejor:.1%}")
-print(f"Clasificador tonto             : {max(np.bincount(y)) / len(y):.1%}")
+print(f"Clasificador tonto             : {np.bincount(y).max() / len(y):.1%}")
 \`\`\`
 
-<div class="nb-out">lado medio, glaucoma : 667.7 px
-lado medio, normal   : 352.9 px
+<div class="nb-out">ancho medio, glaucoma : 667.7 px
+ancho medio, normal   : 352.9 px
 
 Regla 'si es grande, glaucoma' : <b>86.8%</b>
 Clasificador tonto             : 56.2%</div>
@@ -2222,7 +2272,11 @@ Clasificador tonto             : 56.2%</div>
 
 **86,8 % con una sola comparación de números enteros.** \`if ancho >= 427: "glaucoma"\`. Sin abrir la imagen, sin ver un vaso, sin saber qué es un disco óptico.
 
-Las imágenes glaucomatosas de ACRIMA miden 668 píxeles de lado de media; las normales, 353. Las dos clases se capturaron o se recortaron de maneras sistemáticamente distintas, y eso quedó grabado en los metadatos del archivo. No es fraude ni descuido de los autores: es lo normal cuando un conjunto se compone reuniendo material clínico recogido en distintos momentos. Pero significa que **hay una vía para acertar que no pasa por la enfermedad**.
+Las imágenes glaucomatosas de ACRIMA miden 668 píxeles de lado de media; las normales, 353. Las dos clases se capturaron o se recortaron de maneras sistemáticamente distintas, y eso quedó grabado en las dimensiones del archivo. No es fraude ni descuido de los autores: es lo normal cuando un conjunto se compone reuniendo material clínico recogido en distintos momentos. Pero significa que **hay una vía para acertar que no pasa por la enfermedad**.
+
+Ese umbral se elige mirando las mismas imágenes que luego se puntúan, así que sobreestima. La objeción es justa, y se responde midiendo: ajustando el umbral en el 70 % de las imágenes y evaluándolo en el 30 % restante, estratificado y promediando 200 particiones, el atajo del ancho sigue acertando el **86,1 % ± 2,0**, el del peso el **80,7 % ± 2,2** y el del color el **64,2 % ± 2,9**. No era un artefacto de la búsqueda.
+
+El script que produce estas cuatro cifras está en el repositorio, es de una página y corre en unos segundos: [\`datasets/medir_atajos.py\`](https://github.com/stivenson/stivenson.github.io/blob/main/datasets/medir_atajos.py). Se le pasa la carpeta de imágenes y devuelve la tabla completa, in-sample y held-out.
 
 Y aquí es donde el preprocesado deja de ser fontanería para siempre:
 
@@ -2234,13 +2288,15 @@ Y aquí es donde el preprocesado deja de ser fontanería para siempre:
 
 Pulsa **“tras redimensionar a 224×224”** y mira qué pasa.
 
-Redimensionar **borra** los atajos del tamaño y del peso del archivo: cuando todo mide 224×224, esa información deja de existir. El paso que parecía puro trámite resulta ser la defensa principal contra el atajo más fuerte del conjunto.
+Redimensionar **le quita a la red el acceso directo** a los atajos del ancho y del peso: cuando todas las entradas miden 224×224 y llegan como tensor, esa información ya no está en lo que el modelo ve. El paso que parecía puro trámite resulta ser la defensa principal contra el atajo más fuerte del conjunto.
 
-Pero el color **sobrevive**. Un simple umbral sobre la diferencia media entre el canal rojo y el azul acierta el **65,7 %** — casi diez puntos por encima del clasificador tonto, y redimensionar no lo toca. Las imágenes glaucomatosas de ACRIMA son sistemáticamente más anaranjadas.
+Conviene no exagerarlo: borra el acceso directo, no toda la huella. Una imagen que venía de 1420 píxeles y otra que venía de 300 no llegan iguales a 224 — se diferencian en nitidez, en el ruido de compresión del JPEG original y en los artefactos que deja el propio reescalado. Un modelo con capacidad suficiente puede reaprender el origen por ahí.
 
-> 💡 **Lección clave:** el preprocesado decide qué atajos sobreviven. Antes de creerte una métrica, mide qué acierta un modelo trivial que solo vea los metadatos: tamaño, peso, color medio. Si tu CNN no supera eso por un margen amplio, no has demostrado nada.
+Y el color **sobrevive sin más**. Un umbral sobre la diferencia media entre el canal rojo y el azul acierta el 65,7 % in-sample y el **64,2 %** en partición independiente — ocho puntos por encima del clasificador tonto, y redimensionar no lo toca. Las imágenes glaucomatosas de ACRIMA son sistemáticamente más anaranjadas.
 
-Una nota metodológica honesta: esos umbrales se eligen mirando el propio conjunto, así que las cifras son cotas superiores optimistas. Da igual. El argumento no depende del decimal — depende de que sean tan altas.
+> 💡 **Lección clave:** el preprocesado decide a qué atajos les quitas el acceso. Antes de creerte una métrica, mide qué acierta un modelo trivial que solo vea los metadatos: tamaño, peso, color medio. Si tu CNN no supera eso por un margen amplio, no has demostrado nada.
+
+Un apunte sobre las cifras publicadas: los trabajos que usan ACRIMA reportan aciertos altos, pero para compararte con ellos hace falta saber **qué métrica** (\`accuracy\` y AUC no son intercambiables) y **con qué protocolo** — validación cruzada, partición fija, o partición por paciente. Sin esos dos datos, una cifra suelta no dice si el modelo es bueno o si está leyendo el ancho del archivo.
 
 </div>
 
@@ -2254,7 +2310,11 @@ ACRIMA distribuye imágenes anónimas sin identificador de paciente, así que aq
 
 El razonamiento es simple. Si partes tu conjunto **por imagen**, el ojo izquierdo de una persona puede caer en entrenamiento y el derecho en prueba. Esos dos ojos se fotografiaron el mismo día, con la misma cámara, con la misma iluminación, y comparten pigmentación, calibre de vasos y buena parte de la anatomía. Reconocer el segundo después de haber visto el primero no es diagnosticar: es recordar.
 
-En el segundo panel de la OVA de arriba puedes ver cuántos pacientes acaban partidos entre los dos lados. Con partición aleatoria por imagen, cada paciente se divide con probabilidad ½: **de 8 pacientes se esperan 4 partidos**, y la mitad de tu conjunto de prueba deja de ser independiente. Al partir por paciente, cero.
+En el segundo panel de la OVA de arriba puedes ver cuántos pacientes acaban partidos entre los dos lados. La cuenta es sencilla: si cada imagen va a entrenamiento con probabilidad $p$, un paciente de dos ojos queda partido cuando sus ojos caen a lados distintos, y eso ocurre con probabilidad $2p(1-p)$.
+
+Esa expresión es máxima justo en el reparto mitad y mitad que usa la OVA: $2 \\cdot 0{,}5 \\cdot 0{,}5 = 0{,}5$, o sea **4 de cada 8 pacientes partidos**. Con el 80/20 habitual —el que da las 564 imágenes de entrenamiento de este artículo— baja a $2 \\cdot 0{,}8 \\cdot 0{,}2 = 0{,}32$: un 32 % de los pacientes.
+
+Pero el porcentaje de pacientes partidos no es lo que duele. Lo que duele es esto: para una imagen cualquiera del conjunto de prueba, la probabilidad de que el otro ojo del mismo paciente esté en entrenamiento es directamente $p$. Con un 80/20, **el 80 % de tus imágenes de prueba tiene a su gemela dentro del entrenamiento**. Al partir por paciente, cero.
 
 La regla, sin excepciones: **agrupa por la unidad que quieres que el modelo generalice**. Si vas a diagnosticar personas, parte por persona. Nunca por imagen, nunca por ojo.
 
@@ -2268,7 +2328,7 @@ Vuelve al diagrama del principio y míralo otra vez, ahora sabiendo qué hace ca
 
 | Paso | Lo que parece | Lo que de verdad decide |
 |---|---|---|
-| Decodificar | Abrir el archivo | El factor ×32 de memoria que define tu tamaño de lote |
+| Decodificar | Abrir el archivo | El factor ×22 de memoria que define tu tamaño de lote |
 | Redimensionar | Ajustar el tamaño | La capacidad del modelo (72×) y **qué atajos borras** |
 | Interpolar | Un detalle | Si los vasos finos sobreviven o se convierten en ruido |
 | Escalar \`/255\` | Un trámite | Nada. Es seguro: 255 es una constante del tipo |
@@ -2302,13 +2362,19 @@ Si te llevas una sola cosa, que sea esta: antes de entrenar nada, comprueba qué
 **Documentación**
 
 - [Módulo de imagen de Pillow](https://pillow.readthedocs.io/en/stable/reference/Image.html) — decodificación y \`resize\`.
-- [\`tf.image.resize\`](https://www.tensorflow.org/api_docs/python/tf/image/resize) — el argumento \`antialias\`, y por qué está en \`False\` por defecto.
+- [\`tf.image.resize\`](https://www.tensorflow.org/api_docs/python/tf/image/resize) — el método por defecto es \`bilinear\`, \`antialias\` está en \`False\`, y la propia documentación avisa de que con \`area\` ese argumento no hace nada.
+- [\`preprocess_input\` de ResNet en Keras](https://keras.io/api/applications/resnet/) — y, en general, el de *tu* familia de modelos, que no tiene por qué coincidir con el de otra.
 - [Capas de preprocesado de Keras](https://keras.io/api/layers/preprocessing_layers/) — \`Rescaling\`, \`Normalization\` y las capas de aumentación, que solo actúan en entrenamiento.
+
+**Reproducir las cifras**
+
+- [\`datasets/medir_atajos.py\`](https://github.com/stivenson/stivenson.github.io/blob/main/datasets/medir_atajos.py) — mide los tres atajos, in-sample y en partición independiente. Se le pasa la carpeta de imágenes.
+- [\`datasets/acrima_mini.zip\`](https://github.com/stivenson/stivenson.github.io/blob/main/datasets/acrima_mini.zip) — el subconjunto de 60 imágenes que usan las celdas de este artículo, con los tamaños originales intactos.
 
 <em>Las imágenes de fondo de ojo de este artículo se redistribuyen bajo CC BY 4.0. La atribución completa está en <a href="https://github.com/stivenson/stivenson.github.io/blob/main/datasets/README.md">datasets/README.md</a>.</em>
 
 </div>
 
 </div>
-`;function h(a){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=a.match(n);if(!o)throw new Error("Invalid frontmatter format");const d=o[1],m=o[2],s={},b=d.split(`
-`);for(const l of b){const t=l.indexOf(":");if(t===-1)continue;const r=l.substring(0,t).trim();let e=l.substring(t+1).trim();if((e.startsWith('"')&&e.endsWith('"')||e.startsWith("'")&&e.endsWith("'"))&&(e=e.slice(1,-1)),r==="tags"){const u=e.match(/\[(.*?)\]/);u&&(s.tags=u[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?s.date=e:r==="slug"?s.slug=e:r==="title"?s.title=e:r==="description"&&(s.description=e)}return{frontmatter:s,body:m}}function i(a){const{frontmatter:n,body:o}=h(a);return{metadata:n,content:o}}const p=[i(g),i(f),i(v),i(q),i(y)];function x(a){return p.find(n=>n.metadata.slug===a)}function L(){return[...p].sort((a,n)=>{const o=new Date(a.metadata.date).getTime();return new Date(n.metadata.date).getTime()-o})}export{x as a,L as g};
+`;function x(e){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=e.match(n);if(!o)throw new Error("Invalid frontmatter format");const u=o[1],b=o[2],s={},g=u.split(`
+`);for(const l of g){const t=l.indexOf(":");if(t===-1)continue;const r=l.substring(0,t).trim();let a=l.substring(t+1).trim();if((a.startsWith('"')&&a.endsWith('"')||a.startsWith("'")&&a.endsWith("'"))&&(a=a.slice(1,-1)),r==="tags"){const p=a.match(/\[(.*?)\]/);p&&(s.tags=p[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?s.date=a:r==="slug"?s.slug=a:r==="title"?s.title=a:r==="description"&&(s.description=a)}return{frontmatter:s,body:b}}function i(e){const{frontmatter:n,body:o}=x(e);return{metadata:n,content:o}}const m=[i(f),i(v),i(y),i(h),i(q)];function d(e){return new Date(`${e}T00:00:00`)}function L(e){return d(e).toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})}function E(e){return m.find(n=>n.metadata.slug===e)}function P(){return[...m].sort((e,n)=>{const o=d(e.metadata.date).getTime();return d(n.metadata.date).getTime()-o})}export{E as a,L as f,P as g};
