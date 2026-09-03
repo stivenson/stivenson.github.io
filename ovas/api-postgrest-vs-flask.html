@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Mismo trabajo, dos caminos: PostgREST y Flask</title>
+<style>
+/* Misma lengua de color que el articulo:
+   violeta = el esquema de la base de datos hace el trabajo
+   ambar   = codigo que escribes tu
+   cian    = la peticion · esmeralda = sale bien · rosa = no se puede */
+:root {
+  --req:    #06b6d4;
+  --ok:     #10b981;
+  --err:    #f43f5e;
+  --db:     #a855f7;
+  --code:   #f59e0b;
+
+  --text:  #e8e8f0;
+  --muted: #9a9ac0;
+  --line:  rgba(85, 170, 255, 0.16);
+  --panel: rgba(255, 255, 255, 0.035);
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-y: hidden;
+}
+
+.wrap { padding: 22px; }
+
+h1 { font-size: 17px; margin: 0 0 4px; letter-spacing: 0.01em; }
+.sub { margin: 0 0 15px; color: var(--muted); font-size: 13px; }
+
+/* ── Tira del recorrido ──────────────────────────────────── */
+.track {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 13px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  overflow-x: auto;
+}
+.pip {
+  width: 100%;
+  height: 6px;
+  min-width: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: box-shadow 160ms ease, height 160ms ease;
+}
+.pip[data-on='1'] { height: 10px; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.07); }
+
+/* ── Selector de operacion ───────────────────────────────── */
+.ops { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+
+.op {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.op:hover { color: var(--text); border-color: rgba(85, 170, 255, 0.4); }
+.op[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--req);
+  background: color-mix(in srgb, var(--req) 16%, transparent);
+}
+.op:focus-visible { outline: 2px solid var(--req); outline-offset: 2px; }
+
+/* ── Los dos paneles ─────────────────────────────────────── */
+.pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+  align-items: start;
+}
+
+.side {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+.side--db   { border-color: color-mix(in srgb, var(--db) 34%, transparent); }
+.side--code { border-color: color-mix(in srgb, var(--code) 34%, transparent); }
+
+.side-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+.side-name { display: inline-flex; align-items: center; gap: 7px; text-transform: uppercase; }
+.side-count { color: var(--muted); font-size: 10.5px; white-space: nowrap; }
+
+pre {
+  margin: 0;
+  padding: 12px 13px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
+.cm { color: var(--muted); }
+.na { color: var(--err); }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+/* ── Veredicto ───────────────────────────────────────────── */
+.verdict {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 14px 15px;
+}
+
+.verdict-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 9px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.verdict-body { font-size: 13.5px; }
+.verdict-body p { margin: 0 0 8px; }
+.verdict-body p:last-child { margin-bottom: 0; }
+.verdict-body code {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+@media (max-width: 720px) {
+  .wrap { padding: 16px 14px; }
+  .pair { grid-template-columns: minmax(0, 1fr); }
+  pre { font-size: 11.5px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mismo trabajo, dos caminos</h1>
+  <p class="sub">La misma operación resuelta con PostgREST y con Flask. Mira quién escribe cada línea — y a partir de qué punto se invierte la ventaja.</p>
+
+  <div class="track" id="track" aria-hidden="true"></div>
+  <div class="ops" id="ops" role="group" aria-label="Operación"></div>
+
+  <div class="pair">
+    <section class="side side--db">
+      <div class="side-head">
+        <span class="side-name" style="color:var(--db)"><i class="dot" style="background:var(--db)"></i> PostgREST</span>
+        <span class="side-count" id="db-count"></span>
+      </div>
+      <pre id="db-code"></pre>
+    </section>
+
+    <section class="side side--code">
+      <div class="side-head">
+        <span class="side-name" style="color:var(--code)"><i class="dot" style="background:var(--code)"></i> Flask</span>
+        <span class="side-count" id="fl-count"></span>
+      </div>
+      <pre id="fl-code"></pre>
+    </section>
+  </div>
+
+  <div class="verdict" aria-live="polite" aria-atomic="true">
+    <div class="verdict-top">
+      <span class="chip" id="chip-verdict"></span>
+      <span class="chip" id="chip-delta"></span>
+    </div>
+    <div class="verdict-body" id="verdict-body"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  /* Las ocho operaciones van de menor a mayor "logica propia". El orden es el
+     argumento: PostgREST arrasa mientras el trabajo sea consultar, empata en
+     cuanto aparece una regla de negocio y pierde cuando hay efectos externos. */
+  const OPS = [
+    {
+      tab: 'Listar',
+      title: 'Listar los libros del catálogo',
+      db: `-- Nada. Ya lo escribiste al crear la tabla.
+
+GET /libro
+Accept: application/json`,
+      dbLines: 0,
+      fl: `@app.get("/libros")
+def listar_libros():
+    with pool.connection() as con:
+        filas = con.execute(
+            "select id, titulo, isbn, ejemplares"
+            "  from libro order by id"
+        ).fetchall()
+    return jsonify([dict(f) for f in filas])`,
+      flLines: 8,
+      winner: 'db',
+      why: `<p>PostgREST lee el catálogo de PostgreSQL al arrancar y publica una ruta por tabla. La tabla <em>es</em> el endpoint: no hay nada que mantener sincronizado porque no hay dos sitios.</p>
+            <p>Las ocho líneas de Flask no están mal escritas — es que no dicen nada que el esquema no dijera ya. Ése es el patrón a vigilar durante todo el recorrido.</p>`,
+    },
+    {
+      tab: 'Filtrar',
+      title: 'Filtrar por disponibilidad y ordenar por título',
+      db: `-- Nada.
+
+GET /libro?ejemplares=gt.0&order=titulo.asc`,
+      dbLines: 0,
+      fl: `COLUMNAS_ORDENABLES = {"titulo", "isbn", "ejemplares"}
+
+@app.get("/libros")
+def listar_libros():
+    orden = request.args.get("orden", "id")
+    # Sin esta comprobación tienes inyección SQL: el nombre
+    # de columna no se puede pasar como parámetro.
+    if orden not in COLUMNAS_ORDENABLES:
+        abort(422, "columna de orden no permitida")
+
+    minimo = request.args.get("min_ejemplares", type=int, default=0)
+    with pool.connection() as con:
+        filas = con.execute(
+            f"select * from libro where ejemplares > %s"
+            f" order by {orden}",
+            (minimo,),
+        ).fetchall()
+    return jsonify([dict(f) for f in filas])`,
+      flLines: 18,
+      winner: 'db',
+      why: `<p>Aquí aparece la primera trampa real de escribir una API a mano. Los <strong>valores</strong> van como parámetros (<code>%s</code>) y son seguros; los <strong>nombres de columna</strong> no se pueden parametrizar, así que hay que validarlos contra una lista blanca.</p>
+            <p>Es exactamente el punto donde nacen la mitad de las inyecciones SQL de las primeras APIs: alguien interpola <code>request.args["orden"]</code> en la consulta y el código funciona perfectamente hasta que deja de hacerlo.</p>`,
+    },
+    {
+      tab: 'Paginar',
+      title: 'Devolver 20 resultados y decir cuántos hay en total',
+      db: `-- Nada.
+
+GET /libro
+Range-Unit: items
+Range: 0-19
+Prefer: count=exact
+
+--> 206 Partial Content
+--> Content-Range: 0-19/348`,
+      dbLines: 0,
+      fl: `@app.get("/libros")
+def listar_libros():
+    limite = min(request.args.get("limit", type=int, default=20), 100)
+    desde = request.args.get("offset", type=int, default=0)
+    with pool.connection() as con:
+        filas = con.execute(
+            "select * from libro order by id limit %s offset %s",
+            (limite, desde),
+        ).fetchall()
+        total = con.execute("select count(*) from libro").fetchone()[0]
+
+    hasta = desde + len(filas) - 1
+    resp = jsonify([dict(f) for f in filas])
+    resp.headers["Content-Range"] = f"{desde}-{hasta}/{total}"
+    resp.status_code = 206 if total > len(filas) else 200
+    return resp`,
+      flLines: 16,
+      winner: 'db',
+      why: `<p>El tope de <code>min(..., 100)</code> no es un detalle: sin él, <code>?limit=99999999</code> es un ataque de denegación de servicio de un solo carácter. PostgREST tiene el mismo tope en su configuración, <code>db-max-rows</code>.</p>
+            <p>El <code>count(*)</code> exacto es caro en tablas grandes, y por eso PostgREST ofrece tres modos: <code>count=exact</code>, <code>count=planned</code> (usa las estadísticas del planificador) y <code>count=estimated</code>, que mezcla ambos según el tamaño.</p>`,
+    },
+    {
+      tab: 'Unir',
+      title: 'Traer cada libro con el nombre de su autor',
+      db: `-- Nada. PostgREST descubre la relación
+-- leyendo la clave foránea libro.autor_id.
+
+GET /libro?select=titulo,isbn,autor(nombre)
+
+--> [{ "titulo": "Ficciones",
+-->    "isbn": "9788420633121",
+-->    "autor": { "nombre": "Borges" } }]`,
+      dbLines: 0,
+      fl: `@app.get("/libros")
+def listar_libros():
+    with pool.connection() as con:
+        filas = con.execute("""
+            select l.id, l.titulo, l.isbn, a.nombre as autor_nombre
+              from libro l
+              join autor a on a.id = l.autor_id
+             order by l.id
+        """).fetchall()
+
+    # Un JOIN devuelve filas planas; el JSON quiere anidado.
+    return jsonify([
+        {"id": f["id"], "titulo": f["titulo"], "isbn": f["isbn"],
+         "autor": {"nombre": f["autor_nombre"]}}
+        for f in filas
+    ])`,
+      flLines: 16,
+      winner: 'db',
+      why: `<p>PostgREST no adivina la relación: la lee de la <strong>clave foránea</strong>. Si no declaraste el <code>references</code>, el <code>select=autor(nombre)</code> no existe. Otra vez, el esquema es el que manda.</p>
+            <p>El bloque de Flask está bien: una sola consulta con <code>JOIN</code>. La versión que suele salir mal es la del ORM ingenuo — recorrer los libros y pedir <code>libro.autor.nombre</code> dentro del bucle. Eso son 1 + N consultas y la página tarda un segundo con 300 libros.</p>`,
+    },
+    {
+      tab: 'Crear',
+      title: 'Crear un libro y responder 201',
+      db: `-- Nada.
+
+POST /libro
+Prefer: return=representation
+
+{ "titulo": "El Aleph", "autor_id": 3,
+  "isbn": "9788499089515", "ejemplares": 4 }`,
+      dbLines: 0,
+      fl: `@app.post("/libros")
+def crear_libro():
+    datos = request.get_json()
+    faltan = {"titulo", "autor_id", "isbn"} - datos.keys()
+    if faltan:
+        abort(422, f"faltan campos: {sorted(faltan)}")
+
+    try:
+        with pool.connection() as con:
+            fila = con.execute(
+                "insert into libro (titulo, autor_id, isbn, ejemplares)"
+                " values (%s, %s, %s, %s) returning *",
+                (datos["titulo"], datos["autor_id"],
+                 datos["isbn"], datos.get("ejemplares", 1)),
+            ).fetchone()
+    except UniqueViolation:
+        abort(409, "ya existe un libro con ese isbn")
+    except ForeignKeyViolation:
+        abort(422, "ese autor_id no existe")
+
+    resp = jsonify(dict(fila))
+    resp.status_code = 201
+    resp.headers["Location"] = f"/libros/{fila['id']}"
+    return resp`,
+      flLines: 24,
+      winner: 'db',
+      why: `<p>Ojo a las dos cláusulas <code>except</code>: no comprueban <em>antes</em> si el ISBN existe, capturan el error <em>después</em>. Es lo correcto. Entre un <code>select</code> de comprobación y el <code>insert</code> cabe otra petición, y el índice <code>unique</code> es el único árbitro que no se puede saltar.</p>
+            <p>Lo que PostgREST te da gratis aquí es la traducción de errores de PostgreSQL a códigos HTTP. Lo que te quita es el control sobre el texto de esos errores.</p>`,
+    },
+    {
+      tab: 'Aislar',
+      title: 'Que cada socio vea solo sus propios préstamos',
+      db: `alter table prestamo enable row level security;
+
+create policy prestamo_propio on prestamo
+  for select to socio
+  using (
+    socio_id = (current_setting('request.jwt.claims', true)
+                ::json ->> 'socio_id')::int
+  );
+
+GET /prestamo`,
+      dbLines: 8,
+      fl: `@app.get("/prestamos")
+def mis_prestamos():
+    socio_id = g.jwt["socio_id"]
+    with pool.connection() as con:
+        filas = con.execute(
+            # Olvidar este where es una fuga de datos silenciosa.
+            "select * from prestamo where socio_id = %s",
+            (socio_id,),
+        ).fetchall()
+    return jsonify([dict(f) for f in filas])`,
+      flLines: 10,
+      winner: 'db',
+      why: `<p>Las dos versiones ocupan lo mismo. La diferencia no es el tamaño: es <strong>qué pasa cuando te olvidas</strong>.</p>
+            <p>En Flask el <code>where socio_id = %s</code> hay que repetirlo en cada consulta que toque la tabla, y olvidarlo no rompe nada — simplemente devuelve los préstamos de todo el mundo, con un 200 y sin ninguna traza en los logs. Con <code>row level security</code> activada, la política se aplica a toda consulta de ese rol, venga de PostgREST, de otro servicio o de <code>psql</code>.</p>
+            <p>PostgREST apoya toda su autorización en esto: se conecta con un rol <code>authenticator</code> casi sin permisos y hace <code>set local role</code> al rol que diga el JWT, en cada petición.</p>`,
+    },
+    {
+      tab: 'Regla',
+      title: 'No prestar a quien ya tiene 3 préstamos sin devolver',
+      db: `create function prestar(p_libro int, p_socio int)
+returns prestamo language plpgsql as $$
+declare nuevo prestamo;
+begin
+  -- El bloqueo es obligatorio: sin él, dos peticiones
+  -- simultáneas cuentan 2 y ambas insertan el cuarto.
+  perform 1 from socio where id = p_socio for update;
+
+  if (select count(*) from prestamo
+       where socio_id = p_socio
+         and devuelto_el is null) >= 3 then
+    raise exception 'límite de préstamos alcanzado'
+      using errcode = 'check_violation';
+  end if;
+
+  insert into prestamo (libro_id, socio_id)
+  values (p_libro, p_socio) returning * into nuevo;
+  return nuevo;
+end $$;
+
+POST /rpc/prestar
+{ "p_libro": 42, "p_socio": 8 }`,
+      dbLines: 20,
+      fl: `@app.post("/prestamos")
+def prestar():
+    datos = request.get_json()
+    # El bloque es una transacción: si algo lanza, se deshace todo.
+    with pool.connection() as con:
+        # Mismo bloqueo, mismo motivo: comprobar y luego
+        # insertar sin transacción es una condición de carrera.
+        con.execute("select 1 from socio where id = %s for update",
+                    (datos["socio_id"],))
+
+        activos = con.execute(
+            "select count(*) from prestamo"
+            " where socio_id = %s and devuelto_el is null",
+            (datos["socio_id"],),
+        ).fetchone()[0]
+        if activos >= 3:
+            abort(409, "límite de préstamos alcanzado")
+
+        fila = con.execute(
+            "insert into prestamo (libro_id, socio_id)"
+            " values (%s, %s) returning *",
+            (datos["libro_id"], datos["socio_id"]),
+        ).fetchone()
+    return jsonify(dict(fila)), 201`,
+      flLines: 24,
+      winner: 'tie',
+      why: `<p>Primer empate del recorrido, y el punto de inflexión del artículo. Esto <strong>no</strong> es una consulta disfrazada: hay que leer, decidir y escribir dentro de la misma transacción. Los dos caminos cuestan lo mismo porque el trabajo real es idéntico.</p>
+            <p>Fíjate en que ambos hacen <code>for update</code>. Sin ese bloqueo, dos peticiones simultáneas leen «2 préstamos activos» a la vez y las dos insertan: el socio acaba con cuatro. Es el fallo clásico de la primera API, y no lo arregla ningún framework — lo arregla entender la transacción.</p>
+            <p>Si eliges PostgREST, la lógica vive en PL/pgSQL. Eso es una decisión de equipo con consecuencias reales: versionado, pruebas y depuración de SQL son territorio menos cómodo que Python para la mayoría.</p>`,
+    },
+    {
+      tab: 'Avisar',
+      title: 'Enviar un correo de confirmación al prestar',
+      db: `-- PostgREST no hace esto, y hace bien.
+-- Una petición HTTP saliente dentro de la transacción
+-- de la base de datos es una idea pésima.
+
+-- El patrón correcto es sacar el aviso fuera:
+create trigger avisar_prestamo after insert on prestamo
+for each row execute function pg_notify(
+  'prestamo_nuevo', row_to_json(new)::text);
+
+-- ...y escuchar desde un proceso aparte. Que ya es,
+-- otra vez, código de aplicación que alguien mantiene.`,
+      dbLines: 6,
+      fl: `@app.post("/prestamos")
+def prestar():
+    ...
+    # La transacción ya cerró: el préstamo está guardado.
+    cola.enqueue(enviar_correo_prestamo, fila["id"])
+    return jsonify(dict(fila)), 201`,
+      flLines: 5,
+      winner: 'code',
+      why: `<p>Aquí se invierte la ventaja, y de golpe. PostgREST expone datos; no orquesta. En cuanto aparece un efecto que vive fuera de PostgreSQL —un correo, una pasarela de pago, un fichero en S3, una llamada a otro servicio— necesitas un proceso que lo haga.</p>
+            <p>Y no vale meterlo en un trigger que llame por HTTP: si el correo tarda, la transacción se queda abierta; si el correo falla, ¿se deshace el préstamo? El patrón sano es siempre el mismo — commit primero, aviso después, con una cola que reintente.</p>
+            <p>Por eso el final del recorrido no es «gana uno». Es <strong>PostgREST para los datos, tu servicio para la orquestación</strong>, hablando los dos con la misma base.</p>`,
+    },
+  ];
+
+  const VERDICT = {
+    db:   { label: 'lo resuelve el esquema', color: 'var(--db)' },
+    code: { label: 'lo resuelve tu código',  color: 'var(--code)' },
+    tie:  { label: 'empate: trabajo real en ambos', color: 'var(--req)' },
+  };
+
+  let idx = 0;
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (t) => String(t).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+  /* Resaltado minimo y a prueba de balas: solo comentarios y las flechas
+     de respuesta de ejemplo. Nada de tokenizar SQL y Python de verdad. */
+  function paint(src) {
+    return src.split('\n').map((raw) => {
+      const t = raw.trim();
+      if (t.startsWith('--') || t.startsWith('#')) {
+        return `<span class="cm">${esc(raw)}</span>`;
+      }
+      return esc(raw);
+    }).join('\n');
+  }
+
+  function buildTrack() {
+    const track = $('track');
+    OPS.forEach((op, i) => {
+      const pip = document.createElement('i');
+      pip.className = 'pip';
+      pip.style.background = VERDICT[op.winner].color;
+      pip.style.opacity = '0.55';
+      pip.dataset.i = String(i);
+      track.appendChild(pip);
+    });
+  }
+
+  function buildOps() {
+    const box = $('ops');
+    OPS.forEach((op, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'op';
+      b.textContent = `${i + 1}. ${op.tab}`;
+      b.addEventListener('click', () => { idx = i; render(); });
+      box.appendChild(b);
+    });
+  }
+
+  function render() {
+    const op = OPS[idx];
+
+    for (const [i, b] of [...$('ops').children].entries()) {
+      b.setAttribute('aria-pressed', String(i === idx));
+    }
+    for (const pip of $('track').children) {
+      const on = Number(pip.dataset.i) === idx;
+      pip.dataset.on = on ? '1' : '0';
+      pip.style.opacity = on ? '1' : '0.4';
+    }
+
+    $('db-code').innerHTML = paint(op.db);
+    $('fl-code').innerHTML = paint(op.fl);
+
+    const plural = (n) => (n === 1 ? '1 línea tuya' : `${n} líneas tuyas`);
+    $('db-count').textContent = op.dbLines === 0 ? '0 líneas tuyas' : plural(op.dbLines);
+    $('fl-count').textContent = plural(op.flLines);
+
+    const v = VERDICT[op.winner];
+    const chip = $('chip-verdict');
+    chip.innerHTML = `<i class="dot" style="background:${v.color}"></i> ${v.label}`;
+    chip.style.borderColor = `color-mix(in srgb, ${v.color} 42%, transparent)`;
+    chip.style.color = 'var(--text)';
+
+    const delta = $('chip-delta');
+    delta.textContent = `${op.dbLines} vs ${op.flLines} líneas · ${op.title}`;
+
+    $('verdict-body').innerHTML = op.why;
+  }
+
+  buildTrack();
+  buildOps();
+  render();
+})();
+</script>
+</body>
+</html>

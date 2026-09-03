@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Anatomía de una petición HTTP</title>
+<style>
+/* Lengua de color compartida con el articulo:
+   cian = la peticion (lo que envia el cliente) · esmeralda = respuesta correcta
+   rosa = el error · violeta = el esquema de la base de datos manda
+   ambar = codigo que escribes tu */
+:root {
+  --req:    #06b6d4;
+  --ok:     #10b981;
+  --err:    #f43f5e;
+  --db:     #a855f7;
+  --code:   #f59e0b;
+
+  --text:  #e8e8f0;
+  --muted: #9a9ac0;
+  --line:  rgba(85, 170, 255, 0.16);
+  --panel: rgba(255, 255, 255, 0.035);
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  /* Transparente: el marco .lazy-frame del articulo pone el fondo. */
+  background: transparent;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  /* Sin barra propia: el contenedor mide este <body> y ajusta su altura. */
+  overflow-y: hidden;
+}
+
+.wrap { padding: 22px; }
+
+h1 { font-size: 17px; margin: 0 0 4px; letter-spacing: 0.01em; }
+.sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+
+/* ── Controles ───────────────────────────────────────────── */
+.controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 13px 18px;
+  padding: 14px 15px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+
+legend {
+  padding: 0;
+  margin-bottom: 6px;
+  font-size: 10.5px;
+  font-family: var(--mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.opts { display: flex; flex-wrap: wrap; gap: 5px; }
+
+.opt {
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-family: var(--mono);
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+.opt:hover { color: var(--text); border-color: rgba(85, 170, 255, 0.4); }
+.opt[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--req);
+  background: color-mix(in srgb, var(--req) 16%, transparent);
+}
+.opt:focus-visible { outline: 2px solid var(--req); outline-offset: 2px; }
+
+fieldset[hidden] { display: none; }
+
+/* ── El cable ────────────────────────────────────────────── */
+.wire {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.msg {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+.msg--req { border-color: color-mix(in srgb, var(--req) 38%, transparent); }
+
+.msg-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+pre {
+  margin: 0;
+  padding: 12px 13px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.62;
+  /* Las lineas largas de cabecera no deben ensanchar el iframe. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
+.k  { color: var(--muted); }
+.v  { color: var(--text); }
+.mt { color: var(--req); font-weight: 600; }
+.st-ok  { color: var(--ok);  font-weight: 600; }
+.st-err { color: var(--err); font-weight: 600; }
+.blank  { display: block; height: 0.62em; }
+
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+/* ── Explicacion ─────────────────────────────────────────── */
+.why {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 14px 15px;
+}
+
+.why-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.why-body { font-size: 13.5px; }
+.why-body p { margin: 0 0 8px; }
+.why-body p:last-child { margin-bottom: 0; }
+.why-body code {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.ladder {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+.rung {
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  transition: color 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+.rung--pass { color: color-mix(in srgb, var(--ok) 70%, var(--muted)); }
+.rung--stop {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--err) 50%, transparent);
+  background: color-mix(in srgb, var(--err) 14%, transparent);
+}
+.rung--done {
+  color: var(--text);
+  border-color: color-mix(in srgb, var(--ok) 50%, transparent);
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+}
+.arrow { opacity: 0.4; }
+
+@media (max-width: 720px) {
+  .wrap { padding: 16px 14px; }
+  .wire { grid-template-columns: minmax(0, 1fr); }
+  .controls { padding: 12px 13px; }
+  pre { font-size: 11.5px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Anatomía de una petición HTTP</h1>
+  <p class="sub">Arma la petición pieza a pieza y mira exactamente qué viaja por el cable — y qué capa decidió la respuesta.</p>
+
+  <form class="controls" id="controls" aria-label="Piezas de la petición"></form>
+
+  <div class="wire">
+    <div class="msg msg--req">
+      <div class="msg-head"><i class="dot" style="background:var(--req)"></i> lo que envías</div>
+      <pre id="req"></pre>
+    </div>
+    <div class="msg" id="res-box">
+      <div class="msg-head"><i class="dot" id="res-dot"></i> lo que responde el servidor</div>
+      <pre id="res"></pre>
+    </div>
+  </div>
+
+  <div class="why" aria-live="polite" aria-atomic="true">
+    <div class="why-top">
+      <span class="chip" id="chip-layer"></span>
+      <span class="chip" id="chip-owner"></span>
+    </div>
+    <div class="why-body" id="why-body"></div>
+    <div class="ladder" id="ladder"></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const HOST = 'api.biblioteca.dev';
+
+  /* Cuatro recursos que cubren los casos interesantes: la coleccion, un item
+     que la base de datos protege con una clave foranea, un item libre y uno
+     que no existe. */
+  const RES = {
+    coleccion: { path: '/libros',      collection: true,  exists: true },
+    trabado:   { path: '/libros/7',    collection: false, exists: true, locked: true },
+    libre:     { path: '/libros/42',   collection: false, exists: true },
+    ausente:   { path: '/libros/9999', collection: false, exists: false },
+  };
+
+  const ALLOW_COLECCION = 'GET, POST';
+  const ALLOW_ITEM = 'GET, PATCH, DELETE';
+
+  const AUTH = {
+    ninguno:       { header: null,                  rol: null },
+    socio:         { header: 'Bearer <jwt-socio>',  rol: 'socio' },
+    bibliotecario: { header: 'Bearer <jwt-biblio>', rol: 'bibliotecario' },
+  };
+
+  /* Cuerpos distintos para POST (recurso entero) y PATCH (parche parcial):
+     esa diferencia es justo lo que separa los dos verbos. */
+  const BODIES = {
+    POST: {
+      valido: '{\n  "titulo": "El Aleph",\n  "autor_id": 3,\n  "isbn": "9788499089515",\n  "ejemplares": 4\n}',
+      incompleto: '{\n  "autor_id": 3,\n  "isbn": "9788499089515"\n}',
+      duplicado: '{\n  "titulo": "El Aleph (reimpresión)",\n  "autor_id": 3,\n  "isbn": "9788420633121",\n  "ejemplares": 2\n}',
+      roto: '{\n  "titulo": "El Aleph",\n  "autor_id": 3,',
+    },
+    PATCH: {
+      valido: '{\n  "ejemplares": 6\n}',
+      incompleto: '{\n  "titulo": ""\n}',
+      duplicado: '{\n  "isbn": "9788420633121"\n}',
+      roto: '{\n  "ejemplares": 6,',
+    },
+  };
+
+  const FIELDS = [
+    { key: 'metodo', label: 'Método', value: 'GET', options: [
+      ['GET', 'GET'], ['POST', 'POST'], ['PATCH', 'PATCH'], ['DELETE', 'DELETE'],
+    ]},
+    { key: 'recurso', label: 'Ruta', value: 'coleccion', options: [
+      ['coleccion', '/libros'], ['trabado', '/libros/7'], ['libre', '/libros/42'], ['ausente', '/libros/9999'],
+    ]},
+    { key: 'auth', label: 'Quién pide', value: 'bibliotecario', options: [
+      ['ninguno', 'sin token'], ['socio', 'socio'], ['bibliotecario', 'bibliotecario'],
+    ]},
+    { key: 'cuerpo', label: 'Cuerpo enviado', value: 'valido', bodyOnly: true, options: [
+      ['valido', 'correcto'], ['incompleto', 'falta un campo'], ['duplicado', 'isbn repetido'], ['roto', 'JSON roto'],
+    ]},
+  ];
+
+  const state = Object.fromEntries(FIELDS.map((f) => [f.key, f.value]));
+
+  const PHRASE = {
+    200: 'OK',
+    201: 'Created',
+    204: 'No Content',
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    405: 'Method Not Allowed',
+    409: 'Conflict',
+    422: 'Unprocessable Content',
+  };
+
+  /* La escalera de comprobaciones. El orden no es decorativo: cada peldaño
+     asume que los anteriores pasaron, y esa es la razon de que 405 se decida
+     antes que 404 y 401 antes que cualquier cosa sobre el cuerpo. */
+  const LADDER = ['ruta', 'identidad', 'permiso', 'existe', 'sintaxis', 'reglas', 'estado', 'listo'];
+
+  const OWNER = {
+    http:  { label: 'te lo da HTTP gratis', color: 'var(--req)' },
+    tuyo:  { label: 'lo escribes tú', color: 'var(--code)' },
+    base:  { label: 'lo impone la base de datos', color: 'var(--db)' },
+  };
+
+  function decide(s) {
+    const res = RES[s.recurso];
+    const m = s.metodo;
+    const a = AUTH[s.auth];
+    const hasBody = m === 'POST' || m === 'PATCH';
+    const escribe = m !== 'GET';
+
+    /* 1 · ruta — ¿este verbo aplica a esta forma de URL? */
+    const okMetodo = res.collection ? (m === 'GET' || m === 'POST') : (m !== 'POST');
+    if (!okMetodo) {
+      return {
+        status: 405, stop: 'ruta', layer: 'enrutador', owner: 'http',
+        headers: { Allow: res.collection ? ALLOW_COLECCION : ALLOW_ITEM },
+        body: { type: 'about:blank', title: 'Method Not Allowed', status: 405,
+                detail: `${m} no está definido para ${res.path}` },
+        why: res.collection
+          ? `<p><code>${m}</code> sobre una <strong>colección</strong> no tiene sentido: <code>${res.path}</code> no es un libro concreto, así que no hay nada que modificar ni que borrar.</p><p>Fíjate en la cabecera <code>Allow</code>. Un 405 sin <code>Allow</code> está incompleto: el cliente merece saber qué <em>sí</em> puede hacer aquí.</p>`
+          : `<p><code>POST</code> crea un recurso <em>dentro</em> de una colección y deja que el servidor elija la URL. Sobre <code>${res.path}</code>, que ya es una URL concreta, no hay dónde crear nada.</p><p>Si quieres reemplazar ese libro entero, el verbo es <code>PUT</code>; si quieres cambiar un campo, <code>PATCH</code>.</p>`,
+      };
+    }
+
+    /* 2 · identidad — solo para lo que escribe. Leer es publico en esta API. */
+    if (escribe && !a.rol) {
+      return {
+        status: 401, stop: 'identidad', layer: 'autenticación', owner: 'tuyo',
+        headers: { 'WWW-Authenticate': 'Bearer realm="biblioteca"' },
+        body: { type: 'about:blank', title: 'Unauthorized', status: 401,
+                detail: 'falta la cabecera Authorization' },
+        why: '<p><strong>401 no significa «no tienes permiso»</strong>, significa «no sé quién eres». El servidor no ha podido identificarte, así que ni siquiera llega a preguntarse si podrías.</p><p>La cabecera <code>WWW-Authenticate</code> es obligatoria en un 401: le dice al cliente <em>cómo</em> autenticarse.</p>',
+      };
+    }
+
+    /* 3 · permiso — ya se quien eres; ahora, ¿puedes? */
+    if (escribe && a.rol === 'socio') {
+      return {
+        status: 403, stop: 'permiso', layer: 'autorización', owner: 'base',
+        headers: {},
+        body: { type: 'about:blank', title: 'Forbidden', status: 403,
+                detail: 'el rol socio no puede modificar el catálogo' },
+        why: '<p>Ahora sí sé quién eres — y por eso puedo decirte que <strong>no</strong>. Ésa es toda la diferencia entre 401 y 403: el primero es sobre identidad, el segundo sobre permisos.</p><p>Repetir la petición con el mismo token no va a cambiar nada. Con un 401, en cambio, reintentar <em>con credenciales</em> sí tiene sentido.</p>',
+      };
+    }
+
+    /* 4 · existe */
+    if (!res.exists) {
+      return {
+        status: 404, stop: 'existe', layer: 'consulta', owner: 'base',
+        headers: {},
+        body: { type: 'about:blank', title: 'Not Found', status: 404,
+                detail: 'no hay ningún libro con id 9999' },
+        why: '<p>La ruta es válida y tú tienes permiso; simplemente no hay fila con ese identificador.</p><p>Un detalle que se pasa por alto: <code>GET /libros?autor_id=eq.999</code> sobre un autor inexistente devuelve <strong>200 con una lista vacía</strong>, no 404. La colección existe; lo que está vacío es el resultado.</p>',
+      };
+    }
+
+    /* 5 · sintaxis — ¿el cuerpo es JSON parseable? */
+    if (hasBody && s.cuerpo === 'roto') {
+      return {
+        status: 400, stop: 'sintaxis', layer: 'analizador', owner: 'http',
+        headers: {},
+        body: { type: 'about:blank', title: 'Bad Request', status: 400,
+                detail: 'JSON inválido: se esperaba una clave en la línea 3' },
+        why: '<p><strong>400 es sintaxis</strong>: lo que enviaste ni siquiera es JSON. El servidor no llegó a mirar qué campos traía porque no pudo abrir el sobre.</p><p>Es el error que más se usa mal. Si el JSON es correcto pero le falta un campo obligatorio, el código no es 400 — sigue jugando con la siguiente opción.</p>',
+      };
+    }
+
+    /* 6 · reglas — JSON valido, contenido incorrecto. */
+    if (hasBody && s.cuerpo === 'incompleto') {
+      const detalle = m === 'POST'
+        ? 'falta el campo obligatorio "titulo"'
+        : '"titulo" no puede quedar vacío';
+      return {
+        status: 422, stop: 'reglas', layer: 'validación', owner: m === 'POST' ? 'tuyo' : 'base',
+        headers: {},
+        body: { type: 'about:blank', title: 'Unprocessable Content', status: 422,
+                detail: detalle, errors: [{ campo: 'titulo', regla: 'not null' }] },
+        why: m === 'POST'
+          ? '<p>El JSON está bien formado — se pudo leer entero — pero le falta un campo que la tabla declara <code>not null</code>. Contenido bien escrito y semánticamente imposible: eso es exactamente un <strong>422</strong>.</p><p>RFC 9110 lo define así: <em>«el cuerpo enviado no se puede procesar porque el contenido tiene errores semánticos»</em>. Y ojo con el nombre: desde RFC 9110 es <em>Unprocessable Content</em>, ya no <em>Unprocessable Entity</em>.</p>'
+          : '<p>Enviaste un título vacío. La tabla tiene <code>check (length(trim(titulo)) &gt; 0)</code>, así que la base de datos rechaza la fila aunque tu código Python no hubiera mirado.</p><p>Ésa es la gracia de poner las reglas en el esquema: se cumplen por todos los caminos, incluido el script que alguien lance a las tres de la mañana desde <code>psql</code>.</p>',
+      };
+    }
+
+    /* 7 · estado — la peticion es correcta pero choca con lo que ya hay. */
+    if (hasBody && s.cuerpo === 'duplicado') {
+      return {
+        status: 409, stop: 'estado', layer: 'base de datos', owner: 'base',
+        headers: {},
+        body: { type: 'about:blank', title: 'Conflict', status: 409,
+                detail: 'ya existe un libro con isbn 9788420633121',
+                constraint: 'libro_isbn_key' },
+        why: '<p>Nada está mal en tu petición <em>en abstracto</em>: el JSON es válido y los campos son correctos. Choca con <strong>lo que ya hay guardado</strong>. Eso es un 409.</p><p>Y fíjate en quién lo detecta: el índice <code>unique</code> de la columna <code>isbn</code>. Tu código no comprobó nada — capturó el error <code>23505</code> de PostgreSQL y lo tradujo a HTTP. Comprobar antes con un <code>SELECT</code> no te salva: entre tu consulta y tu inserción cabe otra petición.</p>',
+      };
+    }
+
+    if (m === 'DELETE' && res.locked) {
+      return {
+        status: 409, stop: 'estado', layer: 'base de datos', owner: 'base',
+        headers: {},
+        body: { type: 'about:blank', title: 'Conflict', status: 409,
+                detail: 'el libro 7 tiene un préstamo sin devolver',
+                constraint: 'prestamo_libro_id_fkey' },
+        why: '<p>El libro existe y tienes permiso para borrarlo, pero hay una fila en <code>prestamo</code> que lo referencia. La clave foránea está declarada <code>on delete restrict</code>, así que PostgreSQL se niega.</p><p>Prueba lo mismo sobre <code>/libros/42</code>, que no tiene préstamos: sale <strong>204</strong>. La diferencia entre las dos respuestas no la decide una línea de tu código — la decide el <span style="color:var(--db)">esquema</span>.</p>',
+      };
+    }
+
+    /* 8 · listo */
+    if (m === 'GET') {
+      return res.collection
+        ? {
+            status: 200, stop: 'listo', layer: 'consulta', owner: 'base',
+            headers: { 'Content-Range': '0-1/2' },
+            body: [
+              { id: 7, titulo: 'Ficciones', autor_id: 3, isbn: '9788420633121', ejemplares: 2 },
+              { id: 42, titulo: 'Rayuela', autor_id: 5, isbn: '9788437604572', ejemplares: 1 },
+            ],
+            why: '<p>Una colección devuelve <strong>siempre una lista</strong>, aunque tenga un elemento o ninguno. Cero resultados es <code>200 []</code>, nunca 404.</p><p><code>Content-Range</code> viene de la paginación: dice qué tramo estás viendo y cuántos hay en total. Una API que devuelve la tabla entera sin paginar funciona en desarrollo y se cae el día que la tabla crece.</p>',
+          }
+        : {
+            status: 200, stop: 'listo', layer: 'consulta', owner: 'base',
+            headers: { ETag: '"a3f1c9"' },
+            body: { id: Number(res.path.split('/')[2]), titulo: res.locked ? 'Ficciones' : 'Rayuela',
+                    autor_id: res.locked ? 3 : 5, isbn: res.locked ? '9788420633121' : '9788437604572',
+                    ejemplares: res.locked ? 2 : 1 },
+            why: '<p>Un item devuelve <strong>un objeto</strong>, no una lista de uno. Que la forma de la respuesta sea predecible a partir de la URL es media batalla del diseño.</p><p><code>GET</code> es un método <em>seguro</em>: no cambia nada en el servidor. Por eso lo puede cachear un proxy, reintentarlo el navegador y precargarlo el buscador — sin pedirte permiso.</p>',
+          };
+    }
+
+    if (m === 'POST') {
+      return {
+        status: 201, stop: 'listo', layer: 'base de datos', owner: 'base',
+        headers: { Location: '/libros/43' },
+        body: { id: 43, titulo: 'El Aleph', autor_id: 3, isbn: '9788499089515', ejemplares: 4 },
+        why: '<p><strong>201, no 200.</strong> Y con cabecera <code>Location</code>: el servidor eligió la URL del recurso nuevo y tiene que decírtela, porque el cliente no podía saber que le tocaba el id 43.</p><p><code>POST</code> es el único de los cuatro que <strong>no es idempotente</strong>: repítelo cinco veces y tendrás cinco libros. Por eso reintentar un POST tras un timeout es peligroso y reintentar un PUT o un DELETE no lo es.</p>',
+      };
+    }
+
+    if (m === 'PATCH') {
+      return {
+        status: 200, stop: 'listo', layer: 'base de datos', owner: 'base',
+        headers: {},
+        body: { id: Number(res.path.split('/')[2]), titulo: res.locked ? 'Ficciones' : 'Rayuela',
+                autor_id: res.locked ? 3 : 5, isbn: res.locked ? '9788420633121' : '9788437604572',
+                ejemplares: 6 },
+        why: '<p><code>PATCH</code> envía <strong>solo lo que cambia</strong>. Compáralo con el cuerpo del POST de arriba: allí iba el recurso entero, aquí un único campo.</p><p>La alternativa es <code>PUT</code>, que reemplaza el recurso completo — y por eso <em>borra</em> los campos que omitas. Confundirlos es cómo se pierden datos sin que nadie se entere.</p>',
+      };
+    }
+
+    return {
+      status: 204, stop: 'listo', layer: 'base de datos', owner: 'base',
+      headers: {},
+      body: null,
+      why: '<p><strong>204 No Content</strong>: salió bien y no hay nada que devolver. Un cuerpo <code>{"exito": true}</code> aquí sobra — el código de estado ya lo dijo.</p><p><code>DELETE</code> es idempotente en su efecto: borrar dos veces deja el mundo igual que borrarlo una. Que la segunda llamada conteste 204 o 404 es decisión tuya; lo importante es que no rompa nada.</p>',
+    };
+  }
+
+  /* ── Render del cable ────────────────────────────────────── */
+  const esc = (t) => String(t).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const hdr = (k, v) => `<span class="k">${esc(k)}:</span> <span class="v">${esc(v)}</span>\n`;
+  const $ = (id) => document.getElementById(id);
+
+  function renderRequest(s) {
+    const res = RES[s.recurso];
+    const a = AUTH[s.auth];
+    const hasBody = s.metodo === 'POST' || s.metodo === 'PATCH';
+
+    let out = `<span class="mt">${s.metodo}</span> <span class="v">${esc(res.path)}</span> <span class="k">HTTP/1.1</span>\n`;
+    out += hdr('Host', HOST);
+    out += hdr('Accept', 'application/json');
+    if (a.header) out += hdr('Authorization', a.header);
+    if (hasBody) {
+      const body = BODIES[s.metodo][s.cuerpo];
+      out += hdr('Content-Type', 'application/json');
+      out += `<span class="blank"></span><span class="v">${esc(body)}</span>`;
+    }
+    return out;
+  }
+
+  function renderResponse(r) {
+    const cls = r.status < 400 ? 'st-ok' : 'st-err';
+    let out = `<span class="k">HTTP/1.1</span> <span class="${cls}">${r.status} ${PHRASE[r.status]}</span>\n`;
+    if (r.body !== null) {
+      out += hdr('Content-Type', r.status >= 400 ? 'application/problem+json' : 'application/json');
+    }
+    for (const [k, v] of Object.entries(r.headers)) out += hdr(k, v);
+    if (r.body !== null) {
+      out += `<span class="blank"></span><span class="v">${esc(JSON.stringify(r.body, null, 2))}</span>`;
+    }
+    return out;
+  }
+
+  function renderLadder(stop) {
+    const at = LADDER.indexOf(stop);
+    const parts = [];
+    LADDER.forEach((name, i) => {
+      let cls = 'rung';
+      if (i < at) cls += ' rung--pass';
+      else if (i === at) cls += name === 'listo' ? ' rung--done' : ' rung--stop';
+      parts.push(`<span class="${cls}">${name}</span>`);
+      if (i < LADDER.length - 1) parts.push('<span class="arrow">›</span>');
+    });
+    return parts.join('');
+  }
+
+  function buildControls() {
+    const form = $('controls');
+    for (const field of FIELDS) {
+      const fs = document.createElement('fieldset');
+      fs.dataset.key = field.key;
+      if (field.bodyOnly) fs.dataset.bodyOnly = '1';
+
+      const lg = document.createElement('legend');
+      lg.textContent = field.label;
+      fs.appendChild(lg);
+
+      const box = document.createElement('div');
+      box.className = 'opts';
+      for (const [value, label] of field.options) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'opt';
+        b.textContent = label;
+        b.setAttribute('aria-pressed', String(state[field.key] === value));
+        b.addEventListener('click', () => {
+          state[field.key] = value;
+          for (const sib of box.querySelectorAll('.opt')) {
+            sib.setAttribute('aria-pressed', String(sib === b));
+          }
+          render();
+        });
+        box.appendChild(b);
+      }
+      fs.appendChild(box);
+      form.appendChild(fs);
+    }
+  }
+
+  function render() {
+    const hasBody = state.metodo === 'POST' || state.metodo === 'PATCH';
+    for (const fs of $('controls').querySelectorAll('fieldset[data-body-only]')) {
+      fs.hidden = !hasBody;
+    }
+
+    const r = decide(state);
+    $('req').innerHTML = renderRequest(state);
+    $('res').innerHTML = renderResponse(r);
+
+    const tint = r.status < 400 ? 'var(--ok)' : 'var(--err)';
+    $('res-dot').style.background = tint;
+    $('res-box').style.borderColor = `color-mix(in srgb, ${tint} 38%, transparent)`;
+
+    const layer = $('chip-layer');
+    layer.innerHTML = `<i class="dot" style="background:${tint}"></i> lo decidió: ${r.layer}`;
+    layer.style.borderColor = `color-mix(in srgb, ${tint} 40%, transparent)`;
+
+    const own = OWNER[r.owner];
+    const owner = $('chip-owner');
+    owner.innerHTML = `<i class="dot" style="background:${own.color}"></i> ${own.label}`;
+    owner.style.borderColor = `color-mix(in srgb, ${own.color} 40%, transparent)`;
+
+    $('why-body').innerHTML = r.why;
+    $('ladder').innerHTML = renderLadder(r.stop);
+  }
+
+  buildControls();
+  render();
+})();
+</script>
+</body>
+</html>
