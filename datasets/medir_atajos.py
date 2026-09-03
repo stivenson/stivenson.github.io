@@ -86,11 +86,16 @@ def mejor_umbral(v, y):
     return mejor
 
 
-def evaluar(v, y, rng):
+def evaluar(v, y):
     """
     Acierto in-sample y acierto held-out promediado sobre N particiones
     estratificadas: el umbral se ajusta en entrenamiento y se mide en prueba.
+
+    El generador se crea aquí, con la misma semilla para cada variable, así
+    que los tres atajos se evalúan sobre exactamente las mismas particiones
+    y sus cifras son comparables entre sí.
     """
+    rng = np.random.default_rng(SEMILLA)
     acc_in, _, _ = mejor_umbral(v, y)
 
     idx_pos = np.flatnonzero(y == 1)
@@ -116,7 +121,6 @@ def evaluar(v, y, rng):
 def main():
     carpeta = sys.argv[1] if len(sys.argv) > 1 else "acrima_mini"
     X, y = cargar(carpeta)
-    rng = np.random.default_rng(SEMILLA)
 
     n_g = int(y.sum())
     mayoritaria = max(n_g, len(y) - n_g) / len(y)
@@ -131,7 +135,7 @@ def main():
     for nombre, col in [("ancho de la imagen", 0),
                         ("peso del archivo", 1),
                         ("color medio (R - B)", 2)]:
-        acc_in, acc_out, sd = evaluar(X[:, col], y, rng)
+        acc_in, acc_out, sd = evaluar(X[:, col], y)
         print(f"{nombre:<26}{acc_in:>10.1%}{acc_out:>13.1%} ± {sd:.1%}")
 
     print()
