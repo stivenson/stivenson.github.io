@@ -199,11 +199,22 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       <LazyIframe src={src} title={title} style={style} {...props} />
     ),
 
-    // Código inline
-    code: ({ node, inline, className, children, ...props }: any) => {
+    // Código inline y bloques resaltados.
+    //
+    // react-markdown dejo de pasar la prop `inline` en la version 9, asi que
+    // la condicion de antes nunca se cumplia y CADA fragmento de codigo en
+    // linea acababa renderizado como bloque: el <pre> resultante cerraba el
+    // <p> que lo contenia y partia el parrafo en tres trozos.
+    //
+    // Un bloque se reconoce ahora por su clase `language-*`, y como respaldo
+    // por llevar saltos de linea — asi tambien se detectan las vallas de
+    // codigo escritas sin lenguaje, que no reciben clase alguna.
+    code: ({ node, className, children, ...props }: any) => {
       const match = /language-(\w+)/.exec(className || '');
       const language = match ? match[1] : '';
-      
+      const texto = String(children ?? '');
+      const inline = !match && !texto.includes('\n');
+
       if (inline) {
         return (
           <code 
