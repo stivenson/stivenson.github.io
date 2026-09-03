@@ -296,9 +296,9 @@ h2 {
     { nom: 'Nada: siempre “glaucoma”', cod: 'la clase mayoritaria',
       crudo: 56.2, out: null, resize: 56.2, base: true },
     { nom: 'El color medio', cod: 'umbral sobre (R − B)',
-      crudo: 65.7, out: 64.2, sd: 2.9, resize: 65.7 },
+      crudo: 65.7, out: 64.4, sd: 2.3, resize: 65.7 },
     { nom: 'El peso del archivo', cod: 'umbral sobre os.path.getsize()',
-      crudo: 81.4, out: 80.7, sd: 2.2, resize: null },
+      crudo: 81.4, out: 81.0, sd: 2.4, resize: null },
     { nom: 'El tamaño de la imagen', cod: 'umbral sobre width ≥ 427',
       crudo: 86.8, out: 86.1, sd: 2.0, resize: null }
   ];
@@ -360,7 +360,7 @@ h2 {
     document.getElementById('leyenda').innerHTML = resize
       ? '<b>Redimensionar le quita a la red el acceso a dos atajos de tres.</b> El tamaño y el peso del '
         + 'archivo ya no están en lo que el modelo ve cuando todo llega como tensor de 224×224. '
-        + 'El color sí: sigue sacando <b>64,2 %</b> en partición independiente, ocho puntos por encima del '
+        + 'El color sí: sigue sacando <b>64,4 %</b> en partición independiente, ocho puntos por encima del '
         + 'clasificador tonto, sin mirar una sola estructura anatómica. La línea vertical marca ese 56,2 %. '
         + '<br><br>Matiz: borra el acceso directo, no toda la huella. Una imagen que venía de 1420 px y otra '
         + 'de 300 llegan a 224 con nitidez y artefactos de compresión distintos.'
