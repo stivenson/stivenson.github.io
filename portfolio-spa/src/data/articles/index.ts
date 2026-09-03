@@ -2,6 +2,7 @@ import agentSkillsVsMcp from './agent-skills-vs-mcp.md?raw';
 import probabilidadIntegrales from './probabilidad-integrales-modelos.md?raw';
 import llmParaConstruirModelosMl from './llm-para-construir-modelos-ml.md?raw';
 import primeraApiConBaseDeDatos from './primera-api-con-base-de-datos.md?raw';
+import imagenATensorCnnGlaucoma from './imagen-a-tensor-cnn-glaucoma.md?raw';
 
 export interface ArticleMetadata {
   title: string;
@@ -85,6 +86,9 @@ export const articles: Article[] = [
   processArticle(agentSkillsVsMcp),
   processArticle(probabilidadIntegrales),
   processArticle(llmParaConstruirModelosMl),
+  // getAllArticles() ordena por fecha. Cuando dos comparten dia, el desempate
+  // lo da este orden: el mas reciente va antes.
+  processArticle(imagenATensorCnnGlaucoma),
   processArticle(primeraApiConBaseDeDatos)
 ];
 
