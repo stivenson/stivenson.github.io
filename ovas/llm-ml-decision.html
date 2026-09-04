@@ -315,7 +315,7 @@ legend {
         out.model = '<strong>LightGBM / CatBoost</strong> con búsqueda clásica (TPE o bayesiana), <em>sembrada con la configuración por defecto</em>.';
         out.why = 'En tabular sin semántica el LLM no tiene contexto que aportar ni ventaja como optimizador.';
         out.cost = s.filas === 'l' ? 'alto' : 'bajo';
-        out.warns.push('En pruebas con presupuesto igualado, un asesor LLM de hiperparámetros parece ganar por su primera evaluación (88.7% frente al 83.7% de random search) — pero ese punto es la <em>configuración por defecto</em>, evaluada antes de la primera llamada al modelo. Sus propuestas reales suman +0.4 pp en validación cruzada y −0.01 pp en test (p = 0.92).');
+        out.warns.push('En pruebas con presupuesto igualado, un asesor LLM de hiperparámetros parece ganar por su primera evaluación (88,7 % frente al 83,7 % de random search) — pero ese punto es la <em>configuración por defecto</em>, evaluada antes de la primera llamada al modelo. Sus propuestas reales suman +0,4 pp en validación cruzada y −0,01 pp en test (p = 0,92).');
         if (s.filas === 'l') out.warns.push('Además, aquí cada iteración del bucle es cara: entrenar sobre más de 1M de filas. Un agente que itera 20 veces multiplica esa factura.');
       }
     } else if (s.modalidad === 'texto') {
@@ -333,7 +333,7 @@ legend {
         out.model = 'Un clasificador ligero sobre el embedding, o el <strong>encoder afinado</strong> si tienes etiquetas de sobra.';
         out.why = 'Con este volumen ya tienes señal propia: el conocimiento del mundo que aporta el LLM pesa menos que tus etiquetas.';
         out.cost = 'medio';
-        out.warns.push('Prueba el modelo de embedding <em>pequeño</em> primero: MiniLM, con unos 22M de parámetros, supera a modelos mucho mayores en varios escenarios. Aquí el tamaño no ordena la calidad.');
+        out.warns.push('Prueba el modelo de embedding <em>pequeño</em> primero: de media el modelo grande gana, pero <strong>BGE</strong> —bastante más pequeño— es la elección más consistente entre datasets. El tamaño mueve la magnitud de la mejora, no su dirección.');
       }
     } else if (s.modalidad === 'imagen') {
       if (small || s.presupuesto !== 'alto') {

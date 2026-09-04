@@ -77,11 +77,11 @@ Presta atención al contador <span style="color:#f59e0b">ámbar</span>: cada pas
 - **Búsqueda web para sembrar la solución inicial.** En vez de partir de lo que el modelo recuerda de su preentrenamiento —congelado en una fecha—, busca qué se está usando hoy para esa tarea. Es la diferencia entre un ingeniero que lleva dos años sin leer nada y uno que abre el navegador.
 - **Refinamiento dirigido por ablación.** En vez de reescribir el script entero cada vuelta, mide cuánto aporta cada bloque (preprocesado, features, modelo, ensamblado) y solo reescribe el que más pesa. Cambiar una pieza a la vez es lo que hace el resultado **atribuible**.
 
-Trae además tres agentes de apoyo que valen su peso en oro y que casi nadie menciona: un **depurador** que insiste hasta que el script arranca, un **checker de fuga de datos** que revisa el preprocesado y genera una versión corregida si detecta contaminación entre train y test, y un **checker de uso de datos** que verifica que el script no esté ignorando ficheros que le entregaste. Está publicado sobre el ADK de Google.
+Trae además tres agentes de apoyo que valen su peso en oro y que casi nadie menciona: un **depurador** que insiste hasta que el script arranca, un **checker de fuga de datos** que revisa el preprocesado y genera una versión corregida si detecta contaminación entre train y test, y un **checker de uso de datos** que verifica que el script no esté ignorando ficheros que le entregaste. Se publicó como *sample* del ADK de Google, retirado del repositorio en julio de 2026 — el paper y su descripción de los tres módulos siguen siendo la referencia.
 
 **[R&D-Agent](https://github.com/microsoft/RD-Agent)** (Microsoft) — encuadra el trabajo como un proceso de investigación iterativo, no como un modelado suelto: propone hipótesis, las implementa, mide y acumula lo aprendido entre rondas.
 
-**[MLZero / AutoGluon Assistant](https://arxiv.org/abs/2505.13941)** (Amazon, NeurIPS 2025) — multiagente y multimodal, con memoria semántica y episódica. Describes la tarea en lenguaje natural y el sistema percibe los datos, escribe el código, lo ejecuta y se depura solo, sin configuración. En su propio benchmark multimodal de 25 tareas reporta una tasa de éxito de 0.92.
+**[MLZero / AutoGluon Assistant](https://arxiv.org/abs/2505.13941)** (Amazon, NeurIPS 2025) — multiagente y multimodal, con memoria semántica y episódica. Describes la tarea en lenguaje natural y el sistema percibe los datos, escribe el código, lo ejecuta y se depura solo, sin configuración. En su propio benchmark multimodal de 25 tareas reporta una tasa de éxito de 0,92.
 
 ### **⚠️ Los números que casi nadie cita bien**
 
@@ -125,11 +125,11 @@ Es donde el LLM aporta algo que ningún AutoML clásico puede: **conocimiento de
 
 **[FeatLLM](https://arxiv.org/abs/2404.09491)** — pensado para *few-shot*: le enseñas un puñado de ejemplos etiquetados y extrae **reglas** que separan las clases, que luego se materializan como features binarias.
 
-**LLM-FE** — usa el LLM como operador de mutación dentro de un bucle evolutivo: cada generación propone variantes de features y la validación selecciona.
+**[LLM-FE](https://arxiv.org/abs/2503.14434)** — usa el LLM como operador de mutación dentro de un bucle evolutivo: cada generación propone variantes de features y la validación selecciona.
 
 ### **Hiperparámetros y arquitectura**
 
-**[AgentHPO](https://arxiv.org/abs/2402.01881)** deja que un agente lea la tarea, lance experimentos y ajuste según el historial. **LLAMBO** va más lejos: sustituye el proceso gaussiano dentro de la optimización bayesiana por predicciones del LLM.
+**[AgentHPO](https://arxiv.org/abs/2402.01881)** deja que un agente lea la tarea, lance experimentos y ajuste según el historial. **[LLAMBO](https://arxiv.org/abs/2402.03921)** va más lejos: sustituye el proceso gaussiano dentro de la optimización bayesiana por predicciones del LLM.
 
 La promesa es seductora: menos ensayos, configuración más simple, y de regalo una explicación en prosa de por qué eligió lo que eligió. Guarda esta sección en la cabeza — **es donde la evidencia se pone fea**, y volvemos a ella en el contrapunto.
 
@@ -137,7 +137,9 @@ La promesa es seductora: menos ensayos, configuración más simple, y de regalo 
 
 El patrón más aburrido y probablemente el más rentable: serializar cada fila a texto, pasarla por un modelo de embeddings **congelado**, y alimentar el vector resultante a un modelo aguas abajo. Sin fine-tuning, sin llamadas en producción si cacheas.
 
-El [trabajo sobre embeddings de LLM para datos tabulares](https://arxiv.org/abs/2502.11596) deja un hallazgo que conviene tatuarse: **MiniLM, con unos 22 millones de parámetros, supera a modelos mucho mayores** en varios escenarios. En embeddings, el tamaño no ordena la calidad. Prueba el pequeño primero.
+El [trabajo de Koloski et al. sobre embeddings de LLM para datos tabulares](https://arxiv.org/abs/2502.11596) deja dos hallazgos que hay que leer juntos, porque por separado engañan. El primero es el esperable: **de media, el modelo grande gana** — «elegir LLM mayores, como LLama3, suele mejorar el rendimiento». El segundo es el útil: **BGE, mucho más pequeño, «es una buena elección global»** y es el que muestra las mejoras más consistentes entre datasets.
+
+Traducido a decisión: el tamaño mueve la **magnitud** del cambio, no su dirección. Empieza por el pequeño, porque es el que te da un número estable y barato, y sube solo si la ablación dice que compensa.
 
 ### **Modelos fundacionales tabulares: el primo que no es un LLM**
 
@@ -165,7 +167,7 @@ Para clases raras, dominios de bajo recurso o corpus sin etiquetar, un LLM produ
 
 <span style="color:#f43f5e"><strong>Primera:</strong></span> **mide siempre sobre un test real**, nunca sintético. Los datos generados arrastran los sesgos del generador; evaluar sobre ellos es preguntarle al examinador que escribió el examen.
 
-<span style="color:#f43f5e"><strong>Segunda:</strong></span> **el modelo más fuerte no siempre es el mejor profesor.** Hay [evidencia](https://arxiv.org/abs/2510.10925) de que la elección del generador no sigue el ranking de capacidad — un modelo más potente puede producir trazas que el alumno no logra absorber. Compara al menos dos antes de fijar uno.
+<span style="color:#f43f5e"><strong>Segunda:</strong></span> **el modelo más fuerte no siempre es el mejor profesor.** Hay evidencia —[PerSyn, «Find Your Optimal Teacher»](https://arxiv.org/abs/2510.10925), Zhang et al., ACL 2026— de que la elección del generador no sigue el ranking de capacidad — un modelo más potente puede producir trazas que el alumno no logra absorber. Compara al menos dos antes de fijar uno.
 
 ---
 
@@ -175,7 +177,7 @@ Esta es la sección por la que escribí el artículo. Sin ella, lo anterior es u
 
 ### **1. Hiperparámetros: el resultado más incómodo del campo**
 
-Un [estudio con presupuesto igualado sobre datos tabulares](https://arxiv.org/abs/2606.21641) fue a comprobar si los optimizadores de hiperparámetros basados en LLM realmente ganan. El resultado desmonta la mecánica entera.
+Rodrigues, Vas, DCosta y Prabhakaran fueron a comprobar si los optimizadores de hiperparámetros basados en LLM realmente ganan, con el presupuesto igualado y ocho datasets de OpenML. El título de su artículo ya trae la conclusión: [*When Is an LLM Worth It for Hyperparameter Optimization? A Budget-Matched Study on Tabular Data Finds the Warm-Start Is a Default Configuration, Not the Model*](https://arxiv.org/abs/2606.21641). El resultado desmonta la mecánica entera.
 
 El asesor LLM parece arrancar muy por delante: **88,7 %** de accuracy en su primera evaluación, frente al **83,7 %** de random search. Salvo que —y aquí está el truco— **ese primer punto es la configuración por defecto, evaluada antes de la primera llamada al LLM.** No lo propuso el modelo. Venía en la caja.
 
@@ -200,9 +202,14 @@ Es el ejemplo perfecto de por qué la ablación no es opcional. Sin ella, alguie
 
 ### **2. En tabular, el gradient boosting sigue ganando**
 
-Ningún agente ha cambiado esto. XGBoost, LightGBM y CatBoost mantienen mejor sesgo inductivo que las redes neuronales en el rango de 3.000 a 1.000.000 de filas, y los benchmarks comparativos siguen encontrando que el deep learning empata o pierde en datos estructurados.
+Ningún agente ha cambiado esto. XGBoost, LightGBM y CatBoost mantienen mejor sesgo inductivo que las redes neuronales **de unos miles a unas decenas de miles de filas**, que es el rango donde se midió: [Grinsztajn, Oyallon y Varoquaux](https://arxiv.org/abs/2207.08815) descartan los datasets de menos de 3.000 muestras y truncan sus comparaciones en 10.000 y 50.000.
 
-El dato revelador: **los agentes que ganan medallas usan GBDT.** No lo sustituyen — lo escriben mejor y más rápido de lo que lo escribirías tú a las tres de la mañana. Que es un logro real, pero es un logro distinto del que se anuncia.
+Dos matices que suelen caerse al citarlo:
+
+- Los propios autores avisan de que **la brecha se estrecha al crecer el conjunto**. El rango donde el GBDT gana cómodo no se extiende hasta el millón de filas por decreto; eso hay que medirlo en tus datos.
+- [McElfresh et al.](https://arxiv.org/abs/2305.02997), con 19 algoritmos sobre 176 datasets, concluyen que el debate «redes contra GBDT» está sobredimensionado: el GBDT gana sobre todo cuando la distribución es **sesgada o irregular**, no siempre y en todas partes.
+
+Añado una observación mía, que no es un hallazgo de benchmark y no debe leerse como tal: en las soluciones de agente que he leído, lo que acaba prediciendo es casi siempre un GBDT. El agente no lo sustituye — lo escribe mejor y más rápido de lo que lo escribirías tú a las tres de la mañana. Es un logro real, pero es un logro distinto del que se anuncia.
 
 ### **3. Contaminación: el matiz honesto**
 
@@ -214,7 +221,7 @@ Su conclusión, y la mía: **no hay evidencia de inflación sistemática por mem
 
 ### **4. Etiquetado: buen asistente, mal anotador**
 
-Cuando se muestra la etiqueta sugerida por el LLM a un anotador humano, ocurren dos cosas: **su confianza sube y su velocidad no.** Y aparece anclaje — la persona tiende a ratificar lo que el modelo propuso en lugar de juzgar de cero.
+Aquí hay un experimento que lo mide en vez de suponerlo. Schroeder, Roy y Kabbara lo [preregistraron](https://arxiv.org/abs/2507.15821), con 410 anotadores y más de 7.000 anotaciones sobre tareas subjetivas. Cuando se muestra la etiqueta sugerida por el LLM a un anotador humano, ocurren dos cosas: las sugerencias **no lo hicieron más rápido, pero sí subieron la confianza que declara en su propio juicio**. Y aparece anclaje — los anotadores «siguieron con fuerza las sugerencias del LLM, cambiando de forma significativa la distribución de etiquetas». Es decir: el corpus resultante se parece más al modelo que a las personas que supuestamente lo etiquetaron.
 
 Súmale que las etiquetas de un LLM cambian con la versión del modelo, la temperatura y el contexto: dos corpus etiquetados con seis meses de diferencia no son el mismo corpus. Sin versionar prompt, modelo y parámetros, la reproducibilidad se evapora.
 
@@ -240,7 +247,9 @@ Si lo que construyes no es un clasificador sino un sistema de varios pasos con L
 
 **[DSPy](https://dspy.ai)** te deja declarar el programa y optimizarlo contra una métrica. Sus optimizadores actuales: `BootstrapFewShot` (bootstrapea demostraciones), `MIPROv2` (busca conjuntamente instrucciones y demos), `COPRO` y **[GEPA](https://github.com/gepa-ai/gepa)** (ICLR 2026).
 
-GEPA es el que cambia el planteamiento: en vez de optimizar contra una recompensa escalar, **lee las trazas de ejecución completas** —errores, logs— diagnostica el fallo en lenguaje natural y mantiene un frente de Pareto de candidatos diversos. Sus cifras publicadas: supera a GRPO en **6 % de media y hasta 20 %**, usando **hasta 35× menos rollouts**; y supera a MIPROv2 **en más de un 10 %** (+12 puntos en AIME-2025).
+GEPA es el que cambia el planteamiento: en vez de optimizar contra una recompensa escalar, **lee las trazas de ejecución completas** —errores, logs— diagnostica el fallo en lenguaje natural y mantiene un frente de Pareto de candidatos diversos. Sus cifras publicadas: supera a GRPO en **6 % de media y hasta 20 %**, usando **hasta 35× menos rollouts**; y supera a MIPROv2 **en más de un 10 %** (+12 % en AIME-2025).
+
+Y aquí conviene aplicar al propio GEPA lo que este artículo predica sobre leer tablas enteras: ese +12 % es la fila de Qwen3 8B (MIPROv2 20,00 → GEPA 32,00), y **en esa misma fila GRPO saca 38,00** — o sea, gana. En GPT-4.1 mini la ventaja sobre MIPROv2 baja a +8 (51,33 → 59,33). Sigue siendo un buen resultado, con menos cómputo; no es un barrido.
 
 ```python
 import dspy
@@ -275,7 +284,9 @@ Baseline sin LLM. Pipeline con LLM. Mismo presupuesto de cómputo, mismos folds,
 
 <span style="color:#f59e0b"><strong>Coste.</strong></span> Un intento de agente puede consumir 24 horas de cómputo. Multiplícalo por semillas y por competición. Si tu problema se resuelve con LightGBM y Optuna en veinte minutos, el agente no es una mejora: es una factura.
 
-**Gobernanza.** El Reglamento de IA de la UE es exigible desde **agosto de 2026**, con sanciones de hasta **35 millones de euros**, y trae obligaciones de transparencia y gobierno del dato que alcanzan a cómo se generaron tus datasets de entrenamiento. Un dataset etiquetado por un LLM sin trazabilidad es, hoy, un problema de cumplimiento además de uno metodológico. Encuestas del sector apuntan a una brecha grande entre los equipos que ya tienen agentes en pruebas o producción y los que lo hicieron con aprobación formal de seguridad.
+**Gobernanza.** El calendario del Reglamento de IA de la UE cambió mientras este artículo se escribía, y conviene tener la versión buena. La fecha general de aplicación era el **2 de agosto de 2026**, pero el [Reglamento (UE) 2026/1744](https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng) —el «Omnibus digital sobre IA», en vigor desde el 27 de julio de 2026— **aplazó las obligaciones de alto riesgo**: al **2 de diciembre de 2027** las del Anexo III (biometría, educación, empleo, infraestructura crítica) y al **2 de agosto de 2028** las de los productos del Anexo I.
+
+Lo que **sí es exigible ya**: las prohibiciones del artículo 5, las obligaciones de los modelos de propósito general, y la transparencia del [artículo 50](https://artificialintelligenceact.eu/article/50/) — que alcanza al etiquetado de contenido generado por IA. Las sanciones no se movieron: hasta **35 millones de euros o el 7 %** de la facturación mundial para las prohibiciones, 15 M€ / 3 % y 7,5 M€ / 1 % para el resto. Un dataset etiquetado por un LLM sin trazabilidad sigue siendo un problema de cumplimiento además de uno metodológico; solo que con más plazo del que parecía hace unos meses.
 
 ---
 
@@ -304,12 +315,17 @@ Y la constante que atraviesa las tres: **el LLM casi nunca es el modelo.** Es el
 - Hollmann, Müller & Hutter — [CAAFE: Context-Aware Automated Feature Engineering](https://github.com/noahho/CAAFE) (NeurIPS 2023)
 - Han et al. — [Large Language Models Can Automatically Engineer Features for Few-Shot Tabular Learning](https://arxiv.org/abs/2404.09491) (FeatLLM)
 - Koloski et al. — [LLM Embeddings for Deep Learning on Tabular Data](https://arxiv.org/abs/2502.11596)
+- Abhyankar, Shojaee & Reddy — [LLM-FE: Automated Feature Engineering for Tabular Data with LLMs as Evolutionary Optimizers](https://arxiv.org/abs/2503.14434) (Virginia Tech, TMLR)
 - Liu et al. — [Large Language Model Agent for Hyper-Parameter Optimization](https://arxiv.org/abs/2402.01881) (AgentHPO)
+- Liu, Astorga, Seedat & van der Schaar — [Large Language Models to Enhance Bayesian Optimization](https://arxiv.org/abs/2402.03921) (LLAMBO, ICLR 2024)
 - Hollmann et al. — [Accurate predictions on small data with a tabular foundation model](https://www.nature.com/articles/s41586-024-08328-6) (TabPFN v2, *Nature*, 2025)
 
 **El contrapunto**
-- [When Is an LLM Worth It for Hyperparameter Optimization? A Budget-Matched Study on Tabular Data](https://arxiv.org/abs/2606.21641)
+- Rodrigues, Vas, DCosta & Prabhakaran — [When Is an LLM Worth It for Hyperparameter Optimization? A Budget-Matched Study on Tabular Data Finds the Warm-Start Is a Default Configuration, Not the Model](https://arxiv.org/abs/2606.21641)
+- Grinsztajn, Oyallon & Varoquaux — [Why do tree-based models still outperform deep learning on typical tabular data?](https://arxiv.org/abs/2207.08815) (NeurIPS 2022, Datasets & Benchmarks)
+- McElfresh et al. — [When Do Neural Nets Outperform Boosted Trees on Tabular Data?](https://arxiv.org/abs/2305.02997) (NeurIPS 2023, Datasets & Benchmarks)
 - Shwartz-Ziv & Armon — [Tabular Data: Deep Learning is Not All You Need](https://arxiv.org/abs/2106.03253)
+- Schroeder, Roy & Kabbara — [Just Put a Human in the Loop? Investigating LLM-Assisted Annotation for Subjective Tasks](https://arxiv.org/abs/2507.15821) (Findings of ACL 2025)
 
 **Optimizar programas LLM**
 - Agrawal et al. — [GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning](https://arxiv.org/abs/2507.19457) (ICLR 2026) · [repositorio](https://github.com/gepa-ai/gepa)
