@@ -8,7 +8,7 @@
 <style>
 /* Misma lengua de color que el resto de OVAs del sitio:
    violeta = lo escribe el LLM · esmeralda = lo devuelve la ejecucion
-   cian = los datos · ambar = coste · rosa = un checker frena el paso */
+   ambar = coste · rosa = un checker frena el paso */
 :root {
   --llm:   #a855f7;
   --model: #10b981;
@@ -190,7 +190,6 @@ h1 { font-size: 17px; margin: 0 0 4px; }
   <div class="legend">
     <span><i class="dot" style="background:var(--llm)"></i> lo escribe el LLM</span>
     <span><i class="dot" style="background:var(--model)"></i> lo devuelve la ejecución</span>
-    <span><i class="dot" style="background:var(--data)"></i> los datos</span>
     <span><i class="dot" style="background:var(--risk)"></i> un checker frena el paso</span>
     <span><i class="dot" style="background:var(--cost)"></i> coste acumulado</span>
   </div>
@@ -287,15 +286,17 @@ h1 { font-size: 17px; margin: 0 0 4px; }
 (() => {
   'use strict';
 
+  /* Sin rol 'data': en este ciclo ningun paso lo ejecutan los datos. La
+     busqueda web tambien la lanza el LLM, asi que va en violeta. El cian
+     queda solo como color de foco, no como significado. */
   const ROLE = {
     llm:   { color: 'var(--llm)',   label: 'lo escribe el LLM' },
     model: { color: 'var(--model)', label: 'lo devuelve la ejecución' },
-    data:  { color: 'var(--data)',  label: 'los datos' },
     risk:  { color: 'var(--risk)',  label: 'checker' },
   };
 
   const STEPS = [
-    { n: 1, short: 'Búsqueda web', role: 'data', trains: 0,
+    { n: 1, short: 'Búsqueda web', role: 'llm', trains: 0,
       title: 'Búsqueda web',
       body: `<p>Antes de escribir nada, el agente <strong>busca en la web</strong> qué se está usando hoy para una tarea como la tuya.</p>
              <p>Parece un detalle y es la idea central: sin esto, el modelo parte de lo que recuerda de su preentrenamiento — y ese recuerdo está congelado en una fecha. Con búsqueda, el punto de partida es una arquitectura que alguien está usando ahora.</p>` },

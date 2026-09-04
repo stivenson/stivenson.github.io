@@ -64,6 +64,8 @@ Lo que lo separa de pedirle ideas a un chat es la segunda flecha: la **función 
 
 ### **El bucle, paso a paso**
 
+Lo genérico es lo de arriba: escribir → ejecutar → leer → reescribir. Lo que verás abajo es el ciclo concreto de **MLE-STAR**, que tomo como ejemplo por ser el más completo de los publicados: la búsqueda web, la ablación por bloque y los dos *checkers* son suyos, no del bucle genérico de AIDE.
+
 <iframe src="/ovas/ml-agent-loop.html" title="El bucle de un agente que construye modelos, paso a paso" loading="lazy"></iframe>
 
 Presta atención al contador <span style="color:#f59e0b">ámbar</span>: cada paso <span style="color:#10b981">esmeralda</span> entrena de verdad. Volveremos a ese número.
@@ -108,6 +110,8 @@ Dos lecturas que solo aparecen al poner la tabla completa:
 Los benchmarks dan la cifra que el marketing omite. En MLE-bench cada intento dispone de:
 
 > **36 vCPU · 440 GB de RAM · una Nvidia A10 de 24 GB · hasta 24 horas**, y todos los experimentos se repiten con 3 semillas.
+
+Ahora sí, **el número del contador**. Recorre la visualización de arriba hasta el final y se para en **16 entrenamientos**: uno de la primera ejecución, cuatro por vuelta para medir la ablación de cada bloque —tres vueltas—, y uno más al ensamblar. Dieciséis entrenamientos completos para **un** intento, en **una** competición. Multiplícalo por las 3 semillas del protocolo y por las competiciones del benchmark, y ya tienes la factura que el titular omite.
 
 Eso <span style="color:#f59e0b">cuesta dinero por iteración</span>. Cuando compares un agente contra tu baseline, la comparación honesta incluye esa factura.
 
@@ -157,7 +161,7 @@ El LLM no toca el modelo final. **Fabrica los datos** con los que se entrena, y 
 
 ### **Destilación**
 
-Se generan tripletas `(entrada, traza de razonamiento, salida)` desde un modelo frontera y se entrena a un modelo pequeño para reproducirlas. Es literalmente cómo se construyó la ola 2025-2026 de modelos pequeños sorprendentemente buenos: las destilaciones de DeepSeek-R1, de Qwen, de Llama.
+Se generan tripletas `(entrada, traza de razonamiento, salida)` desde un modelo frontera y se entrena a un modelo pequeño para reproducirlas. Es literalmente cómo se construyó la ola 2025-2026 de modelos pequeños sorprendentemente buenos: las destilaciones de DeepSeek-R1 sobre Qwen y sobre Llama — R1 es el profesor; Qwen y Llama, los alumnos.
 
 La ventaja no es la métrica: es que el resultado **se sirve barato, corre local y no depende de una API**.
 
@@ -171,7 +175,7 @@ Para clases raras, dominios de bajo recurso o corpus sin etiquetar, un LLM produ
 
 ---
 
-## **🛑 El contrapunto: dónde el LLM no aporta**
+## **🛑 El contrapunto: lo que la evidencia dice de verdad**
 
 Esta es la sección por la que escribí el artículo. Sin ella, lo anterior es un folleto.
 
@@ -238,6 +242,8 @@ La forma que funciona no es sustituir: es **supervisión débil con auditoría**
 | Tabular grande **sin** semántica | nada demostrable | GBDT + búsqueda clásica sembrada con el defecto |
 | Texto con pocas etiquetas | etiquetar y destilar | encoder pequeño afinado (DeBERTa, MiniLM) |
 | Texto con muchas etiquetas | embeddings congelados | clasificador ligero sobre el vector |
+| Imagen, pocas por clase | generación dirigida para las clases raras | transfer learning sobre una red preentrenada (timm) |
+| Imagen, muchas y presupuesto normal | nada que compense | transfer learning, o AutoGluon multimodal si no quieres elegir arquitectura |
 | Multimodal | AutoGluon Assistant / MLZero escribe todo | el pipeline que genere (AutoGluon debajo) |
 | Problema abierto y presupuesto alto | MLE-STAR o R&D-Agent | la red o el ensamblado que el agente elija |
 
@@ -278,7 +284,9 @@ Baseline sin LLM. Pipeline con LLM. Mismo presupuesto de cómputo, mismos folds,
 
 ## **🚨 Riesgos operativos**
 
-**Fuga de datos en código generado.** Un LLM escribe con gusto un `StandardScaler` ajustado sobre train y test juntos. No rompe nada — esa es la trampa: da una métrica preciosa en validación y un modelo inservible en producción. Que MLE-STAR incorpore un checker dedicado a esto dice todo sobre la frecuencia del fallo. Si usas un agente sin ese checker, el checker eres tú.
+**Fuga de datos en código generado.** Ya la viste dos veces —en el paso 7 de la visualización y en el checker de MLE-STAR— y aparece aquí por una sola razón, que es la regla operativa: **si tu agente no trae ese checker, el checker eres tú.** Revisa el preprocesado generado antes de creerte la métrica.
+
+<span style="color:#f43f5e"><strong>Los datos no pueden salir de casa.</strong></span> Si trabajas con historia clínica, datos financieros o cualquier cosa bajo contrato de confidencialidad, esta restricción llega antes que cualquier decisión técnica y descarta de golpe los agentes y las API externas. Lo que queda sigue siendo mucho: AutoML local (**AutoGluon**, **MLJAR**), **TabPFN v2** en tu propia máquina —que es inferencia, no entrenamiento, y cabe en una GPU modesta— o un LLM autoalojado para la parte de features. Cuenta con que ese modelo autoalojado rendirá por debajo del modelo frontera con el que están hechas las cifras de los papers: la comparación válida deja de ser contra el paper y pasa a ser contra tu propio baseline.
 
 **Reproducibilidad.** Versiona el prompt, el modelo, la temperatura y la fecha, igual que versionas el `random_state`. Un pipeline que depende de un modelo servido por API no es reproducible por defecto: es reproducible *mientras* esa versión siga en línea.
 
