@@ -369,6 +369,14 @@
             background: linear-gradient(to left, rgba(178, 223, 219, 1) 0%, rgba(178, 223, 219, 1) 5%, rgba(178, 223, 219, 1) 30%, rgba(0, 121, 107, 1) 100%); 
         }
 
+        /* Investigación - índigo (progresivo desde el centro hacia la izquierda) */
+        #filter-investigacion + label::before {
+            background: linear-gradient(to left, rgba(237, 231, 246, 1) 0%, rgba(237, 231, 246, 1) 5%, rgba(237, 231, 246, 1) 30%, rgba(81, 45, 168, 1) 100%);
+        }
+        #filter-investigacion + label:hover::before {
+            background: linear-gradient(to left, rgba(237, 231, 246, 1) 0%, rgba(237, 231, 246, 1) 5%, rgba(237, 231, 246, 1) 30%, rgba(81, 45, 168, 1) 100%);
+        }
+
         /* Indicador "new" en verde para el filtro Editores e IDEs y Datos */
         .filter-new-pill {
             display: inline-block;
@@ -714,6 +722,7 @@
         .badge.badge-workflow { background: #E1F5FE; color: #0277BD; }
         .badge.badge-agentes { background: #F1F8E9; color: #558B2F; }
         .badge.badge-data { background: #B2DFDB; color: #00796B; }
+        .badge.badge-investigacion { background: #EDE7F6; color: #512DA8; }
         .badge.badge-monitoreo { background: #EDE7F6; color: #4527A0; }
         .badge.badge-playground { background: #C8E6C9; color: #1B5E20; }
         .badge.badge-automatizacion { background: #B3E5FC; color: #01579B; }
@@ -1943,6 +1952,8 @@
                     <label for="filter-ide">Editores e IDEs<span class="filter-new-pill">new</span><span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-data" name="badge-filter" value="data">
                     <label for="filter-data">Datos<span class="filter-new-pill">new</span><span class="badge-filter-spinner"></span></label>
+                    <input type="radio" id="filter-investigacion" name="badge-filter" value="investigacion">
+                    <label for="filter-investigacion">Investigación<span class="filter-new-pill">new</span><span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-imagenes" name="badge-filter" value="generacion-imagenes">
                     <label for="filter-imagenes">Imágenes<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-video" name="badge-filter" value="generacion-video">
