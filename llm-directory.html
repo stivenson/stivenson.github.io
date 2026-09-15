@@ -353,6 +353,14 @@
             background: linear-gradient(to left, rgba(255, 243, 224, 1) 0%, rgba(255, 243, 224, 1) 5%, rgba(255, 243, 224, 1) 30%, rgba(239, 108, 0, 1) 100%); 
         }
 
+        /* Investigación - índigo (progresivo desde el centro hacia la izquierda) */
+        #filter-investigacion + label::before {
+            background: linear-gradient(to left, rgba(237, 231, 246, 1) 0%, rgba(237, 231, 246, 1) 5%, rgba(237, 231, 246, 1) 30%, rgba(81, 45, 168, 1) 100%);
+        }
+        #filter-investigacion + label:hover::before {
+            background: linear-gradient(to left, rgba(237, 231, 246, 1) 0%, rgba(237, 231, 246, 1) 5%, rgba(237, 231, 246, 1) 30%, rgba(81, 45, 168, 1) 100%);
+        }
+
         /* Editores e IDEs - gris azulado (igual que badge-ide: #CFD8DC / #37474F) */
         #filter-ide + label::before { 
             background: linear-gradient(to left, rgba(207, 216, 220, 1) 0%, rgba(207, 216, 220, 1) 5%, rgba(207, 216, 220, 1) 30%, rgba(55, 71, 79, 1) 100%); 
@@ -367,14 +375,6 @@
         }
         #filter-data + label:hover::before { 
             background: linear-gradient(to left, rgba(178, 223, 219, 1) 0%, rgba(178, 223, 219, 1) 5%, rgba(178, 223, 219, 1) 30%, rgba(0, 121, 107, 1) 100%); 
-        }
-
-        /* Investigación - índigo (progresivo desde el centro hacia la izquierda) */
-        #filter-investigacion + label::before {
-            background: linear-gradient(to left, rgba(237, 231, 246, 1) 0%, rgba(237, 231, 246, 1) 5%, rgba(237, 231, 246, 1) 30%, rgba(81, 45, 168, 1) 100%);
-        }
-        #filter-investigacion + label:hover::before {
-            background: linear-gradient(to left, rgba(237, 231, 246, 1) 0%, rgba(237, 231, 246, 1) 5%, rgba(237, 231, 246, 1) 30%, rgba(81, 45, 168, 1) 100%);
         }
 
         /* Indicador "new" en verde para filtros recientemente añadidos */
@@ -1948,12 +1948,12 @@
                     <label for="filter-all">Todos<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-chat" name="badge-filter" value="chat">
                     <label for="filter-chat">Chat<span class="badge-filter-spinner"></span></label>
+                    <input type="radio" id="filter-investigacion" name="badge-filter" value="investigacion">
+                    <label for="filter-investigacion">Investigación<span class="filter-new-pill">new</span><span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-ide" name="badge-filter" value="ide">
                     <label for="filter-ide">Editores e IDEs<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-data" name="badge-filter" value="data">
                     <label for="filter-data">Datos<span class="badge-filter-spinner"></span></label>
-                    <input type="radio" id="filter-investigacion" name="badge-filter" value="investigacion">
-                    <label for="filter-investigacion">Investigación<span class="filter-new-pill">new</span><span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-imagenes" name="badge-filter" value="generacion-imagenes">
                     <label for="filter-imagenes">Imágenes<span class="badge-filter-spinner"></span></label>
                     <input type="radio" id="filter-video" name="badge-filter" value="generacion-video">
