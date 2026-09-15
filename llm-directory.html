@@ -1896,6 +1896,94 @@
                 animation: none;
             }
         }
+
+        /* ============================================================
+           Refinamientos para movil (2026-09-15)
+           Objetivo: que los filtros y la primera tarjeta entren en
+           pantalla sin scroll en un telefono de ~390px.
+           ============================================================ */
+
+        @media (max-width: 768px) {
+            /* Las dos barras inferiores dejaban de scrollear con la pagina y
+               tapaban las tarjetas. En movil pasan a fluir con el contenido. */
+            footer,
+            .visitor-counter-fixed {
+                position: static;
+                box-shadow: none;
+                z-index: auto;
+            }
+
+            footer {
+                margin-top: 28px;
+                padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .visitor-counter-fixed {
+                max-height: none;
+                border-top: none;
+            }
+
+            /* Anula el padding-bottom: 120px inline que compensaba el footer fijo */
+            main#main-content {
+                padding-bottom: 24px !important;
+            }
+
+            /* Los filtros se deslizan: el degradado del borde derecho avisa de
+               que hay mas, y el snap los deja alineados al soltar. */
+            .badge-filter {
+                scroll-snap-type: x proximity;
+                scroll-padding-left: 10px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 34px), transparent 100%);
+                mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 34px), transparent 100%);
+            }
+
+            .badge-filter::-webkit-scrollbar {
+                display: none;
+            }
+
+            .badge-filter label {
+                scroll-snap-align: start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* El orbe y los nodos flotantes son decorado: 190px que en un
+               telefono empujan los filtros fuera de pantalla. */
+            .hero-visual {
+                display: none;
+            }
+
+            header {
+                margin-bottom: 18px;
+                padding: 22px 20px 24px;
+                border-radius: 20px;
+            }
+
+            .header-badge {
+                margin-bottom: 12px;
+                padding: 5px 10px;
+                font-size: 0.62rem;
+                letter-spacing: 0.1em;
+            }
+
+            header h1 {
+                margin-bottom: 10px;
+                font-size: 1.9rem;
+                line-height: 1.05;
+            }
+
+            header p {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                font-size: 0.95rem;
+                line-height: 1.5;
+            }
+        }
+
     </style>
 </head>
 
@@ -2714,6 +2802,20 @@
                 }
             }, FAILSAFE_TIMEOUT_MS);
         })();
+    </script>
+    <script>
+        // Al elegir un filtro en movil, la fila se desliza para dejarlo a la vista.
+        document.addEventListener('change', function (ev) {
+            var input = ev.target;
+            if (!input || input.name !== 'badge-filter') return;
+            var label = document.querySelector('label[for="' + input.id + '"]');
+            if (!label || typeof label.scrollIntoView !== 'function') return;
+            try {
+                label.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } catch (e) {
+                label.scrollIntoView(false);
+            }
+        });
     </script>
 </body>
 
