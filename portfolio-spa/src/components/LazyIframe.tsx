@@ -31,6 +31,9 @@ export function LazyIframe({ src, title, style }: LazyIframeProps) {
   const [shouldLoad, setShouldLoad] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [height, setHeight] = useState<number | null>(null);
+  // Estado de la red de seguridad contra el bucle de medicion (ver measure).
+  const lockedRef = useRef(false);
+  const rafagaRef = useRef({ desde: 0, cambios: 0, maximo: 0 });
 
   useEffect(() => {
     const node = containerRef.current;
@@ -64,6 +67,7 @@ export function LazyIframe({ src, title, style }: LazyIframeProps) {
     const body = doc?.body;
     const win = frameRef.current?.contentWindow;
     if (!body || !win) return;
+    if (lockedRef.current) return;
 
     // Se mide el <body>, nunca documentElement.scrollHeight: ese devuelve
     // max(viewport, contenido), y como el viewport del iframe es la altura
@@ -79,7 +83,28 @@ export function LazyIframe({ src, title, style }: LazyIframeProps) {
 
     // Ademas se ignoran las variaciones de 1px: bastan para encadenar otra
     // notificacion del ResizeObserver y dejar la altura oscilando.
-    setHeight((prev) => (prev !== null && Math.abs(prev - next) <= 1 ? prev : next));
+    setHeight((prev) => {
+      if (prev !== null && Math.abs(prev - next) <= 1) return prev;
+
+      // Red de seguridad contra el bucle de realimentacion: si una OVA hace
+      // que su alto dependa del alto que acabamos de fijarle, las medidas se
+      // encadenan sin parar y el panel late a ojos del lector. Cuando se
+      // acumulan demasiados cambios en una misma rafaga, se fija el mayor
+      // visto y se deja de medir: es preferible un poco de hueco sobrante a
+      // un panel que no para quieto.
+      const ahora = Date.now();
+      if (ahora - rafagaRef.current.desde > 1000) {
+        rafagaRef.current = { desde: ahora, cambios: 0, maximo: next };
+      }
+      rafagaRef.current.cambios += 1;
+      rafagaRef.current.maximo = Math.max(rafagaRef.current.maximo, next);
+
+      if (rafagaRef.current.cambios > 40) {
+        lockedRef.current = true;
+        return rafagaRef.current.maximo;
+      }
+      return next;
+    });
   }, []);
 
   // El contenido se reacomoda al mover los sliders o al cambiar el ancho, asi
@@ -94,10 +119,18 @@ export function LazyIframe({ src, title, style }: LazyIframeProps) {
     const win = frameRef.current?.contentWindow;
     if (!doc?.body) return;
 
-    win?.addEventListener('resize', measure);
+    // Un cambio de tamano de la ventana es intencion del lector, no el bucle:
+    // se levanta el bloqueo para que la OVA vuelva a ajustarse al ancho nuevo.
+    const alRedimensionar = () => {
+      lockedRef.current = false;
+      rafagaRef.current = { desde: 0, cambios: 0, maximo: 0 };
+      measure();
+    };
+
+    win?.addEventListener('resize', alRedimensionar);
 
     if (typeof ResizeObserver === 'undefined') {
-      return () => win?.removeEventListener('resize', measure);
+      return () => win?.removeEventListener('resize', alRedimensionar);
     }
 
     // Solo el body: observar documentElement lo despertaria en cada cambio
@@ -107,7 +140,7 @@ export function LazyIframe({ src, title, style }: LazyIframeProps) {
 
     return () => {
       observer.disconnect();
-      win?.removeEventListener('resize', measure);
+      win?.removeEventListener('resize', alRedimensionar);
     };
   }, [loaded, measure]);
 
