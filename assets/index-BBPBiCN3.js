@@ -2742,11 +2742,25 @@ tags: ["Python", "GPU", "NVIDIA", "Rendimiento", "Ciencia de datos"]
 
 # **Python en GPU NVIDIA: Activar Full Aceleración**
 
-Puedes acelerar pandas y scikit-learn en una GPU NVIDIA **sin cambiar una línea de tu código**. Se activa con un comando. Este artículo te enseña a activarlo, a comprobar que de verdad se activó, y a reconocer los casos en los que la GPU no te va a servir de nada.
+Puedes acelerar pandas y scikit-learn en una GPU NVIDIA **sin cambiar una línea de tu código**: se activa con un comando, y NVIDIA reporta [**hasta 50×** en la GPU gratuita de Google Colab](https://forums.developer.nvidia.com/t/rapids-cudf-instantly-accelerates-pandas-up-to-50x-on-google-colab/292888).
+
+Este artículo te enseña a activarlo, a comprobar que de verdad se activó y a saber **cuál es tu cifra**, que rara vez es la del anuncio. A veces es mejor de lo que esperabas; a veces la GPU resulta más lenta que tu portátil, y también verás por qué.
 
 Lo escribí después de ver **«Introducción a la ciencia de datos en GPUs»**, la charla de [Naty Clementi](https://www.linkedin.com/in/ncclementi/) —Senior Software Engineer de NVIDIA— en [Platzi Conf Bogotá 2026](https://platzi.com/conf/), el 29 de agosto en Ágora. La charla tenía dos mensajes, y aquí desarrollo los dos: el que se comparte en redes (*una línea y listo*) y el que ahorra disgustos (*primero mide*).
 
 > **🚀 Todo el código de este artículo está en un notebook ejecutable:** [**\`python-gpu-nvidia.ipynb\`**](https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/python-gpu-nvidia.ipynb) — se abre en Google Colab de un clic, con GPU gratuita y sin instalar nada. Cada sección de aquí abajo tiene su celda allá.
+
+### **¿Y cuánto acelera, en números?**
+
+Depende tanto del caso que dar una sola cifra sería mentir. Pero el rango cabe en una tabla, y conviene tenerlo en la cabeza antes de invertir una tarde:
+
+| Escenario | Aceleración típica | De dónde sale el número |
+|---|---|---|
+| **Titulares de fabricante** | 50× – 175× | Benchmarks de NVIDIA: 150× en cruces y agrupaciones sobre 5 GB, 175× en HDBSCAN. GPU de centro de datos contra un servidor Xeon |
+| **Lo que sueles ver tú** | 2× – 20× | Trabajo de verdad, con una GPU normal y una CPU bien configurada. Mi propia medición del ejemplo de la charla: 2,9× contra 16 hilos, 14× contra un solo núcleo |
+| **Cuando el problema no encaja** | 1× o menos | Datos pequeños, operaciones sueltas o muchos *fallbacks*: el viaje de los datos cuesta más que el cálculo. En mi prueba, predecir fue **más lento** en GPU |
+
+Las tres filas son ciertas a la vez. La diferencia entre ellas no es la tarjeta: es **qué fracción de tu programa puede acelerarse y cuántas veces viajan los datos**. Eso es exactamente lo que aprenderás a estimar aquí, con dos simuladores para jugar con ello.
 
 **Cómo leer esto según tu caso:**
 
