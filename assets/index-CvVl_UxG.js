@@ -802,6 +802,8 @@ Esta lista sirve para cualquier titular de agentes, no solo para los de aquí. S
 
 Y una sexta, específica de Kaggle: cuando leas «consigue medalla», recuerda que el umbral es bronce, y que el porcentaje de oro suele ser bastante menor.
 
+Y una séptima, que vale para cualquier cifra de acierto: **¿contra qué referencia se mide?** Ejercicio con un lanzamiento de este mismo mes. Jev se anuncia «193,6× más rápido y 444,6× más barato» que los LLM frontera. Esas cifras salen de [cuatro flujos de trabajo](https://evals.typesafe.ai/) diseñados por su propio equipo, y la respuesta correcta no la ponen personas: es la **media de lo que responden GPT-6 Astra y Fable 5.1**. Es decir, mide cuánto se parece Jev a otros dos LLM — el examinador que escribió el examen, otra vez. A su favor: lo dicen ellos mismos, reconocen que la referencia sesga el resultado y que esas ganancias están «en el extremo alto» de lo que se verá en producción. No significa que el modelo sea malo; significa que ese número todavía no dice cuánto acierta.
+
 ### **La escala real del asunto**
 
 Los benchmarks dan la cifra que el marketing omite. En MLE-bench cada intento dispone de:
@@ -930,6 +932,10 @@ Súmale que las etiquetas de un LLM cambian con la versión del modelo, la tempe
 
 La forma que funciona no es sustituir: es **supervisión débil con auditoría** — el LLM propone a escala, y el humano revisa una muestra a ciegas y arbitra donde el modelo duda.
 
+La última parte —«donde el modelo duda»— solo es operativa si la duda llega en un número fiable. Esa es la apuesta de [Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev), que TypeSafe AI lanzó el 15 de septiembre de 2026 en acceso anticipado: un modelo que **no genera texto**. Le declaras preguntas en código —elegir una de hasta 255 categorías, puntuar en una escala, sí o no— y devuelve cada respuesta con su probabilidad, entrenado para que esa probabilidad esté <span class="gl"><input type="checkbox" id="gl-calib" class="gl-c"><label for="gl-calib" class="gl-t">calibrada</label><span class="gl-m"><label for="gl-calib" class="gl-bg"></label><span class="gl-b"><b>Probabilidad calibrada</b><span>Un modelo está <b>calibrado</b> cuando sus probabilidades significan lo que dicen: de todas las respuestas que da con un 80 % de confianza, acierta más o menos el 80 %.</span><span>Sin calibración, un 0,95 es solo un número alto: no dice cuántas veces se equivoca. Con calibración puedes fijar un umbral y saber de antemano qué fracción de errores dejas pasar. Se comprueba agrupando las predicciones por confianza y comparando cada grupo con su acierto real sobre etiquetas humanas.</span><label for="gl-calib" class="gl-x">Entendido</label></span></span></span>. Con un etiquetador así, la auditoría se vuelve un umbral: lo que supera la confianza fijada entra al corpus, lo que queda por debajo va al humano. Y las probabilidades sirven tal cual como etiquetas blandas.
+
+<span style="color:#f43f5e"><strong>Tres avisos.</strong></span> La calibración es hoy una afirmación del fabricante, sin verificación independiente: compruébala sobre una muestra etiquetada a mano antes de fijar el umbral. El anclaje que midieron Schroeder, Roy y Kabbara no desaparece porque la sugerencia venga con porcentaje: si el anotador ve la etiqueta propuesta, la sigue — revisa a ciegas. Y es un servicio por API, sin pesos ni paper: si los datos no pueden salir de casa, queda fuera.
+
 ---
 
 ## **🧰 Recetario**
@@ -939,7 +945,7 @@ La forma que funciona no es sustituir: es **supervisión débil con auditoría**
 | Tabular < 10k filas | CAAFE, si las columnas significan algo | TabPFN v2 primero; AutoGluon de control |
 | Tabular grande **con** semántica | CAAFE / LLM-FE para features de dominio | LightGBM o CatBoost + Optuna |
 | Tabular grande **sin** semántica | nada demostrable | GBDT + búsqueda clásica sembrada con el defecto |
-| Texto con pocas etiquetas | etiquetar y destilar | encoder pequeño afinado (DeBERTa, MiniLM) |
+| Texto con pocas etiquetas | etiquetar y destilar; un modelo de decisión como Jev si quieres la confianza de cada etiqueta | encoder pequeño afinado (DeBERTa, MiniLM) |
 | Texto con muchas etiquetas | embeddings congelados | clasificador ligero sobre el vector |
 | Imagen, pocas por clase | generación dirigida para las clases raras | transfer learning sobre una red preentrenada (timm) |
 | Imagen, muchas y presupuesto normal | nada que compense | transfer learning, o AutoGluon multimodal si no quieres elegir arquitectura |
@@ -1039,6 +1045,7 @@ Y la constante que atraviesa las tres: **el LLM casi nunca es el modelo.** Es el
 - McElfresh et al. — [When Do Neural Nets Outperform Boosted Trees on Tabular Data?](https://arxiv.org/abs/2305.02997) (NeurIPS 2023, Datasets & Benchmarks)
 - Shwartz-Ziv & Armon — [Tabular Data: Deep Learning is Not All You Need](https://arxiv.org/abs/2106.03253)
 - Schroeder, Roy & Kabbara — [Just Put a Human in the Loop? Investigating LLM-Assisted Annotation for Subjective Tasks](https://arxiv.org/abs/2507.15821) (Findings of ACL 2025)
+- TypeSafe AI — [Introducing System One Models & Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) (septiembre de 2026) · [workflow evals](https://evals.typesafe.ai/)
 
 **Optimizar programas LLM**
 - Agrawal et al. — [GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning](https://arxiv.org/abs/2507.19457) (ICLR 2026) · [repositorio](https://github.com/gepa-ai/gepa)
