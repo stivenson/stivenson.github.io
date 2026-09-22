@@ -2738,6 +2738,106 @@ tags: ["Python", "GPU", "NVIDIA", "Rendimiento", "Ciencia de datos"]
 @media (max-width: 520px) {
   .flow-step { grid-template-columns: 1fr; gap: 5px; }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Grafico comparativo de tiempos. Barras horizontales, una por
+   configuracion, con el valor escrito al lado: el numero nunca
+   depende de leer la longitud, ni el color de distinguir dos
+   tonos. Paleta categorica validada contra el fondo oscuro
+   (#0a0a2e) con el verificador de la guia de visualizacion.
+
+   Dos paneles con escalas distintas —entrenar tarda cien veces
+   mas que predecir— porque compartir eje dejaria el segundo
+   panel en una linea invisible. Cada panel dice su maximo.
+   ───────────────────────────────────────────────────────────── */
+
+.chart {
+  margin: 24px 0;
+  padding: 18px 18px 14px;
+  border: 1px solid rgba(85, 170, 255, 0.16);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.025);
+  --s-cpu1: #3987e5;
+  --s-cpu16: #d95926;
+  --s-gpu: #199e70;
+}
+.chart > h4 {
+  margin: 0 0 3px;
+  font-size: 15px;
+  color: #e8e8f0;
+}
+.chart > p {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #9a9ac0;
+}
+.chart-panel + .chart-panel { margin-top: 18px; }
+.chart-panel > b {
+  display: block;
+  margin-bottom: 9px;
+  font-size: 13.5px;
+  color: #d8d8e8;
+}
+.chart-panel > b em {
+  font-style: normal;
+  font-weight: 400;
+  color: #9a9ac0;
+}
+.chart-row {
+  display: grid;
+  grid-template-columns: minmax(96px, 128px) 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.chart-row > span { color: #9a9ac0; }
+.chart-bar {
+  /* Dos columnas: la pista de la barra y, aparte, su valor. Con flex, la
+     barra mas larga (100 %) ocupaba todo el ancho y empujaba la cifra
+     fuera del panel en pantallas estrechas. Asi el 100 % se mide contra
+     la pista, que ya descuenta el sitio que necesita el numero. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.chart-bar > i {
+  display: block;
+  justify-self: start;
+  max-width: 100%;
+  height: 15px;
+  /* 4px redondeado solo en el extremo del dato: el otro ancla al eje. */
+  border-radius: 0 4px 4px 0;
+  background: var(--sc, #3987e5);
+  flex: 0 0 auto;
+}
+.chart-bar > b {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  color: #e8e8f0;
+  white-space: nowrap;
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 14px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(85, 170, 255, 0.12);
+  font-size: 12.5px;
+  color: #9a9ac0;
+}
+.chart-legend i {
+  display: inline-block;
+  width: 10px; height: 10px;
+  margin-right: 6px;
+  border-radius: 3px;
+}
+@media (max-width: 520px) {
+  .chart-row { grid-template-columns: 1fr; gap: 3px; }
+}
 </style>
 
 # **Python en GPU NVIDIA: Activar Full Aceleración**
@@ -2906,6 +3006,31 @@ Dicho de otro modo: **el 59 % del script está acelerado**. Aunque la GPU entren
 ### **El mismo script, en mi portátil sin GPU**
 
 Ejecuté ese workflow en un AMD Ryzen 7 5700U, de dos formas distintas:
+
+<div class="chart">
+  <h4>El mismo script, tres configuraciones</h4>
+  <p>Bosque aleatorio de 25 árboles sobre 100.000 filas. Menos es mejor. Ojo: cada panel tiene su propia escala.</p>
+
+  <div class="chart-panel">
+    <b>Entrenar <em>· máximo del panel: 4.040 ms</em></b>
+    <div class="chart-row"><span>CPU, 1 núcleo</span><div class="chart-bar" title="4.040 ms — el valor por defecto de scikit-learn"><i style="--sc:var(--s-cpu1); width:100%"></i><b>4.040 ms</b></div></div>
+    <div class="chart-row"><span>CPU, 16 hilos</span><div class="chart-bar" title="828 ms — con n_jobs=-1"><i style="--sc:var(--s-cpu16); width:20.5%"></i><b>828 ms</b></div></div>
+    <div class="chart-row"><span>GPU</span><div class="chart-bar" title="285 ms — cuml.accel, GPU de la charla"><i style="--sc:var(--s-gpu); width:7.1%"></i><b>285 ms</b></div></div>
+  </div>
+
+  <div class="chart-panel">
+    <b>Predecir <em>· máximo del panel: 38,2 ms — aquí la GPU pierde</em></b>
+    <div class="chart-row"><span>CPU, 1 núcleo</span><div class="chart-bar" title="32,2 ms"><i style="--sc:var(--s-cpu1); width:84.3%"></i><b>32,2 ms</b></div></div>
+    <div class="chart-row"><span>CPU, 16 hilos</span><div class="chart-bar" title="17,3 ms — el más rápido de los tres"><i style="--sc:var(--s-cpu16); width:45.3%"></i><b>17,3 ms</b></div></div>
+    <div class="chart-row"><span>GPU</span><div class="chart-bar" title="38,2 ms — con 25.000 filas no compensa el viaje"><i style="--sc:var(--s-gpu); width:100%"></i><b>38,2 ms</b></div></div>
+  </div>
+
+  <div class="chart-legend">
+    <span><i style="background:var(--s-cpu1)"></i>CPU, 1 núcleo (por defecto)</span>
+    <span><i style="background:var(--s-cpu16)"></i>CPU, 16 hilos (<code>n_jobs=-1</code>)</span>
+    <span><i style="background:var(--s-gpu)"></i>GPU (<code>cuml.accel</code>)</span>
+  </div>
+</div>
 
 | Paso | CPU, por defecto (1 núcleo) | CPU, \`n_jobs=-1\` (16 hilos) | GPU de la charla |
 |---|---|---|---|
@@ -3172,4 +3297,4 @@ Método, en una línea: las cifras de fabricante dicen **qué es posible**; los 
 - [\`notebooks/python-gpu-nvidia.ipynb\`](https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/python-gpu-nvidia.ipynb) — todo el código del artículo, ejecutable en Colab de arriba a abajo.
 - Clementi, N. (2026). «Introducción a la ciencia de datos en GPUs», [Platzi Conf Bogotá 2026](https://platzi.com/conf/), 29 de agosto, Ágora, Bogotá. Una charla suya sobre el mismo tema, en inglés y con más detalle técnico: [RAPIDS: GPU-Accelerated Data Science for PyData Users](https://www.youtube.com/watch?v=IJ8rjVD4-yE), con Mike McCarty. Diapositivas usadas aquí: «Aceleración con cudf.pandas sin cambio de código», «Entender qué se ejecuta en la GPU y qué no», el perfil línea a línea de \`cuml.accel\`, «¿Mi problema tiene la forma adecuada para la GPU?» y «Ciencia de datos con CUDA-X».
 `;function P(e){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=e.match(n);if(!o)throw new Error("Invalid frontmatter format");const u=o[1],b=o[2],s={},g=u.split(`
-`);for(const i of g){const t=i.indexOf(":");if(t===-1)continue;const r=i.substring(0,t).trim();let a=i.substring(t+1).trim();if((a.startsWith('"')&&a.endsWith('"')||a.startsWith("'")&&a.endsWith("'"))&&(a=a.slice(1,-1)),r==="tags"){const p=a.match(/\[(.*?)\]/);p&&(s.tags=p[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?s.date=a:r==="slug"?s.slug=a:r==="title"?s.title=a:r==="description"&&(s.description=a)}return{frontmatter:s,body:b}}function l(e){const{frontmatter:n,body:o}=P(e);return{metadata:n,content:o}}const m=[l(x),l(f),l(y),l(v),l(q),l(h)];function d(e){return new Date(`${e}T00:00:00`)}function L(e){return d(e).toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})}function E(e){return m.find(n=>n.metadata.slug===e)}function j(){return[...m].sort((e,n)=>{const o=d(e.metadata.date).getTime();return d(n.metadata.date).getTime()-o})}export{E as a,L as f,j as g};
+`);for(const i of g){const t=i.indexOf(":");if(t===-1)continue;const r=i.substring(0,t).trim();let a=i.substring(t+1).trim();if((a.startsWith('"')&&a.endsWith('"')||a.startsWith("'")&&a.endsWith("'"))&&(a=a.slice(1,-1)),r==="tags"){const p=a.match(/\[(.*?)\]/);p&&(s.tags=p[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?s.date=a:r==="slug"?s.slug=a:r==="title"?s.title=a:r==="description"&&(s.description=a)}return{frontmatter:s,body:b}}function l(e){const{frontmatter:n,body:o}=P(e);return{metadata:n,content:o}}const m=[l(x),l(f),l(y),l(v),l(q),l(h)];function d(e){return new Date(`${e}T00:00:00`)}function j(e){return d(e).toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})}function E(e){return m.find(n=>n.metadata.slug===e)}function L(){return[...m].sort((e,n)=>{const o=d(e.metadata.date).getTime();return d(n.metadata.date).getTime()-o})}export{E as a,j as f,L as g};
