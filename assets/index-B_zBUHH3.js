@@ -2691,6 +2691,53 @@ tags: ["Python", "GPU", "NVIDIA", "Rendimiento", "Ciencia de datos"]
   transition: color 140ms ease, border-color 140ms ease;
 }
 .gl-x:hover { color: #e8e8f0; border-color: var(--electric-cyan, #55AAFF); }
+
+/* ─────────────────────────────────────────────────────────────
+   Diagrama de flujo del fallback. Sustituye al dibujo en ASCII:
+   aquel quedaba en gris —una valla de codigo sin lenguaje no la
+   colorea el resaltador— y se desalineaba en pantallas estrechas.
+   Aqui el color dice de quien es cada paso: esmeralda la GPU,
+   ambar la CPU, cian los datos que viajan.
+   ───────────────────────────────────────────────────────────── */
+
+.flow {
+  margin: 22px 0;
+  display: grid;
+  gap: 10px;
+}
+.flow-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 12px 14px;
+  border: 1px solid rgba(85, 170, 255, 0.16);
+  border-left: 3px solid var(--fc, #55AAFF);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.flow-step > b {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--fc, #55AAFF);
+  white-space: nowrap;
+}
+.flow-step > span { font-size: 14.5px; line-height: 1.6; color: #d8d8e8; }
+.flow-step em {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  font-style: normal;
+  color: #9a9ac0;
+}
+.flow-arrow {
+  margin: -4px 0 -4px 16px;
+  font-size: 13px;
+  color: #6f6f95;
+}
+@media (max-width: 520px) {
+  .flow-step { grid-template-columns: 1fr; gap: 5px; }
+}
 </style>
 
 # **Python en GPU NVIDIA: Activar Full Aceleración**
@@ -2779,18 +2826,16 @@ Merece dos minutos, porque explica todo lo que puede salir mal después.
 
 Cuando activas \`cudf.pandas\`, \`import pandas\` ya no te da el pandas de siempre: te da un <span class="gl"><input type="checkbox" id="gl-proxy" class="gl-c"><label for="gl-proxy" class="gl-t">proxy</label><span class="gl-m"><label for="gl-proxy" class="gl-bg"></label><span class="gl-b"><b>Proxy (objeto intermediario)</b><span>Un objeto que se hace pasar por otro. Tu código cree que habla con pandas, pero habla con un intermediario que decide, en cada operación, si la hace cuDF en la GPU o pandas en la CPU.</span><span>Por eso funciona sin cambiar código: la interfaz es idéntica, lo que cambia es quién hace el trabajo.</span><label for="gl-proxy" class="gl-x">Entendido</label></span></span></span> idéntico por fuera. Cada operación sigue este camino:
 
-\`\`\`
-Tu código llama a una función de pandas
-        │
-        ▼
-¿cuDF sabe hacerla?
-   ├── SÍ → se ejecuta en la GPU ──────────────────────────┐
-   └── NO → copia los datos a la CPU                       │
-            → la ejecuta pandas normal (el "fallback")     │
-            → copia el resultado de vuelta a la GPU        │
-                                                           ▼
-                                                     Resultado
-\`\`\`
+<div class="flow">
+  <div class="flow-step" style="--fc:#55AAFF"><b>1 · Tu código</b><span>Llama a una función de pandas, exactamente igual que siempre.</span></div>
+  <div class="flow-arrow">▼</div>
+  <div class="flow-step" style="--fc:#a855f7"><b>2 · El proxy decide</b><span>¿Sabe cuDF hacer esta operación en la GPU?</span></div>
+  <div class="flow-arrow">▼</div>
+  <div class="flow-step" style="--fc:#10b981"><b>3a · Sí</b><span>Se ejecuta en la GPU.<em>El camino rápido: los datos ya están allí y no se mueven.</em></span></div>
+  <div class="flow-step" style="--fc:#f59e0b"><b>3b · No</b><span>Los datos se copian a la CPU, los procesa pandas normal y el resultado vuelve a la GPU.<em>Es el <b>fallback</b>: no falla nada, pero se pagan dos viajes por el bus.</em></span></div>
+  <div class="flow-arrow">▼</div>
+  <div class="flow-step" style="--fc:#06b6d4"><b>4 · Resultado</b><span>Tu código recibe lo que esperaba, venga de donde venga.</span></div>
+</div>
 
 Ese plan B se llama <span class="gl"><input type="checkbox" id="gl-fallback" class="gl-c"><label for="gl-fallback" class="gl-t">fallback</label><span class="gl-m"><label for="gl-fallback" class="gl-bg"></label><span class="gl-b"><b>Fallback (plan B automático)</b><span>Cuando la GPU no sabe hacer una operación, la librería la manda a la CPU en silencio. Tu programa no falla: simplemente esa parte va a velocidad normal.</span><span>Es cómodo, pero tiene truco: cada fallback puede implicar copiar datos por el PCIe de ida y vuelta. Muchos fallbacks seguidos pueden hacer que el script vaya <b>más lento</b> que con pandas puro.</span><label for="gl-fallback" class="gl-x">Entendido</label></span></span></span>, y es la razón de que «funcione siempre»… y también de que a veces no acelere nada. \`cuml.accel\` hace lo mismo con los modelos de scikit-learn.
 
@@ -2890,12 +2935,11 @@ Juega con las dos barras del simulador. Fíjate en lo que pasa cuando bajas la f
 
 En fórmula, para quien la quiera:
 
-\`\`\`
-aceleración total = 1 / ( (1 − p) + p / s )
+$$
+S_{\\text{total}} \\;=\\; \\frac{1}{\\,(1 - p) \\;+\\; \\dfrac{p}{s}\\,}
+$$
 
-p = fracción del tiempo que se puede acelerar (0 a 1)
-s = cuántas veces más rápida es la GPU en esa parte
-\`\`\`
+donde **p** es la fracción del tiempo que se puede acelerar (entre 0 y 1) y **s**, cuántas veces más rápida es la GPU en esa parte.
 
 | Fracción acelerable | Con una GPU 50× más rápida | Con una GPU infinitamente rápida |
 |---|---|---|
@@ -2920,7 +2964,7 @@ El caso extremo, con 8 GB y **una sola** operación ligera (sumar una columna):
 
 | Paso | Velocidad aproximada | Tiempo |
 |---|---|---|
-| Llevar 8 GB a la GPU por PCIe 4.0 | ~32 GB/s | **~250 ms** |
+| Llevar 8 GB a la GPU por el bus PCIe 4.0 | ~32 GB/s | **~250 ms** |
 | La GPU lee 8 GB de su VRAM (RTX 4090) | ~1.000 GB/s | **~8 ms** |
 | La CPU lee 8 GB de la RAM (DDR4 doble canal) | ~50 GB/s | **~160 ms** |
 
@@ -2928,7 +2972,7 @@ La GPU calcula en 8 ms, pero el viaje cuesta 250. **Total GPU ≈ 258 ms; total 
 
 Cambia el escenario a 30 operaciones encadenadas sobre esos mismos datos y la GPU paga el viaje una sola vez. Ahí arrasa.
 
-> **La regla que resume las dos condiciones:** la GPU gana cuando los datos **se quedan en ella** y hacen mucho trabajo antes de volver. Ir y venir por el PCIe es el enemigo número uno.
+> **La regla que resume las dos condiciones:** la GPU gana cuando los datos **se quedan en ella** y hacen mucho trabajo antes de volver. Ir y venir por el <span class="gl"><input type="checkbox" id="gl-pcie2" class="gl-c"><label for="gl-pcie2" class="gl-t">PCIe</label><span class="gl-m"><label for="gl-pcie2" class="gl-bg"></label><span class="gl-b"><b>PCIe (el bus que une CPU y GPU)</b><span>El «cable» por el que viajan los datos entre la memoria del computador (RAM) y la de la tarjeta gráfica (VRAM). Rápido, pero mucho más lento que la memoria interna de la GPU.</span><span>Una ranura <i>PCIe 4.0 x16</i> mueve unos 32 GB/s por sentido; una <i>PCIe 5.0 x16</i>, unos 64. La memoria de la propia tarjeta va entre 300 y 3.000 GB/s. Esa diferencia es la que hace que mover los datos cueste más que calcularlos.</span><label for="gl-pcie2" class="gl-x">Entendido</label></span></span></span> es el enemigo número uno.
 
 En el notebook, la sección 2 **mide esto en tu sesión de Colab**: cuántos GB/s da realmente tu PCIe y cuántos da la memoria de la tarjeta.
 
