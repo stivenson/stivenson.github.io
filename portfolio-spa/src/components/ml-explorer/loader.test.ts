@@ -30,4 +30,10 @@ describe('createAlgorithmLoader', () => {
     const load = createAlgorithmLoader({});
     await expect(load('nope')).rejects.toThrow('Algoritmo desconocido: nope');
   });
+
+  it('no confunde claves heredadas del prototipo con algoritmos', async () => {
+    const load = createAlgorithmLoader({});
+    await expect(load('constructor')).rejects.toThrow('Algoritmo desconocido: constructor');
+    await expect(load('toString')).rejects.toThrow('Algoritmo desconocido: toString');
+  });
 });

@@ -16,8 +16,10 @@ export function createAlgorithmLoader(loaders: Readonly<Record<string, ModuleLoa
     const cached = cache.get(slug);
     if (cached) return cached;
 
+    if (!Object.hasOwn(loaders, slug)) {
+      return Promise.reject(new Error(`Algoritmo desconocido: ${slug}`));
+    }
     const loader = loaders[slug];
-    if (!loader) return Promise.reject(new Error(`Algoritmo desconocido: ${slug}`));
 
     const promise = loader().then((m) => m.default);
     cache.set(slug, promise);
