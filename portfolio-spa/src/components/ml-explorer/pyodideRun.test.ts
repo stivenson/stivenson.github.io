@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { runInPyodide, type PyodideLike, type PyProxyLike } from './pyodideRun';
+import { exceptionOnly, runInPyodide, type PyodideLike, type PyProxyLike } from './pyodideRun';
 
 interface FakeOptions {
   /** Lo que hace el código del lector: puede escribir en stdout o lanzar. */
@@ -144,5 +144,23 @@ describe('runInPyodide', () => {
       throw new Error('boom');
     };
     expect(await runInPyodide(py, 'x = 1')).toEqual({ ok: false, stdout: '', images: [], error: 'Error: boom' });
+  });
+});
+
+describe('exceptionOnly', () => {
+  it('un mensaje sin marcos File se devuelve sin el prefijo PythonError', () => {
+    expect(exceptionOnly('PythonError: algo raro')).toBe('algo raro');
+  });
+
+  it('en un SyntaxError descarta el código y el caret que siguen al marco', () => {
+    const message =
+      'Traceback (most recent call last):\n  File "<exec>", line 1\n    x = (\n        ^\nSyntaxError: \'(\' was never closed';
+    expect(exceptionOnly(message)).toBe("SyntaxError: '(' was never closed");
+  });
+
+  it('une en una sola línea el mensaje multilínea tras el último marco', () => {
+    const message =
+      'Traceback (most recent call last):\n  File "<exec>", line 3, in <module>\n    plt.title(t)\nValueError: \n$x^{$\n^\nParseFatalException: Expected end of text';
+    expect(exceptionOnly(message)).toBe('ValueError: $x^{$ ^ ParseFatalException: Expected end of text');
   });
 });

@@ -27,7 +27,7 @@ function messageOf(err: unknown): string {
  * ultimo marco `File "..."` (sin sus lineas de codigo sangradas). Algunas
  * excepciones, como el ValueError de mathtext, ocupan varias lineas.
  */
-function exceptionOnly(message: string): string {
+export function exceptionOnly(message: string): string {
   const lines = message.replace(/^PythonError:\s*/, '').split('\n');
   let start = 0;
   lines.forEach((line, i) => {
