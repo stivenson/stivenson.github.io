@@ -1,11 +1,12 @@
 import { defineConfig } from 'vitest/config';
 
-// Solo la logica pura del explorador tiene tests (estado de URL, loader,
-// cliente de Pyodide, matematica de las OVAs). Los componentes se verifican
-// en el navegador.
+// Por defecto los tests corren en node (logica pura: estado de URL, loader,
+// cliente de Pyodide, matematica de las OVAs, render en servidor). Los tests
+// de componentes con DOM viven en *.dom.test.tsx y piden jsdom con el
+// comentario `// @vitest-environment jsdom` en su primera linea.
 export default defineConfig({
   test: {
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.{ts,tsx}'],
     environment: 'node',
   },
 });
