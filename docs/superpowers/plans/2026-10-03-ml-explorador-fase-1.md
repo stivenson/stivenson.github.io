@@ -57,6 +57,8 @@
 | `src/components/ml-explorer/ml-explorer.css` | Estilos del explorador |
 | `src/components/ml-explorer/ovas/plot.ts` | Escalas datos ↔ SVG |
 | `src/components/ml-explorer/ovas/ovaMath.ts` | Matemática de las OVAs (recta, sigmoide, árbol, KNN) |
+| `src/components/ml-explorer/ovas/datasets.ts` | Datos fijos de las OVAs; sus cifras las fija `datasets.test.ts` |
+| `src/components/ml-explorer/algorithms/python/outputs.test.ts` | Amarra las cifras que citan los textos a la salida real de Python |
 | `src/components/ml-explorer/ovas/useSvgDrag.ts` | Arrastrar puntos dentro de un SVG |
 | `src/components/ml-explorer/ovas/OvaFrame.tsx` | Marco común de OVA + slider |
 | `src/components/ml-explorer/ovas/*Ova.tsx` | Una OVA por algoritmo |
@@ -1087,8 +1089,12 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 **Files:**
 - Create: `src/components/ml-explorer/ovas/plot.ts`
 - Create: `src/components/ml-explorer/ovas/ovaMath.ts`
+- Create: `src/components/ml-explorer/ovas/datasets.ts`
 - Test: `src/components/ml-explorer/ovas/plot.test.ts`
 - Test: `src/components/ml-explorer/ovas/ovaMath.test.ts`
+- Test: `src/components/ml-explorer/ovas/datasets.test.ts`
+
+**Regla de esta task:** todo cálculo es determinista (sin `Math.random`, sin fechas) y toda cifra que un texto del explorador muestre o prometa queda fijada por un test. Los datos de las OVAs viven en `datasets.ts`, fuera de los componentes, para que los tests verifiquen lo que dicen los textos con esos mismos datos.
 
 - [ ] **Step 1: Escribir los tests que fallan**
 
@@ -1122,10 +1128,12 @@ import {
   buildTree,
   fitLine,
   fitLogistic1D,
+  gini,
   knnVote,
   logit,
   mse,
   sigmoid,
+  snap,
   treeRegions,
   type LabeledPt,
 } from './ovaMath';
@@ -1222,6 +1230,31 @@ describe('árbol de decisión', () => {
     ]);
   });
 });
+
+// Los ejemplos con números de las pestañas «Fórmula» se calculan con estas
+// mismas funciones: si el texto y el cálculo se separan, falla aquí.
+describe('ejemplos numéricos del texto', () => {
+  it('Gini: 5 y 5 → 0.5; 4 y 1 → 0.32 (Decision Tree)', () => {
+    expect(gini([5, 5])).toBeCloseTo(0.5);
+    expect(gini([4, 1])).toBeCloseTo(0.32);
+  });
+
+  it('sigmoide: z = 0 → 0.5 y z = 3 → ≈ 0.95 (Logistic Regression)', () => {
+    expect(sigmoid(0)).toBe(0.5);
+    expect(sigmoid(3)).toBeCloseTo(0.9526, 4);
+  });
+
+  it('distancia entre (6, 7) y (7, 8) ≈ 1.41 (KNN)', () => {
+    expect(knnVote([{ x: 7, y: 8, label: 1 }], { x: 6, y: 7 }, 1).radius).toBeCloseTo(1.41, 2);
+  });
+});
+
+describe('snap', () => {
+  it('ajusta un valor al paso y al rango de un slider', () => {
+    expect(snap(1.6815, { min: -1, max: 3, step: 0.05 })).toBeCloseTo(1.7);
+    expect(snap(-12, { min: -10, max: 4, step: 0.1 })).toBe(-10);
+  });
+});
 ```
 
 - [ ] **Step 2: Ejecutarlos y ver que fallan**
@@ -1316,6 +1349,17 @@ export function logit(p: number): number {
   return Math.log(p / (1 - p));
 }
 
+export interface SliderRange {
+  min: number;
+  max: number;
+  step: number;
+}
+
+/** Redondea al paso de un slider y lo limita a su rango. */
+export function snap(v: number, { min, max, step }: SliderRange): number {
+  return Math.min(max, Math.max(min, Math.round(v / step) * step));
+}
+
 /** Descenso de gradiente sobre la pérdida logística (una variable). */
 export function fitLogistic1D(xs: number[], ys: number[], iterations = 5000, lr = 0.05): Line {
   let b0 = 0;
@@ -1381,7 +1425,8 @@ function countLabels(points: LabeledPt[]): [number, number] {
   return c;
 }
 
-function gini([a, b]: [number, number]): number {
+/** 0 si el grupo es de una sola clase; 0.5 si está mitad y mitad. */
+export function gini([a, b]: [number, number]): number {
   const n = a + b;
   if (n === 0) return 0;
   const p = b / n;
@@ -1456,12 +1501,200 @@ export function treeRegions(node: TreeNode, b: Bounds): Region[] {
 ```bash
 ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run src/components/ml-explorer/ovas
 ```
-Expected: `13 passed` (2 de plot + 11 de ovaMath).
+Expected: `17 passed` (2 de plot + 15 de ovaMath).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 6: Test de los datos de las OVAs (falla)**
+
+Estos tests fijan las cifras que los textos de las OVAs muestran o prometen. Los valores esperados se calcularon con estas mismas funciones.
+
+`src/components/ml-explorer/ovas/datasets.test.ts`:
+```ts
+import { describe, expect, it } from 'vitest';
+import {
+  KNN_POINTS,
+  KNN_START,
+  LOGISTIC_B0,
+  LOGISTIC_B1,
+  LOGISTIC_XS,
+  LOGISTIC_YS,
+  LR_INITIAL,
+  LR_OUTLIER,
+  TREE_POINTS,
+} from './datasets';
+import { accuracy, buildTree, countLeaves, fitLine, fitLogistic1D, knnVote, mse, sigmoid, snap } from './ovaMath';
+
+describe('OVA de regresión lineal', () => {
+  it('la recta inicial es ŷ ≈ 0.98 + 0.65·x, con MSE ≈ 0.10', () => {
+    const line = fitLine(LR_INITIAL);
+    expect(line.b0).toBeCloseTo(0.983, 3);
+    expect(line.b1).toBeCloseTo(0.65, 3);
+    expect(mse(LR_INITIAL, line)).toBeCloseTo(0.101, 3);
+  });
+
+  it('un solo outlier aplana la recta y multiplica el MSE por 25 (pestaña Contras)', () => {
+    const points = [...LR_INITIAL, LR_OUTLIER];
+    const line = fitLine(points);
+    expect(line.b1).toBeCloseTo(0.397, 3);
+    expect(mse(points, line)).toBeCloseTo(2.568, 3);
+  });
+});
+
+describe('OVA de regresión logística', () => {
+  const hits = (b0: number, b1: number) =>
+    LOGISTIC_XS.filter((x, i) => (sigmoid(b0 + b1 * x) >= 0.5 ? 1 : 0) === LOGISTIC_YS[i]).length;
+
+  it('con los valores iniciales (b₀ = −4, b₁ = 1) acierta 15 de 18', () => {
+    expect(hits(-4, 1)).toBe(15);
+  });
+
+  it('«Mejor ajuste» es determinista, cae dentro de los sliders y acierta 16 de 18', () => {
+    const fit = fitLogistic1D(LOGISTIC_XS, LOGISTIC_YS);
+    expect(fitLogistic1D(LOGISTIC_XS, LOGISTIC_YS)).toEqual(fit);
+    expect(-fit.b0 / fit.b1).toBeCloseTo(3.39, 2);
+    const b0 = snap(fit.b0, LOGISTIC_B0);
+    const b1 = snap(fit.b1, LOGISTIC_B1);
+    expect(b0).toBeCloseTo(-5.7, 5);
+    expect(b1).toBeCloseTo(1.7, 5);
+    expect(hits(b0, b1)).toBe(16);
+  });
+
+  it('ningún ajuste de los sliders acierta los 18: las clases se solapan', () => {
+    let best = 0;
+    for (let b0 = LOGISTIC_B0.min; b0 <= LOGISTIC_B0.max; b0 += 0.25) {
+      for (let b1 = LOGISTIC_B1.min; b1 <= LOGISTIC_B1.max; b1 += 0.05) best = Math.max(best, hits(b0, b1));
+    }
+    expect(best).toBeLessThan(18);
+  });
+});
+
+describe('OVA del árbol de decisión', () => {
+  it.each([
+    { depth: 0, leaves: 1, acc: 0.536 },
+    { depth: 1, leaves: 2, acc: 0.857 },
+    { depth: 2, leaves: 4, acc: 0.857 },
+    { depth: 3, leaves: 6, acc: 0.929 },
+    { depth: 4, leaves: 8, acc: 0.964 },
+    { depth: 5, leaves: 9, acc: 1 },
+  ])('profundidad $depth → $leaves hojas y $acc de acierto', ({ depth, leaves, acc }) => {
+    const tree = buildTree(TREE_POINTS, depth);
+    expect(countLeaves(tree)).toBe(leaves);
+    expect(accuracy(tree, TREE_POINTS)).toBeCloseTo(acc, 3);
+  });
+});
+
+describe('OVA de KNN', () => {
+  it.each([
+    { k: 1, votes: [1, 0], winner: 0 },
+    { k: 3, votes: [1, 2], winner: 1 },
+    { k: 5, votes: [1, 4], winner: 1 },
+    { k: 7, votes: [1, 6], winner: 1 },
+  ])('k = $k desde la posición inicial → votos $votes', ({ k, votes, winner }) => {
+    const result = knnVote(KNN_POINTS, KNN_START, k);
+    expect(result.votes).toEqual(votes);
+    expect(result.winner).toBe(winner);
+  });
+});
+```
+
+Ejecútalo: `ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run src/components/ml-explorer/ovas/datasets.test.ts` → FAIL (`Failed to resolve import "./datasets"`).
+
+- [ ] **Step 7: Los datos de las OVAs**
+
+`src/components/ml-explorer/ovas/datasets.ts`:
+```ts
+import type { LabeledPt, Pt, SliderRange } from './ovaMath';
+
+/**
+ * Datos fijos de las OVAs. Viven fuera de los componentes para que
+ * datasets.test.ts verifique, con estos mismos datos, lo que dicen los
+ * textos de cada OVA (aciertos, hojas, votos). Si cambias un punto, el test
+ * señala qué texto quedó desactualizado.
+ */
+
+const labeled = (points: [number, number][], label: 0 | 1): LabeledPt[] =>
+  points.map(([x, y]) => ({ x, y, label }));
+
+// ---------- Regresión lineal (x de 0 a 10, y de 0 a 8) ----------
+
+export const LR_INITIAL: Pt[] = [
+  { x: 1, y: 1.6 },
+  { x: 2, y: 2.1 },
+  { x: 3, y: 3.4 },
+  { x: 4, y: 3.2 },
+  { x: 5, y: 4.6 },
+  { x: 6, y: 4.4 },
+  { x: 7, y: 5.9 },
+  { x: 8, y: 6.1 },
+  { x: 9, y: 6.8 },
+];
+
+export const LR_OUTLIER: Pt = { x: 8.5, y: 0.8 };
+
+// ---------- Regresión logística ----------
+// x = veces que el correo dice «gratis». Las clases se solapan entre 3 y
+// 4.5: ningún umbral acierta todo, como en los datos reales.
+
+const LOGISTIC_NORMAL = [0, 0.5, 1, 1, 1.5, 2, 2.5, 3, 4];
+const LOGISTIC_SPAM = [3, 3.5, 4.5, 5, 5.5, 6, 7, 8, 9];
+
+export const LOGISTIC_XS = [...LOGISTIC_NORMAL, ...LOGISTIC_SPAM];
+export const LOGISTIC_YS = [...LOGISTIC_NORMAL.map(() => 0), ...LOGISTIC_SPAM.map(() => 1)];
+export const LOGISTIC_B0: SliderRange = { min: -10, max: 4, step: 0.1 };
+export const LOGISTIC_B1: SliderRange = { min: -1, max: 3, step: 0.05 };
+
+// ---------- Árbol de decisión (x = ingreso, y = deuda, de 0 a 10) ----------
+
+export const TREE_POINTS: LabeledPt[] = [
+  ...labeled(
+    [
+      [2, 1], [4, 2], [6, 1.5], [8, 3], [9, 1], [7, 5], [8.5, 5.5], [5, 3.5],
+      [3, 2.5], [6.5, 4.5], [9, 4], [1, 3], [4.5, 5], [7.5, 2],
+      [8, 8], // ruido: paga aunque su deuda es alta
+    ],
+    0,
+  ),
+  ...labeled(
+    [
+      [1, 5], [2, 6.5], [1.5, 8], [3, 9], [5, 7.5], [6, 8.5], [8, 7], [9, 9],
+      [2.5, 5.5], [4, 8], [7, 9.5], [0.8, 6],
+      [3, 1.5], // ruido: no paga aunque su deuda es baja
+    ],
+    1,
+  ),
+];
+
+// ---------- KNN (x = gusto por la acción, y = por la ciencia ficción) ----------
+
+export const KNN_POINTS: LabeledPt[] = [
+  ...labeled(
+    [
+      [1, 2], [2, 1], [1.5, 3.5], [3, 2.5], [2.5, 4.5], [4, 1.5], [3.5, 3.5],
+      [0.8, 5], [5, 3], [4.5, 5.2], [6, 1],
+      [6.5, 7.2], // ruido: rodeado de personas a las que sí les gustó
+    ],
+    0,
+  ),
+  ...labeled(
+    [[6, 7], [7, 8], [8, 6.5], [7.5, 9], [9, 8], [5.5, 8.5], [8.5, 5], [6.5, 6], [9, 9.2], [4, 7.5], [3, 6.5]],
+    1,
+  ),
+];
+
+/** Junto al punto de ruido: con k = 1 decide él; con k ≥ 3, la mayoría. */
+export const KNN_START: Pt = { x: 6.4, y: 7 };
+```
+
+- [ ] **Step 8: Ejecutar todos los tests de las OVAs**
 
 ```bash
-git add src/components/ml-explorer/ovas/plot.ts src/components/ml-explorer/ovas/plot.test.ts src/components/ml-explorer/ovas/ovaMath.ts src/components/ml-explorer/ovas/ovaMath.test.ts
+ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run src/components/ml-explorer/ovas
+```
+Expected: `32 passed` (2 de plot + 15 de ovaMath + 15 de datasets).
+
+- [ ] **Step 9: Commit**
+
+```bash
+git add src/components/ml-explorer/ovas/plot.ts src/components/ml-explorer/ovas/plot.test.ts src/components/ml-explorer/ovas/ovaMath.ts src/components/ml-explorer/ovas/ovaMath.test.ts src/components/ml-explorer/ovas/datasets.ts src/components/ml-explorer/ovas/datasets.test.ts
 git commit -m "feat(ml-explorer): add the math behind the first four OVAs
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
@@ -3493,6 +3726,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify: `src/components/ml-explorer/registry.ts` (LOADERS)
 - Modify: `src/components/ml-explorer/registry.test.ts` (disponibles)
 - Modify: `scripts/build-ml-notebook.py` (ALGORITHMS)
+- Create: `src/components/ml-explorer/algorithms/python/outputs.test.ts`
 
 - [ ] **Step 1: El ejercicio**
 
@@ -3558,6 +3792,7 @@ Los números deben contar la historia del texto: el modelo recupera aproximadame
 ```tsx
 import { useState, type MouseEvent } from 'react';
 import { OVA_COLORS, OvaFrame } from './OvaFrame';
+import { LR_INITIAL as INITIAL, LR_OUTLIER as OUTLIER } from './datasets';
 import { fitLine, mse, type Pt } from './ovaMath';
 import { createPlot } from './plot';
 import { clientToSvg, useSvgDrag } from './useSvgDrag';
@@ -3566,20 +3801,6 @@ import { clientToSvg, useSvgDrag } from './useSvgDrag';
 // error se ven cuadrados de verdad.
 const PLOT = createPlot(360, 300, 30, [0, 10], [0, 8]);
 const MAX_POINTS = 20;
-
-const INITIAL: Pt[] = [
-  { x: 1, y: 1.6 },
-  { x: 2, y: 2.1 },
-  { x: 3, y: 3.4 },
-  { x: 4, y: 3.2 },
-  { x: 5, y: 4.6 },
-  { x: 6, y: 4.4 },
-  { x: 7, y: 5.9 },
-  { x: 8, y: 6.1 },
-  { x: 9, y: 6.8 },
-];
-
-const OUTLIER: Pt = { x: 8.5, y: 0.8 };
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const toData = (p: Pt): Pt => ({ x: clamp(PLOT.ix(p.x), 0, 10), y: clamp(PLOT.iy(p.y), 0, 8) });
@@ -3989,6 +4210,30 @@ ALGORITHMS: list[tuple[str, str, str]] = [
 ]
 ```
 
+- [ ] **Step 5b: Fijar las cifras que cita el texto**
+
+Las pestañas citan cifras de la salida del ejercicio. Este test las amarra a `.out.txt` (que `check-ml-exercises.py` verifica contra Python real): si cambia la salida, señala qué texto quedó viejo.
+
+Crea `src/components/ml-explorer/algorithms/python/outputs.test.ts`:
+```ts
+import { describe, expect, it } from 'vitest';
+import linearRegression from './linear-regression.out.txt?raw';
+
+/**
+ * Cifras de la salida de los ejercicios que aparecen en los textos del
+ * explorador. Los .out.txt se generan y verifican con Python real
+ * (scripts/check-ml-exercises.py); este test evita que el texto se quede
+ * con cifras viejas si esa salida cambia.
+ */
+describe('cifras citadas en los textos', () => {
+  it('Linear Regression: la casa de 120 m² y 3 habitaciones vale 425 millones', () => {
+    expect(linearRegression).toContain('Casa de 120 m² y 3 habitaciones: 425 millones');
+    expect(linearRegression).toContain('Por cada m² (b1): 2.47');
+    expect(linearRegression).toContain('Por cada habitación (b2): 16.0');
+  });
+});
+```
+
 - [ ] **Step 6: Verificar**
 
 ```bash
@@ -4001,7 +4246,7 @@ Expected: todos los tests pasan; tsc sin salida; `✓ linear-regression.py`.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/components/ml-explorer/algorithms/python/linear-regression.py src/components/ml-explorer/algorithms/python/linear-regression.out.txt src/components/ml-explorer/ovas/LinearRegressionOva.tsx src/components/ml-explorer/algorithms/linear-regression.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py
+git add src/components/ml-explorer/algorithms/python/linear-regression.py src/components/ml-explorer/algorithms/python/linear-regression.out.txt src/components/ml-explorer/ovas/LinearRegressionOva.tsx src/components/ml-explorer/algorithms/linear-regression.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/outputs.test.ts
 git commit -m "feat(ml-explorer): explain linear regression with an OVA and an exercise
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
@@ -4216,7 +4461,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `src/components/ml-explorer/algorithms/python/logistic-regression.out.txt` (generado)
 - Create: `src/components/ml-explorer/ovas/LogisticRegressionOva.tsx`
 - Create: `src/components/ml-explorer/algorithms/logistic-regression.tsx`
-- Modify: `src/components/ml-explorer/registry.ts`, `src/components/ml-explorer/registry.test.ts`, `scripts/build-ml-notebook.py`
+- Modify: `src/components/ml-explorer/registry.ts`, `src/components/ml-explorer/registry.test.ts`, `scripts/build-ml-notebook.py`, `src/components/ml-explorer/algorithms/python/outputs.test.ts`
 
 - [ ] **Step 1: El ejercicio**
 
@@ -4278,22 +4523,12 @@ Historia que deben contar los números: «gratis» y los enlaces empujan hacia s
 `src/components/ml-explorer/ovas/LogisticRegressionOva.tsx`:
 ```tsx
 import { useState } from 'react';
+import { LOGISTIC_B0 as B0, LOGISTIC_B1 as B1, LOGISTIC_XS as XS, LOGISTIC_YS as YS } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
-import { fitLogistic1D, logit, sigmoid } from './ovaMath';
+import { fitLogistic1D, logit, sigmoid, snap } from './ovaMath';
 import { createPlot } from './plot';
 
 const PLOT = createPlot(360, 260, 30, [0, 10], [-0.1, 1.1]);
-
-// x = veces que el correo dice «gratis». Las clases se solapan entre 3 y 4.5:
-// ningún umbral acierta todo, como en los datos reales.
-const NORMAL = [0, 0.5, 1, 1, 1.5, 2, 2.5, 3, 4];
-const SPAM = [3, 3.5, 4.5, 5, 5.5, 6, 7, 8, 9];
-const XS = [...NORMAL, ...SPAM];
-const YS = [...NORMAL.map(() => 0), ...SPAM.map(() => 1)];
-
-const B0 = { min: -10, max: 4, step: 0.1 };
-const B1 = { min: -1, max: 3, step: 0.05 };
-const snap = (v: number, { min, max, step }: typeof B0) => Math.min(max, Math.max(min, Math.round(v / step) * step));
 
 const EXAMPLE_X = 4;
 
@@ -4658,6 +4893,20 @@ En `scripts/build-ml-notebook.py`, agrega a `ALGORITHMS`:
     ),
 ```
 
+- [ ] **Step 5b: Fijar las cifras que cita el texto**
+
+En `src/components/ml-explorer/algorithms/python/outputs.test.ts`, agrega el import junto a los demás:
+```ts
+import logisticRegression from './logistic-regression.out.txt?raw';
+```
+y dentro del `describe`:
+```ts
+  it('Logistic Regression: «gratis» y enlaces suben el spam, el remitente conocido lo baja; 94 % de spam', () => {
+    expect(logisticRegression).toContain('Pesos [gratis, enlaces, conocido]: [ 1.84  0.99 -1.75]');
+    expect(logisticRegression).toContain('P(spam) = 94.4%');
+  });
+```
+
 - [ ] **Step 6: Verificar**
 
 ```bash
@@ -4667,12 +4916,12 @@ node node_modules/typescript/bin/tsc --noEmit -p .
 ```
 Expected: tests pasan; tsc sin salida; `✓` para los dos ejercicios.
 
-En el navegador (`#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=formula`): los sliders deforman la curva; «Mejor ajuste» deja 16 de 18 aciertos (b₀ ≈ −5.7, b₁ ≈ 1.70, frontera ≈ 3.4); mover el umbral desplaza la línea «frontera»; el ejercicio de Ejemplo real da la misma salida que la esperada.
+En el navegador (`#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=formula`): los sliders deforman la curva; al abrir muestra 15 de 18 aciertos y «Mejor ajuste» deja 16 de 18 (b₀ = −5.7, b₁ = 1.70, frontera ≈ 3.4), como fija `datasets.test.ts`; mover el umbral desplaza la línea «frontera»; el ejercicio de Ejemplo real da la misma salida que la esperada.
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/components/ml-explorer/algorithms/python/logistic-regression.py src/components/ml-explorer/algorithms/python/logistic-regression.out.txt src/components/ml-explorer/ovas/LogisticRegressionOva.tsx src/components/ml-explorer/algorithms/logistic-regression.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py
+git add src/components/ml-explorer/algorithms/python/logistic-regression.py src/components/ml-explorer/algorithms/python/logistic-regression.out.txt src/components/ml-explorer/ovas/LogisticRegressionOva.tsx src/components/ml-explorer/algorithms/logistic-regression.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/outputs.test.ts
 git commit -m "feat(ml-explorer): explain logistic regression with an OVA and an exercise
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
@@ -4687,7 +4936,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `src/components/ml-explorer/algorithms/python/decision-tree.out.txt` (generado)
 - Create: `src/components/ml-explorer/ovas/DecisionTreeOva.tsx`
 - Create: `src/components/ml-explorer/algorithms/decision-tree.tsx`
-- Modify: `src/components/ml-explorer/registry.ts`, `src/components/ml-explorer/registry.test.ts`, `scripts/build-ml-notebook.py`
+- Modify: `src/components/ml-explorer/registry.ts`, `src/components/ml-explorer/registry.test.ts`, `scripts/build-ml-notebook.py`, `src/components/ml-explorer/algorithms/python/outputs.test.ts`
 
 - [ ] **Step 1: El ejercicio**
 
@@ -4759,33 +5008,19 @@ La historia: con profundidad 15 el árbol acierta 99.7 % en entrenamiento pero s
 
 - [ ] **Step 3: La OVA**
 
-Con estos 28 puntos, la profundidad da (verificado con `buildTree`): 0 → 1 hoja, 53.6 %; 1 → 2 hojas, 85.7 %; 2 → 4, 85.7 %; 3 → 6, 92.9 %; 4 → 8, 96.4 %; 5 → 9 hojas, 100 %. A partir de 4 el árbol encierra los dos puntos de ruido en cajitas propias.
+Los 28 puntos (`TREE_POINTS`) ya están en `datasets.ts`, y `datasets.test.ts` fija lo que muestra la OVA: profundidad 0 → 1 hoja, 53.6 %; 1 → 2 hojas, 85.7 %; 2 → 4, 85.7 %; 3 → 6, 92.9 %; 4 → 8, 96.4 %; 5 → 9 hojas, 100 %. A partir de 4 el árbol encierra los dos puntos de ruido en cajitas propias.
 
 `src/components/ml-explorer/ovas/DecisionTreeOva.tsx`:
 ```tsx
 import { useMemo, useState } from 'react';
+import { TREE_POINTS as POINTS } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
-import { accuracy, buildTree, countLeaves, treeRegions, type LabeledPt, type TreeNode } from './ovaMath';
+import { accuracy, buildTree, countLeaves, treeRegions, type TreeNode } from './ovaMath';
 import { createPlot } from './plot';
 
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const AXIS_NAMES = { x: 'ingreso', y: 'deuda' } as const;
 
-const PAGA: [number, number][] = [
-  [2, 1], [4, 2], [6, 1.5], [8, 3], [9, 1], [7, 5], [8.5, 5.5], [5, 3.5],
-  [3, 2.5], [6.5, 4.5], [9, 4], [1, 3], [4.5, 5], [7.5, 2],
-  [8, 8], // ruido: paga aunque su deuda es alta
-];
-const IMPAGO: [number, number][] = [
-  [1, 5], [2, 6.5], [1.5, 8], [3, 9], [5, 7.5], [6, 8.5], [8, 7], [9, 9],
-  [2.5, 5.5], [4, 8], [7, 9.5], [0.8, 6],
-  [3, 1.5], // ruido: no paga aunque su deuda es baja
-];
-
-const POINTS: LabeledPt[] = [
-  ...PAGA.map(([x, y]) => ({ x, y, label: 0 as const })),
-  ...IMPAGO.map(([x, y]) => ({ x, y, label: 1 as const })),
-];
 
 function TreeView({ node, prefix }: { node: TreeNode; prefix?: string }) {
   const tag = prefix ? <b>{prefix} </b> : null;
@@ -5110,6 +5345,20 @@ En `scripts/build-ml-notebook.py`, agrega a `ALGORITHMS`:
     ),
 ```
 
+- [ ] **Step 5b: Fijar las cifras que cita el texto**
+
+En `src/components/ml-explorer/algorithms/python/outputs.test.ts`, agrega el import junto a los demás:
+```ts
+import decisionTree from './decision-tree.out.txt?raw';
+```
+y dentro del `describe`:
+```ts
+  it('Decision Tree: profundidad 15 → 99.7 % en entrenamiento y 70 % en datos nuevos; profundidad 3 es el equilibrio', () => {
+    expect(decisionTree).toMatch(/^\s*15 \|\s+99\.7% \|\s+70\.0%$/m);
+    expect(decisionTree).toMatch(/^\s*3 \|\s+78\.0% \|\s+73\.3%$/m);
+  });
+```
+
 - [ ] **Step 6: Verificar**
 
 ```bash
@@ -5124,7 +5373,7 @@ En el navegador (`?alg=decision-tree&tab=formula`): con el slider de 0 a 5 las h
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/components/ml-explorer/algorithms/python/decision-tree.py src/components/ml-explorer/algorithms/python/decision-tree.out.txt src/components/ml-explorer/ovas/DecisionTreeOva.tsx src/components/ml-explorer/algorithms/decision-tree.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py
+git add src/components/ml-explorer/algorithms/python/decision-tree.py src/components/ml-explorer/algorithms/python/decision-tree.out.txt src/components/ml-explorer/ovas/DecisionTreeOva.tsx src/components/ml-explorer/algorithms/decision-tree.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/outputs.test.ts
 git commit -m "feat(ml-explorer): explain decision trees with an OVA and an exercise
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
@@ -5139,7 +5388,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Create: `src/components/ml-explorer/algorithms/python/knn.out.txt` (generado)
 - Create: `src/components/ml-explorer/ovas/KnnOva.tsx`
 - Create: `src/components/ml-explorer/algorithms/knn.tsx`
-- Modify: `src/components/ml-explorer/registry.ts`, `src/components/ml-explorer/registry.test.ts`, `scripts/build-ml-notebook.py`
+- Modify: `src/components/ml-explorer/registry.ts`, `src/components/ml-explorer/registry.test.ts`, `scripts/build-ml-notebook.py`, `src/components/ml-explorer/algorithms/python/outputs.test.ts`
 
 - [ ] **Step 1: El ejercicio**
 
@@ -5198,34 +5447,20 @@ Beto queda a distancia 0 porque calificó igual que Ana todas las películas que
 
 - [ ] **Step 3: La OVA**
 
-Con el punto de consulta en su posición inicial (6.4, 7) los votos son (verificado): k = 1 → 1 contra 0 a favor de «no le gustó» (el vecino más cercano es un punto de ruido); k = 3 → 2 contra 1 a favor de «le gustó»; k = 5 → 4 contra 1; k = 7 → 6 contra 1.
+Los puntos (`KNN_POINTS`) y la posición inicial (`KNN_START`, en 6.4, 7) ya están en `datasets.ts`, y `datasets.test.ts` fija los votos: k = 1 → 1 contra 0 a favor de «no le gustó» (el vecino más cercano es el punto de ruido); k = 3 → 2 contra 1 a favor de «le gustó»; k = 5 → 4 contra 1; k = 7 → 6 contra 1.
 
 `src/components/ml-explorer/ovas/KnnOva.tsx`:
 ```tsx
 import { useState, type KeyboardEvent } from 'react';
+import { KNN_POINTS as POINTS, KNN_START as START } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
-import { knnVote, type LabeledPt, type Pt } from './ovaMath';
+import { knnVote, type Pt } from './ovaMath';
 import { createPlot } from './plot';
 import { useSvgDrag } from './useSvgDrag';
 
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const UNIT = PLOT.sx(1) - PLOT.sx(0);
 
-const NO_LE_GUSTO: [number, number][] = [
-  [1, 2], [2, 1], [1.5, 3.5], [3, 2.5], [2.5, 4.5], [4, 1.5], [3.5, 3.5],
-  [0.8, 5], [5, 3], [4.5, 5.2], [6, 1],
-  [6.5, 7.2], // ruido: rodeado de personas a las que sí les gustó
-];
-const LE_GUSTO: [number, number][] = [
-  [6, 7], [7, 8], [8, 6.5], [7.5, 9], [9, 8], [5.5, 8.5], [8.5, 5], [6.5, 6], [9, 9.2], [4, 7.5], [3, 6.5],
-];
-
-const POINTS: LabeledPt[] = [
-  ...NO_LE_GUSTO.map(([x, y]) => ({ x, y, label: 0 as const })),
-  ...LE_GUSTO.map(([x, y]) => ({ x, y, label: 1 as const })),
-];
-
-const START: Pt = { x: 6.4, y: 7 };
 const clamp = (v: number) => Math.min(10, Math.max(0, v));
 const LABELS = ['🔵 no le gustó', '🟠 le gustó'] as const;
 
@@ -5579,6 +5814,20 @@ En `scripts/build-ml-notebook.py`, agrega a `ALGORITHMS`:
     ),
 ```
 
+- [ ] **Step 5b: Fijar las cifras que cita el texto**
+
+En `src/components/ml-explorer/algorithms/python/outputs.test.ts`, agrega el import junto a los demás:
+```ts
+import knn from './knn.out.txt?raw';
+```
+y dentro del `describe`:
+```ts
+  it('KNN: Beto calificó igual que Ana (distancia 0) e Interestelar es la primera recomendación', () => {
+    expect(knn).toContain('Vecino: Beto  distancia = 0.00');
+    expect(knn).toMatch(/Recomendaciones para Ana.*\n\s+Interestelar\s+3\.7 \/ 5/);
+  });
+```
+
 - [ ] **Step 6: Verificar**
 
 ```bash
@@ -5593,7 +5842,7 @@ En el navegador (`?alg=knn&tab=formula`): los votos con k = 1, 3, 5 y 7 coincide
 - [ ] **Step 7: Commit**
 
 ```bash
-git add src/components/ml-explorer/algorithms/python/knn.py src/components/ml-explorer/algorithms/python/knn.out.txt src/components/ml-explorer/ovas/KnnOva.tsx src/components/ml-explorer/algorithms/knn.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py
+git add src/components/ml-explorer/algorithms/python/knn.py src/components/ml-explorer/algorithms/python/knn.out.txt src/components/ml-explorer/ovas/KnnOva.tsx src/components/ml-explorer/algorithms/knn.tsx src/components/ml-explorer/registry.ts src/components/ml-explorer/registry.test.ts scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/outputs.test.ts
 git commit -m "feat(ml-explorer): explain KNN with an OVA and an exercise
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
