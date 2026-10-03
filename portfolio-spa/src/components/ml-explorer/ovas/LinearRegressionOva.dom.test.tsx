@@ -44,6 +44,6 @@ describe('LinearRegressionOva', () => {
     for (let i = 0; i < 11; i++) fireEvent.click(outlier);
     expect(screen.getAllByRole('button', { name: /^Punto \d+:/ })).toHaveLength(20);
     expect((outlier as HTMLButtonElement).disabled).toBe(true);
-    expect(screen.getAllByText(/Máximo 20 puntos/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Máximo 20 puntos/)).toHaveLength(2);
   });
 });

@@ -105,13 +105,14 @@ const linearRegression: AlgorithmModule = {
           <p>
             En la ecuación normal, X es la tabla de datos con una columna de unos al inicio: esa columna es la que
             multiplica a b₀. La fórmula exige que <Tex>{'X^\\top X'}</Tex> sea invertible, es decir, que ninguna
-            feature sea redundante (copia o combinación lineal de otras).
+            feature sea redundante (copia o combinación lineal de otras) y que haya al menos tantas filas como
+            columnas.
           </p>
           <p>
             En la práctica no se invierte <Tex>{'X^\\top X'}</Tex>: el sistema se resuelve con una descomposición (QR o
             SVD), que es numéricamente más estable. scikit-learn usa un solver de mínimos cuadrados. El costo crece
             sobre todo con p, el número de features (con su cuadrado), y no tanto con n, el de filas (solo en
-            proporción). El descenso de gradiente (estocástico) se reserva para cuando hay muchísimas features o los
+            proporción): duplicar las filas duplica el tiempo; duplicar las features lo cuadruplica. El descenso de gradiente (estocástico) se reserva para cuando hay muchísimas features o los
             datos no caben en memoria.
           </p>
         </>
@@ -200,11 +201,12 @@ const linearRegression: AlgorithmModule = {
         <>
           <p className="mlx-rule">
             No la uses si la respuesta cambia de golpe a partir de un umbral, o si el efecto de cada factor depende del
-            contexto.
+            contexto y no sabes de qué.
           </p>
           <p>
             Ejemplo: un motor casi no falla por debajo de 90 °C, y por encima sus fallas se disparan. Una recta reparte
-            ese salto por todo el rango: predice fallas a 60 °C y se queda corta a 100 °C. Elevar al cuadrado o sacar
+            ese salto por todo el rango: se equivoca por debajo del umbral (predice fallas que no hay, o incluso
+            cantidades negativas) y se queda corta a 100 °C. Elevar al cuadrado o sacar
             logaritmo no crea un salto, y si no sabes dónde está el umbral tampoco puedes construir esa feature a mano.
           </p>
           <p>Tampoco sirve para predecir categorías (sí/no): para eso está la regresión logística.</p>

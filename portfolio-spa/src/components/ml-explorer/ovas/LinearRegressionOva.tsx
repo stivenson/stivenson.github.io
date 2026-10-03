@@ -179,6 +179,7 @@ export function LinearRegressionOva() {
             strokeWidth={1.5}
             tabIndex={0}
             role="button"
+            aria-roledescription="punto movible"
             aria-label={`Punto ${i + 1}: ${fmt(p.x)}, ${fmt(p.y)}`}
             onPointerDown={begin(i)}
             onKeyDown={(e) => onPointKey(i, e)}
