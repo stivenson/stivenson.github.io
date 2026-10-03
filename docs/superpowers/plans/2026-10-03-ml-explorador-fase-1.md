@@ -3695,20 +3695,112 @@ if __name__ == "__main__":
     main()
 ```
 
+- [ ] **Step 2b: Un solo SETUP de Python, compartido**
+
+El código Python que prepara Pyodide (backend de matplotlib, `plt.show` anulado, `_collect_figs`) vive hoy como string dentro de `pyodideWorker.ts`. Sácalo a un archivo propio para que el worker y el verificador de Pyodide (Step 2c) usen exactamente el mismo.
+
+Crea `src/components/ml-explorer/pyodideSetup.py`:
+```python
+import io, base64
+import matplotlib
+matplotlib.use("AGG")
+import matplotlib.pyplot as plt
+plt.style.use("dark_background")
+plt.show = lambda *args, **kwargs: None
+
+def _collect_figs():
+    images = []
+    for num in plt.get_fignums():
+        buf = io.BytesIO()
+        plt.figure(num).savefig(buf, format="png", dpi=110, bbox_inches="tight")
+        images.append(base64.b64encode(buf.getvalue()).decode("ascii"))
+    plt.close("all")
+    return "\n".join(images)
+```
+
+En `src/components/ml-explorer/pyodideWorker.ts`: borra la constante `SETUP` completa (desde el comentario `// plt.show() no tiene pantalla…` hasta el cierre del template literal) y agrega junto a los imports:
+```ts
+// plt.show() no tiene pantalla en el worker: pyodideSetup.py lo anula y
+// define _collect_figs(), que convierte cada figura en un PNG en base64.
+import SETUP from './pyodideSetup.py?raw';
+```
+
+- [ ] **Step 2c: Verificar los ejercicios en Pyodide real**
+
+`check-ml-exercises.py` compara contra CPython con las mismas versiones; este script cierra el último hueco ejecutando los ejercicios en **Pyodide 0.27.7 de verdad** (bajo Node), con el mismo `pyodideSetup.py` que usa el navegador. Así la «salida esperada» queda garantizada también en el navegador (ya atrapó un caso: un empate que `np.argsort` ordenaba distinto en cada plataforma).
+
+```bash
+npm install -D --save-exact pyodide@0.27.7
+```
+(Debe ser la misma versión que `PYODIDE_VERSION` en `pyodideWorker.ts`.)
+
+Crea `scripts/check-ml-exercises-pyodide.mjs`:
+```js
+// Ejecuta los ejercicios del explorador en Pyodide real (la misma versión
+// que carga el navegador) y compara su salida con <slug>.out.txt.
+// Uso (desde portfolio-spa/): node scripts/check-ml-exercises-pyodide.mjs
+// Necesita red la primera vez: descarga numpy, scikit-learn y matplotlib
+// del CDN de Pyodide.
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { loadPyodide } from 'pyodide';
+
+const spa = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const explorer = path.join(spa, 'src/components/ml-explorer');
+const pyDir = path.join(explorer, 'algorithms/python');
+
+const py = await loadPyodide({ packageBaseUrl: 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/' });
+await py.loadPackage(['numpy', 'scikit-learn', 'matplotlib'], { messageCallback: () => {} });
+py.runPython(fs.readFileSync(path.join(explorer, 'pyodideSetup.py'), 'utf8'));
+
+const scripts = fs.readdirSync(pyDir).filter((f) => f.endsWith('.py')).sort();
+if (scripts.length === 0) console.log(`No hay ejercicios en ${pyDir}`);
+
+let failed = 0;
+for (const file of scripts) {
+  const expectedFile = file.replace(/\.py$/, '.out.txt');
+  const out = [];
+  py.setStdout({ batched: (text) => out.push(text) });
+  py.setStderr({ batched: () => {} });
+  const namespace = py.globals.get('dict')();
+  try {
+    await py.runPythonAsync(fs.readFileSync(path.join(pyDir, file), 'utf8'), { globals: namespace });
+    py.runPython('_collect_figs()');
+  } catch (err) {
+    console.log(`✗ ${file} falló en Pyodide:\n${err.message}`);
+    failed++;
+    continue;
+  } finally {
+    namespace.destroy();
+  }
+  const expected = fs.readFileSync(path.join(pyDir, expectedFile), 'utf8').replace(/\n$/, '');
+  if (out.join('\n') === expected) {
+    console.log(`✓ ${file} (Pyodide)`);
+  } else {
+    console.log(`✗ ${file}: en Pyodide imprime algo distinto de ${expectedFile}:\n${out.join('\n')}`);
+    failed++;
+  }
+}
+process.exit(failed ? 1 : 0);
+```
+
 - [ ] **Step 3: Probar ambos scripts vacíos**
 
 ```bash
 mkdir -p src/components/ml-explorer/algorithms/python && touch src/components/ml-explorer/algorithms/python/.gitkeep
 ~/.cache/mlx-venv/bin/python scripts/check-ml-exercises.py
+node scripts/check-ml-exercises-pyodide.mjs
 python3 scripts/build-ml-notebook.py
+node node_modules/typescript/bin/tsc --noEmit -p .
 ```
-Expected: `No hay ejercicios en …` y `Escrito notebooks/algoritmos-ml.ipynb con 0 ejercicios`.
+Expected: `No hay ejercicios en …` (dos veces), `Escrito notebooks/algoritmos-ml.ipynb con 0 ejercicios`, y tsc sin salida.
 
 - [ ] **Step 4: Commit (sin el notebook todavía: se genera completo en la Task 20)**
 
 ```bash
 rm ../notebooks/algoritmos-ml.ipynb
-git add scripts/check-ml-exercises.py scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/.gitkeep
+git add scripts/check-ml-exercises.py scripts/check-ml-exercises-pyodide.mjs scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/.gitkeep src/components/ml-explorer/pyodideSetup.py src/components/ml-explorer/pyodideWorker.ts package.json package-lock.json
 git commit -m "build(ml-explorer): check exercises in CPython and generate the notebook
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
@@ -4240,8 +4332,9 @@ describe('cifras citadas en los textos', () => {
 ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run
 node node_modules/typescript/bin/tsc --noEmit -p .
 ~/.cache/mlx-venv/bin/python scripts/check-ml-exercises.py
+node scripts/check-ml-exercises-pyodide.mjs
 ```
-Expected: todos los tests pasan; tsc sin salida; `✓ linear-regression.py`.
+Expected: todos los tests pasan; tsc sin salida; `✓ linear-regression.py` en CPython y `✓ linear-regression.py (Pyodide)`.
 
 - [ ] **Step 7: Commit**
 
@@ -4913,8 +5006,9 @@ y dentro del `describe`:
 ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run
 node node_modules/typescript/bin/tsc --noEmit -p .
 ~/.cache/mlx-venv/bin/python scripts/check-ml-exercises.py
+node scripts/check-ml-exercises-pyodide.mjs
 ```
-Expected: tests pasan; tsc sin salida; `✓` para los dos ejercicios.
+Expected: tests pasan; tsc sin salida; `✓` para los dos ejercicios, en CPython y en Pyodide.
 
 En el navegador (`#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=formula`): los sliders deforman la curva; al abrir muestra 15 de 18 aciertos y «Mejor ajuste» deja 16 de 18 (b₀ = −5.7, b₁ = 1.70, frontera ≈ 3.4), como fija `datasets.test.ts`; mover el umbral desplaza la línea «frontera»; el ejercicio de Ejemplo real da la misma salida que la esperada.
 
@@ -5365,8 +5459,9 @@ y dentro del `describe`:
 ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run
 node node_modules/typescript/bin/tsc --noEmit -p .
 ~/.cache/mlx-venv/bin/python scripts/check-ml-exercises.py
+node scripts/check-ml-exercises-pyodide.mjs
 ```
-Expected: tests pasan; tsc sin salida; `✓` para los tres ejercicios.
+Expected: tests pasan; tsc sin salida; `✓` para los tres ejercicios, en CPython y en Pyodide.
 
 En el navegador (`?alg=decision-tree&tab=formula`): con el slider de 0 a 5 las hojas y los aciertos coinciden con la tabla del Step 3; desde 4 aparece el aviso de sobreajuste; el árbol de texto muestra «sí →» y «no →».
 
@@ -5421,7 +5516,7 @@ for i, d in zip(vecinos, dist[0]):
 
 puntaje = R[vecinos].mean(axis=0)
 print("\nRecomendaciones para Ana (promedio de sus 3 vecinos):")
-for j in np.argsort(-puntaje):
+for j in np.argsort(-puntaje, kind="stable"):  # estable: los empates salen en orden fijo
     if not vistas[j]:
         print(f"  {peliculas[j]:<13} {puntaje[j]:.1f} / 5")
 ```
@@ -5440,9 +5535,11 @@ Vecino: Dani  distancia = 1.73
 
 Recomendaciones para Ana (promedio de sus 3 vecinos):
   Interestelar  3.7 / 5
-  Matrix        1.3 / 5
   Alien         1.3 / 5
+  Matrix        1.3 / 5
 ```
+Alien y Matrix empatan (1.3): `kind="stable"` fija el orden del empate. Sin él, `np.argsort` ordenaba distinto en CPython y en Pyodide (verificado), y la «salida esperada» no coincidía con la del navegador.
+
 Beto queda a distancia 0 porque calificó igual que Ana todas las películas que ella vio. Se usa distancia euclidiana a propósito: con la distancia coseno, Caro (que odia lo que a Ana le gusta) salía «parecida», porque coseno solo mira la proporción entre calificaciones y no su nivel.
 
 - [ ] **Step 3: La OVA**
@@ -5834,8 +5931,9 @@ y dentro del `describe`:
 ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run
 node node_modules/typescript/bin/tsc --noEmit -p .
 ~/.cache/mlx-venv/bin/python scripts/check-ml-exercises.py
+node scripts/check-ml-exercises-pyodide.mjs
 ```
-Expected: tests pasan; tsc sin salida; `✓` para los cuatro ejercicios.
+Expected: tests pasan; tsc sin salida; `✓` para los cuatro ejercicios, en CPython y en Pyodide.
 
 En el navegador (`?alg=knn&tab=formula`): los votos con k = 1, 3, 5 y 7 coinciden con el Step 3; el rombo se arrastra con el mouse y con el dedo, y con Tab + flechas; el círculo punteado encierra justo a los k vecinos.
 
@@ -5876,8 +5974,9 @@ Expected: `notebook OK` (el archivo en disco no se modifica: se ejecuta una copi
 ```bash
 ESBUILD_BINARY_PATH=/tmp/esbuild-bin node node_modules/vitest/vitest.mjs run
 ~/.cache/mlx-venv/bin/python scripts/check-ml-exercises.py
+node scripts/check-ml-exercises-pyodide.mjs
 ```
-Expected: todos los tests pasan; `✓` en los 4 ejercicios.
+Expected: todos los tests pasan; `✓` en los 4 ejercicios, en CPython y en Pyodide.
 
 - [ ] **Step 3: Build**
 
