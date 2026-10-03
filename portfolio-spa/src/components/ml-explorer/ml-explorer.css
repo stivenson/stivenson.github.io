@@ -24,7 +24,9 @@
   margin: 0;
 }
 
-.mlx button {
+/* :where() deja esta base en especificidad 0,0,1: cualquier clase propia
+   (.mlx-tab, .mlx-chip, .mlx-gl…) la sobrescribe sin necesitar !important. */
+:where(.mlx) button {
   font: inherit;
   color: inherit;
 }
@@ -99,7 +101,8 @@
 
 .mlx-menu-item:disabled {
   cursor: default;
-  opacity: 0.5;
+  /* 0.6 y no menos: el texto «pronto» debe seguir siendo legible. */
+  opacity: 0.6;
 }
 
 .mlx-menu-icon {
@@ -190,7 +193,8 @@
   background: rgba(76, 89, 211, 0.35);
 }
 
-.mlx button:disabled {
+/* Base de baja especificidad: .mlx-menu-item:disabled la ajusta. */
+:where(.mlx) button:disabled {
   opacity: 0.45;
   cursor: default;
 }
@@ -254,15 +258,15 @@
   border: none;
   border-bottom: 2px solid transparent;
   cursor: pointer;
-  color: var(--rf-text-muted, #9898b0) !important;
+  color: var(--rf-text-muted, #9898b0);
 }
 
 .mlx-tab:hover {
-  color: var(--rf-text, #e8e8f0) !important;
+  color: var(--rf-text, #e8e8f0);
 }
 
 .mlx-tab.is-active {
-  color: var(--electric-cyan, #55aaff) !important;
+  color: var(--electric-cyan, #55aaff);
   border-bottom-color: var(--electric-cyan, #55aaff);
   font-weight: 600;
 }
@@ -389,7 +393,7 @@
   background: none;
   border: none;
   border-bottom: 1px dashed rgba(85, 170, 255, 0.5);
-  color: var(--electric-cyan, #55aaff) !important;
+  color: var(--electric-cyan, #55aaff);
   cursor: pointer;
 }
 
@@ -543,6 +547,16 @@
   border-radius: 6px;
 }
 
+/* .markdown-content img (retro-modern.css) les pone margen, borde y sombra
+   a las imágenes del artículo, y empata en especificidad con la regla de
+   arriba (el orden de carga decidiría). Las figuras de matplotlib van
+   limpias dentro de la salida. */
+.markdown-content .mlx-py-out img {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+}
+
 .mlx-py-error {
   color: #fda4af;
   border: 1px solid rgba(244, 63, 94, 0.4);
@@ -689,7 +703,8 @@ p.mlx-py-error {
 
   .mlx-menu-select select {
     padding: 8px;
-    font-size: 15px;
+    /* 16px como mínimo: con menos, iOS Safari hace zoom al enfocar. */
+    font-size: 16px;
     color: #e8e8f0;
     background: #070622;
     border: 1px solid rgba(85, 170, 255, 0.35);
@@ -698,6 +713,13 @@ p.mlx-py-error {
 
   .mlx-panel {
     padding: 12px;
+  }
+
+  /* retro-modern.css fija `.markdown-content h3 { font-size: 18px !important }`
+     en móvil. Solo otro !important con más especificidad lo vence: el título
+     del algoritmo conserva su tamaño. */
+  .markdown-content .mlx-head h3 {
+    font-size: 22px !important;
   }
 
   .mlx-chips {

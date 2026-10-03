@@ -494,7 +494,12 @@ body {
 .rf-layout-main {
   flex: 1;
   padding: var(--space-lg);
+  /* `clip` recorta igual que `hidden` pero no convierte el elemento en
+     contenedor de scroll, así que `position: sticky` sigue funcionando
+     dentro del artículo (el menú del explorador de ML). Donde `clip` no
+     se soporta, la segunda declaración se descarta y queda `hidden`. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* Header Bar */
