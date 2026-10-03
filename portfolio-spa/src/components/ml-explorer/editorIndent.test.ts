@@ -88,6 +88,23 @@ describe('propiedades (exhaustivo en textos cortos)', () => {
             const replaced = name === 'indent' && !code.slice(s, e).includes('\n');
             const before = replaced ? code.slice(0, s) + code.slice(e) : code;
             expect(keep(r.code), ctx).toBe(keep(before));
+            if (name === 'outdent') {
+              // Líneas tocadas por la selección, calculadas aparte de la implementación.
+              const lineOf = (pos: number) => code.slice(0, pos).split('\n').length - 1;
+              const last = e > s && code[e - 1] === '\n' ? e - 1 : e;
+              const [firstLine, lastLine] = [lineOf(s), lineOf(last)];
+              const before = code.split('\n');
+              const after = r.code.split('\n');
+              expect(after.length, ctx).toBe(before.length);
+              before.forEach((line, i) => {
+                if (i < firstLine || i > lastLine) {
+                  expect(after[i], ctx).toBe(line);
+                } else {
+                  expect(line.endsWith(after[i]), ctx).toBe(true);
+                  expect(line.slice(0, line.length - after[i].length), ctx).toMatch(/^[ \t]*$/);
+                }
+              });
+            }
             if (name === 'indent' && !replaced) {
               expect(stripLeading(r.code.slice(r.selectionStart, r.selectionEnd)), ctx).toBe(stripLeading(code.slice(s, e)));
             }
