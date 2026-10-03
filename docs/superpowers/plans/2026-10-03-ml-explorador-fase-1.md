@@ -4641,7 +4641,7 @@ export function LogisticRegressionOva() {
             format={(v) => v.toFixed(2)}
           />
           <button type="button" onClick={bestFit}>
-            Mejor ajuste (descenso de gradiente)
+            Mejor ajuste (método de Newton)
           </button>
         </>
       }
@@ -4807,9 +4807,9 @@ const logisticRegression: AlgorithmModule = {
           <p>Los pesos se eligen minimizando la entropía cruzada (equivale a maximizar la verosimilitud):</p>
           <Tex block>{'\\min_b\\ -\\frac{1}{n}\\sum_i \\left[y_i \\log p_i + (1-y_i)\\log(1-p_i)\\right]'}</Tex>
           <p>
-            No hay solución cerrada: se resuelve con descenso de gradiente o métodos de Newton (scikit-learn usa
-            L-BFGS). El gradiente es simple: <Tex>{'\\sum_i (p_i - y_i)\\,x_i'}</Tex>. Es lo que hace el botón «Mejor
-            ajuste» del simulador.
+            No hay solución cerrada: se resuelve con descenso de gradiente o con el método de Newton (scikit-learn
+            usa L-BFGS). El gradiente es simple: <Tex>{'\\sum_i (p_i - y_i)\\,x_i'}</Tex>. El botón «Mejor ajuste»
+            del simulador usa Newton, que además aprovecha la curvatura: llega al óptimo en unas 8 iteraciones.
           </p>
         </>
       ),
@@ -4984,7 +4984,7 @@ node scripts/check-ml-exercises-pyodide.mjs
 ```
 Expected: tests pasan; tsc sin salida; `✓` para los dos ejercicios, en CPython y en Pyodide.
 
-En el navegador (`#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=formula`): los sliders deforman la curva; al abrir muestra 15 de 18 aciertos y «Mejor ajuste» deja 16 de 18 (b₀ = −5.7, b₁ = 1.70, frontera ≈ 3.4), como fija `datasets.test.ts`; mover el umbral desplaza la línea «frontera»; el ejercicio de Ejemplo real da la misma salida que la esperada.
+En el navegador (`#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=formula`): los sliders deforman la curva; al abrir muestra 15 de 18 aciertos y «Mejor ajuste» deja 16 de 18 (b₀ = −6.6, b₁ = 1.95, frontera ≈ 3.4), como fija `datasets.test.ts`; mover el umbral desplaza la línea «frontera»; el ejercicio de Ejemplo real da la misma salida que la esperada.
 
 - [ ] **Step 7: Commit**
 
