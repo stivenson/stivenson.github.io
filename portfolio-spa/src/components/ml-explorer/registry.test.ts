@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ALGORITHMS, AVAILABLE_SLUGS, getMeta, prefetchAlgorithm } from './registry';
+import { ALGORITHMS, AVAILABLE_SLUGS, getMeta, loadAlgorithm, prefetchAlgorithm } from './registry';
 import { GROUP_ORDER } from './types';
 
 describe('registry', () => {
@@ -9,7 +9,15 @@ describe('registry', () => {
   });
 
   it('marca como disponibles solo los algoritmos implementados', () => {
-    expect(AVAILABLE_SLUGS).toEqual([]);
+    expect(AVAILABLE_SLUGS).toEqual(['linear-regression']);
+  });
+
+  it('toda alternativa de todo algoritmo disponible existe en el registry', async () => {
+    for (const slug of AVAILABLE_SLUGS) {
+      const mod = await loadAlgorithm(slug);
+      expect(mod.slug).toBe(slug);
+      for (const alt of mod.alternatives) expect(() => getMeta(alt), `${slug} → ${alt}`).not.toThrow();
+    }
   });
 
   it('getMeta devuelve la fila o lanza si no existe', () => {

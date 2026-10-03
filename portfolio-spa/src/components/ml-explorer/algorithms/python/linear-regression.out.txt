@@ -1,0 +1,6 @@
+Intercepto b0: 80.2
+Por cada m² (b1): 2.47
+Por cada habitación (b2): 16.0
+R² con casas que no vio: 0.942
+Error medio: 20.4 millones
+Casa de 120 m² y 3 habitaciones: 425 millones

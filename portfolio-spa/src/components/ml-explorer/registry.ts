@@ -6,7 +6,9 @@ import { GROUP_ORDER, type AlgorithmMeta } from './types';
  * descarga cuando el lector lo elige en el menu. Cada fase agrega aqui los
  * algoritmos que implementa.
  */
-const LOADERS: Record<string, ModuleLoader> = {};
+const LOADERS: Record<string, ModuleLoader> = {
+  'linear-regression': () => import('./algorithms/linear-regression'),
+};
 
 type Entry = Omit<AlgorithmMeta, 'available'>;
 

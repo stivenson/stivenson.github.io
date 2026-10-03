@@ -15,7 +15,13 @@ OUT = SPA.parent / "notebooks/algoritmos-ml.ipynb"
 ARTICLE = "https://stivenson.github.io/#/articles/algoritmos-ml-explorador"
 
 # Mismo orden que el menú del explorador. Cada fase agrega sus algoritmos.
-ALGORITHMS: list[tuple[str, str, str]] = []
+ALGORITHMS: list[tuple[str, str, str]] = [
+    (
+        "linear-regression",
+        "Linear Regression (regresión lineal)",
+        "Precio de casas: ¿cuánto suma cada m² y cada habitación?",
+    ),
+]
 
 
 def lines(text: str) -> list[str]:
