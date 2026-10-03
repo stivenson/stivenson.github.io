@@ -64,6 +64,11 @@ function serveRootStatic(): Plugin {
 export default defineConfig({
   plugins: [react(), buildStamp(), serveRootStatic()],
   base: './',
+  // El worker de Pyodide hace import() de una URL del CDN: necesita salir
+  // como modulo ES (el formato iife por defecto no admite import dinamico).
+  worker: {
+    format: 'es',
+  },
   build: {
     outDir: '../',
     emptyOutDir: false,
