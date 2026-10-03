@@ -9,7 +9,11 @@ import { InYourField } from './InYourField';
 import { DeepDive } from './DeepDive';
 import { PythonRunner } from './PythonRunner';
 import { OvaFrame, OvaSlider } from './ovas/OvaFrame';
-import type { AlgorithmGroup, TabId } from './types';
+import { AlgorithmMenu } from './AlgorithmMenu';
+import { AlgorithmTabs } from './AlgorithmTabs';
+import { AlgorithmPanel } from './AlgorithmPanel';
+import { ALGORITHMS, getMeta } from './registry';
+import { TAB_IDS, type AlgorithmGroup, type AlgorithmModule, type TabId } from './types';
 
 let errorSpy: ReturnType<typeof vi.spyOn>;
 let warnSpy: ReturnType<typeof vi.spyOn>;
@@ -85,5 +89,87 @@ describe('render en servidor', () => {
     expect(html).toContain('Salida esperada');
     expect(html).toContain('SALIDA-2');
     expect(html).toContain('Para salir del editor con el teclado: Esc y luego Tab.');
+  });
+});
+
+const count = (html: string, re: RegExp) => (html.match(re) ?? []).length;
+
+describe('AlgorithmMenu', () => {
+  it('lista 17 algoritmos en 4 grupos, todos «pronto» mientras no haya disponibles', () => {
+    const html = renderToStaticMarkup(
+      h(AlgorithmMenu, { algorithms: ALGORITHMS, activeSlug: 'knn', onSelect: () => {}, onPrefetch: () => {} }),
+    );
+    expect(count(html, /<button/g)).toBe(17);
+    expect(count(html, /<option/g)).toBe(17);
+    expect(count(html, /<optgroup/g)).toBe(4);
+    expect(count(html, /mlx-soon/g)).toBe(ALGORITHMS.filter((a) => !a.available).length);
+    expect(count(html, /<button[^>]*disabled/g)).toBe(ALGORITHMS.filter((a) => !a.available).length);
+    expect(count(html, /<option[^>]*disabled/g)).toBe(ALGORITHMS.filter((a) => !a.available).length);
+    expect(count(html, /aria-current="true"/g)).toBe(1);
+    expect(html).toMatch(/<button[^>]*aria-current="true"[^>]*>[^]*?KNN/);
+  });
+});
+
+function fakeModule(): AlgorithmModule {
+  const row = {} as Record<TabId, string>;
+  const tabs = {} as AlgorithmModule['tabs'];
+  TAB_IDS.forEach((id, i) => {
+    row[id] = `CHEAT-${id}`;
+    tabs[id] = {
+      essential: h('p', null, `ESENCIAL-${id}`),
+      deepDive: i % 3 === 0 ? h('p', null, `PROFUNDO-${id}`) : undefined,
+    };
+  });
+  return {
+    slug: 'fake',
+    row,
+    tabs,
+    Ova: () => h('div', null, 'OVA-FALSA'),
+    python: { code: 'print(2 + 2)', expectedOutput: '4', colabAnchor: 'xyz' },
+    inYourField: [
+      { area: 'Civil', example: 'a' },
+      { area: 'Eléctrica', example: 'b' },
+      { area: 'Industrial', example: 'c' },
+    ],
+    alternatives: ['knn'],
+  };
+}
+
+describe('AlgorithmTabs', () => {
+  it.each(TAB_IDS)('pestaña %s', (tab) => {
+    const html = renderToStaticMarkup(
+      h(AlgorithmTabs, { module: fakeModule(), meta: getMeta('linear-regression'), tab, onTab: () => {}, onAlg: () => {} }),
+    );
+    expect(html).toContain('role="tablist"');
+    expect(count(html, /role="tab"/g)).toBe(8);
+    expect(count(html, /aria-selected="true"/g)).toBe(1);
+    expect(html).toMatch(new RegExp(`id="mlx-tab-${tab}"[^>]*aria-selected="true"|aria-selected="true"[^>]*id="mlx-tab-${tab}"`));
+    expect(html).toContain(`CHEAT-${tab}`);
+    expect(html).toContain(`ESENCIAL-${tab}`);
+    expect(html.includes('OVA-FALSA')).toBe(tab === 'formula');
+    expect(html.includes('<textarea')).toBe(tab === 'realWorld');
+    expect(html.includes('En tu área')).toBe(tab === 'realWorld');
+    expect(html.includes('Mejor prueba con')).toBe(tab === 'whenNot');
+    expect(html.includes('<figure')).toBe(tab === 'type');
+    if (tab === 'whenNot') {
+      expect(html).toContain('KNN');
+      expect(html).toContain('(próximamente)');
+    }
+  });
+});
+
+describe('AlgorithmPanel', () => {
+  const base = { meta: getMeta('knn'), tab: 'type' as TabId, onTab: () => {}, onAlg: () => {} };
+
+  it('cargando', () => {
+    const html = renderToStaticMarkup(h(AlgorithmPanel, { ...base, state: { status: 'loading' } }));
+    expect(html).toContain('Cargando KNN…');
+    expect(html).toContain('aria-busy="true"');
+  });
+
+  it('error con Reintentar', () => {
+    const html = renderToStaticMarkup(h(AlgorithmPanel, { ...base, state: { status: 'error', retry: () => {} } }));
+    expect(html).toContain('role="alert"');
+    expect(html).toContain('Reintentar');
   });
 });
