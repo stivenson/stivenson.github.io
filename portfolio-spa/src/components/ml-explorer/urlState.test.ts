@@ -29,4 +29,11 @@ describe('withExplorerState', () => {
     const next = withExplorerState(new URLSearchParams('ref=x'), { alg: 'knn', tab: 'formula' });
     expect(next.toString()).toBe('ref=x&alg=knn&tab=formula');
   });
+
+  it('sobrescribe alg y tab si ya estaban', () => {
+    const next = withExplorerState(new URLSearchParams('alg=knn&tab=pros'), { alg: 'linear-regression', tab: 'cons' });
+    expect(next.get('alg')).toBe('linear-regression');
+    expect(next.get('tab')).toBe('cons');
+    expect(next.getAll('alg')).toHaveLength(1);
+  });
 });
