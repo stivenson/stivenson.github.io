@@ -7,6 +7,7 @@ import { SummaryChips } from './SummaryChips';
 import { TypeFigure } from './TypeFigure';
 import { InYourField } from './InYourField';
 import { DeepDive } from './DeepDive';
+import { PythonRunner } from './PythonRunner';
 import { OvaFrame, OvaSlider } from './ovas/OvaFrame';
 import type { AlgorithmGroup, TabId } from './types';
 
@@ -70,5 +71,16 @@ describe('render en servidor', () => {
     const html = renderToStaticMarkup(h(G, { k: 'overfitting' }));
     expect(html.match(/<button/g)).toHaveLength(1);
     expect(html).not.toContain('role="dialog"');
+  });
+
+  it('PythonRunner en estado inicial no crea Worker', () => {
+    const exercise = { code: 'print(1 + 1)', expectedOutput: 'SALIDA-2', colabAnchor: 'abc123' };
+    const html = renderToStaticMarkup(h(PythonRunner, { exercise }));
+    expect(html).toContain('<textarea');
+    expect(html).toContain('print(1 + 1)');
+    expect(html).toContain('▶ Ejecutar');
+    expect(html).toContain('#scrollTo=abc123');
+    expect(html).toContain('Salida esperada');
+    expect(html).toContain('SALIDA-2');
   });
 });
