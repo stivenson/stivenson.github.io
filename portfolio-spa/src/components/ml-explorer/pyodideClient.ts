@@ -13,6 +13,9 @@ export type RunResult =
   | { status: 'stopped' }
   | { status: 'load-failed'; error: string };
 
+/** Tiempo máximo de una ejecución, en milisegundos. */
+export const RUN_TIMEOUT_MS = 15_000;
+
 /** Lo mínimo de `Worker` que usa el cliente; los tests lo simulan. */
 export interface WorkerLike {
   postMessage(message: WorkerRequest): void;
@@ -41,7 +44,7 @@ interface CurrentRun {
  * worker y la siguiente ejecucion crea uno nuevo, que vuelve a cargar
  * Pyodide desde la cache del navegador.
  */
-export function createPyodideClient(makeWorker: () => WorkerLike, timeoutMs = 15_000): PyodideClient {
+export function createPyodideClient(makeWorker: () => WorkerLike, timeoutMs = RUN_TIMEOUT_MS): PyodideClient {
   let worker: WorkerLike | null = null;
   let nextId = 1;
   let current: CurrentRun | null = null;

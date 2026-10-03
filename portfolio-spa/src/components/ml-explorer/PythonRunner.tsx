@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { createPyodideClient, type PyodideClient, type RunResult, type WorkerLike } from './pyodideClient';
+import { createPyodideClient, RUN_TIMEOUT_MS, type PyodideClient, type RunResult, type WorkerLike } from './pyodideClient';
+import { indent, outdent } from './editorIndent';
 import type { PythonExercise } from './types';
 
 const COLAB_URL =
@@ -23,6 +24,8 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
   const [code, setCode] = useState(exercise.code);
   const [phase, setPhase] = useState<Phase>({ kind: 'idle' });
   const mounted = useRef(false);
+  const runIdRef = useRef(0);
+  const escaped = useRef(false);
 
   useEffect(() => {
     mounted.current = true;
@@ -32,24 +35,33 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
   }, []);
 
   async function run() {
+    const id = ++runIdRef.current;
+    const current = () => mounted.current && runIdRef.current === id;
     setPhase({ kind: 'running', progress: 'Preparando Python…' });
     const result = await getClient().run(code, (progress) => {
-      if (mounted.current) setPhase({ kind: 'running', progress });
+      if (current()) setPhase({ kind: 'running', progress });
     });
-    if (mounted.current) setPhase({ kind: 'done', result });
+    if (current()) setPhase({ kind: 'done', result });
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === 'Escape') {
+      // Tras Esc, el siguiente Tab sale del campo (así el teclado no queda atrapado).
+      escaped.current = true;
+      return;
+    }
+    const wasEscaped = escaped.current;
+    escaped.current = false;
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       if (phase.kind !== 'running') void run();
-    } else if (e.key === 'Tab' && !e.shiftKey) {
-      // Tab escribe 4 espacios (indentación de Python) en vez de saltar de campo.
+    } else if (e.key === 'Tab' && !wasEscaped) {
+      // Tab indenta (Shift+Tab desindenta) en vez de saltar de campo.
       e.preventDefault();
       const el = e.currentTarget;
-      const { selectionStart: start, selectionEnd: end } = el;
-      setCode(code.slice(0, start) + '    ' + code.slice(end));
-      requestAnimationFrame(() => el.setSelectionRange(start + 4, start + 4));
+      const edit = (e.shiftKey ? outdent : indent)(code, el.selectionStart, el.selectionEnd);
+      setCode(edit.code);
+      requestAnimationFrame(() => el.setSelectionRange(edit.selectionStart, edit.selectionEnd));
     }
   }
 
@@ -61,7 +73,15 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
         <span className="mlx-py-title">🐍 Pruébalo en Python</span>
         <div className="mlx-py-actions">
           {running ? (
-            <button type="button" onClick={() => getClient().stop()}>
+            <button
+              type="button"
+              onClick={(e) => {
+                // «Ejecutar» y «Detener» son el mismo botón: el 2º clic de un doble clic
+                // caería sobre «Detener» y mataría la carga de Pyodide recién iniciada.
+                if (e.detail > 1) return;
+                getClient().stop();
+              }}
+            >
               ■ Detener
             </button>
           ) : (
@@ -95,9 +115,11 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
       />
       <p className="mlx-py-hint">
         Edita el código y pulsa Ejecutar (Ctrl+Enter). La primera vez tu navegador descarga Python (unos 15 MB); después
-        queda en caché.
+        queda en caché. Tab indenta (Shift+Tab desindenta). Para salir del editor con el teclado: Esc y luego Tab.
       </p>
-      <RunOutput phase={phase} expected={exercise.expectedOutput} />
+      <div aria-live="polite">
+        <RunOutput phase={phase} expected={exercise.expectedOutput} code={code} original={exercise.code} />
+      </div>
     </div>
   );
 }
@@ -111,7 +133,17 @@ function Expected({ text, open }: { text: string; open: boolean }) {
   );
 }
 
-function RunOutput({ phase, expected }: { phase: Phase; expected: string }) {
+function RunOutput({
+  phase,
+  expected,
+  code,
+  original,
+}: {
+  phase: Phase;
+  expected: string;
+  code: string;
+  original: string;
+}) {
   if (phase.kind === 'idle') return <Expected text={expected} open />;
   if (phase.kind === 'running') {
     return (
@@ -129,13 +161,14 @@ function RunOutput({ phase, expected }: { phase: Phase; expected: string }) {
         <div className="mlx-py-out">
           <h5>Tu salida</h5>
           {result.stdout && <pre>{result.stdout}</pre>}
+          {!result.stdout && result.images.length === 0 && <p className="mlx-py-status">(sin salida)</p>}
           {result.images.map((png, i) => (
             <img key={i} src={`data:image/png;base64,${png}`} alt={`Gráfica ${i + 1} generada por el código`} />
           ))}
           {result.status === 'error' && (
             <>
               <pre className="mlx-py-error">{result.error}</pre>
-              <p className="mlx-py-hint">Pulsa ↺ Restaurar para volver al código original.</p>
+              {code !== original && <p className="mlx-py-hint">Pulsa ↺ Restaurar para volver al código original.</p>}
             </>
           )}
           <Expected text={expected} open={false} />
@@ -144,7 +177,9 @@ function RunOutput({ phase, expected }: { phase: Phase; expected: string }) {
     case 'timeout':
       return (
         <div className="mlx-py-out">
-          <p className="mlx-py-error">Detenido: el código tardó más de 15 segundos. ¿Hay un bucle que nunca termina?</p>
+          <p className="mlx-py-error">
+            {`Detenido: el código tardó más de ${RUN_TIMEOUT_MS / 1000} segundos. ¿Hay un bucle que nunca termina?`}
+          </p>
           <Expected text={expected} open={false} />
         </div>
       );
@@ -159,7 +194,7 @@ function RunOutput({ phase, expected }: { phase: Phase; expected: string }) {
       return (
         <div className="mlx-py-out">
           <p className="mlx-py-error">
-            Tu navegador no pudo cargar Python ({result.error}). Puedes abrir el ejercicio en Colab con el botón de
+            Tu navegador no pudo cargar Python: {result.error} Puedes abrir el ejercicio en Colab con el botón de
             arriba.
           </p>
           <Expected text={expected} open />

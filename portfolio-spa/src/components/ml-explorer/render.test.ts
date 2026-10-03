@@ -76,11 +76,14 @@ describe('render en servidor', () => {
   it('PythonRunner en estado inicial no crea Worker', () => {
     const exercise = { code: 'print(1 + 1)', expectedOutput: 'SALIDA-2', colabAnchor: 'abc123' };
     const html = renderToStaticMarkup(h(PythonRunner, { exercise }));
+    // Renderizar no ejecuta efectos ni handlers: el worker solo se crea al pulsar Ejecutar.
+    expect(typeof Worker).toBe('undefined');
     expect(html).toContain('<textarea');
     expect(html).toContain('print(1 + 1)');
     expect(html).toContain('▶ Ejecutar');
     expect(html).toContain('#scrollTo=abc123');
     expect(html).toContain('Salida esperada');
     expect(html).toContain('SALIDA-2');
+    expect(html).toContain('Para salir del editor con el teclado: Esc y luego Tab.');
   });
 });
