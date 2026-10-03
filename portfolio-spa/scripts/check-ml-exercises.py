@@ -16,6 +16,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+TIMEOUT = 120  # segundos por ejercicio
 PY_DIR = Path(__file__).resolve().parent.parent / "src/components/ml-explorer/algorithms/python"
 
 
@@ -27,25 +28,34 @@ def main() -> None:
     if not scripts:
         print(f"No hay ejercicios en {PY_DIR}")
     for script in scripts:
-        run = subprocess.run(
-            [sys.executable, str(script)],
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            env=env,
-            timeout=120,
-        )
-        if run.returncode != 0:
-            print(f"✗ {script.name} falló:\n{run.stderr}")
+        try:
+            # Bytes y decodificación a mano: text=True convertiría '\r\n' en
+            # '\n', y la comparación debe ser exacta con lo que ve el navegador.
+            run = subprocess.run(
+                [sys.executable, str(script)],
+                capture_output=True,
+                env=env,
+                timeout=TIMEOUT,
+            )
+        except subprocess.TimeoutExpired:
+            print(f"✗ {script.name}: tardó más de {TIMEOUT} s")
             failed.append(script.name)
             continue
-        out = run.stdout.rstrip("\n")
+        if run.returncode != 0:
+            print(f"✗ {script.name} falló:\n{run.stderr.decode('utf-8', errors='replace')}")
+            failed.append(script.name)
+            continue
+        out = run.stdout.decode("utf-8").rstrip("\n")
         expected_path = script.with_suffix(".out.txt")
         if update:
-            expected_path.write_text(out + "\n", encoding="utf-8")
+            expected_path.write_bytes((out + "\n").encode("utf-8"))
             print(f"↻ {expected_path.name}")
             continue
-        expected = expected_path.read_text(encoding="utf-8").rstrip("\n") if expected_path.exists() else None
+        if not expected_path.exists():
+            print(f"✗ {script.name}: falta {expected_path.name}")
+            failed.append(script.name)
+            continue
+        expected = expected_path.read_bytes().decode("utf-8").rstrip("\n")
         if out == expected:
             print(f"✓ {script.name}")
         else:
