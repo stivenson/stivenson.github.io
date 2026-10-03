@@ -5,9 +5,9 @@
 
 ## Overview
 
-Artículo nuevo del portafolio que convierte el cheatsheet «Machine Learning Algorithms» (18 algoritmos × 8 columnas) en un explorador interactivo:
+Artículo nuevo del portafolio que convierte el cheatsheet «Machine Learning Algorithms» (17 algoritmos × 8 columnas) en un explorador interactivo:
 
-- **Menú izquierdo** = las 18 filas del cheatsheet (un algoritmo por entrada).
+- **Menú izquierdo** = las 17 filas del cheatsheet (un algoritmo por entrada).
 - **Pestañas** = las 8 columnas: Tipo · Mejor caso de uso · Fórmula/lógica · Supuestos · Pros · Contras · Cuándo no usarlo · Ejemplo real.
 - Cada algoritmo trae una **OVA** interactiva (pestaña Fórmula) y un **ejercicio breve de Python** ejecutable en el navegador con Pyodide (pestaña Ejemplo real), más un notebook de Colab.
 
@@ -41,7 +41,7 @@ portfolio-spa/src/
   components/MarkdownRenderer.tsx             + mapeo del tag `ml-explorer` → <MLExplorer/>
   components/ml-explorer/
     MLExplorer.tsx        layout menú + panel; estado ↔ query de la URL
-    AlgorithmMenu.tsx     18 entradas agrupadas: Supervisado · No supervisado · Reducción de dimensionalidad · Redes neuronales
+    AlgorithmMenu.tsx     17 entradas agrupadas: Supervisado · No supervisado · Reducción de dimensionalidad · Redes neuronales
     AlgorithmTabs.tsx     8 pestañas (estilo coherente con RichTabPanel)
     SummaryChips.tsx      barra-chuleta con la fila completa del cheatsheet
     DeepDive.tsx          bloque plegable «▸ Para profundizar»
@@ -99,7 +99,7 @@ Cada pestaña muestra arriba la frase original de la columna del cheatsheet, lue
 | 8 | Ejemplo real (`realWorld`) | El caso de la imagen + **ejercicio Python** + «En tu área» (3 chips de otras ingenierías) | Cómo escalarlo a producción |
 
 Reglas:
-- OVA obligatoria en los 18 algoritmos. Mini-demos de «Supuestos» y «Contras» solo si enseñan algo.
+- OVA obligatoria en los 17 algoritmos. Mini-demos de «Supuestos» y «Contras» solo si enseñan algo.
 - Cada OVA tiene un solo control principal y un solo «aha». Pausa su animación fuera del viewport y respeta `prefers-reduced-motion`.
 - Ejercicio Python: 10-25 líneas, datos inline o generados con semilla fija, salida legible (métricas, predicciones o tabla). Los gráficos se hacen con matplotlib y llegan como PNG.
 - Glosario 💡 ampliado con la jerga base: feature, etiqueta, overfitting, hiperparámetro, frontera de decisión, etc.
