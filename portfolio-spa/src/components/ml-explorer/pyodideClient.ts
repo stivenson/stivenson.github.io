@@ -68,6 +68,7 @@ export function createPyodideClient(makeWorker: () => WorkerLike, timeoutMs = 15
       if (data.type === 'progress') {
         current.onProgress?.(data.message);
       } else if (data.type === 'started') {
+        if (current.timer) clearTimeout(current.timer);
         current.timer = setTimeout(() => {
           kill();
           finish({ status: 'timeout' });
@@ -99,7 +100,11 @@ export function createPyodideClient(makeWorker: () => WorkerLike, timeoutMs = 15
       const id = nextId++;
       return new Promise<RunResult>((resolve) => {
         current = { id, resolve, onProgress };
-        ensureWorker().postMessage({ type: 'run', id, code });
+        try {
+          ensureWorker().postMessage({ type: 'run', id, code });
+        } catch (err) {
+          finish({ status: 'load-failed', error: String(err) });
+        }
       });
     },
     stop() {
