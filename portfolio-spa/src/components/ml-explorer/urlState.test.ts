@@ -22,6 +22,11 @@ describe('parseExplorerState', () => {
   it('sin parámetros abre el primer algoritmo en «type»', () => {
     expect(parseExplorerState(new URLSearchParams(), slugs)).toEqual({ alg: 'linear-regression', tab: 'type' });
   });
+
+  it('sin algoritmos disponibles devuelve alg null (y conserva la pestaña válida)', () => {
+    expect(parseExplorerState(new URLSearchParams('alg=knn&tab=pros'), [])).toEqual({ alg: null, tab: 'pros' });
+    expect(parseExplorerState(new URLSearchParams(), [])).toEqual({ alg: null, tab: 'type' });
+  });
 });
 
 describe('withExplorerState', () => {

@@ -236,6 +236,8 @@
 /* ---------- Pestañas ---------- */
 
 .mlx-tablist {
+  /* offsetLeft de las pestañas, relativo a la barra (ver AlgorithmTabs). */
+  position: relative;
   display: flex;
   gap: 2px;
   overflow-x: auto;

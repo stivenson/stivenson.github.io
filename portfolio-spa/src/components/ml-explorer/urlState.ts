@@ -1,7 +1,8 @@
 import { TAB_IDS, type TabId } from './types';
 
 export interface ExplorerState {
-  alg: string;
+  /** null cuando todavía no hay ningún algoritmo disponible. */
+  alg: string | null;
   tab: TabId;
 }
 
@@ -18,12 +19,12 @@ export function parseExplorerState(params: URLSearchParams, availableSlugs: read
   const rawAlg = params.get('alg');
   const rawTab = params.get('tab');
   return {
-    alg: rawAlg !== null && availableSlugs.includes(rawAlg) ? rawAlg : availableSlugs[0],
+    alg: rawAlg !== null && availableSlugs.includes(rawAlg) ? rawAlg : (availableSlugs[0] ?? null),
     tab: isTabId(rawTab) ? rawTab : 'type',
   };
 }
 
-export function withExplorerState(params: URLSearchParams, state: ExplorerState): URLSearchParams {
+export function withExplorerState(params: URLSearchParams, state: { alg: string; tab: TabId }): URLSearchParams {
   const next = new URLSearchParams(params);
   next.set('alg', state.alg);
   next.set('tab', state.tab);

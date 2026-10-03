@@ -22,19 +22,29 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg }: AlgorithmTabs
   const Demo = content.demo;
 
   // En móvil la barra de pestañas se desplaza: mantener visible la activa.
+  // Solo se mueve la barra (scrollLeft); scrollIntoView movería también la
+  // ventana y el lector perdería su sitio en el artículo.
   useEffect(() => {
-    listRef.current
-      ?.querySelector<HTMLButtonElement>('[aria-selected="true"]')
-      ?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    const list = listRef.current;
+    const active = list?.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (!list || !active) return;
+    const left = active.offsetLeft; // relativo a la barra: .mlx-tablist es position: relative
+    const right = left + active.offsetWidth;
+    if (left < list.scrollLeft) list.scrollLeft = left;
+    else if (right > list.scrollLeft + list.clientWidth) list.scrollLeft = right - list.clientWidth;
   }, [tab]);
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    e.preventDefault();
     const i = TAB_IDS.indexOf(tab);
-    const next = TAB_IDS[(i + (e.key === 'ArrowRight' ? 1 : TAB_IDS.length - 1)) % TAB_IDS.length];
+    const n = TAB_IDS.length;
+    const target: Record<string, number> = { ArrowRight: (i + 1) % n, ArrowLeft: (i + n - 1) % n, Home: 0, End: n - 1 };
+    if (!(e.key in target)) return;
+    e.preventDefault();
+    const next = TAB_IDS[target[e.key]];
     onTab(next);
-    requestAnimationFrame(() => document.getElementById(`mlx-tab-${next}`)?.focus());
+    // Todas las pestañas ya están en el DOM: el foco puede moverse ya.
+    // preventScroll: el efecto de arriba se encarga del desplazamiento horizontal.
+    document.getElementById(`mlx-tab-${next}`)?.focus({ preventScroll: true });
   }
 
   return (

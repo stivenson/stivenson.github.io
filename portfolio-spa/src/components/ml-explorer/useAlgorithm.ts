@@ -8,11 +8,13 @@ export type AlgorithmState =
   | { status: 'ready'; module: AlgorithmModule };
 
 /** Descarga el chunk del algoritmo elegido y expone loading/error/ready. */
-export function useAlgorithm(slug: string): AlgorithmState {
+/** `null` = no hay ningún algoritmo disponible: queda en loading sin pedir nada. */
+export function useAlgorithm(slug: string | null): AlgorithmState {
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ slug: string; module?: AlgorithmModule } | null>(null);
 
   useEffect(() => {
+    if (slug === null) return;
     let alive = true;
     loadAlgorithm(slug).then(
       (module) => alive && setResult({ slug, module }),
@@ -24,7 +26,7 @@ export function useAlgorithm(slug: string): AlgorithmState {
   }, [slug, attempt]);
 
   // Mientras llega el nuevo chunk, el resultado anterior es de otro slug.
-  if (!result || result.slug !== slug) return { status: 'loading' };
+  if (slug === null || !result || result.slug !== slug) return { status: 'loading' };
   if (result.module) return { status: 'ready', module: result.module };
   return {
     status: 'error',
