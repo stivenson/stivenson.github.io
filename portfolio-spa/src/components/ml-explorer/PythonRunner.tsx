@@ -109,6 +109,10 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
         value={code}
         onChange={(e) => setCode(e.target.value)}
         onKeyDown={onKeyDown}
+        onBlur={() => {
+          // Al salir del campo se olvida el Esc pendiente.
+          escaped.current = false;
+        }}
         spellCheck={false}
         rows={code.split('\n').length + 1}
         aria-label="Código Python editable"

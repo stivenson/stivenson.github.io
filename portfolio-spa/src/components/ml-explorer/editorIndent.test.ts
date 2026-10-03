@@ -27,7 +27,25 @@ describe('indent', () => {
   });
 });
 
+describe('texto que empieza con línea en blanco', () => {
+  it('outdent con el cursor en la línea vacía inicial no toca la línea siguiente', () => {
+    expect(outdent('\n    x', 0, 0)).toEqual({ code: '\n    x', selectionStart: 0, selectionEnd: 0 });
+  });
+
+  it('indent indenta también la línea vacía inicial', () => {
+    expect(indent('\nab', 0, 3)).toEqual({ code: '    \n    ab', selectionStart: 4, selectionEnd: 11 });
+  });
+
+  it('indent de un solo salto de línea seleccionado', () => {
+    expect(indent('\n', 0, 1)).toEqual({ code: '    \n', selectionStart: 4, selectionEnd: 5 });
+  });
+});
+
 describe('outdent', () => {
+  it('un tab al inicio cuenta como un nivel', () => {
+    expect(outdent('\ta\n\t\tb', 0, 6)).toEqual({ code: 'a\n\tb', selectionStart: 0, selectionEnd: 4 });
+  });
+
   it('quita 4 espacios', () => {
     expect(outdent('    a', 4, 4)).toEqual({ code: 'a', selectionStart: 0, selectionEnd: 0 });
   });
@@ -47,4 +65,35 @@ describe('outdent', () => {
   it('varias líneas: ajusta la selección sin pasar del inicio de su línea', () => {
     expect(outdent('    a\n  b\nc', 2, 11)).toEqual({ code: 'a\nb\nc', selectionStart: 0, selectionEnd: 5 });
   });
+});
+
+describe('propiedades (exhaustivo en textos cortos)', () => {
+  const alphabet = ['a', ' ', '\n', '\t'];
+  const texts: string[] = [''];
+  for (let i = 0; i < texts.length; i++) {
+    if (texts[i].length < 5) for (const c of alphabet) texts.push(texts[i] + c);
+  }
+  const keep = (t: string) => t.replace(/[ \t]/g, '');
+  const stripLeading = (t: string) => t.replace(/^ +/gm, '');
+
+  for (const [name, fn] of [['indent', indent], ['outdent', outdent]] as const) {
+    it(`${name}: selección válida y no se pierde texto`, () => {
+      for (const code of texts) {
+        for (let s = 0; s <= code.length; s++) {
+          for (let e = s; e <= code.length; e++) {
+            const r = fn(code, s, e);
+            const ctx = JSON.stringify({ code, s, e, r });
+            expect(r.selectionStart >= 0 && r.selectionStart <= r.selectionEnd && r.selectionEnd <= r.code.length, ctx).toBe(true);
+            // Diseño: Tab con selección sin saltos de línea la reemplaza por 4 espacios.
+            const replaced = name === 'indent' && !code.slice(s, e).includes('\n');
+            const before = replaced ? code.slice(0, s) + code.slice(e) : code;
+            expect(keep(r.code), ctx).toBe(keep(before));
+            if (name === 'indent' && !replaced) {
+              expect(stripLeading(r.code.slice(r.selectionStart, r.selectionEnd)), ctx).toBe(stripLeading(code.slice(s, e)));
+            }
+          }
+        }
+      }
+    });
+  }
 });

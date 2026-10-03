@@ -8,7 +8,8 @@ export interface EditResult {
 
 /** Inicios de las líneas tocadas por la selección [start, end]. */
 function touchedLineStarts(code: string, start: number, end: number): number[] {
-  const first = code.lastIndexOf('\n', start - 1) + 1;
+  // Con start === 0, lastIndexOf('\n', -1) se trataría como 0 y saltaría a la línea 2.
+  const first = start === 0 ? 0 : code.lastIndexOf('\n', start - 1) + 1;
   // Si la selección termina justo tras un '\n', esa última línea no se toca.
   const last = end > start && code[end - 1] === '\n' ? end - 1 : end;
   const starts = [first];
@@ -36,10 +37,11 @@ export function indent(code: string, start: number, end: number): EditResult {
   };
 }
 
-/** Shift+Tab: quita hasta 4 espacios iniciales de cada línea tocada. */
+/** Shift+Tab: quita un tab o hasta 4 espacios iniciales de cada línea tocada. */
 export function outdent(code: string, start: number, end: number): EditResult {
   const starts = touchedLineStarts(code, start, end);
   const removed = starts.map((s) => {
+    if (code[s] === '\t') return 1; // un tab cuenta como un nivel
     let n = 0;
     while (n < INDENT.length && code[s + n] === ' ') n++;
     return n;
