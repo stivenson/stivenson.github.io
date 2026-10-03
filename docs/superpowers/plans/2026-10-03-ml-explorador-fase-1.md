@@ -3695,35 +3695,9 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Step 2b: Un solo SETUP de Python, compartido**
+- [ ] **Step 2b: SETUP de Python compartido (ya hecho)**
 
-El código Python que prepara Pyodide (backend de matplotlib, `plt.show` anulado, `_collect_figs`) vive hoy como string dentro de `pyodideWorker.ts`. Sácalo a un archivo propio para que el worker y el verificador de Pyodide (Step 2c) usen exactamente el mismo.
-
-Crea `src/components/ml-explorer/pyodideSetup.py`:
-```python
-import io, base64
-import matplotlib
-matplotlib.use("AGG")
-import matplotlib.pyplot as plt
-plt.style.use("dark_background")
-plt.show = lambda *args, **kwargs: None
-
-def _collect_figs():
-    images = []
-    for num in plt.get_fignums():
-        buf = io.BytesIO()
-        plt.figure(num).savefig(buf, format="png", dpi=110, bbox_inches="tight")
-        images.append(base64.b64encode(buf.getvalue()).decode("ascii"))
-    plt.close("all")
-    return "\n".join(images)
-```
-
-En `src/components/ml-explorer/pyodideWorker.ts`: borra la constante `SETUP` completa (desde el comentario `// plt.show() no tiene pantalla…` hasta el cierre del template literal) y agrega junto a los imports:
-```ts
-// plt.show() no tiene pantalla en el worker: pyodideSetup.py lo anula y
-// define _collect_figs(), que convierte cada figura en un PNG en base64.
-import SETUP from './pyodideSetup.py?raw';
-```
+`src/components/ml-explorer/pyodideSetup.py` ya existe: lo creó la corrección de la Task 8, junto con `pyodideRun.ts` (la lógica de una ejecución, con tests). Comprueba que `pyodideWorker.ts` lo importa con `import SETUP from './pyodideSetup.py?raw';` y sigue.
 
 - [ ] **Step 2c: Verificar los ejercicios en Pyodide real**
 
@@ -3800,7 +3774,7 @@ Expected: `No hay ejercicios en …` (dos veces), `Escrito notebooks/algoritmos-
 
 ```bash
 rm ../notebooks/algoritmos-ml.ipynb
-git add scripts/check-ml-exercises.py scripts/check-ml-exercises-pyodide.mjs scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/.gitkeep src/components/ml-explorer/pyodideSetup.py src/components/ml-explorer/pyodideWorker.ts package.json package-lock.json
+git add scripts/check-ml-exercises.py scripts/check-ml-exercises-pyodide.mjs scripts/build-ml-notebook.py src/components/ml-explorer/algorithms/python/.gitkeep package.json package-lock.json
 git commit -m "build(ml-explorer): check exercises in CPython and generate the notebook
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
