@@ -45,7 +45,7 @@ def main() -> None:
             print(f"✗ {script.name} falló:\n{run.stderr.decode('utf-8', errors='replace')}")
             failed.append(script.name)
             continue
-        out = run.stdout.decode("utf-8").rstrip("\n")
+        out = run.stdout.decode("utf-8", errors="replace").rstrip("\n")
         expected_path = script.with_suffix(".out.txt")
         if update:
             expected_path.write_bytes((out + "\n").encode("utf-8"))

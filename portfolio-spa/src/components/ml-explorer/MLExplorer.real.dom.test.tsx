@@ -43,7 +43,7 @@ it('Linear Regression real: carga su chunk y recorre las 8 pestañas sin errores
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
     if (id === 'formula') {
-      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
+      const svg = container.querySelector('.mlx-tabpanel svg[role="group"]');
       expect(svg).not.toBeNull();
       expect(svg!.querySelectorAll('circle.is-draggable')).toHaveLength(9);
       expect(container.querySelector('.katex')).not.toBeNull();

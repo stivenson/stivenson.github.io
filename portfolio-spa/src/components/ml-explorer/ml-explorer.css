@@ -628,6 +628,10 @@ p.mlx-py-error {
 
 .mlx-ova-stage .is-draggable:focus-visible {
   outline: 2px solid #55aaff;
+  /* Algunos navegadores no dibujan outline en elementos SVG: el borde
+     blanco grueso deja el foco visible en todos. */
+  stroke: #ffffff;
+  stroke-width: 3px;
 }
 
 .mlx-ova-side {

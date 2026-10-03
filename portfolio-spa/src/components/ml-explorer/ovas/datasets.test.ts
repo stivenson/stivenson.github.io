@@ -20,11 +20,18 @@ describe('OVA de regresión lineal', () => {
     expect(mse(LR_INITIAL, line)).toBeCloseTo(0.101, 3);
   });
 
-  it('un solo outlier aplana la recta y multiplica el MSE por 25 (pestaña Contras)', () => {
+  it('un solo outlier sube el MSE de 0.10 a 2.57 y baja la pendiente de 0.65 a 0.40 (simulador de la pestaña Fórmula, cifras citadas en Contras)', () => {
+    const before = fitLine(LR_INITIAL);
     const points = [...LR_INITIAL, LR_OUTLIER];
     const line = fitLine(points);
     expect(line.b1).toBeCloseTo(0.397, 3);
     expect(mse(points, line)).toBeCloseTo(2.568, 3);
+    // Los redondeos exactos que cita el texto de la pestaña Contras.
+    expect(mse(LR_INITIAL, before).toFixed(2)).toBe('0.10');
+    expect(mse(points, line).toFixed(2)).toBe('2.57');
+    expect(before.b1.toFixed(2)).toBe('0.65');
+    expect(line.b1.toFixed(2)).toBe('0.40');
+    expect(Math.round(mse(points, line) / mse(LR_INITIAL, before))).toBe(25);
   });
 });
 

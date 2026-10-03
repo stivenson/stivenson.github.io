@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from 'react';
+import { useId, useState, type KeyboardEvent, type MouseEvent } from 'react';
 import { OVA_COLORS, OvaFrame } from './OvaFrame';
 import { LR_INITIAL as INITIAL, LR_OUTLIER as OUTLIER } from './datasets';
 import { fitLine, mse, type Pt } from './ovaMath';
@@ -12,10 +12,29 @@ const MAX_POINTS = 20;
 
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 const toData = (p: Pt): Pt => ({ x: clamp(PLOT.ix(p.x), 0, 10), y: clamp(PLOT.iy(p.y), 0, 8) });
+// Redondeo a centésimas para que 0.1 + 0.2 no se vea como 0.30000000000000004.
+const round2 = (v: number) => Math.round(v * 100) / 100;
+const fmt = (v: number) => String(round2(v));
+
+/** Flechas: ±0.1; con Shift, ±0.5. Devuelve null si la tecla no mueve el punto. */
+function nudge(p: Pt, key: string, shift: boolean): Pt | null {
+  const step = shift ? 0.5 : 0.1;
+  const delta: Record<string, [number, number]> = {
+    ArrowUp: [0, step],
+    ArrowDown: [0, -step],
+    ArrowRight: [step, 0],
+    ArrowLeft: [-step, 0],
+  };
+  const d = delta[key];
+  if (!d) return null;
+  return { x: round2(clamp(p.x + d[0], 0, 10)), y: round2(clamp(p.y + d[1], 0, 8)) };
+}
 
 export function LinearRegressionOva() {
   const [points, setPoints] = useState<Pt[]>(INITIAL);
   const [showSquares, setShowSquares] = useState(true);
+  const clipId = useId();
+  const full = points.length >= MAX_POINTS;
   const line = fitLine(points);
   const error = mse(points, line);
   const predict = (x: number) => line.b0 + line.b1 * x;
@@ -25,9 +44,16 @@ export function LinearRegressionOva() {
   );
 
   function addPoint(e: MouseEvent<SVGRectElement>) {
-    if (!svgRef.current || points.length >= MAX_POINTS) return;
+    if (!svgRef.current || full) return;
     const p = toData(clientToSvg(svgRef.current, e.clientX, e.clientY));
     setPoints((prev) => [...prev, p]);
+  }
+
+  function onPointKey(i: number, e: KeyboardEvent<SVGCircleElement>) {
+    const moved = nudge(points[i], e.key, e.shiftKey);
+    if (!moved) return;
+    e.preventDefault();
+    setPoints((prev) => prev.map((pt, j) => (j === i ? moved : pt)));
   }
 
   const inner = { x: PLOT.pad, y: PLOT.pad, width: PLOT.width - 2 * PLOT.pad, height: PLOT.height - 2 * PLOT.pad };
@@ -35,7 +61,11 @@ export function LinearRegressionOva() {
   return (
     <OvaFrame
       title="La recta que menos se equivoca"
-      hint="Arrastra los puntos o toca el fondo para añadir uno. La recta se recalcula sola."
+      hint={
+        full
+          ? 'Máximo 20 puntos. Arrastra los que ya hay o muévelos con las flechas del teclado.'
+          : 'Arrastra los puntos o toca el fondo para añadir uno (también puedes enfocarlos con Tab y moverlos con las flechas). La recta se recalcula sola.'
+      }
       controls={
         <>
           <label>
@@ -45,7 +75,7 @@ export function LinearRegressionOva() {
           <button
             type="button"
             onClick={() => setPoints((prev) => [...prev, OUTLIER])}
-            disabled={points.length >= MAX_POINTS}
+            disabled={full}
           >
             Añadir un outlier
           </button>
@@ -65,6 +95,11 @@ export function LinearRegressionOva() {
           <span>
             MSE: <b>{error.toFixed(2)}</b>
           </span>
+          {full && (
+            <span>
+              <b>Máximo 20 puntos.</b>
+            </span>
+          )}
           <span>
             Cada cuadrado amarillo es un residuo al cuadrado. La recta de mínimos cuadrados es la que deja la menor
             área amarilla promedio. Añade un outlier y mira cuánto se inclina.
@@ -72,9 +107,9 @@ export function LinearRegressionOva() {
         </>
       }
     >
-      <svg viewBox={`0 0 ${PLOT.width} ${PLOT.height}`} {...svgProps} role="img" aria-label="Puntos y recta de mínimos cuadrados">
+      <svg viewBox={`0 0 ${PLOT.width} ${PLOT.height}`} {...svgProps} role="group" aria-label="Puntos y recta de mínimos cuadrados">
         <defs>
-          <clipPath id="mlx-lr-clip">
+          <clipPath id={clipId}>
             <rect {...inner} />
           </clipPath>
         </defs>
@@ -92,7 +127,7 @@ export function LinearRegressionOva() {
           <text x={8} y={PLOT.sy(8) - 10} fontSize={11} fill={OVA_COLORS.axis}>
             ↑ precio
           </text>
-          <g clipPath="url(#mlx-lr-clip)">
+          <g clipPath={`url(#${clipId})`}>
             {showSquares &&
               points.map((p, i) => {
                 const r = Math.abs(p.y - predict(p.x));
@@ -142,7 +177,11 @@ export function LinearRegressionOva() {
             fill={OVA_COLORS.class0}
             stroke="#040320"
             strokeWidth={1.5}
+            tabIndex={0}
+            role="button"
+            aria-label={`Punto ${i + 1}: ${fmt(p.x)}, ${fmt(p.y)}`}
             onPointerDown={begin(i)}
+            onKeyDown={(e) => onPointKey(i, e)}
           />
         ))}
       </svg>

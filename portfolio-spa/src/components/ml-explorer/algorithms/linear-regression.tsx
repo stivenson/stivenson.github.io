@@ -65,8 +65,10 @@ const linearRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Funciona con pocas decenas de filas y escala a millones: entrenarla cuesta <Tex>{'O(n p^2)'}</Tex> con n
-          filas y p features. Si hay más features que filas, existen infinitas soluciones y hace falta regularización
-          (Ridge o Lasso).
+          filas y p features, más <Tex>{'O(p^3)'}</Tex> para resolver el sistema; si n ≥ p domina el primer término. Si
+          hay más features que filas, existen infinitas soluciones y hace falta regularizar. Ridge (penalización L2)
+          siempre da una solución única. Lasso (L1) no siempre: con features repetidas o colineales puede haber varias
+          soluciones igual de buenas.
         </p>
       ),
     },
@@ -98,8 +100,19 @@ const linearRegression: AlgorithmModule = {
           <p>
             Con una sola variable:{' '}
             <Tex>{'b_1 = \\frac{\\sum (x_i-\\bar{x})(y_i-\\bar{y})}{\\sum (x_i-\\bar{x})^2},\\quad b_0 = \\bar{y} - b_1\\bar{x}'}</Tex>
-            . Es lo que calcula el simulador cada vez que mueves un punto. Con millones de filas se usa descenso de
-            gradiente en lugar de invertir la matriz.
+            . Es lo que calcula el simulador cada vez que mueves un punto.
+          </p>
+          <p>
+            En la ecuación normal, X es la tabla de datos con una columna de unos al inicio: esa columna es la que
+            multiplica a b₀. La fórmula exige que <Tex>{'X^\\top X'}</Tex> sea invertible, es decir, que ninguna
+            feature sea redundante (copia o combinación lineal de otras).
+          </p>
+          <p>
+            En la práctica no se invierte <Tex>{'X^\\top X'}</Tex>: el sistema se resuelve con una descomposición (QR o
+            SVD), que es numéricamente más estable. scikit-learn usa un solver de mínimos cuadrados. El costo crece
+            sobre todo con p, el número de features (con su cuadrado), y no tanto con n, el de filas (solo en
+            proporción). El descenso de gradiente (estocástico) se reserva para cuando hay muchísimas features o los
+            datos no caben en memoria.
           </p>
         </>
       ),
@@ -139,7 +152,7 @@ const linearRegression: AlgorithmModule = {
             <b>
               <G k="interpretable">Interpretable</G>:
             </b>{' '}
-            cada peso se lee directo: «cada m² suma 2.5 millones». Ideal cuando tienes que justificar la decisión.
+            cada peso se lee directo: «cada m² suma 2.5 millones, con el mismo número de habitaciones». Ideal cuando tienes que justificar la decisión.
           </li>
           <li>
             <b>Rápida:</b> entrena con millones de filas en un portátil y predice con una suma.
@@ -160,8 +173,9 @@ const linearRegression: AlgorithmModule = {
             <b>
               Sensible a <G k="outlier">outliers</G>:
             </b>{' '}
-            como el error se eleva al cuadrado, un solo punto lejano arrastra la recta. Pruébalo con «Añadir un
-            outlier» en el simulador de la pestaña Fórmula.
+            como el error se eleva al cuadrado, un solo punto lejano arrastra la recta. En el simulador de la pestaña
+            Fórmula, «Añadir un outlier» sube el MSE de 0.10 a 2.57 (unas 25 veces) y baja la pendiente de 0.65 a
+            0.40.
           </li>
           <li>
             <b>Solo ve rectas:</b> si la relación real es curva (rendimientos decrecientes, umbrales), se equivoca de
@@ -184,18 +198,24 @@ const linearRegression: AlgorithmModule = {
     whenNot: {
       essential: (
         <>
-          <p className="mlx-rule">No la uses si la relación entre las features y la respuesta es claramente no lineal.</p>
-          <p>
-            Ejemplo: el rendimiento de un cultivo sube con el fertilizante hasta cierto punto, y después baja. Una
-            recta no puede subir y bajar. Tampoco sirve para predecir categorías (sí/no): para eso está la regresión
-            logística.
+          <p className="mlx-rule">
+            No la uses si la respuesta cambia de golpe a partir de un umbral, o si el efecto de cada factor depende del
+            contexto.
           </p>
+          <p>
+            Ejemplo: un motor casi no falla por debajo de 90 °C, y por encima sus fallas se disparan. Una recta reparte
+            ese salto por todo el rango: predice fallas a 60 °C y se queda corta a 100 °C. Elevar al cuadrado o sacar
+            logaritmo no crea un salto, y si no sabes dónde está el umbral tampoco puedes construir esa feature a mano.
+          </p>
+          <p>Tampoco sirve para predecir categorías (sí/no): para eso está la regresión logística.</p>
         </>
       ),
       deepDive: (
         <p>
-          Antes de descartarla, prueba transformar las features: muchas relaciones curvas se vuelven rectas con un
-          logaritmo. Si los residuos siguen mostrando patrones, cambia de modelo.
+          Antes de descartarla, prueba features transformadas: x² para una curva que sube y baja (el rendimiento de un
+          cultivo frente al fertilizante), log x para un crecimiento que se frena. Sigue siendo regresión lineal,
+          porque es lineal en los pesos. Si los <G k="residuo">residuos</G> siguen con patrón, cambia de modelo: los
+          árboles de decisión encuentran umbrales e interacciones por sí solos.
         </p>
       ),
     },
