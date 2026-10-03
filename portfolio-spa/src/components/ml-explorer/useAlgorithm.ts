@@ -7,8 +7,10 @@ export type AlgorithmState =
   | { status: 'error'; retry: () => void }
   | { status: 'ready'; module: AlgorithmModule };
 
-/** Descarga el chunk del algoritmo elegido y expone loading/error/ready. */
-/** `null` = no hay ningún algoritmo disponible: queda en loading sin pedir nada. */
+/**
+ * Descarga el chunk del algoritmo elegido y expone loading/error/ready.
+ * `null` = no hay ningún algoritmo disponible: queda en loading sin pedir nada.
+ */
 export function useAlgorithm(slug: string | null): AlgorithmState {
   const [attempt, setAttempt] = useState(0);
   const [result, setResult] = useState<{ slug: string; module?: AlgorithmModule } | null>(null);
