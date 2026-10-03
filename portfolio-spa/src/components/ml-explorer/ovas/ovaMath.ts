@@ -64,6 +64,10 @@ export function snap(v: number, { min, max, step }: SliderRange): number {
  * Lleva una regularización L2 mínima (`lambda`) solo sobre b1: con clases
  * separables hace finito el óptimo (sin ella b1 → ∞ y Newton da NaN); con
  * clases solapadas cambia el resultado en menos de 0.001.
+ *
+ * Precondición: al menos 2 puntos y ambas clases presentes. Sin eso no hay
+ * frontera que ajustar (b0 no se penaliza y el hessiano se vuelve singular),
+ * así que devuelve la recta neutra `{ b0: 0, b1: 0 }` (P = 0.5 en todas partes).
  */
 export function fitLogistic1D(
   xs: number[],
@@ -72,6 +76,7 @@ export function fitLogistic1D(
   maxIterations = 100,
   tolerance = 1e-12,
 ): Line {
+  if (xs.length < 2 || !ys.includes(0) || !ys.includes(1)) return { b0: 0, b1: 0 };
   let b0 = 0;
   let b1 = 0;
   for (let it = 0; it < maxIterations; it++) {
@@ -91,6 +96,7 @@ export function fitLogistic1D(
       h11 += w * xs[i] * xs[i];
     }
     const det = h00 * h11 - h01 * h01;
+    if (!(Math.abs(det) > 1e-300)) break;
     const d0 = (h11 * g0 - h01 * g1) / det;
     const d1 = (h00 * g1 - h01 * g0) / det;
     b0 -= d0;
@@ -121,7 +127,7 @@ export function knnVote(points: LabeledPt[], query: Pt, k: number): KnnResult {
   const votes: [number, number] = [0, 0];
   for (const t of top) votes[points[t.i].label]++;
   const winner: 0 | 1 = votes[0] === votes[1] ? points[top[0].i].label : votes[1] > votes[0] ? 1 : 0;
-  return { neighbors: top.map((t) => t.i), votes, winner, radius: top.length ? top[top.length - 1].d : 0 };
+  return { neighbors: top.map((t) => t.i), votes, winner, radius: top[top.length - 1].d };
 }
 
 // ---------- Árbol de decisión ----------

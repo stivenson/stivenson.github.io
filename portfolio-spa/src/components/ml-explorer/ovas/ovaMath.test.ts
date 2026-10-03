@@ -67,6 +67,20 @@ describe('regresión logística', () => {
   it('es determinista', () => {
     expect(fitLogistic1D(LOGISTIC_XS, LOGISTIC_YS)).toEqual(fitLogistic1D(LOGISTIC_XS, LOGISTIC_YS));
   });
+
+  it('con datos degenerados devuelve la recta neutra y finita', () => {
+    const casos: Array<[number[], number[]]> = [
+      [[], []],
+      [[2], [1]],
+      [[1, 2, 3], [0, 0, 0]],
+      [[1, 2, 3], [1, 1, 1]],
+    ];
+    for (const [xs, ys] of casos) {
+      const fit = fitLogistic1D(xs, ys);
+      expect(fit).toEqual({ b0: 0, b1: 0 });
+      expect(Number.isFinite(fit.b0) && Number.isFinite(fit.b1)).toBe(true);
+    }
+  });
 });
 
 describe('KNN', () => {
