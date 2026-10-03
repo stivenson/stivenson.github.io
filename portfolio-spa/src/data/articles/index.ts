@@ -4,6 +4,7 @@ import llmParaConstruirModelosMl from './llm-para-construir-modelos-ml.md?raw';
 import primeraApiConBaseDeDatos from './primera-api-con-base-de-datos.md?raw';
 import imagenATensorCnnGlaucoma from './imagen-a-tensor-cnn-glaucoma.md?raw';
 import pythonEnGpuNvidia from './python-en-gpu-nvidia.md?raw';
+import algoritmosMlExplorador from './algoritmos-ml-explorador.md?raw';
 
 export interface ArticleMetadata {
   title: string;
@@ -84,6 +85,7 @@ function processArticle(content: string): Article {
 
 // Exportar artículos procesados
 export const articles: Article[] = [
+  processArticle(algoritmosMlExplorador),
   processArticle(pythonEnGpuNvidia),
   processArticle(agentSkillsVsMcp),
   processArticle(probabilidadIntegrales),

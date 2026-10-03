@@ -248,6 +248,22 @@
   grid-column: wide;
 }
 
+/* Explorador de algoritmos de ML: menu + panel necesitan el ancho completo.
+   .mlx-boot es el marcador mientras se descarga su chunk (sus estilos no
+   pueden vivir en ml-explorer.css, que llega con ese mismo chunk). */
+.markdown-content > .mlx,
+.markdown-content > .mlx-boot {
+  grid-column: full;
+}
+
+.markdown-content > .mlx-boot {
+  padding: 32px;
+  text-align: center;
+  color: var(--rf-text-muted);
+  border: 1px dashed rgba(85, 170, 255, 0.25);
+  border-radius: 10px;
+}
+
 /* Formulas en display: se quedan en la columna de texto. Forman parte
    del hilo del discurso, no son ilustraciones — alejarlas del parrafo
    que las introduce rompe la continuidad de lectura. */

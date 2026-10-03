@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -9,6 +10,21 @@ import type { Components } from 'react-markdown';
 import { InteractiveSVG } from './InteractiveSVG';
 import { LazyIframe } from './LazyIframe';
 import 'katex/dist/katex.min.css';
+
+// El explorador de ML solo lo usa un artículo: se descarga aparte cuando el
+// markdown lo pide con <ml-explorer></ml-explorer>.
+const MLExplorer = lazy(() => import('./ml-explorer/MLExplorer').then((m) => ({ default: m.MLExplorer })));
+
+// Definido a nivel de módulo a propósito: si se creara dentro del render,
+// React lo vería como un componente nuevo en cada render y remontaría el
+// explorador, perdiendo la ejecución de Python en curso.
+function MLExplorerEmbed() {
+  return (
+    <Suspense fallback={<div className="mlx-boot">Cargando el explorador…</div>}>
+      <MLExplorer />
+    </Suspense>
+  );
+}
 
 interface MarkdownRendererProps {
   content: string;
@@ -136,27 +152,32 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     ),
     
     // Enlaces
-    a: ({ node, ...props }) => (
-      <a 
-        style={{
-          color: 'var(--electric-cyan)',
-          textDecoration: 'underline',
-          textDecorationColor: 'rgba(85, 170, 255, 0.4)',
-          transition: 'all 0.2s ease'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = 'var(--electric-blue)';
-          e.currentTarget.style.textDecorationColor = 'var(--electric-blue)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = 'var(--electric-cyan)';
-          e.currentTarget.style.textDecorationColor = 'rgba(85, 170, 255, 0.4)';
-        }}
-        target="_blank"
-        rel="noopener noreferrer"
-        {...props}
-      />
-    ),
+    a: ({ node, href, ...props }) => {
+      // Los enlaces internos (#/...) navegan dentro de la SPA; el resto abre
+      // pestaña nueva, como siempre.
+      const internal = typeof href === 'string' && href.startsWith('#/');
+      return (
+        <a
+          href={href}
+          style={{
+            color: 'var(--electric-cyan)',
+            textDecoration: 'underline',
+            textDecorationColor: 'rgba(85, 170, 255, 0.4)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--electric-blue)';
+            e.currentTarget.style.textDecorationColor = 'var(--electric-blue)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--electric-cyan)';
+            e.currentTarget.style.textDecorationColor = 'rgba(85, 170, 255, 0.4)';
+          }}
+          {...(internal ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+          {...props}
+        />
+      );
+    },
     
     // Imágenes - detectar SVG interactivo
     img: ({ node, src, alt, ...props }: any) => {
@@ -207,6 +228,9 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
     iframe: ({ node, src, title, style, ...props }: any) => (
       <LazyIframe src={src} title={title} style={style} {...props} />
     ),
+
+    // Explorador de algoritmos de ML (artículo algoritmos-ml-explorador).
+    ...({ 'ml-explorer': MLExplorerEmbed } as Components),
 
     // Código inline y bloques resaltados.
     //
