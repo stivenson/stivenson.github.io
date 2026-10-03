@@ -4,15 +4,19 @@ import {
   buildTree,
   fitLine,
   fitLogistic1D,
+  countLeaves,
   gini,
   knnVote,
   logit,
   mse,
+  predictTree,
   sigmoid,
   snap,
   treeRegions,
   type LabeledPt,
+  type TreeNode,
 } from './ovaMath';
+import { LOGISTIC_XS, LOGISTIC_YS } from './datasets';
 
 describe('regresión lineal', () => {
   it('fitLine recupera una recta exacta', () => {
@@ -40,9 +44,28 @@ describe('regresión logística', () => {
   it('fitLogistic1D pone la frontera entre las dos clases', () => {
     const { b0, b1 } = fitLogistic1D([0, 1, 2, 3], [0, 0, 1, 1]);
     expect(b1).toBeGreaterThan(0);
-    // Datos separables: la frontera debe quedar entre el último 0 (x=1) y el primer 1 (x=2).
-    expect(-b0 / b1).toBeGreaterThan(1);
-    expect(-b0 / b1).toBeLessThan(2);
+    // Datos separables: la frontera exacta es el punto medio entre x=1 y x=2.
+    expect(Number.isFinite(b0)).toBe(true);
+    expect(Number.isFinite(b1)).toBe(true);
+    expect(-b0 / b1).toBeCloseTo(1.5, 6);
+  });
+
+  it('llega al óptimo: el gradiente penalizado es ~0', () => {
+    const lambda = 1e-4;
+    const { b0, b1 } = fitLogistic1D(LOGISTIC_XS, LOGISTIC_YS, lambda);
+    let g0 = 0;
+    let g1 = lambda * b1;
+    LOGISTIC_XS.forEach((x, i) => {
+      const e = sigmoid(b0 + b1 * x) - LOGISTIC_YS[i];
+      g0 += e;
+      g1 += e * x;
+    });
+    expect(Math.abs(g0)).toBeLessThan(1e-9);
+    expect(Math.abs(g1)).toBeLessThan(1e-9);
+  });
+
+  it('es determinista', () => {
+    expect(fitLogistic1D(LOGISTIC_XS, LOGISTIC_YS)).toEqual(fitLogistic1D(LOGISTIC_XS, LOGISTIC_YS));
   });
 });
 
@@ -68,6 +91,17 @@ describe('KNN', () => {
       { x: 1, y: 0, label: 0 },
     ];
     expect(knnVote(tie, { x: 0.2, y: 0 }, 2).winner).toBe(1);
+  });
+
+  it('con lista vacía o k <= 0 no lanza y devuelve un resultado vacío', () => {
+    const empty = { neighbors: [], votes: [0, 0], winner: 0, radius: 0 };
+    expect(knnVote([], { x: 0, y: 0 }, 3)).toEqual(empty);
+    expect(knnVote(points, { x: 0, y: 0 }, 0)).toEqual(empty);
+    expect(knnVote(points, { x: 0, y: 0 }, -2)).toEqual(empty);
+  });
+
+  it('con k mayor que n devuelve los n puntos', () => {
+    expect(knnVote(points, { x: 0.1, y: 0.1 }, 10).neighbors).toHaveLength(4);
   });
 });
 
@@ -109,6 +143,35 @@ describe('árbol de decisión', () => {
 
 // Los ejemplos con números de las pestañas «Fórmula» se calculan con estas
 // mismas funciones: si el texto y el cálculo se separan, falla aquí.
+describe('predictTree y countLeaves', () => {
+  const tree: TreeNode = {
+    kind: 'split',
+    axis: 'x',
+    threshold: 5,
+    count: [2, 2],
+    left: { kind: 'leaf', label: 0, count: [2, 0] },
+    right: {
+      kind: 'split',
+      axis: 'y',
+      threshold: 3,
+      count: [0, 2],
+      left: { kind: 'leaf', label: 1, count: [0, 1] },
+      right: { kind: 'leaf', label: 0, count: [0, 1] },
+    },
+  };
+
+  it('predictTree sigue los cortes (<= va a la izquierda)', () => {
+    expect(predictTree(tree, { x: 5, y: 9 })).toBe(0);
+    expect(predictTree(tree, { x: 6, y: 3 })).toBe(1);
+    expect(predictTree(tree, { x: 6, y: 3.1 })).toBe(0);
+  });
+
+  it('countLeaves cuenta las hojas', () => {
+    expect(countLeaves(tree)).toBe(3);
+    expect(countLeaves({ kind: 'leaf', label: 0, count: [1, 0] })).toBe(1);
+  });
+});
+
 describe('ejemplos numéricos del texto', () => {
   it('Gini: 5 y 5 → 0.5; 4 y 1 → 0.32 (Decision Tree)', () => {
     expect(gini([5, 5])).toBeCloseTo(0.5);

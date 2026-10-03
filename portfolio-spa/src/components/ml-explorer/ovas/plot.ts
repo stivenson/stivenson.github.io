@@ -16,6 +16,7 @@ export function createPlot(
   [x0, x1]: [number, number],
   [y0, y1]: [number, number],
 ): Plot {
+  if (x0 === x1 || y0 === y1) throw new Error('Dominio vacío en createPlot');
   const w = width - 2 * pad;
   const h = height - 2 * pad;
   return {

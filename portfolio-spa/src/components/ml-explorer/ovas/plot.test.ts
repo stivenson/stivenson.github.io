@@ -15,4 +15,9 @@ describe('createPlot', () => {
     expect(plot.ix(plot.sx(3.3))).toBeCloseTo(3.3);
     expect(plot.iy(plot.sy(6.1))).toBeCloseTo(6.1);
   });
+
+  it('lanza un error con un dominio vacío', () => {
+    expect(() => createPlot(360, 300, 30, [2, 2], [0, 8])).toThrow('Dominio vacío en createPlot');
+    expect(() => createPlot(360, 300, 30, [0, 10], [4, 4])).toThrow('Dominio vacío en createPlot');
+  });
 });

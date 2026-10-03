@@ -56,21 +56,46 @@ export function snap(v: number, { min, max, step }: SliderRange): number {
   return Math.min(max, Math.max(min, Math.round(v / step) * step));
 }
 
-/** Descenso de gradiente sobre la pérdida logística (una variable). */
-export function fitLogistic1D(xs: number[], ys: number[], iterations = 5000, lr = 0.05): Line {
+/**
+ * Regresión logística de una variable por el método de Newton.
+ *
+ * Usa la curvatura además de la pendiente de la pérdida, así que llega al
+ * óptimo en unas 8 iteraciones y no depende de una tasa de aprendizaje.
+ * Lleva una regularización L2 mínima (`lambda`) solo sobre b1: con clases
+ * separables hace finito el óptimo (sin ella b1 → ∞ y Newton da NaN); con
+ * clases solapadas cambia el resultado en menos de 0.001.
+ */
+export function fitLogistic1D(
+  xs: number[],
+  ys: number[],
+  lambda = 1e-4,
+  maxIterations = 100,
+  tolerance = 1e-12,
+): Line {
   let b0 = 0;
   let b1 = 0;
-  const n = xs.length;
-  for (let it = 0; it < iterations; it++) {
+  for (let it = 0; it < maxIterations; it++) {
     let g0 = 0;
-    let g1 = 0;
-    for (let i = 0; i < n; i++) {
-      const e = sigmoid(b0 + b1 * xs[i]) - ys[i];
+    let g1 = lambda * b1;
+    let h00 = 0;
+    let h01 = 0;
+    let h11 = lambda;
+    for (let i = 0; i < xs.length; i++) {
+      const p = sigmoid(b0 + b1 * xs[i]);
+      const e = p - ys[i];
+      const w = p * (1 - p);
       g0 += e;
       g1 += e * xs[i];
+      h00 += w;
+      h01 += w * xs[i];
+      h11 += w * xs[i] * xs[i];
     }
-    b0 -= (lr * g0) / n;
-    b1 -= (lr * g1) / n;
+    const det = h00 * h11 - h01 * h01;
+    const d0 = (h11 * g0 - h01 * g1) / det;
+    const d1 = (h00 * g1 - h01 * g0) / det;
+    b0 -= d0;
+    b1 -= d1;
+    if (Math.abs(d0) + Math.abs(d1) < tolerance) break;
   }
   return { b0, b1 };
 }
@@ -91,7 +116,8 @@ export function knnVote(points: LabeledPt[], query: Pt, k: number): KnnResult {
   const order = points
     .map((p, i) => ({ i, d: Math.hypot(p.x - query.x, p.y - query.y) }))
     .sort((a, b) => a.d - b.d || a.i - b.i);
-  const top = order.slice(0, Math.min(k, points.length));
+  const top = order.slice(0, Math.max(0, Math.min(k, points.length)));
+  if (top.length === 0) return { neighbors: [], votes: [0, 0], winner: 0, radius: 0 };
   const votes: [number, number] = [0, 0];
   for (const t of top) votes[points[t.i].label]++;
   const winner: 0 | 1 = votes[0] === votes[1] ? points[top[0].i].label : votes[1] > votes[0] ? 1 : 0;
