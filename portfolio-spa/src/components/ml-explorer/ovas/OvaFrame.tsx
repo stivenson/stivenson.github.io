@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
 interface OvaFrameProps {
   title: string;
@@ -12,10 +12,13 @@ interface OvaFrameProps {
 
 /** Marco común de todas las OVAs del explorador. */
 export function OvaFrame({ title, hint, children, readout, controls }: OvaFrameProps) {
+  const titleId = useId();
   return (
-    <figure className="mlx-ova">
+    <figure className="mlx-ova" aria-labelledby={titleId}>
       <figcaption className="mlx-ova-head">
-        <strong>🎮 {title}</strong>
+        <strong id={titleId}>
+          <span aria-hidden="true">🎮</span> {title}
+        </strong>
         <span>{hint}</span>
       </figcaption>
       <div className="mlx-ova-body">
@@ -24,7 +27,7 @@ export function OvaFrame({ title, hint, children, readout, controls }: OvaFrameP
           <div className="mlx-ova-side">
             {controls && <div className="mlx-ova-controls">{controls}</div>}
             {readout && (
-              <div className="mlx-ova-readout" aria-live="polite">
+              <div className="mlx-ova-readout" role="status" aria-atomic="true">
                 {readout}
               </div>
             )}
@@ -49,7 +52,7 @@ export function OvaSlider({ label, value, min, max, step, onChange, format }: Ov
   return (
     <label className="mlx-slider">
       <span>
-        {label} <b>{format ? format(value) : value}</b>
+        {label} <b aria-hidden="true">{format ? format(value) : value}</b>
       </span>
       <input
         type="range"
@@ -57,6 +60,7 @@ export function OvaSlider({ label, value, min, max, step, onChange, format }: Ov
         max={max}
         step={step}
         value={value}
+        aria-valuetext={format ? format(value) : String(value)}
         onChange={(e) => onChange(Number(e.target.value))}
       />
     </label>

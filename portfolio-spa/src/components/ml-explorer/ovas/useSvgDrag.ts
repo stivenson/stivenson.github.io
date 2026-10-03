@@ -17,26 +17,34 @@ export function clientToSvg(svg: SVGSVGElement, clientX: number, clientY: number
  */
 export function useSvgDrag<T>(onDrag: (target: T, point: Pt) => void) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const dragging = useRef<T | null>(null);
+  const dragging = useRef<{ target: T; pointerId: number } | null>(null);
 
   const begin = (target: T) => (e: ReactPointerEvent<SVGElement>) => {
     e.preventDefault();
-    dragging.current = target;
-    e.currentTarget.setPointerCapture(e.pointerId);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // Sin captura el arrastre se perdería al salir del elemento: no arrastrar.
+      return;
+    }
+    dragging.current = { target, pointerId: e.pointerId };
   };
 
-  const end = () => {
-    dragging.current = null;
+  // Solo el puntero que arrastra puede terminar el arrastre (un segundo dedo no).
+  const endIfSame = (e: ReactPointerEvent<SVGSVGElement>) => {
+    if (dragging.current?.pointerId === e.pointerId) dragging.current = null;
   };
 
   const svgProps = {
     ref: svgRef,
     onPointerMove: (e: ReactPointerEvent<SVGSVGElement>) => {
-      if (dragging.current === null || !svgRef.current) return;
-      onDrag(dragging.current, clientToSvg(svgRef.current, e.clientX, e.clientY));
+      const drag = dragging.current;
+      if (drag === null || drag.pointerId !== e.pointerId || !svgRef.current) return;
+      onDrag(drag.target, clientToSvg(svgRef.current, e.clientX, e.clientY));
     },
-    onPointerUp: end,
-    onPointerCancel: end,
+    onPointerUp: endIfSame,
+    onPointerCancel: endIfSame,
+    onLostPointerCapture: endIfSame,
   };
 
   return { svgRef, begin, svgProps };
