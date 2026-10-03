@@ -23,7 +23,7 @@ const CAPTIONS: Record<AlgorithmGroup, string> = {
 export function TypeFigure({ group }: { group: AlgorithmGroup }) {
   return (
     <figure className="mlx-typefig">
-      <svg viewBox="0 0 210 120" role="img" aria-label={CAPTIONS[group]}>
+      <svg viewBox="0 0 210 120" aria-hidden="true">
         {group === 'supervised' &&
           DOTS.map(([x, y, label], i) => (
             <circle key={i} cx={x} cy={y} r={6} fill={label ? OVA_COLORS.class1 : OVA_COLORS.class0} />
