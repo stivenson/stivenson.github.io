@@ -73,7 +73,7 @@ const decisionTree: AlgorithmModule = {
           </p>
           <Tex block>{'G = 1 - p_{\\text{paga}}^2 - p_{\\text{impago}}^2 = 1 - 0.5^2 - 0.5^2 = 0.5'}</Tex>
           <p>
-            La pregunta «¿deuda ≤ 4?» deja a un lado 4 que pagan y 1 que no (G = 1 − 0.8² − 0.2² = 0.32), y al otro 1
+            La pregunta «¿deuda ≤ 0.4?» deja a un lado 4 que pagan y 1 que no (G = 1 − 0.8² − 0.2² = 0.32), y al otro 1
             que paga y 4 que no (también 0.32). La impureza baja de 0.5 a 0.32. El árbol prueba todas las preguntas
             posibles, se queda con la que más la baja y repite en cada lado: eso es la{' '}
             <b>división binaria recursiva</b>.
@@ -157,7 +157,7 @@ const decisionTree: AlgorithmModule = {
         <p>
           Esa inestabilidad (alta varianza) es justo lo que corrigen los <G k="ensamble">ensambles</G>: Random Forest
           promedia muchos árboles (100 por defecto en scikit-learn), cada uno entrenado con una muestra distinta de los
-          datos y con un subconjunto al azar de features en cada corte.
+          datos y con un subconjunto al azar de features en cada corte (en clasificación).
         </p>
       ),
     },
@@ -169,7 +169,7 @@ const decisionTree: AlgorithmModule = {
             es acertar.
           </p>
           <p>
-            Ahí un árbol solo, o sobreajusta, o queda tan podado que no capta el patrón. Úsalo para explicar y deja la
+            Ahí, o sobreajusta, o queda tan podado que no capta el patrón. Úsalo para explicar y deja la
             predicción a un ensamble.
           </p>
         </>
@@ -193,7 +193,7 @@ const decisionTree: AlgorithmModule = {
             cada etiqueta se voltee al azar (<G k="ruido">ruido</G>). Lee las reglas del árbol y la tabla final: ¿qué
             pasa con la exactitud en datos nuevos cuando el árbol crece? Fíjate también en dos detalles: «ingreso ≤
             2.50» lleva a «paga» por ambos lados (el corte solo dejó grupos más puros), y la hoja «deuda &gt; 0.88 →
-            paga» se apoya en apenas 2 clientes: es ruido, no una regla. Para evitarlo se fija{' '}
+            paga» se apoya en muy pocos clientes: es ruido, no una regla. Para evitarlo se fija{' '}
             <code>min_samples_leaf</code>.
           </p>
         </>

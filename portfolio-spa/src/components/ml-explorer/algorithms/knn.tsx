@@ -197,8 +197,8 @@ const knn: AlgorithmModule = {
           <p>
             El ejercicio tiene 6 usuarios y 6 películas. Es KNN para regresión: compara a Ana con los demás solo en
             las 3 películas que ella ya calificó, toma a los 3 más parecidos y predice su nota para las que no ha
-            visto como el promedio de las notas de ellos. Interestelar sale primera (3.7 de 5); Alien y Matrix quedan
-            en 1.3, así que no se le recomiendan.
+            visto como el promedio de las notas de ellos. Interestelar sale primera (3.7 de 5); Alien y Matrix
+            aparecen al final de la lista con 1.3: no vale la pena recomendárselas.
           </p>
         </>
       ),

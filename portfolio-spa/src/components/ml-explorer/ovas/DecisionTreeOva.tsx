@@ -77,7 +77,7 @@ export function DecisionTreeOva() {
           ingreso →
         </text>
         <text x={8} y={PLOT.sy(10) - 10} fontSize={11} fill={OVA_COLORS.axis}>
-          ↑ deuda
+          ↑ deuda (escala 0-10)
         </text>
         {POINTS.map((p, i) => (
           <circle

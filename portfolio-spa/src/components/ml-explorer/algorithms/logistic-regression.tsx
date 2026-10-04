@@ -34,7 +34,7 @@ const logisticRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Es un modelo lineal generalizado: modela <Tex>{'P(y=1 \\mid x)'}</Tex> aplicando la función sigmoide a una
-          combinación lineal de las features. Con más de dos clases se usa la versión multinomial (softmax).
+          combinación lineal de las <G k="feature">features</G>. Con más de dos clases se usa la versión multinomial (softmax).
         </p>
       ),
     },
@@ -73,8 +73,8 @@ const logisticRegression: AlgorithmModule = {
           <p>Después, la sigmoide convierte cualquier puntaje en una probabilidad entre 0 y 1:</p>
           <Tex block>{'P = \\frac{1}{1 + e^{-z}} = \\frac{1}{1 + e^{0}} = 0.5'}</Tex>
           <p>
-            Con z = 0 el modelo duda (50 %). Si el correo dijera «gratis» 7 veces, z = 3 y P ≈ 0.95. Cuando P supera el{' '}
-            <G k="umbral">umbral</G> (0.5 por defecto), el correo se marca como spam.
+            Con z = 0 el modelo duda (50 %). Si el correo dijera «gratis» 7 veces, z = 3 y P ≈ 0.95. Cuando P llega al{' '}
+            <G k="umbral">umbral</G> (0.5 por defecto) o lo supera, el correo se marca como spam.
           </p>
         </>
       ),
@@ -130,7 +130,9 @@ const logisticRegression: AlgorithmModule = {
             cada peso dice si una señal empuja hacia «sí» o hacia «no», y cuánto, si las demás señales no cambian.
           </li>
           <li>
-            <b>Rápida y difícil de sobreajustar:</b> con pocas features entrena en segundos y rara vez memoriza los
+            <b>
+              Rápida y difícil de <G k="overfitting">sobreajustar</G>:
+            </b> con pocas features entrena en segundos y rara vez memoriza los
             datos.
           </li>
         </ul>
