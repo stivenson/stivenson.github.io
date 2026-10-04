@@ -53,6 +53,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "KNN (k vecinos más cercanos)",
         "Recomendador: qué película ver según lo que les gustó a los usuarios más parecidos.",
     ),
+    (
+        "naive-bayes",
+        "Naive Bayes (Bayes ingenuo)",
+        "Sentimiento de reseñas: cada palabra multiplica la evidencia a favor de positiva o negativa.",
+    ),
 ]
 
 

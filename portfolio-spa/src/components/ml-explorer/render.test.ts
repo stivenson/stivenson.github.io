@@ -12,7 +12,7 @@ import { OvaFrame, OvaSlider } from './ovas/OvaFrame';
 import { AlgorithmMenu } from './AlgorithmMenu';
 import { AlgorithmTabs } from './AlgorithmTabs';
 import { AlgorithmPanel } from './AlgorithmPanel';
-import { ALGORITHMS, getMeta } from './registry';
+import { ALGORITHMS, AVAILABLE_SLUGS, getMeta, loadAlgorithm } from './registry';
 import { TAB_IDS, type AlgorithmGroup, type AlgorithmModule, type TabId } from './types';
 
 let errorSpy: ReturnType<typeof vi.spyOn>;
@@ -142,7 +142,7 @@ function fakeModule(): AlgorithmModule {
       { area: 'Eléctrica', example: 'b' },
       { area: 'Industrial', example: 'c' },
     ],
-    alternatives: ['knn', 'naive-bayes'],
+    alternatives: ['knn', 'k-means'],
   };
 }
 
@@ -164,7 +164,7 @@ describe('AlgorithmTabs', () => {
     expect(html.includes('<figure')).toBe(tab === 'type');
     if (tab === 'whenNot') {
       expect(html).toContain('KNN →');
-      expect(html).toContain('Naive Bayes (próximamente)');
+      expect(html).toContain('K-Means (próximamente)');
     }
   });
 });
@@ -182,5 +182,31 @@ describe('AlgorithmPanel', () => {
     const html = renderToStaticMarkup(h(AlgorithmPanel, { ...base, state: { status: 'error', retry: () => {} } }));
     expect(html).toContain('role="alert"');
     expect(html).toContain('Reintentar');
+  });
+});
+
+describe('LaTeX de los algoritmos', () => {
+  // Un `\;` en un string JS (en vez de `\\;`) llega a KaTeX como `;` y se ve un punto y coma suelto.
+  const texWithStraySemicolon = (html: string) =>
+    Array.from(html.matchAll(/<annotation encoding="application\/x-tex">([\s\S]*?)<\/annotation>/g), (m) => m[1]).filter(
+      (tex) => /(^|[^\\]);/.test(tex),
+    );
+
+  it('detecta el error en una fórmula de prueba', () => {
+    expect(texWithStraySemicolon(renderToStaticMarkup(h(Tex, null, 'a ;\\propto; b')))).toHaveLength(1);
+    expect(texWithStraySemicolon(renderToStaticMarkup(h(Tex, null, 'a \\;\\propto\\; b')))).toHaveLength(0);
+  });
+
+  it.each(AVAILABLE_SLUGS)('%s: ninguna fórmula tiene un «;» sin barra', async (slug) => {
+    const mod = await loadAlgorithm(slug);
+    const bad: string[] = [];
+    for (const tab of TAB_IDS) {
+      for (const part of ['essential', 'deepDive'] as const) {
+        const node = mod.tabs[tab][part];
+        if (node == null) continue;
+        bad.push(...texWithStraySemicolon(renderToStaticMarkup(node as never)));
+      }
+    }
+    expect(bad).toEqual([]);
   });
 });

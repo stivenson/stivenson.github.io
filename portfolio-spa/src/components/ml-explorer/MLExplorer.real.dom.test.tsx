@@ -225,3 +225,28 @@ it('SVM real (?alg=svm): recorre las 8 pestañas sin errores', async () => {
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('Naive Bayes real (?alg=naive-bayes): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=naive-bayes']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'Naive Bayes' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      expect(container.querySelector('.mlx-tabpanel input[type="text"]')).not.toBeNull();
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('P(positiva) = 93 %');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});

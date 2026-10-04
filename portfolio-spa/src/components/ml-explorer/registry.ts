@@ -14,6 +14,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   'gradient-boosting': () => import('./algorithms/gradient-boosting'),
   svm: () => import('./algorithms/svm'),
   knn: () => import('./algorithms/knn'),
+  'naive-bayes': () => import('./algorithms/naive-bayes'),
 };
 
 type Entry = Omit<AlgorithmMeta, 'available'>;

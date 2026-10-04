@@ -17,6 +17,7 @@ describe('registry', () => {
       'gradient-boosting',
       'svm',
       'knn',
+      'naive-bayes',
     ]);
   });
 

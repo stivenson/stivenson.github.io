@@ -7,6 +7,7 @@ import knn from './knn.out.txt?raw';
 import randomForest from './random-forest.out.txt?raw';
 import gradientBoosting from './gradient-boosting.out.txt?raw';
 import svm from './svm.out.txt?raw';
+import naiveBayes from './naive-bayes.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -79,5 +80,16 @@ describe('cifras citadas en los textos', () => {
     expect(svm).toMatch(/^rbf\s+0\.01\s+18\.3%\s+1257$/m);
     expect(svm).toMatch(/^linear\s+1\s+98\.5%\s+386$/m);
     expect(svm).toContain('Con RBF y C = 1 falla 7 de 540.');
+  });
+  it('Naive Bayes: 16 reseñas, 38 palabras; 93 %, 5 % y 28 %; «nueva» se ignora', () => {
+    expect(naiveBayes).toContain('16 reseñas, 38 palabras distintas');
+    expect(naiveBayes).toContain('Prior: P(positiva) = 0.50');
+    expect(naiveBayes).toMatch(/excelente calidad llegó rápido\s+93%/);
+    expect(naiveBayes).toMatch(/no funciona mala compra\s+5%/);
+    expect(naiveBayes).toMatch(/llegó la batería nueva\s+28%/);
+    expect(naiveBayes).toContain('«llegó» multiplica los odds de positiva por 0.70');
+    expect(naiveBayes).toContain('«batería» multiplica los odds de positiva por 1.05');
+    expect(naiveBayes).toContain('«la» multiplica los odds de positiva por 0.53');
+    expect(naiveBayes).toContain('«nueva» no estaba en el entrenamiento: se ignora');
   });
 });

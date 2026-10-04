@@ -1,0 +1,14 @@
+16 reseñas, 38 palabras distintas
+Prior: P(positiva) = 0.50
+
+Reseña nueva                     P(positiva)
+  excelente calidad llegó rápido  93%
+  no funciona mala compra         5%
+  llegó la batería nueva          28%
+
+Palabras que más empujan a positiva: buena, excelente, encantó
+Palabras que más empujan a negativa: mala, no, pésimo
+«llegó» multiplica los odds de positiva por 0.70
+«batería» multiplica los odds de positiva por 1.05
+«la» multiplica los odds de positiva por 0.53
+«nueva» no estaba en el entrenamiento: se ignora
