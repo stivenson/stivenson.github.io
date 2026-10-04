@@ -10,9 +10,11 @@ interface AlgorithmPanelProps {
   onTab: (tab: TabId) => void;
   onAlg: (slug: string) => void;
   onGoAlg: (slug: string) => void;
+  /** true si `slug` es el algoritmo pedido con «Siguiente algoritmo» (y gasta la petición). */
+  consumeReveal: (slug: string) => boolean;
 }
 
-export function AlgorithmPanel({ meta, state, tab, onTab, onAlg, onGoAlg }: AlgorithmPanelProps) {
+export function AlgorithmPanel({ meta, state, tab, onTab, onAlg, onGoAlg, consumeReveal }: AlgorithmPanelProps) {
   return (
     <article className="mlx-panel">
       <header className="mlx-head">
@@ -43,7 +45,11 @@ export function AlgorithmPanel({ meta, state, tab, onTab, onAlg, onGoAlg }: Algo
       {state.status === 'ready' && (
         <>
           <SummaryChips row={state.module.row} onPick={onTab} />
-          <AlgorithmTabs module={state.module} meta={meta} tab={tab} onTab={onTab} onAlg={onAlg} onGoAlg={onGoAlg} />
+          <AlgorithmTabs
+            module={state.module} meta={meta} tab={tab} onTab={onTab} onAlg={onAlg}
+            onGoAlg={onGoAlg}
+            consumeReveal={consumeReveal}
+          />
         </>
       )}
     </article>

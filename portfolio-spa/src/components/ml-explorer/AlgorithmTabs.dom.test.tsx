@@ -20,9 +20,9 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function Harness({ initial = 'type' as TabId, slug = 'alpha', onGoAlg = () => {} }: { initial?: TabId; slug?: string; onGoAlg?: (s: string) => void }) {
+function Harness({ initial = 'type' as TabId, slug = 'alpha', onGoAlg = () => {}, consumeReveal = () => false }: { initial?: TabId; slug?: string; onGoAlg?: (s: string) => void; consumeReveal?: (s: string) => boolean }) {
   const [tab, setTab] = useState<TabId>(initial);
-  return <AlgorithmTabs module={fakeModule(slug)} meta={getMeta(slug)} tab={tab} onTab={setTab} onAlg={() => {}} onGoAlg={onGoAlg} />;
+  return <AlgorithmTabs module={fakeModule(slug)} meta={getMeta(slug)} tab={tab} onTab={setTab} onAlg={() => {}} onGoAlg={onGoAlg} consumeReveal={consumeReveal} />;
 }
 
 const activeTab = () => screen.getByRole('tab', { selected: true });
@@ -97,7 +97,7 @@ describe('AlgorithmTabs: teclado (roving tabindex)', () => {
 });
 
 describe('AlgorithmTabs: navegación al pie', () => {
-  const nav = () => screen.getByRole('navigation', { name: 'Navegación entre pestañas' });
+  const nav = () => screen.getByRole('navigation', { name: 'Navegación: pestañas y algoritmos' });
 
   it('en la primera pestaña hay Siguiente y no Anterior; el clic avanza, enfoca y desplaza', () => {
     const error = vi.spyOn(console, 'error');
@@ -147,5 +147,17 @@ describe('AlgorithmTabs: navegación al pie', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Siguiente: / }));
     expect(main.scrollTop).toBe(0);
     expect(scrollIntoView).not.toHaveBeenCalled();
+  });
+});
+
+describe('AlgorithmTabs: un «Siguiente algoritmo» que no llegó a montar no deja rastro', () => {
+  it('si el siguiente algoritmo no carga, otro explorador no hereda el scroll ni el foco', () => {
+    const first = render(<Harness initial="realWorld" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Siguiente algoritmo: Beta →' }));
+    first.unmount(); // el chunk falla: nunca monta el siguiente
+    scrollIntoView.mockClear();
+    render(<Harness initial="bestUse" slug="beta" />);
+    expect(scrollIntoView).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(document.body);
   });
 });

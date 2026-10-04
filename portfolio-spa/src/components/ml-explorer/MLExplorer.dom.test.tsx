@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, useLocation, useNavigationType } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MLExplorer } from './MLExplorer';
@@ -112,6 +112,36 @@ describe('MLExplorer: navegación al pie de la pestaña', () => {
     expect((scrollIntoView.mock.contexts[0] as Element).classList.contains('mlx-tablist')).toBe(true);
     expect(document.activeElement?.id).toBe('mlx-tab-type');
     expect(error).not.toHaveBeenCalled();
+  });
+});
+
+describe('MLExplorer: el scroll del pie es solo para el algoritmo pedido', () => {
+  it('si tras «Siguiente algoritmo» eliges otro desde el menú, al montarlo no hay scroll ni foco', async () => {
+    renderAt('?alg=alpha&tab=realWorld');
+    const next = await screen.findByRole('button', { name: 'Siguiente algoritmo: Beta →' });
+    control.auto = false; // Beta queda cargando
+    fireEvent.click(next);
+    await screen.findByText(/Cargando Beta/);
+    scrollIntoView.mockClear();
+    fireEvent.click(screen.getByRole('button', { name: /Alpha/ }));
+    await screen.findByText('ESENCIAL-alpha-type');
+    // El menú sí trae el explorador a la vista; lo que no debe pasar es el scroll a la barra.
+    expect(scrollIntoView.mock.contexts.filter((el) => (el as Element).classList.contains('mlx-tablist'))).toHaveLength(0);
+    expect(document.activeElement?.id).not.toBe('mlx-tab-type');
+  });
+});
+
+describe('MLExplorer: fallo tras «Siguiente algoritmo»', () => {
+  it('si el chunk falla, el foco va a Reintentar', async () => {
+    renderAt('?alg=alpha&tab=realWorld');
+    const next = await screen.findByRole('button', { name: 'Siguiente algoritmo: Beta →' });
+    control.auto = false;
+    control.pending.length = 0;
+    fireEvent.click(next);
+    await screen.findByText(/Cargando Beta/);
+    await act(async () => control.pending[0].reject());
+    const retry = await screen.findByRole('button', { name: 'Reintentar' });
+    expect(document.activeElement).toBe(retry);
   });
 });
 

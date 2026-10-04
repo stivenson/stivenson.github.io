@@ -1,4 +1,4 @@
-import { useEffect, useRef, type KeyboardEvent } from 'react';
+import { useCallback, useEffect, useRef, type KeyboardEvent } from 'react';
 import { DeepDive } from './DeepDive';
 import { InYourField } from './InYourField';
 import { PythonRunner } from './PythonRunner';
@@ -14,13 +14,12 @@ interface AlgorithmTabsProps {
   onAlg: (slug: string) => void;
   /** Abre otro algoritmo en su pestaña «Tipo» (botón del pie de Ejemplo real). */
   onGoAlg: (slug: string) => void;
+  /** true si `slug` es el algoritmo pedido con «Siguiente algoritmo» (y gasta la petición). */
+  consumeReveal: (slug: string) => boolean;
 }
 
-/** Un cambio de algoritmo desde el pie debe enfocar/desplazar al montar el nuevo. */
-let pendingNav = false;
-
 /** Las 8 columnas del cheatsheet como pestañas, y el cuerpo de la activa. */
-export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg }: AlgorithmTabsProps) {
+export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg, consumeReveal }: AlgorithmTabsProps) {
   const listRef = useRef<HTMLDivElement>(null);
   const content = module.tabs[tab];
   const { Ova } = module;
@@ -40,7 +39,7 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg }: Algo
   }, [tab]);
 
   /** Lleva la vista al inicio de las pestañas y enfoca la pestaña indicada. */
-  function reveal(id: TabId) {
+  const reveal = useCallback((id: TabId) => {
     const list = listRef.current;
     const full = list?.closest('.mlx--full');
     if (full) {
@@ -51,20 +50,17 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg }: Algo
       list?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
     }
     document.getElementById(`mlx-tab-${id}`)?.focus({ preventScroll: true });
-  }
+  }, []);
 
   function goTab(id: TabId) {
     onTab(id);
     reveal(id);
   }
 
-  // Tras «Siguiente algoritmo»: el módulo nuevo monta (o re-renderiza) estas pestañas.
+  // Tras «Siguiente algoritmo»: solo si este es el algoritmo que se pidió.
   useEffect(() => {
-    if (!pendingNav) return;
-    pendingNav = false;
-    reveal('type');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [meta.slug]);
+    if (consumeReveal(meta.slug)) reveal('type');
+  }, [meta.slug, consumeReveal, reveal]);
 
   const idx = TAB_IDS.indexOf(tab);
   const prevTab = idx > 0 ? TAB_IDS[idx - 1] : null;
@@ -130,7 +126,7 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg }: Algo
           </>
         )}
         {content.deepDive && <DeepDive>{content.deepDive}</DeepDive>}
-        <nav className="mlx-pager" aria-label="Navegación entre pestañas">
+        <nav className="mlx-pager" aria-label="Navegación: pestañas y algoritmos">
           {prevTab && (
             <button type="button" className="mlx-pager-prev" onClick={() => goTab(prevTab)}>
               ← Anterior: {TAB_LABELS[prevTab]}
@@ -146,7 +142,6 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg }: Algo
               type="button"
               className="mlx-pager-next"
               onClick={() => {
-                pendingNav = true;
                 onGoAlg(nextAlg.slug);
               }}
             >

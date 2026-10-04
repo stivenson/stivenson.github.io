@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AlgorithmMenu } from './AlgorithmMenu';
 import { AlgorithmPanel } from './AlgorithmPanel';
@@ -35,16 +35,32 @@ export function MLExplorer() {
   // «Siguiente algoritmo» desplaza a la barra de pestañas; el scroll al
   // explorador completo sobraría.
   const skipRootScrollRef = useRef(false);
+  // Algoritmo al que «Siguiente algoritmo» quiere llevar el foco y el scroll.
+  // Cualquier otro cambio de algoritmo lo anula; AlgorithmTabs lo gasta al montar.
+  const revealSlugRef = useRef<string | null>(null);
+  const consumeReveal = useCallback((slug: string) => {
+    if (revealSlugRef.current !== slug) return false;
+    revealSlugRef.current = null;
+    return true;
+  }, []);
+
+  // Si el chunk pedido con «Siguiente algoritmo» falla, el foco va a «Reintentar».
+  const status = state.status;
+  useEffect(() => {
+    if (status !== 'error' || alg === null || revealSlugRef.current !== alg) return;
+    revealSlugRef.current = null;
+    rootRef.current?.querySelector<HTMLElement>('.mlx-error button')?.focus({ preventScroll: true });
+  }, [status, alg]);
 
   // Al cambiar de algoritmo (o al llegar con ?alg= desde un enlace de la
   // guía), traer el explorador a la vista si quedó fuera de pantalla.
   useEffect(() => {
     const root = rootRef.current;
-    // En pantalla completa el explorador ya ocupa la vista: nada que mover.
     if (skipRootScrollRef.current) {
       skipRootScrollRef.current = false;
       return;
     }
+    // En pantalla completa el explorador ya ocupa la vista: nada que mover.
     if (!hasAlgParamRef.current || !root || fullscreenActiveRef.current) return;
     const top = root.getBoundingClientRect().top;
     if (top >= 0 && top <= window.innerHeight * 0.6) return;
@@ -67,8 +83,10 @@ export function MLExplorer() {
 
   if (alg === null) return <div className="mlx-boot">Pronto: los algoritmos están en camino.</div>;
 
-  const select = (next: { alg?: string; tab?: TabId }) =>
+  const select = (next: { alg?: string; tab?: TabId }) => {
+    revealSlugRef.current = null;
     setParams(withExplorerState(params, { alg, tab, ...next }), { preventScrollReset: true });
+  };
 
   const classes = [
     'mlx',
@@ -113,9 +131,11 @@ export function MLExplorer() {
           onTab={(t) => select({ tab: t })}
           onAlg={(slug) => select({ alg: slug })}
           onGoAlg={(slug) => {
+            select({ alg: slug, tab: 'type' }); // select anula la petición anterior...
             skipRootScrollRef.current = true;
-            select({ alg: slug, tab: 'type' });
+            revealSlugRef.current = slug; // ...y esta se pone después
           }}
+          consumeReveal={consumeReveal}
         />
       </div>
     </section>
