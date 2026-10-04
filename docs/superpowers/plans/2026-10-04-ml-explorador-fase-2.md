@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-03-ml-algoritmos-explorador-design.md` (sección «Fase 2: ensambles y márgenes»). **Plan de referencia (formato):** `docs/superpowers/plans/2026-10-03-ml-explorador-fase-1.md`.
 
-> **Todo el código de este plan ya se ejecutó** en una copia del repo (commit `da74e6a`): con él pasan los 32 archivos de test (293 tests), `tsc`, `vite build` y los dos verificadores de ejercicios (CPython y Pyodide real). Las cifras de los textos salen de esas ejecuciones; no las cambies a mano.
+> **Todo el código de este plan ya se ejecutó** en una copia del repo (commit `da74e6a`, y de nuevo sobre `18fe5f9`, que añadió la navegación al pie de cada pestaña): con él pasan los 32 archivos de test (301 tests), `tsc`, `vite build` y los dos verificadores de ejercicios (CPython y Pyodide real). Las cifras de los textos salen de esas ejecuciones; no las cambies a mano.
 
 ---
 
@@ -3948,7 +3948,7 @@ node node_modules/typescript/bin/tsc --noEmit -p .
 ~/.cache/mlx-venv/bin/python scripts/check-ml-exercises.py
 node scripts/check-ml-exercises-pyodide.mjs
 ```
-Expected: 32 archivos de test y 293 tests en verde; `tsc` sin errores; `✓` en los 8 ejercicios en CPython y en Pyodide.
+Expected: 32 archivos de test y 301 tests en verde (o más, si se añadieron tests después de `18fe5f9`); `tsc` sin errores; `✓` en los 8 ejercicios en CPython y en Pyodide.
 
 Ejecuta el notebook completo de punta a punta con el Python de verificación (si `nbclient` y el kernel `mlx-venv` no están, instálalos como en la Task 20 de la fase 1):
 
