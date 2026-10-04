@@ -144,3 +144,30 @@ it('Linear Regression real: en Ejemplo real el botón lleva a Logistic Regressio
   const btn = await screen.findByRole('button', { name: /^Siguiente algoritmo:/ }, { timeout: 10000 });
   expect(btn.textContent).toBe('Siguiente algoritmo: Logistic Regression →');
 });
+
+it('Random Forest real (?alg=random-forest): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=random-forest']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'Random Forest' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
+      expect(svg).not.toBeNull();
+      expect(svg!.querySelectorAll('circle')).toHaveLength(28);
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('acierta 35 de 40');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});

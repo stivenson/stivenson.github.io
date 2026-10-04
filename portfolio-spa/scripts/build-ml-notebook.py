@@ -34,6 +34,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "¿Pagará el préstamo? Un árbol que se lee como reglas, y qué le pasa cuando crece demasiado.",
     ),
     (
+        "random-forest",
+        "Random Forest (bosque aleatorio)",
+        "Detector de fraude: un árbol solo contra un bosque de 100, y qué señales pesan de verdad.",
+    ),
+    (
         "knn",
         "KNN (k vecinos más cercanos)",
         "Recomendador: qué película ver según lo que les gustó a los usuarios más parecidos.",

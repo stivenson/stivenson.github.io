@@ -9,7 +9,13 @@ describe('registry', () => {
   });
 
   it('marca como disponibles solo los algoritmos implementados', () => {
-    expect(AVAILABLE_SLUGS).toEqual(['linear-regression', 'logistic-regression', 'decision-tree', 'knn']);
+    expect(AVAILABLE_SLUGS).toEqual([
+      'linear-regression',
+      'logistic-regression',
+      'decision-tree',
+      'random-forest',
+      'knn',
+    ]);
   });
 
   it('toda alternativa de todo algoritmo disponible existe en el registry', async () => {

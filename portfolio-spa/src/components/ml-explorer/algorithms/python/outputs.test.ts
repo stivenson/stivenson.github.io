@@ -4,6 +4,7 @@ import decisionTree from './decision-tree.out.txt?raw';
 import logisticRegression from './logistic-regression.out.txt?raw';
 import knn from './knn.out.txt?raw';
 
+import randomForest from './random-forest.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -42,5 +43,17 @@ describe('cifras citadas en los textos', () => {
   it('KNN: Alien y Matrix empatan en 1.3, así que no se le recomiendan a Ana', () => {
     expect(knn).toMatch(/Alien\s+1\.3 \/ 5/);
     expect(knn).toMatch(/Matrix\s+1\.3 \/ 5/);
+  });
+
+  it('Random Forest: 30 % de fraudes; el árbol solo 77.7 % y el bosque 82.3 % en compras nuevas, ambos 100 % en entrenamiento', () => {
+    expect(randomForest).toContain('Fraudes: 303 de 1000 compras (30%)');
+    expect(randomForest).toContain('Un árbol solo   → entrenamiento 100.0% | datos nuevos 77.7%');
+    expect(randomForest).toContain('Bosque de 100   → entrenamiento 100.0% | datos nuevos 82.3%');
+  });
+
+  it('Random Forest: «antigüedad» saca 0.12 por impureza (más que «intentos») y −0.006 por permutación', () => {
+    expect(randomForest).toMatch(/^\s+intentos\s+0\.06\s+0\.015$/m);
+    expect(randomForest).toMatch(/^\s+antigüedad\s+0\.12\s+-0\.006$/m);
+    expect(randomForest).toMatch(/^\s+monto\s+0\.44\s+0\.139$/m);
   });
 });

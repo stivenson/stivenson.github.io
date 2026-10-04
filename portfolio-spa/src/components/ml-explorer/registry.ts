@@ -10,6 +10,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   'linear-regression': () => import('./algorithms/linear-regression'),
   'logistic-regression': () => import('./algorithms/logistic-regression'),
   'decision-tree': () => import('./algorithms/decision-tree'),
+  'random-forest': () => import('./algorithms/random-forest'),
   knn: () => import('./algorithms/knn'),
 };
 
