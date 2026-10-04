@@ -114,13 +114,318 @@ export const GLOSSARY = {
   },
   ensamble: {
     term: 'Ensamble',
-    what: 'Combinar muchos modelos (por ejemplo, cientos de árboles) y promediar o votar sus respuestas.',
-    why: 'Reduce la inestabilidad de un modelo solo. Random Forest y Gradient Boosting son ensambles de árboles.',
+    what: 'Combinar muchos modelos (por ejemplo, 100 árboles) y promediar, votar o sumar sus respuestas.',
+    why: 'Random Forest promedia árboles para reducir la inestabilidad de uno solo; Gradient Boosting los suma uno tras otro para corregir sus errores.',
   },
   interpretable: {
     term: 'Modelo interpretable',
     what: 'Un modelo cuyo razonamiento puedes leer y explicar, como «cada m² suma 2.5 millones».',
     why: 'En crédito, salud o decisiones públicas a menudo es obligatorio explicar por qué se decidió algo.',
+  },
+  bootstrap: {
+    term: 'Muestra bootstrap',
+    what: 'Una muestra del mismo tamaño que los datos, sacada al azar con reposición: algunos ejemplos salen repetidos y otros (cerca de un tercio) no salen.',
+    why: 'Random Forest entrena cada árbol con una muestra bootstrap distinta, y por eso los árboles se equivocan en sitios distintos.',
+  },
+  tasaAprendizaje: {
+    term: 'Tasa de aprendizaje (learning rate)',
+    what: 'Qué fracción de cada corrección se aplica: con 0.1, cada árbol nuevo corrige solo el 10 % del error que ve.',
+    why: 'Más pequeña necesita más árboles pero suele generalizar mejor; más grande aprende rápido y sobreajusta antes.',
+  },
+  perdidaLog: {
+    term: 'Pérdida logarítmica (log loss)',
+    what: 'Castiga cada predicción según la probabilidad que le dio a la respuesta correcta: decir 99 % y fallar cuesta muchísimo; decir 60 % y fallar, poco.',
+    why: 'Mide la calidad de las probabilidades, no solo los aciertos. Más baja es mejor.',
+  },
+  margen: {
+    term: 'Margen',
+    what: 'La franja entre la frontera de decisión y los puntos más cercanos de cada clase. Con margen duro queda vacía; con margen blando (el de scikit-learn) se deja que algunos puntos entren, a cambio de un castigo C.',
+    why: 'Una SVM busca la frontera con el margen más ancho: deja la mayor distancia de seguridad posible a ambos lados.',
+  },
+  vectorSoporte: {
+    term: 'Vector de soporte',
+    what: 'Cada punto que queda sobre el borde del margen, dentro de él o del lado equivocado.',
+    why: 'Solo ellos definen la frontera de la SVM: si borras cualquier otro punto, la frontera no cambia.',
+  },
+  kernel: {
+    term: 'Kernel',
+    what: 'Una función que mide el parecido entre dos puntos. Con ella la SVM traza fronteras curvas sin calcular nuevas features a mano.',
+    why: 'El lineal da fronteras rectas; el RBF (gaussiano) da fronteras curvas que pueden rodear grupos.',
+  },
+  priorVerosimilitud: {
+    term: 'Prior y verosimilitud',
+    what: 'El prior es la probabilidad de cada clase antes de leer el dato (qué fracción de reseñas es positiva). La verosimilitud es qué tan probable es ver una palabra dentro de cada clase.',
+    why: 'El teorema de Bayes combina ambas: probabilidad final ∝ prior × verosimilitud de cada palabra.',
+  },
+  suavizadoLaplace: {
+    term: 'Suavizado de Laplace',
+    what: 'Sumar 1 a todos los conteos de palabras antes de calcular probabilidades.',
+    why: 'Sin él, una palabra que nunca apareció en una clase tendría probabilidad 0 y anularía toda la multiplicación.',
+  },
+  bagging: {
+    term: 'Bagging',
+    what: 'Entrenar muchos modelos, cada uno con una muestra bootstrap distinta de los datos, y promediar o votar sus respuestas.',
+    why: 'Promediar modelos que se equivocan en sitios distintos reduce la inestabilidad de cada uno.',
+  },
+  oob: {
+    term: 'Error OOB (fuera de la bolsa)',
+    what: 'El acierto de cada árbol medido con las filas que quedaron fuera de su muestra bootstrap (cerca de un tercio).',
+    why: 'Da una estimación de cómo le irá con datos nuevos sin apartar un conjunto de prueba.',
+  },
+  importanciaPermutacion: {
+    term: 'Importancia por permutación',
+    what: 'Cuánto cae el acierto del modelo en datos nuevos si revuelves al azar una columna.',
+    why: 'Si revolverla no cambia nada, el modelo no depende de esa feature; es más confiable que la importancia por impureza.',
+  },
+  sesgoVarianza: {
+    term: 'Sesgo y varianza',
+    what: 'Sesgo: error por un modelo demasiado simple, que falla igual siempre. Varianza: error por un modelo inestable, que cambia mucho si cambian un poco los datos.',
+    why: 'Random Forest baja sobre todo la varianza (promedia); Gradient Boosting, sobre todo el sesgo (corrige).',
+  },
+  precisionSensibilidad: {
+    term: 'Precisión y sensibilidad',
+    what: 'Precisión: de lo que el modelo marcó como fraude, qué fracción lo era. Sensibilidad (recall): de los fraudes reales, qué fracción detectó.',
+    why: 'Con clases raras la exactitud engaña; estas dos dicen cuántas falsas alarmas y cuántos casos perdidos hay.',
+  },
+  desbalance: {
+    term: 'Clases desbalanceadas',
+    what: 'Cuando una clase es mucho más rara que la otra, como 1 fraude por cada 100 compras.',
+    why: 'El modelo puede acertar 99 % sin detectar nada; hay que dar más peso a la clase rara o mirar otras métricas.',
+  },
+  extrapolar: {
+    term: 'Extrapolar',
+    what: 'Predecir fuera del rango de los datos con que se entrenó.',
+    why: 'Los árboles no extrapolan: más allá de lo visto repiten el último valor.',
+  },
+  boosting: {
+    term: 'Boosting',
+    what: 'Entrenar modelos uno tras otro, cada uno enfocado en los errores que dejaron los anteriores, y sumarlos.',
+    why: 'Corrige paso a paso, pero si se pasa de pasos empieza a corregir ruido.',
+  },
+  modeloDebil: {
+    term: 'Modelo débil',
+    what: 'Un modelo muy simple que por sí solo apenas mejora la predicción, como un árbol de uno o dos cortes.',
+    why: 'Boosting suma cientos de ellos; al ser simples, cada uno corrige poco y es difícil que memorice.',
+  },
+  gradiente: {
+    term: 'Gradiente',
+    what: 'La dirección en que más rápido sube el error si mueves la predicción. Ir en sentido contrario lo baja.',
+    why: 'Gradient Boosting entrena cada árbol para apuntar en esa dirección contraria; con error cuadrático, eso es el residuo.',
+  },
+  paradaTemprana: {
+    term: 'Parada temprana (early stopping)',
+    what: 'Detener el entrenamiento cuando el error en datos de validación deja de bajar.',
+    why: 'Evita seguir sumando árboles que solo memorizan ruido, sin adivinar el número de antemano.',
+  },
+  validacionCruzada: {
+    term: 'Validación cruzada',
+    what: 'Dividir los datos de entrenamiento en k partes y entrenar k veces, midiendo cada vez en la parte que quedó fuera.',
+    why: 'Permite elegir hiperparámetros sin gastar los datos de prueba, que se reservan para la medición final.',
+  },
+  shap: {
+    term: 'Valores SHAP',
+    what: 'Para una predicción concreta, cuánto sumó o restó cada feature respecto al promedio.',
+    why: 'Sirven para explicar modelos de caja negra caso por caso, por ejemplo a quién se le negó un crédito.',
+  },
+  faltantes: {
+    term: 'Valores faltantes',
+    what: 'Celdas vacías en la tabla (NaN): un sensor que no midió, un campo que nadie llenó.',
+    why: 'Muchos modelos fallan con ellos y hay que rellenarlos antes; algunos los manejan solos.',
+  },
+  tabular: {
+    term: 'Datos tabulares',
+    what: 'Datos en forma de tabla: cada fila es un caso y cada columna una feature (edad, monto, ciudad).',
+    why: 'Es donde los ensambles de árboles suelen ganar; en imágenes o texto suelen ganar las redes neuronales.',
+  },
+  categorica: {
+    term: 'Feature categórica',
+    what: 'Una feature cuyos valores son categorías sin orden numérico: ciudad, color, tipo de cliente.',
+    why: 'Muchos modelos solo aceptan números y hay que codificarlas antes.',
+  },
+  lineaBase: {
+    term: 'Línea base',
+    what: 'El resultado de un modelo muy simple (o de predecir siempre la clase más común) contra el que se compara.',
+    why: 'Si el modelo complejo no la supera con claridad, no vale su costo.',
+  },
+  librariasBoosting: {
+    term: 'XGBoost, LightGBM y CatBoost',
+    what: 'Bibliotecas de Gradient Boosting optimizadas: agrupan valores, usan varios núcleos y manejan datos faltantes.',
+    why: 'Son las que se usan en producción y en competencias; el GradientBoostingClassifier clásico es más lento.',
+  },
+  huber: {
+    term: 'Pérdida de Huber',
+    what: 'Una medida de error cuadrática para errores pequeños y lineal para los grandes.',
+    why: 'Un outlier pesa mucho menos que con el error cuadrático puro.',
+  },
+  parametroC: {
+    term: 'C (en SVM)',
+    what: 'Cuánto se castiga cada punto que queda dentro del margen o del lado equivocado.',
+    why: 'C pequeño: margen ancho y tolerante. C grande: margen estrecho que intenta acertar cada punto y puede memorizar.',
+  },
+  gamma: {
+    term: 'γ (gamma, en el kernel RBF)',
+    what: 'Qué tan lejos llega la influencia de cada punto: con γ grande, solo a sus vecinos inmediatos.',
+    why: 'γ muy grande da fronteras que rodean cada punto (sobreajuste); muy pequeño, fronteras casi rectas.',
+  },
+  margenBlando: {
+    term: 'Margen duro y margen blando',
+    what: 'Duro: ningún punto puede quedar dentro del margen. Blando: se permite, pagando un castigo controlado por C.',
+    why: 'Con datos reales casi siempre hay solapamiento, así que se usa el blando (es el de scikit-learn).',
+  },
+  dual: {
+    term: 'Forma dual',
+    what: 'Una manera equivalente de plantear el problema de la SVM en la que los datos solo aparecen como productos entre pares de puntos.',
+    why: 'Es lo que permite cambiar esos productos por un kernel y obtener fronteras curvas.',
+  },
+  convexo: {
+    term: 'Problema convexo',
+    what: 'Un problema de optimización con forma de tazón: un solo fondo, sin hoyos falsos.',
+    why: 'El algoritmo siempre llega al mejor resultado posible, sin depender del punto de partida.',
+  },
+  regularizacion: {
+    term: 'Regularización',
+    what: 'Penalizar los modelos demasiado complejos (pesos grandes, fronteras retorcidas) durante el entrenamiento.',
+    why: 'Es la defensa principal contra el sobreajuste; en SVM, maximizar el margen cumple ese papel.',
+  },
+  hiperplano: {
+    term: 'Hiperplano',
+    what: 'La versión de una recta en más dimensiones: una recta en 2D, un plano en 3D y su equivalente con 64 features.',
+    why: 'La SVM lineal separa las clases con uno; no se puede dibujar, pero se calcula igual.',
+  },
+  unoContraUno: {
+    term: 'Uno contra uno',
+    what: 'Para k clases, entrenar un clasificador por cada par de clases (k·(k−1)/2) y que voten.',
+    why: 'Así una SVM, que separa dos clases, clasifica 10 dígitos con 45 modelos.',
+  },
+  disperso: {
+    term: 'Datos dispersos',
+    what: 'Tablas casi llenas de ceros, como el conteo de palabras: cada texto usa pocas de las miles posibles.',
+    why: 'Hay algoritmos que aprovechan los ceros y entrenan mucho más rápido.',
+  },
+  calibracion: {
+    term: 'Calibración de probabilidades',
+    what: 'Ajustar las probabilidades para que «80 %» signifique que acierta 8 de cada 10 veces. El escalado de Platt ajusta una curva logística sobre las salidas del modelo.',
+    why: 'SVM y Naive Bayes clasifican bien pero sus probabilidades no son confiables sin calibrar.',
+  },
+  redConvolucional: {
+    term: 'Red convolucional',
+    what: 'Una red neuronal que recorre la imagen con pequeños filtros para detectar bordes, formas y objetos.',
+    why: 'Desde 2012 domina el reconocimiento de imágenes, donde antes destacaban las SVM.',
+  },
+  odds: {
+    term: 'Odds (momios)',
+    what: 'Probabilidad de sí ÷ probabilidad de no. Si P = 0.8, los odds son 0.8/0.2 = 4 (4 a 1).',
+    why: 'Naive Bayes y la regresión logística los multiplican factor por factor; al final se convierten de vuelta en probabilidad.',
+  },
+  bayes: {
+    term: 'Teorema de Bayes',
+    what: 'Regla para actualizar una probabilidad con evidencia nueva: probabilidad final ∝ probabilidad previa × qué tan probable es la evidencia.',
+    why: 'Es la base de Naive Bayes: empieza con el prior y cada palabra lo actualiza.',
+  },
+  independenciaCondicional: {
+    term: 'Independencia condicional',
+    what: 'Suponer que, sabiendo la clase, ver una palabra no cambia la probabilidad de ver otra.',
+    why: 'Es el supuesto «ingenuo»: casi nunca es cierto, pero simplifica tanto que permite entrenar contando.',
+  },
+  generativo: {
+    term: 'Modelo generativo',
+    what: 'Un modelo que aprende cómo son los datos de cada clase (qué palabras usa una reseña positiva) y de ahí deduce la clase.',
+    why: 'Aprende con pocos datos; los discriminativos, como la regresión logística, suelen ganar cuando hay muchos.',
+  },
+  variantesNB: {
+    term: 'Multinomial, Bernoulli y gaussiano',
+    what: 'Variantes de Naive Bayes: multinomial cuenta cuántas veces aparece cada palabra; Bernoulli solo si aparece o no; gaussiano supone números continuos con forma de campana.',
+    why: 'Se elige según el tipo de feature: conteos, sí/no o mediciones.',
+  },
+  ngrama: {
+    term: 'N-grama (bigrama)',
+    what: 'Una secuencia de n palabras seguidas tratada como una sola feature: «no funciona» es un bigrama.',
+    why: 'Le da al modelo algo del orden de las palabras, que por sí solo no ve.',
+  },
+  incremental: {
+    term: 'Aprendizaje incremental',
+    what: 'Actualizar el modelo con datos nuevos sin volver a entrenar desde cero.',
+    why: 'Útil cuando los textos llegan en flujo continuo (partial_fit en scikit-learn).',
+  },
+  vocabulario: {
+    term: 'Vocabulario (bolsa de palabras)',
+    what: 'La lista de palabras distintas vistas al entrenar; cada texto se convierte en el conteo de cada una, sin importar el orden.',
+    why: 'Las palabras fuera del vocabulario se ignoran al predecir.',
+  },
+  transformer: {
+    term: 'Transformer',
+    what: 'La arquitectura de red neuronal detrás de los modelos de lenguaje actuales; lee cada palabra en el contexto de las demás.',
+    why: 'Entiende negaciones y orden, a cambio de mucho más cómputo y datos.',
+  },
+  correlacion: {
+    term: 'Correlación',
+    what: 'Qué tanto dos variables suben o bajan juntas: de −1 a 1.',
+    why: 'Features muy correlacionadas cuentan casi la misma información; algunos modelos la cuentan doble.',
+  },
+  regularizacionL1L2: {
+    term: 'Regularización L1 (Lasso) y L2 (Ridge)',
+    what: 'Dos formas de castigar pesos grandes: L1 (Lasso) suma sus valores absolutos y puede dejar algunos en 0 exacto; L2 (Ridge) suma sus cuadrados y los encoge a todos sin anularlos.',
+    why: 'L1 sirve además para descartar features inútiles; L2 es la opción por defecto y más estable cuando hay features parecidas.',
+  },
+  dataset: {
+    term: 'Dataset (conjunto de datos)',
+    what: 'La tabla completa de ejemplos con que se trabaja: cada fila un caso, cada columna una feature o la etiqueta.',
+    why: 'Su calidad y tamaño suelen limitar el resultado más que la elección del algoritmo.',
+  },
+  embedding: {
+    term: 'Embedding',
+    what: 'Una lista de números que representa algo complejo (una palabra, una imagen, un cliente) de modo que cosas parecidas quedan cerca.',
+    why: 'Convierte texto o imágenes en features numéricas que los algoritmos clásicos sí pueden usar.',
+  },
+  solver: {
+    term: 'Solver',
+    what: 'El método numérico que busca los mejores pesos del modelo, como lbfgs o liblinear en scikit-learn.',
+    why: 'Cambia la velocidad y qué regularización se permite; si no converge, scikit-learn avisa y conviene escalar o subir max_iter.',
+  },
+  batch: {
+    term: 'Batch (lote)',
+    what: 'Un grupo de ejemplos que se procesa de una vez en cada paso del entrenamiento, en lugar de todo el dataset.',
+    why: 'Permite entrenar con datos que no caben en memoria y acelera el descenso de gradiente.',
+  },
+  descensoGradiente: {
+    term: 'Descenso de gradiente',
+    what: 'Ajustar los pesos a pasitos, cada vez en la dirección en que más baja el error, hasta que deja de bajar.',
+    why: 'Es como se entrenan la regresión logística, las redes neuronales y muchos otros modelos.',
+  },
+  sigmoide: {
+    term: 'Sigmoide',
+    what: 'La curva en forma de S que convierte cualquier número en una probabilidad entre 0 y 1: 0 da 0.5, números grandes dan casi 1.',
+    why: 'Es la que usa la regresión logística para pasar del puntaje a la probabilidad.',
+  },
+  softmax: {
+    term: 'Softmax',
+    what: 'La versión de la sigmoide para varias clases: convierte un puntaje por clase en probabilidades que suman 1.',
+    why: 'Permite que la regresión logística y las redes neuronales elijan entre más de dos clases.',
+  },
+  pca: {
+    term: 'PCA (análisis de componentes principales)',
+    what: 'Una técnica que resume muchas features en unas pocas direcciones nuevas que conservan la mayor parte de la variación.',
+    why: 'Reduce la dimensión antes de entrenar o para dibujar los datos en 2D.',
+  },
+  poda: {
+    term: 'Poda (de un árbol)',
+    what: 'Recortar las ramas de un árbol de decisión que aportan poco, o impedir que crezca más allá de cierta profundidad.',
+    why: 'Un árbol sin podar memoriza los datos; podarlo es la forma básica de evitar el sobreajuste.',
+  },
+  entropia: {
+    term: 'Entropía',
+    what: 'Una medida de desorden: 0 si todos los ejemplos de un grupo son de la misma clase, máxima si están mezclados por igual.',
+    why: 'Es una alternativa al Gini para elegir los cortes de un árbol; en la práctica suelen dar árboles parecidos.',
+  },
+  rocAuc: {
+    term: 'Curva ROC y AUC',
+    what: 'La curva ROC muestra, para cada umbral, cuántos positivos detecta el modelo contra cuántas falsas alarmas da. El AUC es el área bajo esa curva, de 0.5 (azar) a 1 (perfecto).',
+    why: 'Compara modelos sin tener que elegir un umbral primero.',
+  },
+  exactitud: {
+    term: 'Exactitud (accuracy)',
+    what: 'La fracción de predicciones correctas: 90 aciertos de 100 son 90 %.',
+    why: 'Es fácil de entender, pero engaña con clases desbalanceadas: acertar 99 % puede ser no detectar nada.',
   },
 } satisfies Record<string, GlossaryEntry>;
 
