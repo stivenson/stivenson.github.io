@@ -1,0 +1,1 @@
+function u(f,t,o,[n,e],[c,s]){if(n===e||c===s)throw new Error("Dominio vacío en createPlot");const i=f-2*o,l=t-2*o;return{width:f,height:t,pad:o,sx:r=>o+(r-n)/(e-n)*i,sy:r=>t-o-(r-c)/(s-c)*l,ix:r=>n+(r-o)/i*(e-n),iy:r=>c+(t-o-r)/l*(s-c)}}export{u as c};
