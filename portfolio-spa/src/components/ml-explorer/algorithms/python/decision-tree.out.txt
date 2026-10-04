@@ -1,0 +1,25 @@
+|--- deuda <= 0.38
+|   |--- atrasos <= 2.50
+|   |   |--- ingreso <= 2.50
+|   |   |   |--- class: paga
+|   |   |--- ingreso >  2.50
+|   |   |   |--- class: paga
+|   |--- atrasos >  2.50
+|   |   |--- class: impago
+|--- deuda >  0.38
+|   |--- atrasos <= 1.50
+|   |   |--- ingreso <= 4.95
+|   |   |   |--- class: impago
+|   |   |--- ingreso >  4.95
+|   |   |   |--- class: paga
+|   |--- atrasos >  1.50
+|   |   |--- deuda <= 0.88
+|   |   |   |--- class: impago
+|   |   |--- deuda >  0.88
+|   |   |   |--- class: paga
+
+Profundidad | exactitud entrenamiento | exactitud datos nuevos
+          1 |                   64.3% |                  62.0%
+          3 |                   78.0% |                  73.3%
+          5 |                   81.1% |                  69.3%
+         15 |                   99.7% |                  70.0%

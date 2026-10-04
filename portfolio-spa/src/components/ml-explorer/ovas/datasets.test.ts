@@ -10,7 +10,18 @@ import {
   LR_OUTLIER,
   TREE_POINTS,
 } from './datasets';
-import { accuracy, buildTree, countLeaves, fitLine, fitLogistic1D, knnVote, mse, sigmoid, snap } from './ovaMath';
+import {
+  accuracy,
+  buildTree,
+  countLeaves,
+  fitLine,
+  fitLogistic1D,
+  knnVote,
+  mse,
+  predictTree,
+  sigmoid,
+  snap,
+} from './ovaMath';
 
 describe('OVA de regresión lineal', () => {
   it('la recta inicial es ŷ ≈ 0.98 + 0.65·x, con MSE ≈ 0.10', () => {
@@ -85,6 +96,12 @@ describe('OVA del árbol de decisión', () => {
     const tree = buildTree(TREE_POINTS, depth);
     expect(countLeaves(tree)).toBe(leaves);
     expect(accuracy(tree, TREE_POINTS)).toBe(acc);
+  });
+
+  it('con 4 encierra el ruido de (8, 8); el de (3, 1.5) cae recién con 5', () => {
+    expect(predictTree(buildTree(TREE_POINTS, 4), { x: 8, y: 8 })).toBe(0);
+    expect(predictTree(buildTree(TREE_POINTS, 4), { x: 3, y: 1.5 })).toBe(0); // aún falla
+    expect(predictTree(buildTree(TREE_POINTS, 5), { x: 3, y: 1.5 })).toBe(1);
   });
 });
 

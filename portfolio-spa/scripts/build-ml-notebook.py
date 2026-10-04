@@ -26,6 +26,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Logistic Regression (regresión logística)",
         "Detector de spam: probabilidad de que un correo sea spam según tres señales.",
     ),
+    (
+        "decision-tree",
+        "Decision Tree (árbol de decisión)",
+        "¿Pagará el préstamo? Un árbol que se lee como reglas, y qué le pasa cuando crece demasiado.",
+    ),
 ]
 
 
