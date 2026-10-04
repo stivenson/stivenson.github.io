@@ -16,6 +16,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   knn: () => import('./algorithms/knn'),
   'naive-bayes': () => import('./algorithms/naive-bayes'),
   'k-means': () => import('./algorithms/k-means'),
+  'hierarchical-clustering': () => import('./algorithms/hierarchical-clustering'),
   dbscan: () => import('./algorithms/dbscan'),
 };
 

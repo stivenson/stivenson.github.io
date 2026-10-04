@@ -302,3 +302,28 @@ it('K-Means real (?alg=k-means): recorre las 8 pestañas sin errores', async () 
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('Hierarchical Clustering real (?alg=hierarchical-clustering): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=hierarchical-clustering']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'Hierarchical Clustering' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      expect(container.querySelectorAll('.mlx-tabpanel svg[role="img"]')).toHaveLength(2);
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('Corte en 3.0: 3 grupos');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});

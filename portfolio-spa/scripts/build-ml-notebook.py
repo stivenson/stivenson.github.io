@@ -64,6 +64,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Segmentación de clientes sin etiquetas: inercia y silueta para elegir K.",
     ),
     (
+        "hierarchical-clustering",
+        "Hierarchical Clustering (agrupamiento jerárquico)",
+        "Genes simulados: un árbol de parecidos (dendrograma) que se corta a la altura que convenga.",
+    ),
+    (
         "dbscan",
         "DBSCAN (agrupamiento por densidad)",
         "Reportes de huecos en un mapa: zonas de forma libre y puntos aislados como ruido.",

@@ -1,0 +1,16 @@
+Últimas 4 uniones (altura = distancia a la que se unen):
+  altura 0.05 → grupo de 4 genes
+  altura 0.06 → grupo de 4 genes
+  altura 0.96 → grupo de 8 genes
+  altura 1.48 → grupo de 12 genes
+
+Cortando en 2 grupos:
+  grupo 1: sube-1, sube-2, sube-3, sube-4
+  grupo 2: baja-1, baja-2, baja-3, baja-4, pico-1, pico-2, pico-3, pico-4
+
+Cortando en 3 grupos:
+  grupo 1: sube-1, sube-2, sube-3, sube-4
+  grupo 2: pico-1, pico-2, pico-3, pico-4
+  grupo 3: baja-1, baja-2, baja-3, baja-4
+
+Correlación cofenética: 0.87 (cerca de 1 = el árbol respeta bien las distancias)

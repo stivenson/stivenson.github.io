@@ -8,6 +8,7 @@ import randomForest from './random-forest.out.txt?raw';
 import gradientBoosting from './gradient-boosting.out.txt?raw';
 import svm from './svm.out.txt?raw';
 import naiveBayes from './naive-bayes.out.txt?raw';
+import hierarchical from './hierarchical-clustering.out.txt?raw';
 import kMeans from './k-means.out.txt?raw';
 import dbscan from './dbscan.out.txt?raw';
 /**
@@ -117,5 +118,19 @@ describe('cifras citadas en los textos', () => {
     expect(kMeans).toContain('100 clientes | gasto 114 mil |  1.9 visitas al mes');
     expect(kMeans).toContain('100 clientes | gasto 301 mil | 11.5 visitas al mes');
     expect(kMeans).toContain('100 clientes | gasto 447 mil |  3.9 visitas al mes');
+  });
+  it('Hierarchical Clustering: cada patrón se une por debajo de 0.06 y los patrones a 0.96 y 1.48; con 3 grupos salen los 3 patrones', () => {
+    const heights = [...hierarchical.matchAll(/altura ([\d.]+) → grupo de (\d+) genes/g)].map((m) => [Number(m[1]), Number(m[2])]);
+    expect(heights).toEqual([
+      [0.05, 4],
+      [0.06, 4],
+      [0.96, 8],
+      [1.48, 12],
+    ]);
+    // «cada patrón queda unido por debajo de 0.07»: las uniones de 4 genes se imprimen como 0.05 y 0.06 (< 0.065).
+    expect(heights[1][0]).toBeLessThan(0.07);
+    expect(hierarchical).toContain('grupo 1: sube-1, sube-2, sube-3, sube-4\n  grupo 2: pico-1, pico-2, pico-3, pico-4\n  grupo 3: baja-1, baja-2, baja-3, baja-4');
+    expect(hierarchical).toContain('grupo 2: baja-1, baja-2, baja-3, baja-4, pico-1, pico-2, pico-3, pico-4');
+    expect(hierarchical).toContain('Correlación cofenética: 0.87 (cerca de 1 = el árbol respeta bien las distancias)');
   });
 });

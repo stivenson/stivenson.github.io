@@ -19,6 +19,7 @@ describe('registry', () => {
       'knn',
       'naive-bayes',
       'k-means',
+      'hierarchical-clustering',
       'dbscan',
     ]);
   });
