@@ -2,30 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { AVAILABLE_SLUGS, loadAlgorithm } from '../registry';
 import { TAB_IDS } from '../types';
-import { CLOSE, OPEN, toMarkedText } from './visibleText';
-
-const WORDY = /[\p{L}\p{N}]/u;
-/** Puntuación que cierra y pide espacio después: «riesgo),[[término]]» está pegado. */
-const CLOSING_PUNCT = /[,;:.)»!?]/u;
-/** Lo que no puede seguir a un término sin espacio: letra, dígito o una apertura. */
-const OPENING = /[(«]/u;
-
-
-export function findGlued(text: string): string[] {
-  const bad: string[] = [];
-  const re = new RegExp(`${OPEN}([^${CLOSE}]*)${CLOSE}`, 'gu');
-  for (let m = re.exec(text); m; m = re.exec(text)) {
-    const before = [...text.slice(0, m.index)].pop() ?? '';
-    const after = [...text.slice(m.index + m[0].length)][0] ?? '';
-    const gluedBefore = WORDY.test(before) || CLOSING_PUNCT.test(before);
-    const gluedAfter = WORDY.test(after) || OPENING.test(after);
-    if (gluedBefore || gluedAfter) {
-      const from = Math.max(0, m.index - 25);
-      bad.push(text.slice(from, m.index + m[0].length + 25).replaceAll(OPEN, '[[').replaceAll(CLOSE, ']]'));
-    }
-  }
-  return bad;
-}
+import { CLOSE, OPEN, findGlued, toMarkedText } from './visibleText';
 
 describe('findGlued', () => {
   it('detecta letras pegadas y acepta espacios y puntuación', () => {

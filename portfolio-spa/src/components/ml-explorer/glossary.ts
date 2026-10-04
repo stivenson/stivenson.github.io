@@ -452,6 +452,121 @@ export const GLOSSARY = {
     what: 'La versión de SVM que predice números: busca una franja que contenga la mayoría de los puntos y solo castiga los que quedan fuera.',
     why: 'Sirve si te gusta la idea de SVM pero tu problema es estimar una cantidad, no una clase.',
   },
+  cluster: {
+    term: 'Cluster (grupo)',
+    what: 'Un grupo de datos parecidos entre sí y distintos de los de otros grupos. Lo forma el algoritmo; nadie lo etiquetó antes.',
+    why: 'Agrupar es la tarea típica del aprendizaje no supervisado: segmentar clientes, zonas, genes.',
+  },
+  centroide: {
+    term: 'Centroide',
+    what: 'El punto promedio de un grupo: el promedio de cada feature de sus miembros.',
+    why: 'K-Means representa cada grupo con su centroide y asigna cada dato al más cercano.',
+  },
+  inercia: {
+    term: 'Inercia',
+    what: 'La suma de las distancias al cuadrado de cada punto a su centroide. Cuanto más baja, más apretados los grupos.',
+    why: 'Es lo que K-Means minimiza. Siempre baja al subir K, así que sola no sirve para elegir K.',
+  },
+  silueta: {
+    term: 'Coeficiente de silueta',
+    what: 'Para cada punto compara su distancia media a su grupo (a) con la del grupo vecino más cercano (b): (b − a) / máx(a, b). Va de −1 a 1.',
+    why: 'Cerca de 1, grupos compactos y separados; cerca de 0, grupos que se tocan. Sirve para comparar valores de K sin etiquetas.',
+  },
+  codo: {
+    term: 'Método del codo',
+    what: 'Graficar la inercia contra K y buscar el punto donde deja de bajar mucho: el «codo» de la curva.',
+    why: 'Es una pista para elegir K, no una regla: a veces la curva no tiene un codo claro.',
+  },
+  minimoLocal: {
+    term: 'Mínimo local',
+    what: 'Una solución mejor que todas las vecinas, pero peor que la mejor posible.',
+    why: 'K-Means puede quedarse en uno según dónde arranquen los centroides; por eso se repite con varios arranques.',
+  },
+  kmeansPP: {
+    term: 'k-means++',
+    what: 'Una forma de elegir los centroides iniciales: el primero al azar y cada siguiente, preferiblemente lejos de los ya elegidos.',
+    why: 'Arranca con centroides repartidos y reduce el riesgo de atascarse; es el valor por defecto de scikit-learn.',
+  },
+  dendrograma: {
+    term: 'Dendrograma',
+    what: 'El dibujo en forma de árbol de un agrupamiento jerárquico: cada unión es un tramo horizontal a la altura (distancia) en que se unieron dos grupos.',
+    why: 'Cortarlo con una línea horizontal da los grupos; los saltos grandes de altura sugieren dónde cortar.',
+  },
+  enlace: {
+    term: 'Enlace (linkage)',
+    what: 'La regla para medir la distancia entre dos grupos: simple (los dos puntos más cercanos), completo (los más lejanos), promedio (el promedio de todos los pares) o Ward (cuánto crece la varianza al unirlos).',
+    why: 'Cambia la forma de los grupos: el simple forma cadenas largas; Ward y el completo, grupos compactos.',
+  },
+  cofenetica: {
+    term: 'Correlación cofenética',
+    what: 'Qué tanto se parecen las distancias originales entre puntos a las alturas en que el dendrograma los une. Va de −1 a 1.',
+    why: 'Cerca de 1, el árbol resume bien los datos; baja, el árbol los deforma.',
+  },
+  varianza: {
+    term: 'Varianza',
+    what: 'Qué tanto se esparcen los valores alrededor de su promedio: el promedio de las distancias al promedio, al cuadrado.',
+    why: 'En PCA, la dirección con más varianza es la que más diferencia a unos datos de otros; las de poca varianza suelen aportar poco, aunque no siempre.',
+  },
+  componentePrincipal: {
+    term: 'Componente principal',
+    what: 'Una dirección nueva en los datos, combinación de las features originales. El primero va por donde más se esparcen los datos; el segundo, perpendicular a él, por donde más se esparce lo que queda; y así sucesivamente.',
+    why: 'Quedarse con los primeros componentes resume muchas columnas en pocas, perdiendo lo menos posible.',
+  },
+  varianzaExplicada: {
+    term: 'Varianza explicada (retenida)',
+    what: 'La fracción de la varianza total que conservan los componentes que te quedas: con 90 %, pierdes el 10 %.',
+    why: 'Es la forma habitual de elegir cuántos componentes guardar.',
+  },
+  autovector: {
+    term: 'Autovectores y autovalores',
+    what: 'Un autovector de una matriz es una dirección que la matriz solo estira, sin girarla; su autovalor dice cuánto la estira.',
+    why: 'Los componentes principales son los autovectores de la matriz de covarianza, y cada autovalor es la varianza que captura el suyo.',
+  },
+  reconstruccion: {
+    term: 'Error de reconstrucción',
+    what: 'La diferencia entre los datos originales y los que se recuperan desde su versión comprimida.',
+    why: 'Mide cuánto se pierde al comprimir; también sirve para detectar anomalías, que se reconstruyen peor.',
+  },
+  epsilon: {
+    term: 'ε (épsilon, en DBSCAN)',
+    what: 'El radio del vecindario: dos puntos son vecinos si están a distancia ε o menos.',
+    why: 'Es el parámetro más delicado: muy pequeño y todo es ruido; muy grande y todo se funde en un grupo.',
+  },
+  minPts: {
+    term: 'minPts (min_samples)',
+    what: 'Cuántos puntos debe haber en el vecindario de radio ε, contando el propio punto, para que sea un punto núcleo.',
+    why: 'Más alto exige zonas más densas y deja más puntos como ruido. Una regla común: el doble del número de features.',
+  },
+  puntoNucleo: {
+    term: 'Punto núcleo, de borde y ruido',
+    what: 'Núcleo: hay al menos minPts puntos (contándose él) a distancia ε o menos. Borde: no los tiene, pero es vecino de un núcleo. Ruido: ninguna de las dos cosas.',
+    why: 'DBSCAN arma cada grupo con núcleos vecinos entre sí y sus bordes; el ruido queda fuera de todo grupo.',
+  },
+  densidad: {
+    term: 'Densidad',
+    what: 'Cuántos puntos hay en una zona de cierto tamaño.',
+    why: 'DBSCAN llama grupo a toda zona densa conectada, tenga la forma que tenga.',
+  },
+  haversine: {
+    term: 'Distancia haversine',
+    what: 'La distancia entre dos puntos sobre la superficie de una esfera, a partir de su latitud y longitud (en radianes).',
+    why: 'Con coordenadas GPS, la distancia en línea recta entre grados no sirve: un grado de longitud mide menos lejos del ecuador.',
+  },
+  hdbscan: {
+    term: 'HDBSCAN',
+    what: 'Una versión de DBSCAN que prueba todos los valores de ε a la vez y se queda con los grupos más estables.',
+    why: 'Encuentra grupos de densidades distintas, donde un solo ε no sirve. Viene en scikit-learn desde la versión 1.3.',
+  },
+  tsneUmap: {
+    term: 't-SNE y UMAP',
+    what: 'Técnicas no lineales para llevar datos de muchas dimensiones a 2D o 3D conservando quién está cerca de quién.',
+    why: 'Dibujan mejor que PCA los grupos curvos, pero sus ejes no significan nada y las distancias grandes no son confiables.',
+  },
+  grupoGlobular: {
+    term: 'Grupos globulares (convexos)',
+    what: 'Grupos con forma de nube redondeada, sin entrantes: la recta entre dos de sus puntos queda dentro del grupo.',
+    why: 'K-Means supone grupos así y de tamaño parecido; con lunas, anillos o franjas largas los corta mal.',
+  },
 } satisfies Record<string, GlossaryEntry>;
 
 export type GlossaryKey = keyof typeof GLOSSARY;

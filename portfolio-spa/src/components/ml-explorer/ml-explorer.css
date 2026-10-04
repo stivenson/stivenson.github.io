@@ -1015,3 +1015,33 @@ p.mlx-py-error {
 .mlx-nb-words .is-unknown {
   opacity: 0.6;
 }
+
+/* ---------- Fase 3: agrupamiento y PCA ---------- */
+
+.mlx-ova-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* K-Means: el centroide se desliza a su nueva posición en cada paso. */
+.mlx-km-centroid {
+  transition: transform 0.6s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-km-centroid {
+    transition: none;
+  }
+}
+
+/* Agrupamiento jerárquico: puntos y dendrograma lado a lado (uno sobre otro en móvil). */
+.mlx-hc-stage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mlx-hc-stage svg {
+  flex: 1 1 220px;
+  min-width: 0;
+}

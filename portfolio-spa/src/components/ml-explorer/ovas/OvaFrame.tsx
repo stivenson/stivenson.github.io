@@ -76,3 +76,7 @@ export const OVA_COLORS = {
   grid: 'rgba(85, 170, 255, 0.12)',
   axis: 'rgba(232, 232, 240, 0.45)',
 } as const;
+
+/** Colores de los grupos en las OVAs de agrupamiento (hasta 6) y del ruido. */
+export const CLUSTER_COLORS = ['#55AAFF', '#FFB454', '#10b981', '#c084fc', '#f472b6', '#facc15'] as const;
+export const NOISE_COLOR = '#9898b0';
