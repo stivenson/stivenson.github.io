@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { createPyodideClient, RUN_TIMEOUT_MS, type PyodideClient, type RunResult, type WorkerLike } from './pyodideClient';
 import { indent, outdent } from './editorIndent';
 import type { PythonExercise } from './types';
@@ -18,6 +21,20 @@ function getClient(): PyodideClient {
   return sharedClient;
 }
 
+// Solo registramos Python: PrismLight no arrastra los demás lenguajes al chunk.
+SyntaxHighlighter.registerLanguage('python', python);
+
+// vscDarkPlus sin fondo, márgenes, padding ni fuente propios: la caja y la
+// tipografía las pone el CSS, idénticas a las del textarea de encima.
+const OMIT = new Set(['background', 'margin', 'padding', 'fontFamily', 'fontSize', 'lineHeight', 'overflow', 'tabSize', 'MozTabSize', 'OTabSize', 'whiteSpace', 'wordBreak', 'wordSpacing', 'wordWrap', 'textShadow']);
+const strip = (rule: CSSProperties = {}) =>
+  Object.fromEntries(Object.entries(rule).filter(([k]) => !OMIT.has(k))) as CSSProperties;
+const HL_STYLE: Record<string, CSSProperties> = {
+  ...vscDarkPlus,
+  'pre[class*="language-"]': strip(vscDarkPlus['pre[class*="language-"]']),
+  'code[class*="language-"]': strip(vscDarkPlus['code[class*="language-"]']),
+};
+
 type Phase = { kind: 'idle' } | { kind: 'running'; progress: string } | { kind: 'done'; result: RunResult };
 
 export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
@@ -26,6 +43,14 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
   const mounted = useRef(false);
   const runIdRef = useRef(0);
   const escaped = useRef(false);
+  const hlRef = useRef<HTMLDivElement>(null);
+
+  function syncScroll(el: HTMLTextAreaElement) {
+    const pre = hlRef.current?.querySelector('pre');
+    if (!pre) return;
+    pre.scrollTop = el.scrollTop;
+    pre.scrollLeft = el.scrollLeft;
+  }
 
   useEffect(() => {
     mounted.current = true;
@@ -104,10 +129,19 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
           </a>
         </div>
       </div>
+      <div className="mlx-py-editor">
+        <div className="mlx-py-hl" ref={hlRef}>
+          {/* Capa coloreada, solo visual: el control accesible es el textarea. El
+              salto extra final evita que una última línea vacía desalinee las capas. */}
+          <SyntaxHighlighter language="python" style={HL_STYLE} aria-hidden="true" useInlineStyles>
+            {code + '\n'}
+          </SyntaxHighlighter>
+        </div>
       <textarea
         className="mlx-py-code"
         value={code}
         onChange={(e) => setCode(e.target.value)}
+        onScroll={(e) => syncScroll(e.currentTarget)}
         onKeyDown={onKeyDown}
         onBlur={() => {
           // Al salir del campo se olvida el Esc pendiente.
@@ -117,6 +151,7 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
         rows={code.split('\n').length + 1}
         aria-label="Código Python editable"
       />
+      </div>
       <p className="mlx-py-hint">
         Edita el código y pulsa Ejecutar (Ctrl+Enter). La primera vez tu navegador descarga Python (unos 15 MB); después
         queda en caché. Tab indenta (Shift+Tab desindenta). Para salir del editor con el teclado: Esc y luego Tab.

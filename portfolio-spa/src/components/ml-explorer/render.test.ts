@@ -90,6 +90,17 @@ describe('render en servidor', () => {
     expect(html).toContain('SALIDA-2');
     expect(html).toContain('Para salir del editor con el teclado: Esc y luego Tab.');
   });
+
+  it('PythonRunner colorea el código en un pre oculto bajo el textarea', () => {
+    const exercise = { code: 'import math\nprint(1)', expectedOutput: 'OUT-PLANO', colabAnchor: 'x' };
+    const html = renderToStaticMarkup(h(PythonRunner, { exercise }));
+    expect(html).toMatch(/<pre[^>]*aria-hidden="true"/);
+    // Prism con estilos en línea: `import` es un token con el color de keyword de vscDarkPlus.
+    expect(html).toContain('<span class="token" style="color:#569CD6">import</span>');
+    expect(html).toContain('aria-label="Código Python editable"');
+    // La salida esperada sigue siendo texto plano.
+    expect(html).toContain('<pre>OUT-PLANO</pre>');
+  });
 });
 
 const count = (html: string, re: RegExp) => (html.match(re) ?? []).length;

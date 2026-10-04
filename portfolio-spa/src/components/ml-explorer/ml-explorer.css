@@ -583,21 +583,66 @@
   color: #fff;
 }
 
-.mlx-py-code {
-  display: block;
-  width: 100%;
+/* Editor por superposición: el <pre> coloreado (Prism) va debajo y el
+   textarea, con texto transparente y cursor visible, encima. Ambas capas
+   comparten caja y tipografía para que cada carácter caiga en su sitio. */
+.mlx-py-editor {
+  position: relative;
+  background: #070622;
+}
+
+.mlx-py-code,
+.mlx .mlx-py-hl pre,
+.mlx-py-hl pre {
   box-sizing: border-box;
+  margin: 0;
   padding: 12px 14px;
   font-family: 'Space Mono', Consolas, Monaco, monospace;
   font-size: 13px;
   line-height: 1.55;
-  color: #e8e8f0;
-  background: #070622;
-  border: none;
-  resize: vertical;
+  letter-spacing: normal;
   tab-size: 4;
   white-space: pre;
-  overflow-x: auto;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  border: none;
+  border-radius: 0;
+}
+
+.mlx-py-hl {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mlx .mlx-py-hl pre,
+.mlx-py-hl pre {
+  height: 100%;
+  overflow: hidden;
+  color: #e8e8f0;
+  background: transparent !important;
+}
+
+.mlx-py-hl code {
+  font: inherit;
+  white-space: inherit;
+  background: none;
+}
+
+.mlx-py-code {
+  position: relative;
+  display: block;
+  width: 100%;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: #e8e8f0;
+  background: transparent;
+  resize: vertical;
+  overflow: auto;
+}
+
+.mlx-py-code::selection {
+  background: rgba(85, 170, 255, 0.3);
 }
 
 .mlx-py-code:focus {
