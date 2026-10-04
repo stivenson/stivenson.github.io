@@ -15,6 +15,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   svm: () => import('./algorithms/svm'),
   knn: () => import('./algorithms/knn'),
   'naive-bayes': () => import('./algorithms/naive-bayes'),
+  'k-means': () => import('./algorithms/k-means'),
   dbscan: () => import('./algorithms/dbscan'),
 };
 

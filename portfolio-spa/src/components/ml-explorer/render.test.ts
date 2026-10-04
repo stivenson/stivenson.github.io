@@ -142,7 +142,7 @@ function fakeModule(): AlgorithmModule {
       { area: 'Eléctrica', example: 'b' },
       { area: 'Industrial', example: 'c' },
     ],
-    alternatives: ['knn', 'k-means'],
+    alternatives: ['knn', 'mlp'],
   };
 }
 
@@ -164,7 +164,7 @@ describe('AlgorithmTabs', () => {
     expect(html.includes('<figure')).toBe(tab === 'type');
     if (tab === 'whenNot') {
       expect(html).toContain('KNN →');
-      expect(html).toContain('K-Means (próximamente)');
+      expect(html).toContain('Neural Networks (MLP) (próximamente)');
     }
   });
 });

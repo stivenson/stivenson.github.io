@@ -8,6 +8,7 @@ import randomForest from './random-forest.out.txt?raw';
 import gradientBoosting from './gradient-boosting.out.txt?raw';
 import svm from './svm.out.txt?raw';
 import naiveBayes from './naive-bayes.out.txt?raw';
+import kMeans from './k-means.out.txt?raw';
 import dbscan from './dbscan.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
@@ -102,5 +103,19 @@ describe('cifras citadas en los textos', () => {
   it('DBSCAN: K-Means con K = 3 manda 17 de 60 reportes de la avenida a otra zona; el aislado más lejano queda a 2.2 km', () => {
     expect(dbscan).toContain('K-Means (K = 3) manda 17 de los 60 reportes de la avenida a otra zona');
     expect(dbscan).toContain('mete los 15 aislados en alguna zona: el más lejano queda a 2.2 km de su centro');
+  });
+  it('K-Means: la inercia cae de 600.0 a 250.0 y a 39.5 hasta K = 3 y luego apenas baja; la silueta es máxima en K = 3 (0.79)', () => {
+    expect(kMeans).toMatch(/^1 \|\s+600\.0 \|\s+—$/m);
+    expect(kMeans).toMatch(/^2 \|\s+250\.0 \| 0\.60$/m);
+    expect(kMeans).toMatch(/^3 \|\s+39\.5 \| 0\.79$/m);
+    expect(kMeans).toMatch(/^4 \|\s+33\.8 \| 0\.64$/m);
+    const sil = [...kMeans.matchAll(/^\d \|\s+[\d.]+ \| (0\.\d\d)$/gm)].map((m) => Number(m[1]));
+    expect(sil).toEqual([0.6, 0.79, 0.64, 0.49, 0.33]);
+    expect(Math.max(...sil)).toBe(0.79);
+  });
+  it('K-Means: tres segmentos de 100 clientes (114 mil y 1.9 visitas, 301 mil y 11.5, 447 mil y 3.9)', () => {
+    expect(kMeans).toContain('100 clientes | gasto 114 mil |  1.9 visitas al mes');
+    expect(kMeans).toContain('100 clientes | gasto 301 mil | 11.5 visitas al mes');
+    expect(kMeans).toContain('100 clientes | gasto 447 mil |  3.9 visitas al mes');
   });
 });

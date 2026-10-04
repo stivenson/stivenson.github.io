@@ -59,6 +59,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Sentimiento de reseñas: cada palabra multiplica la evidencia a favor de positiva o negativa.",
     ),
     (
+        "k-means",
+        "K-Means (K-medias)",
+        "Segmentación de clientes sin etiquetas: inercia y silueta para elegir K.",
+    ),
+    (
         "dbscan",
         "DBSCAN (agrupamiento por densidad)",
         "Reportes de huecos en un mapa: zonas de forma libre y puntos aislados como ruido.",

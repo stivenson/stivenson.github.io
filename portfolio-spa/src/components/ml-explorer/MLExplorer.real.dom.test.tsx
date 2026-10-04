@@ -275,3 +275,30 @@ it('DBSCAN real (?alg=dbscan): recorre las 8 pestañas sin errores', async () =>
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('K-Means real (?alg=k-means): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=k-means']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'K-Means' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
+      expect(svg).not.toBeNull();
+      expect(svg!.querySelectorAll('circle')).toHaveLength(24);
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('Inercia: 294.05');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});
