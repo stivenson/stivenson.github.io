@@ -13,6 +13,11 @@ const notebookFiles = import.meta.glob('../../../../notebooks/algoritmos-ml.ipyn
   import: 'default',
   eager: true,
 }) as Record<string, string>;
+const singleFiles = import.meta.glob('../../../../notebooks/algoritmos-ml/*.ipynb', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
 const pyFiles = import.meta.glob('./algorithms/python/*.py', {
   query: '?raw',
   import: 'default',
@@ -38,8 +43,24 @@ describe('notebook de Colab', () => {
     expect(next.source.join('')).toBe(py);
   });
 
-  it.each(AVAILABLE_SLUGS)('%s: python.colabAnchor coincide con el slug', async (slug) => {
+  it.each(AVAILABLE_SLUGS)('%s: python.colabNotebook coincide con el slug', async (slug) => {
     const mod = await loadAlgorithm(slug);
-    expect(mod.python.colabAnchor).toBe(slug);
+    expect(mod.python.colabNotebook).toBe(slug);
+  });
+});
+
+describe('notebooks individuales de Colab', () => {
+  it.each(AVAILABLE_SLUGS)('%s: un notebook con una sola celda de codigo identica al .py', (slug) => {
+    const raw = singleFiles[`../../../../notebooks/algoritmos-ml/${slug}.ipynb`];
+    expect(raw, `falta notebooks/algoritmos-ml/${slug}.ipynb`).toBeDefined();
+    const nb = JSON.parse(raw) as { nbformat: number; cells: Cell[] };
+    expect(nb.nbformat).toBe(4);
+    const ids = nb.cells.map((c) => c.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const codeCells = nb.cells.filter((c) => c.cell_type === 'code');
+    expect(codeCells).toHaveLength(1);
+    expect(codeCells[0].source.join('')).toBe(pyFiles[`./algorithms/python/${slug}.py`].replace(/\n+$/, ''));
+    const md = nb.cells.filter((c) => c.cell_type === 'markdown').map((c) => c.source.join('')).join('\n');
+    expect(md).toContain(`?alg=${slug}&tab=realWorld`);
   });
 });

@@ -62,8 +62,8 @@ export interface TabContent {
 export interface PythonExercise {
   code: string;
   expectedOutput: string;
-  /** Id de la celda de título en el notebook de Colab (`#scrollTo=`). */
-  colabAnchor: string;
+  /** Slug del notebook propio de este ejercicio: `notebooks/algoritmos-ml/<slug>.ipynb`. */
+  colabNotebook: string;
 }
 
 export interface FieldExample {

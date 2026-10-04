@@ -6,8 +6,8 @@ import { createPyodideClient, RUN_TIMEOUT_MS, type PyodideClient, type RunResult
 import { indent, outdent } from './editorIndent';
 import type { PythonExercise } from './types';
 
-const COLAB_URL =
-  'https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/algoritmos-ml.ipynb';
+const COLAB_BASE =
+  'https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/algoritmos-ml/';
 
 // Un solo worker para toda la página: Pyodide se descarga una vez y lo
 // comparten los ejercicios de todos los algoritmos.
@@ -124,7 +124,7 @@ export function PythonRunner({ exercise }: { exercise: PythonExercise }) {
           >
             ↺ Restaurar
           </button>
-          <a href={`${COLAB_URL}#scrollTo=${exercise.colabAnchor}`} target="_blank" rel="noopener noreferrer">
+          <a href={`${COLAB_BASE}${exercise.colabNotebook}.ipynb`} target="_blank" rel="noopener noreferrer">
             Abrir en Colab ↗
           </a>
         </div>

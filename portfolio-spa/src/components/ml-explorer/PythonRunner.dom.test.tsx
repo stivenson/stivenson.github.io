@@ -13,13 +13,23 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const exercise = { code: 'x = 1\nprint(x)', expectedOutput: '1', colabAnchor: 'a' };
+const exercise = { code: 'x = 1\nprint(x)', expectedOutput: '1', colabNotebook: 'a' };
 const setup = () => {
   const { container } = render(<PythonRunner exercise={exercise} />);
   const ta = screen.getByLabelText('Código Python editable') as HTMLTextAreaElement;
   const pre = container.querySelector('.mlx-py-hl pre') as HTMLPreElement;
   return { ta, pre };
 };
+
+describe('PythonRunner: enlace a Colab', () => {
+  it('apunta al notebook individual del ejercicio', () => {
+    render(<PythonRunner exercise={exercise} />);
+    const a = screen.getByText(/Abrir en Colab/) as HTMLAnchorElement;
+    expect(a.getAttribute('href')).toBe(
+      'https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/algoritmos-ml/a.ipynb',
+    );
+  });
+});
 
 describe('PythonRunner: editor coloreado', () => {
   it('escribir en el textarea actualiza el pre coloreado', () => {

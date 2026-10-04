@@ -34,7 +34,7 @@ export function fakeModule(slug: string): AlgorithmModule {
     row,
     tabs,
     Ova: () => <div>OVA-{slug}</div>,
-    python: { code: 'print(1)', expectedOutput: '1', colabAnchor: 'x' },
+    python: { code: 'print(1)', expectedOutput: '1', colabNotebook: 'x' },
     inYourField: [],
     alternatives: [],
   };

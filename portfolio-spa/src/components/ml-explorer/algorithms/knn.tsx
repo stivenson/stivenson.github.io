@@ -213,7 +213,7 @@ const knn: AlgorithmModule = {
     },
   },
   Ova: KnnOva,
-  python: { code, expectedOutput, colabAnchor: 'knn' },
+  python: { code, expectedOutput, colabNotebook: 'knn' },
   inYourField: [
     { area: 'Química', example: 'estimar una propiedad de una mezcla nueva a partir de las mezclas más parecidas ya medidas.' },
     { area: 'Telecomunicaciones', example: 'ubicar un celular en interiores comparando las señales wifi que recibe con un mapa de mediciones.' },

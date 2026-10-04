@@ -78,21 +78,21 @@ describe('render en servidor', () => {
   });
 
   it('PythonRunner en estado inicial no crea Worker', () => {
-    const exercise = { code: 'print(1 + 1)', expectedOutput: 'SALIDA-2', colabAnchor: 'abc123' };
+    const exercise = { code: 'print(1 + 1)', expectedOutput: 'SALIDA-2', colabNotebook: 'abc123' };
     const html = renderToStaticMarkup(h(PythonRunner, { exercise }));
     // Renderizar no ejecuta efectos ni handlers: el worker solo se crea al pulsar Ejecutar.
     expect(typeof Worker).toBe('undefined');
     expect(html).toContain('<textarea');
     expect(html).toContain('print(1 + 1)');
     expect(html).toContain('▶ Ejecutar');
-    expect(html).toContain('#scrollTo=abc123');
+    expect(html).toContain('href="https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/algoritmos-ml/abc123.ipynb"');
     expect(html).toContain('Salida esperada');
     expect(html).toContain('SALIDA-2');
     expect(html).toContain('Para salir del editor con el teclado: Esc y luego Tab.');
   });
 
   it('PythonRunner colorea el código en un pre oculto bajo el textarea', () => {
-    const exercise = { code: 'import math\nprint(1)', expectedOutput: 'OUT-PLANO', colabAnchor: 'x' };
+    const exercise = { code: 'import math\nprint(1)', expectedOutput: 'OUT-PLANO', colabNotebook: 'x' };
     const html = renderToStaticMarkup(h(PythonRunner, { exercise }));
     expect(html).toMatch(/<pre[^>]*aria-hidden="true"/);
     // Prism con estilos en línea: `import` es un token con el color de keyword de vscDarkPlus.
@@ -136,7 +136,7 @@ function fakeModule(): AlgorithmModule {
     row,
     tabs,
     Ova: () => h('div', null, 'OVA-FALSA'),
-    python: { code: 'print(2 + 2)', expectedOutput: '4', colabAnchor: 'xyz' },
+    python: { code: 'print(2 + 2)', expectedOutput: '4', colabNotebook: 'xyz' },
     inYourField: [
       { area: 'Civil', example: 'a' },
       { area: 'Eléctrica', example: 'b' },

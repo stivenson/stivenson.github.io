@@ -246,7 +246,7 @@ const linearRegression: AlgorithmModule = {
     },
   },
   Ova: LinearRegressionOva,
-  python: { code, expectedOutput, colabAnchor: 'linear-regression' },
+  python: { code, expectedOutput, colabNotebook: 'linear-regression' },
   inYourField: [
     { area: 'Industrial', example: 'demanda de un producto según precio y temporada.' },
     { area: 'Civil', example: 'resistencia del concreto según días de curado y relación agua-cemento.' },

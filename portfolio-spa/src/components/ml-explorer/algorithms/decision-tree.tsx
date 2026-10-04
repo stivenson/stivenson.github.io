@@ -208,7 +208,7 @@ const decisionTree: AlgorithmModule = {
     },
   },
   Ova: DecisionTreeOva,
-  python: { code, expectedOutput, colabAnchor: 'decision-tree' },
+  python: { code, expectedOutput, colabNotebook: 'decision-tree' },
   inYourField: [
     { area: 'Mecánica', example: 'reglas de falla inminente a partir de vibración, temperatura y horas de uso.' },
     { area: 'Ambiental', example: 'clasificar la calidad del agua según pH, turbidez y oxígeno disuelto.' },
