@@ -81,11 +81,13 @@ it('el artículo del explorador de ML se monta con su guía, sus enlaces y el ex
   const checkList = checkItems[0].parentElement;
   expect(checkList?.tagName).toBe('OL');
   for (const li of checkItems) expect(li.parentElement).toBe(checkList);
-  const tips = Array.from(container.querySelectorAll('.markdown-content ul > li')).filter((li) =>
-    li.textContent?.startsWith('Ejecuta todos los ejercicios'),
-  );
-  expect(tips).toHaveLength(1);
-  expect(tips[0].parentElement).not.toBe(checkList);
+  // Los consejos: la lista UL inmediatamente anterior al OL de ☐ (por estructura, no por texto).
+  let tipsList = checkList?.previousElementSibling ?? null;
+  while (tipsList && tipsList.tagName !== 'UL' && tipsList.tagName !== 'OL') tipsList = tipsList.previousElementSibling;
+  expect(tipsList?.tagName).toBe('UL');
+  expect(tipsList).not.toBe(checkList);
+  expect(tipsList?.querySelectorAll(':scope > li').length).toBeGreaterThan(0);
+  for (const li of Array.from(tipsList!.querySelectorAll(':scope > li'))) expect(li.textContent).not.toContain('☐');
 
   expect(error).not.toHaveBeenCalled();
 });
