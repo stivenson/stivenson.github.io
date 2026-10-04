@@ -59,12 +59,17 @@ const randomForest: AlgorithmModule = {
         </>
       ),
       deepDive: (
+        <>
         <p>
           Funciona bien «de fábrica»: con los valores por defecto de scikit-learn (100 árboles, sin límite de
-          profundidad) suele quedar cerca de su mejor resultado. No necesita <G k="escalado">escalar</G> las <G k="feature">features</G>. Con{' '}
+          profundidad) suele quedar cerca de su mejor resultado. No necesita <G k="escalado">escalar</G> las <G k="feature">features</G>.
+        </p>
+        <p>
+          Con{' '}
           <code>oob_score=True</code> (<G k="oob">OOB</G>) estima su <G k="exactitud">exactitud</G> con las filas que cada árbol no vio (las que quedaron fuera de su <G k="bootstrap">muestra bootstrap</G>, cerca de un tercio), sin apartar un
           conjunto de prueba.
         </p>
+        </>
       ),
     },
     formula: {
@@ -192,11 +197,16 @@ const randomForest: AlgorithmModule = {
         </>
       ),
       deepDive: (
+        <>
         <p>
           Si buscas la máxima <G k="exactitud">exactitud</G> en <G k="tabular">datos tabulares</G>, Gradient Boosting suele superarlo, a cambio de más
-          ajuste de <G k="hiperparametro">hiperparámetros</G>. Con imágenes, audio o texto largo, las <G k="redNeuronal">redes
+          ajuste de <G k="hiperparametro">hiperparámetros</G>.
+        </p>
+        <p>
+          Con imágenes, audio o texto largo, las <G k="redNeuronal">redes
           neuronales</G> sacan mejores <G k="feature">features</G> que las columnas crudas.
         </p>
+        </>
       ),
     },
     realWorld: {
@@ -220,12 +230,17 @@ const randomForest: AlgorithmModule = {
         </>
       ),
       deepDive: (
+        <>
         <p>
           En la vida real el fraude es menos del 1 % de las compras: con tan pocos casos, la <G k="exactitud">exactitud</G> no sirve
           (99 % se logra sin detectar nada). Se miden la <G k="precisionSensibilidad">precisión y la sensibilidad</G> con una{' '}
-          <G k="matrizConfusion">matriz de confusión</G>, se ajusta el <G k="umbral">umbral</G> y se le da más peso
+          <G k="matrizConfusion">matriz de confusión</G>.
+        </p>
+        <p>
+          Además se ajusta el <G k="umbral">umbral</G> y se le da más peso
           a la <G k="desbalance">clase rara</G> (<code>class_weight="balanced"</code>).
         </p>
+        </>
       ),
     },
   },

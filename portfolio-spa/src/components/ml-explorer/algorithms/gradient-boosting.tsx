@@ -122,12 +122,17 @@ const gradientBoosting: AlgorithmModule = {
         </>
       ),
       deepDive: (
+        <>
         <p>
-          No supone linealidad ni necesita <G k="escalado">escalar</G> las <G k="feature">features</G>. Las etiquetas
+          No supone linealidad ni necesita <G k="escalado">escalar</G> las <G k="feature">features</G>.
+        </p>
+        <p>
+          Las etiquetas
           deben ser confiables: con la pérdida
           cuadrática, un valor atípico produce un <G k="residuo">residuo</G> enorme que los árboles siguientes persiguen. Para regresión
           con <G k="outlier">outliers</G> existe la <G k="huber">pérdida de Huber</G> (<code>loss="huber"</code>).
         </p>
+        </>
       ),
     },
     pros: {
@@ -141,7 +146,7 @@ const gradientBoosting: AlgorithmModule = {
             <b>Flexible:</b> sirve para clasificar, para predecir números y para ordenar, cambiando la pérdida.
           </li>
           <li>
-            <b>Poca preparación:</b> como el bosque, no hay que <G k="escalado">escalar</G>{' '}
+            <b>Poca preparación:</b> como el bosque, no hay que escalar{' '}
             <G k="feature">features</G>. <G k="bibliotecasBoosting">XGBoost</G>, LightGBM y
             HistGradientBoosting aceptan <G k="faltantes">valores faltantes</G>; el GradientBoostingClassifier
             clásico, no (da error con NaN).
@@ -151,8 +156,8 @@ const gradientBoosting: AlgorithmModule = {
       deepDive: (
         <p>
           Al corregir errores paso a paso reduce sobre todo el <G k="sesgoVarianza">sesgo</G>, mientras que Random
-          Forest reduce sobre todo la <G k="sesgoVarianza">varianza</G>. <code>HistGradientBoostingClassifier</code>
-          maneja <G k="faltantes">valores faltantes</G> y <G k="categorica">features categóricas</G>{' '}
+          Forest reduce sobre todo la varianza. <code>HistGradientBoostingClassifier</code>
+          maneja valores faltantes y <G k="categorica">features categóricas</G>{' '}
           de forma nativa y escala a millones de filas.
         </p>
       ),

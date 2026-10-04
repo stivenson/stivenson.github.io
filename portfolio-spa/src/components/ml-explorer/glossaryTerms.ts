@@ -3,6 +3,9 @@ import type { GlossaryKey } from './glossary';
 /**
  * Términos técnicos que, si aparecen en una pestaña de un algoritmo, deben
  * llevar su ficha 💡 (<G k>) al menos una vez en esa pestaña.
+ * Reglas de fichas: al menos una por pestaña (glossaryTerms.test) y como máximo 3 por
+ * bloque <p>/<li> (glossaryDensity.test): si un término ya tiene ficha antes en la
+ * misma pestaña se quita de la frase; si no, se parte la frase en dos párrafos.
  * Las regex van sin bandera: el test les añade `iu` y límites de palabra.
  */
 export interface RequiredTerm {

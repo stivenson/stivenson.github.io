@@ -208,7 +208,7 @@ const svm: AlgorithmModule = {
       deepDive: (
         <p>
           Tampoco es buena idea si necesitas probabilidades bien <G k="calibracion">calibradas</G> (mejor regresión logística) o si las
-          clases se solapan mucho y hay mucho <G k="ruido">ruido</G>: el modelo termina con casi todos los puntos
+          clases se solapan mucho y hay mucho ruido: el modelo termina con casi todos los puntos
           como <G k="vectorSoporte">vectores de soporte</G> y pierde su ventaja. Elegir C y γ con{' '}
           <G k="validacionCruzada">validación cruzada</G> (ver Contras) multiplica el tiempo por pliegues ×
           combinaciones.

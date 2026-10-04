@@ -126,7 +126,7 @@ describe('OVA del árbol de decisión', () => {
 
   it('con 4 encierra el ruido de (8, 8); el de (3, 1.5) cae recién con 5', () => {
     expect(predictTree(buildTree(TREE_POINTS, 4), { x: 8, y: 8 })).toBe(0);
-    expect(predictTree(buildTree(TREE_POINTS, 4), { x: 3, y: 1.5 })).toBe(0); // aún falla
+    expect(predictTree(buildTree(TREE_POINTS, 4), { x: 3, y: 1.5 })).toBe(0); // aún falla: el ruido lleva la etiqueta contraria a esa regla
     expect(predictTree(buildTree(TREE_POINTS, 5), { x: 3, y: 1.5 })).toBe(1);
   });
 });

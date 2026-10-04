@@ -55,7 +55,6 @@ describe('espacios alrededor de términos del glosario y fórmulas', () => {
           }
         }
       }
-      if (problems.length) console.log(problems.join('\n'));
       expect(problems).toEqual([]);
     });
   }
