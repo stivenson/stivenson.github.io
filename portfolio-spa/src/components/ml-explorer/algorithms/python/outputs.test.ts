@@ -8,6 +8,7 @@ import randomForest from './random-forest.out.txt?raw';
 import gradientBoosting from './gradient-boosting.out.txt?raw';
 import svm from './svm.out.txt?raw';
 import naiveBayes from './naive-bayes.out.txt?raw';
+import dbscan from './dbscan.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -91,5 +92,15 @@ describe('cifras citadas en los textos', () => {
     expect(naiveBayes).toContain('«batería» multiplica los odds de positiva por 1.05');
     expect(naiveBayes).toContain('«la» multiplica los odds de positiva por 0.53');
     expect(naiveBayes).toContain('«nueva» no estaba en el entrenamiento: se ignora');
+  });
+  it('DBSCAN: 145 reportes; con 300 m, 3 zonas (62, 40, 30) y 13 de ruido; 150 m → 7 zonas y 32; 800 m → 2 zonas', () => {
+    expect(dbscan).toContain('145 reportes');
+    expect(dbscan).toContain('eps = 300 m → 3 zonas [62, 40, 30], ruido: 13');
+    expect(dbscan).toContain('eps = 150 m → 7 zonas [39, 28, 13, 12, 10, 6, 5], ruido: 32');
+    expect(dbscan).toContain('eps = 800 m → 2 zonas [106, 31], ruido: 8');
+  });
+  it('DBSCAN: K-Means con K = 3 manda 17 de 60 reportes de la avenida a otra zona; el aislado más lejano queda a 2.2 km', () => {
+    expect(dbscan).toContain('K-Means (K = 3) manda 17 de los 60 reportes de la avenida a otra zona');
+    expect(dbscan).toContain('mete los 15 aislados en alguna zona: el más lejano queda a 2.2 km de su centro');
   });
 });

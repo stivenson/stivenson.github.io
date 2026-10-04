@@ -58,6 +58,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Naive Bayes (Bayes ingenuo)",
         "Sentimiento de reseñas: cada palabra multiplica la evidencia a favor de positiva o negativa.",
     ),
+    (
+        "dbscan",
+        "DBSCAN (agrupamiento por densidad)",
+        "Reportes de huecos en un mapa: zonas de forma libre y puntos aislados como ruido.",
+    ),
 ]
 
 

@@ -18,6 +18,7 @@ describe('registry', () => {
       'svm',
       'knn',
       'naive-bayes',
+      'dbscan',
     ]);
   });
 

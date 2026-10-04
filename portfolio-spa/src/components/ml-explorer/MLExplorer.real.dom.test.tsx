@@ -250,3 +250,28 @@ it('Naive Bayes real (?alg=naive-bayes): recorre las 8 pestañas sin errores', a
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('DBSCAN real (?alg=dbscan): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=dbscan']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'DBSCAN' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      expect(container.querySelector('.mlx-tabpanel svg[role="img"]')).not.toBeNull();
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('2 grupos y 4 puntos de ruido');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});

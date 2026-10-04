@@ -1,0 +1,7 @@
+145 reportes (latitud, longitud)
+eps = 150 m → 7 zonas [39, 28, 13, 12, 10, 6, 5], ruido: 32
+eps = 300 m → 3 zonas [62, 40, 30], ruido: 13
+eps = 800 m → 2 zonas [106, 31], ruido: 8
+
+K-Means (K = 3) manda 17 de los 60 reportes de la avenida a otra zona
+y mete los 15 aislados en alguna zona: el más lejano queda a 2.2 km de su centro
