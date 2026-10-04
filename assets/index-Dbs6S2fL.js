@@ -3296,5 +3296,57 @@ Método, en una línea: las cifras de fabricante dicen **qué es posible**; los 
 **Material propio**
 - [\`notebooks/python-gpu-nvidia.ipynb\`](https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/python-gpu-nvidia.ipynb) — todo el código del artículo, ejecutable en Colab de arriba a abajo.
 - Clementi, N. (2026). «Introducción a la ciencia de datos en GPUs», [Platzi Conf Bogotá 2026](https://platzi.com/conf/), 29 de agosto, Ágora, Bogotá. Una charla suya sobre el mismo tema, en inglés y con más detalle técnico: [RAPIDS: GPU-Accelerated Data Science for PyData Users](https://www.youtube.com/watch?v=IJ8rjVD4-yE), con Mike McCarty. Diapositivas usadas aquí: «Aceleración con cudf.pandas sin cambio de código», «Entender qué se ejecuta en la GPU y qué no», el perfil línea a línea de \`cuml.accel\`, «¿Mi problema tiene la forma adecuada para la GPU?» y «Ciencia de datos con CUDA-X».
-`;function P(e){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=e.match(n);if(!o)throw new Error("Invalid frontmatter format");const u=o[1],b=o[2],s={},g=u.split(`
-`);for(const i of g){const t=i.indexOf(":");if(t===-1)continue;const r=i.substring(0,t).trim();let a=i.substring(t+1).trim();if((a.startsWith('"')&&a.endsWith('"')||a.startsWith("'")&&a.endsWith("'"))&&(a=a.slice(1,-1)),r==="tags"){const p=a.match(/\[(.*?)\]/);p&&(s.tags=p[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?s.date=a:r==="slug"?s.slug=a:r==="title"?s.title=a:r==="description"&&(s.description=a)}return{frontmatter:s,body:b}}function l(e){const{frontmatter:n,body:o}=P(e);return{metadata:n,content:o}}const m=[l(x),l(f),l(y),l(v),l(q),l(h)];function d(e){return new Date(`${e}T00:00:00`)}function j(e){return d(e).toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})}function E(e){return m.find(n=>n.metadata.slug===e)}function L(){return[...m].sort((e,n)=>{const o=d(e.metadata.date).getTime();return d(n.metadata.date).getTime()-o})}export{E as a,j as f,L as g};
+`,P=`---
+title: "Algoritmos de Machine Learning: Explorador Interactivo"
+date: "2026-10-03"
+slug: "algoritmos-ml-explorador"
+description: "Los 17 algoritmos del cheatsheet clásico de machine learning, explicados columna por columna —tipo, caso de uso, fórmula, supuestos, pros, contras y ejemplo real— con simuladores y Python que corre en tu navegador. Los primeros cuatro ya están completos; el resto llega por entregas."
+tags: ["Machine Learning", "Python", "Algoritmos", "OVA", "Ciencia de datos"]
+---
+
+> **En corto:** no existe «el mejor algoritmo». Cada uno funciona bien bajo ciertas condiciones y falla en otras. Este explorador recorre los 17 algoritmos del cheatsheet clásico de machine learning y responde lo mismo para cada uno: qué problema resuelve, cómo funciona, qué supone, cuándo brilla, cuándo no usarlo y un ejemplo real que puedes ejecutar.
+
+Está escrito para estudiantes de Datos y Sistemas y para profesionales de cualquier ingeniería que necesiten decidir si un modelo sirve para su problema. No hace falta saber machine learning: cada término técnico tiene una ficha 💡, y la matemática está plegada en «Para profundizar».
+
+## Cómo usar el explorador
+
+- **Menú izquierdo:** un algoritmo por fila del cheatsheet. Los marcados «pronto» llegan en las próximas entregas.
+- **Pestañas:** las 8 columnas del cheatsheet. Al cambiar de algoritmo la pestaña se mantiene: así puedes comparar, por ejemplo, los *Contras* de todos.
+- **Fórmula / lógica:** un ejemplo con números, la fórmula y un simulador para tocar.
+- **Ejemplo real:** un ejercicio breve de Python que corre en tu navegador y puedes editar. También está en un [notebook de Colab](https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/algoritmos-ml.ipynb).
+- Cada combinación tiene su propio enlace: copia la URL para compartir, por ejemplo, «KNN › Contras».
+
+## ¿Qué algoritmo necesito?
+
+Responde de arriba abajo:
+
+1. **Antes de todo: ¿tus datos son imágenes, texto, audio o series largas?** Entonces mira las redes neuronales: CNN, RNN o Transformer *(próximamente)*. Si no, sigue con la pregunta 2.
+2. **¿Tus datos traen la respuesta que quieres predecir?** (el precio, «spam / no spam», «paga / no paga»)
+   - **Sí → aprendizaje supervisado.** Sigue con la pregunta 3.
+   - **No → aprendizaje no supervisado.** ¿Buscas grupos? K-Means, Hierarchical Clustering o DBSCAN *(próximamente)*. ¿Quieres resumir muchas columnas en pocas? PCA *(próximamente)*.
+3. **¿Predices un número o una categoría?**
+   - **Un número** (precio, consumo, tiempo): empieza por [Linear Regression](#/articles/algoritmos-ml-explorador?alg=linear-regression&tab=type).
+   - **Una categoría** (sí/no, tipo A/B/C): empieza por [Logistic Regression](#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=type). Para texto corto, como detectar spam, Naive Bayes es una alternativa clásica *(próximamente)*.
+4. **¿Tienes que explicar cada decisión a otra persona?**
+   - **Sí:** un [Decision Tree](#/articles/algoritmos-ml-explorador?alg=decision-tree&tab=type) poco profundo, o los modelos lineales de la pregunta 3.
+   - **No, lo que importa es acertar:** Random Forest, Gradient Boosting o SVM *(próximamente)*.
+5. **¿Conjunto pequeño o mediano, con pocas columnas, y la idea de «se parece a…» es natural en tu problema?** Prueba [KNN](#/articles/algoritmos-ml-explorador?alg=knn&tab=type) (escala antes las columnas).
+
+> **Regla práctica:** empieza por el modelo más simple que pueda funcionar y úsalo como línea base. Pasa a uno más complejo solo si mejora claramente con datos que el modelo no vio.
+
+<ml-explorer>
+</ml-explorer>
+
+## Cómo seguir
+
+- Ejecuta todos los ejercicios juntos en el [notebook de Colab](https://colab.research.google.com/github/stivenson/stivenson.github.io/blob/main/notebooks/algoritmos-ml.ipynb). No necesita GPU.
+- Cambia los datos de un ejercicio por los de tu trabajo: todos usan solo numpy, scikit-learn y matplotlib.
+- Antes de elegir un algoritmo para un proyecto real, repasa esta lista:
+
+1. ☐ ¿Separé datos de entrenamiento y de prueba?
+2. ☐ ¿Tengo una línea base simple con la cual comparar?
+3. ☐ ¿Revisé los supuestos del algoritmo (pestaña *Supuestos*)?
+4. ☐ ¿Sé qué error es más caro en mi problema: la falsa alarma o el caso que se escapa?
+5. ☐ ¿Puedo explicar la decisión del modelo si me lo piden?
+`;function j(e){const n=/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/,o=e.match(n);if(!o)throw new Error("Invalid frontmatter format");const u=o[1],b=o[2],l={},g=u.split(`
+`);for(const i of g){const t=i.indexOf(":");if(t===-1)continue;const r=i.substring(0,t).trim();let a=i.substring(t+1).trim();if((a.startsWith('"')&&a.endsWith('"')||a.startsWith("'")&&a.endsWith("'"))&&(a=a.slice(1,-1)),r==="tags"){const p=a.match(/\[(.*?)\]/);p&&(l.tags=p[1].split(",").map(c=>c.trim().replace(/^["']|["']$/g,"")).filter(c=>c.length>0))}else r==="date"?l.date=a:r==="slug"?l.slug=a:r==="title"?l.title=a:r==="description"&&(l.description=a)}return{frontmatter:l,body:b}}function s(e){const{frontmatter:n,body:o}=j(e);return{metadata:n,content:o}}const m=[s(P),s(x),s(f),s(y),s(v),s(q),s(h)];function d(e){return new Date(`${e}T00:00:00`)}function E(e){return d(e).toLocaleDateString("es-ES",{year:"numeric",month:"long",day:"numeric"})}function L(e){return m.find(n=>n.metadata.slug===e)}function A(){return[...m].sort((e,n)=>{const o=d(e.metadata.date).getTime();return d(n.metadata.date).getTime()-o})}export{L as a,E as f,A as g};
