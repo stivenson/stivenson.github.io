@@ -587,3 +587,271 @@ export function explainNaiveBayes(model: NaiveBayesModel, text: string): NaiveBa
   });
   return { words, priorOdds, pPositive: 1 / (1 + Math.exp(-logOdds)) };
 }
+
+// ---------- Distancias (fase 3) ----------
+
+export function sqDist(a: Pt, b: Pt): number {
+  return (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
+}
+
+export function dist(a: Pt, b: Pt): number {
+  return Math.sqrt(sqDist(a, b));
+}
+
+// ---------- K-Means ----------
+
+/** Índice del centroide más cercano; con empate gana el de índice menor. */
+export function nearestCentroid(p: Pt, centroids: Pt[]): number {
+  let best = 0;
+  for (let c = 1; c < centroids.length; c++) if (sqDist(p, centroids[c]) < sqDist(p, centroids[best])) best = c;
+  return best;
+}
+
+/**
+ * Centroides iniciales: k puntos distintos de los datos, sorteados con `rng`
+ * (el init="random" de scikit-learn). Con semilla fija, siempre los mismos.
+ */
+export function randomInit(points: Pt[], k: number, rng: () => number): Pt[] {
+  const idx = points.map((_, i) => i);
+  for (let i = 0; i < k; i++) {
+    const j = i + Math.floor(rng() * (idx.length - i));
+    [idx[i], idx[j]] = [idx[j], idx[i]];
+  }
+  return idx.slice(0, k).map((i) => ({ x: points[i].x, y: points[i].y }));
+}
+
+export interface KMeansState {
+  centroids: Pt[];
+  labels: number[];
+  /** Suma de distancias² de cada punto a su centroide. */
+  inertia: number;
+}
+
+function assign(points: Pt[], centroids: Pt[]): KMeansState {
+  const labels = points.map((p) => nearestCentroid(p, centroids));
+  const inertia = points.reduce((s, p, i) => s + sqDist(p, centroids[labels[i]]), 0);
+  return { centroids, labels, inertia };
+}
+
+/**
+ * Algoritmo de Lloyd paso a paso. El estado 0 son los centroides iniciales
+ * con su asignación; cada estado siguiente mueve cada centroide al promedio
+ * de sus puntos y reasigna. Para cuando ninguna asignación cambia (igual que
+ * KMeans(init=…, n_init=1, algorithm="lloyd") de scikit-learn). Un grupo que
+ * se queda sin puntos conserva su centroide.
+ */
+export function kmeansRun(points: Pt[], init: Pt[], maxIterations = 100): KMeansState[] {
+  const states = [assign(points, init)];
+  for (let it = 0; it < maxIterations; it++) {
+    const prev = states[states.length - 1];
+    const centroids = prev.centroids.map((c, j) => {
+      const mine = points.filter((_, i) => prev.labels[i] === j);
+      if (mine.length === 0) return c;
+      return { x: mine.reduce((s, p) => s + p.x, 0) / mine.length, y: mine.reduce((s, p) => s + p.y, 0) / mine.length };
+    });
+    const next = assign(points, centroids);
+    states.push(next);
+    if (next.labels.every((l, i) => l === prev.labels[i])) break;
+  }
+  return states;
+}
+
+/**
+ * Silueta media: para cada punto, a = distancia media a los de su grupo y
+ * b = distancia media al grupo vecino más cercano; s = (b − a) / max(a, b).
+ * Un punto solo en su grupo vale 0 (como silhouette_score de scikit-learn).
+ */
+export function silhouette(points: Pt[], labels: number[]): number {
+  const groups = [...new Set(labels)];
+  if (groups.length < 2) return 0;
+  let total = 0;
+  points.forEach((p, i) => {
+    const mean = (g: number) => {
+      const others = points.filter((_, j) => labels[j] === g && j !== i);
+      return others.reduce((s, q) => s + dist(p, q), 0) / others.length;
+    };
+    if (labels.filter((l) => l === labels[i]).length === 1) return;
+    const a = mean(labels[i]);
+    const b = Math.min(...groups.filter((g) => g !== labels[i]).map(mean));
+    total += (b - a) / Math.max(a, b);
+  });
+  return total / points.length;
+}
+
+// ---------- Agrupamiento jerárquico (enlace promedio) ----------
+
+export interface Merge {
+  /** Grupos que se unen: 0…n−1 son los puntos; n + i es el grupo creado en la unión i (como scipy). */
+  a: number;
+  b: number;
+  /** Distancia a la que se unen: promedio de las distancias entre sus puntos. */
+  height: number;
+  size: number;
+}
+
+/**
+ * Agrupamiento aglomerativo con enlace promedio (UPGMA): empieza con cada
+ * punto solo y en cada paso une los dos grupos más cercanos. Da las mismas
+ * uniones que linkage(points, "average") de scipy.
+ */
+export function averageLinkage(points: Pt[]): Merge[] {
+  const n = points.length;
+  let clusters = points.map((_, i) => ({ id: i, members: [i] }));
+  const merges: Merge[] = [];
+  const avg = (A: number[], B: number[]) => {
+    let s = 0;
+    for (const i of A) for (const j of B) s += dist(points[i], points[j]);
+    return s / (A.length * B.length);
+  };
+  while (clusters.length > 1) {
+    let best = { i: 0, j: 1, d: Infinity };
+    for (let i = 0; i < clusters.length; i++) {
+      for (let j = i + 1; j < clusters.length; j++) {
+        const d = avg(clusters[i].members, clusters[j].members);
+        if (d < best.d) best = { i, j, d };
+      }
+    }
+    const A = clusters[best.i];
+    const B = clusters[best.j];
+    const members = [...A.members, ...B.members];
+    merges.push({ a: Math.min(A.id, B.id), b: Math.max(A.id, B.id), height: best.d, size: members.length });
+    clusters = clusters.filter((_, k) => k !== best.i && k !== best.j);
+    clusters.push({ id: n + merges.length - 1, members });
+  }
+  return merges;
+}
+
+/**
+ * Corta el árbol a la altura h: se aplican solo las uniones con altura ≤ h.
+ * Devuelve el grupo de cada punto, numerados 0, 1, 2… en el orden en que
+ * aparece su primer punto.
+ */
+export function cutTree(merges: Merge[], n: number, h: number): number[] {
+  const parent = Array.from({ length: n + merges.length }, (_, i) => i);
+  const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])));
+  merges.forEach((m, k) => {
+    if (m.height <= h) {
+      parent[find(m.a)] = n + k;
+      parent[find(m.b)] = n + k;
+    }
+  });
+  const ids = new Map<number, number>();
+  return Array.from({ length: n }, (_, i) => {
+    const root = find(i);
+    if (!ids.has(root)) ids.set(root, ids.size);
+    return ids.get(root)!;
+  });
+}
+
+export interface DendrogramNode {
+  x: number;
+  height: number;
+}
+
+/**
+ * Posiciones para dibujar el dendrograma: el orden de las hojas (recorriendo
+ * el árbol desde la raíz, primero `a` y luego `b`) y, para cada grupo, su x
+ * (hojas en 0, 1, 2…; una unión, en el medio de sus dos hijos) y su altura.
+ */
+export function dendrogramLayout(merges: Merge[], n: number): { order: number[]; nodes: DendrogramNode[] } {
+  const order: number[] = [];
+  const visit = (id: number) => {
+    if (id < n) order.push(id);
+    else {
+      visit(merges[id - n].a);
+      visit(merges[id - n].b);
+    }
+  };
+  visit(n + merges.length - 1);
+  const nodes: DendrogramNode[] = [];
+  order.forEach((leaf, i) => (nodes[leaf] = { x: i, height: 0 }));
+  merges.forEach((m, k) => (nodes[n + k] = { x: (nodes[m.a].x + nodes[m.b].x) / 2, height: m.height }));
+  return { order, nodes };
+}
+
+// ---------- PCA en 2D ----------
+
+export interface Covariance2 {
+  mean: Pt;
+  sxx: number;
+  syy: number;
+  sxy: number;
+}
+
+/** Media y covarianza (dividida entre n − 1, como numpy y scikit-learn). */
+export function covariance2(points: Pt[]): Covariance2 {
+  const n = points.length;
+  const mean = { x: points.reduce((s, p) => s + p.x, 0) / n, y: points.reduce((s, p) => s + p.y, 0) / n };
+  let sxx = 0;
+  let syy = 0;
+  let sxy = 0;
+  for (const p of points) {
+    sxx += (p.x - mean.x) ** 2;
+    syy += (p.y - mean.y) ** 2;
+    sxy += (p.x - mean.x) * (p.y - mean.y);
+  }
+  return { mean, sxx: sxx / (n - 1), syy: syy / (n - 1), sxy: sxy / (n - 1) };
+}
+
+/** Varianza de los puntos proyectados sobre un eje que forma `deg` grados con el eje x. */
+export function varianceAlong(cov: Covariance2, deg: number): number {
+  const t = (deg * Math.PI) / 180;
+  const c = Math.cos(t);
+  const s = Math.sin(t);
+  return cov.sxx * c * c + 2 * cov.sxy * c * s + cov.syy * s * s;
+}
+
+/** Fracción de la varianza total que captura ese eje (entre 0 y 1). */
+export function capturedShare(cov: Covariance2, deg: number): number {
+  return varianceAlong(cov, deg) / (cov.sxx + cov.syy);
+}
+
+/** Ángulo (0 a 180°) del primer componente principal: el eje de máxima varianza. */
+export function principalAngle(cov: Covariance2): number {
+  const deg = ((0.5 * Math.atan2(2 * cov.sxy, cov.sxx - cov.syy)) * 180) / Math.PI;
+  return (deg + 180) % 180;
+}
+
+/** Proyección de p sobre la recta que pasa por `mean` con ángulo `deg`. */
+export function projectOnAxis(p: Pt, mean: Pt, deg: number): Pt {
+  const t = (deg * Math.PI) / 180;
+  const u = { x: Math.cos(t), y: Math.sin(t) };
+  const s = (p.x - mean.x) * u.x + (p.y - mean.y) * u.y;
+  return { x: mean.x + s * u.x, y: mean.y + s * u.y };
+}
+
+// ---------- DBSCAN ----------
+
+export interface DbscanResult {
+  /** Grupo de cada punto (0, 1, 2…) o −1 si es ruido. */
+  labels: number[];
+  /** true si el punto es núcleo: hay al menos minPts puntos (contándose él) a distancia ≤ ε. */
+  core: boolean[];
+  clusters: number;
+  noise: number;
+}
+
+/**
+ * DBSCAN como en scikit-learn: vecinos a distancia ≤ ε contando el propio
+ * punto; recorre los puntos en orden y, desde cada núcleo sin grupo, expande
+ * un grupo nuevo por los núcleos alcanzables. Un punto de borde se queda en
+ * el primer grupo que lo alcanza.
+ */
+export function dbscan(points: Pt[], eps: number, minPts: number): DbscanResult {
+  const neighbors = points.map((p) => points.flatMap((q, j) => (dist(p, q) <= eps + 1e-9 ? [j] : [])));
+  const core = neighbors.map((nb) => nb.length >= minPts);
+  const labels = points.map(() => -1);
+  let label = 0;
+  points.forEach((_, start) => {
+    if (labels[start] !== -1 || !core[start]) return;
+    const stack = [start];
+    while (stack.length) {
+      const i = stack.pop()!;
+      if (labels[i] !== -1) continue;
+      labels[i] = label;
+      if (core[i]) for (const v of neighbors[i]) if (labels[v] === -1) stack.push(v);
+    }
+    label++;
+  });
+  return { labels, core, clusters: label, noise: labels.filter((l) => l === -1).length };
+}
