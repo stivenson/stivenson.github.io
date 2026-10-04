@@ -198,3 +198,30 @@ it('Gradient Boosting real (?alg=gradient-boosting): recorre las 8 pestañas sin
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('SVM real (?alg=svm): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=svm']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'SVM' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
+      expect(svg).not.toBeNull();
+      expect(svg!.querySelectorAll('circle[r="6"]')).toHaveLength(22);
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('Ancho del margen: 2.13');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});

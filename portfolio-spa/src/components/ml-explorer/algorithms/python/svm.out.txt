@@ -1,0 +1,14 @@
+1257 imágenes para entrenar, 540 nuevas para probar
+
+Kernel  C      acierto en nuevas  vectores de soporte
+linear  0.01               93.3%                 1158
+linear  1                  98.5%                  386
+linear  100                98.1%                  371
+rbf     0.01               18.3%                 1257
+rbf     1                  98.7%                  593
+rbf     100                99.4%                  528
+
+Con RBF y C = 1 falla 7 de 540. Por ejemplo:
+  era un 8, dijo 1
+  era un 9, dijo 5
+  era un 8, dijo 9

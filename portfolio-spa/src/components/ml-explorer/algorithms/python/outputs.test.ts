@@ -6,6 +6,7 @@ import knn from './knn.out.txt?raw';
 
 import randomForest from './random-forest.out.txt?raw';
 import gradientBoosting from './gradient-boosting.out.txt?raw';
+import svm from './svm.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -69,5 +70,14 @@ describe('cifras citadas en los textos', () => {
     const train = [...gradientBoosting.matchAll(/^\s+\d+ \|\s+([\d.]+) \|/gm)].map((m) => Number(m[1]));
     expect(train).toEqual([0.62, 0.53, 0.437, 0.386, 0.317, 0.265]);
     for (let i = 1; i < train.length; i++) expect(train[i]).toBeLessThan(train[i - 1]);
+  });
+
+  it('SVM: RBF con C = 1 acierta 98.7 % (7 fallos de 540) y guarda 593 de 1257; C = 100, 99.4 %; C = 0.01, 18.3 % con 1257 vectores', () => {
+    expect(svm).toContain('1257 imágenes para entrenar, 540 nuevas para probar');
+    expect(svm).toMatch(/^rbf\s+1\s+98\.7%\s+593$/m);
+    expect(svm).toMatch(/^rbf\s+100\s+99\.4%\s+528$/m);
+    expect(svm).toMatch(/^rbf\s+0\.01\s+18\.3%\s+1257$/m);
+    expect(svm).toMatch(/^linear\s+1\s+98\.5%\s+386$/m);
+    expect(svm).toContain('Con RBF y C = 1 falla 7 de 540.');
   });
 });

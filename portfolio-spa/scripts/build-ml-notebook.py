@@ -44,6 +44,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Scoring de crédito: cada árbol corrige al anterior. La curva de pérdida dice cuándo parar.",
     ),
     (
+        "svm",
+        "SVM (máquina de vectores de soporte)",
+        "Dígitos escritos a mano (8×8 píxeles): kernel lineal contra RBF y el efecto de C.",
+    ),
+    (
         "knn",
         "KNN (k vecinos más cercanos)",
         "Recomendador: qué película ver según lo que les gustó a los usuarios más parecidos.",

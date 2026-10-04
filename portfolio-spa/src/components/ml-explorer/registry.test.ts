@@ -15,6 +15,7 @@ describe('registry', () => {
       'decision-tree',
       'random-forest',
       'gradient-boosting',
+      'svm',
       'knn',
     ]);
   });

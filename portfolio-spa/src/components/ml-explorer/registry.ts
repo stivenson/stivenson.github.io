@@ -12,6 +12,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   'decision-tree': () => import('./algorithms/decision-tree'),
   'random-forest': () => import('./algorithms/random-forest'),
   'gradient-boosting': () => import('./algorithms/gradient-boosting'),
+  svm: () => import('./algorithms/svm'),
   knn: () => import('./algorithms/knn'),
 };
 
