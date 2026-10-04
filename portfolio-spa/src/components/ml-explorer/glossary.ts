@@ -168,8 +168,8 @@ export const GLOSSARY = {
     why: 'Promediar modelos que se equivocan en sitios distintos reduce la inestabilidad de cada uno.',
   },
   oob: {
-    term: 'Error OOB (fuera de la bolsa)',
-    what: 'El acierto de cada árbol medido con las filas que quedaron fuera de su muestra bootstrap (cerca de un tercio).',
+    term: 'Puntaje OOB (fuera de la bolsa)',
+    what: 'El acierto del bosque medido fila por fila, usando solo los árboles que no vieron esa fila en su muestra bootstrap (cerca de un tercio de los árboles).',
     why: 'Da una estimación de cómo le irá con datos nuevos sin apartar un conjunto de prueba.',
   },
   importanciaPermutacion: {
@@ -247,7 +247,7 @@ export const GLOSSARY = {
     what: 'El resultado de un modelo muy simple (o de predecir siempre la clase más común) contra el que se compara.',
     why: 'Si el modelo complejo no la supera con claridad, no vale su costo.',
   },
-  librariasBoosting: {
+  bibliotecasBoosting: {
     term: 'XGBoost, LightGBM y CatBoost',
     what: 'Bibliotecas de Gradient Boosting optimizadas: agrupan valores, usan varios núcleos y manejan datos faltantes.',
     why: 'Son las que se usan en producción y en competencias; el GradientBoostingClassifier clásico es más lento.',
@@ -419,7 +419,7 @@ export const GLOSSARY = {
   },
   rocAuc: {
     term: 'Curva ROC y AUC',
-    what: 'La curva ROC muestra, para cada umbral, cuántos positivos detecta el modelo contra cuántas falsas alarmas da. El AUC es el área bajo esa curva, de 0.5 (azar) a 1 (perfecto).',
+    what: 'La curva ROC muestra, para cada umbral, cuántos positivos detecta el modelo contra cuántas falsas alarmas da. El AUC es el área bajo esa curva: 0.5 es azar y 1 es perfecto.',
     why: 'Compara modelos sin tener que elegir un umbral primero.',
   },
   exactitud: {
