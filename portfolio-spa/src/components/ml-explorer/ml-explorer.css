@@ -40,6 +40,110 @@
   text-align: center;
 }
 
+/* ---------- Barra de título y pantalla completa ---------- */
+
+.mlx-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(85, 170, 255, 0.2);
+}
+
+/* Mismo aspecto que los h2 del artículo (estilo inline de MarkdownRenderer);
+   el borde inferior lo lleva la barra para que el botón quede encima de él. */
+.mlx .mlx-title {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 600;
+  color: var(--electric-blue);
+  line-height: 1.4;
+}
+
+.mlx-fs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 5px 10px;
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--electric-cyan, #55aaff);
+  background: rgba(85, 170, 255, 0.08);
+  border: 1px solid rgba(85, 170, 255, 0.35);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.mlx-fs-btn:hover {
+  background: rgba(85, 170, 255, 0.16);
+}
+
+.mlx-fs-btn:focus-visible {
+  outline: 2px solid var(--electric-cyan, #55aaff);
+  outline-offset: 2px;
+}
+
+.mlx-fs-btn[aria-pressed='true'] {
+  color: #e8e8f0;
+  background: rgba(76, 89, 211, 0.35);
+}
+
+.mlx-fs-icon {
+  flex-shrink: 0;
+}
+
+/* Pantalla completa (nativa o de respaldo): el explorador ocupa el alto de
+   la ventana y el menú y el panel hacen scroll cada uno por su cuenta. */
+.mlx--full {
+  box-sizing: border-box;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 16px;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: #040320;
+  overflow: hidden;
+}
+
+.mlx--full .mlx-menu {
+  position: static;
+  align-self: stretch;
+  max-height: none;
+  min-height: 0;
+  overflow: auto;
+}
+
+.mlx--full .mlx-main {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* Sin estilo propio, el navegador pinta de negro el fondo a pantalla completa. */
+.mlx:fullscreen {
+  width: 100%;
+  background: #040320;
+}
+
+.mlx:fullscreen::backdrop {
+  background: #040320;
+}
+
+/* Respaldo (Safari de iPhone): fijado sobre la página, respetando la muesca. */
+.mlx--overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: auto;
+  padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+}
+
 /* ---------- Menú ---------- */
 
 .mlx-menu {
@@ -405,7 +509,8 @@
 .mlx-gl-modal {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  /* Por encima del explorador en modo de respaldo (.mlx--overlay: 1000). */
+  z-index: 1100;
   display: grid;
   place-items: center;
   padding: 16px;
@@ -691,6 +796,16 @@ p.mlx-py-error {
     position: static;
     max-height: none;
     padding: 10px;
+  }
+
+  /* Una columna: barra, selector de algoritmo y panel (este con scroll). */
+  .mlx--full {
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .mlx--full .mlx-menu {
+    overflow: visible;
   }
 
   .mlx-menu-list {

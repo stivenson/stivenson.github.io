@@ -67,6 +67,11 @@ it('el artículo del explorador de ML se monta con su guía, sus enlaces y el ex
   expect(await screen.findByRole('heading', { name: 'Linear Regression' }, { timeout: 10000 })).toBeTruthy();
   expect(container.querySelector('.markdown-content > .mlx')).not.toBeNull();
   expect(container.querySelector('.mlx-boot')).toBeNull();
+  // El título «El explorador» lo pone el propio componente (con su botón de
+  // pantalla completa), ya no el markdown: debe haber exactamente uno.
+  const explorerHeadings = screen.getAllByRole('heading', { level: 2, name: 'El explorador' });
+  expect(explorerHeadings).toHaveLength(1);
+  expect(container.querySelector('.mlx')?.contains(explorerHeadings[0])).toBe(true);
 
   // La lista de comprobación (☐) es una lista aparte de la de consejos.
   const checkItems = Array.from(container.querySelectorAll('.markdown-content li')).filter((li) =>

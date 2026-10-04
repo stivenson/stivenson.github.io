@@ -36,8 +36,6 @@ Responde de arriba abajo:
 
 > **Regla práctica:** empieza por el modelo más simple que pueda funcionar y úsalo como línea base. Pasa a uno más complejo solo si mejora claramente con datos que el modelo no vio.
 
-## El explorador
-
 <ml-explorer>
 </ml-explorer>
 

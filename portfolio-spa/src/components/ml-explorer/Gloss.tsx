@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { portalTarget } from './fullscreen';
 import { GLOSSARY, type GlossaryKey } from './glossary';
 
 /**
  * Término con ficha 💡. La ficha se monta en document.body porque las
  * animaciones de Framer Motion de la página crean contenedores con
  * transform, y dentro de ellos `position: fixed` deja de cubrir la pantalla.
+ * Con el explorador a pantalla completa se monta dentro de él (portalTarget):
+ * fuera no se vería.
  */
 export function G({ k, children }: { k: GlossaryKey; children?: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -50,7 +53,7 @@ export function G({ k, children }: { k: GlossaryKey; children?: ReactNode }) {
               </button>
             </div>
           </div>,
-          document.body,
+          portalTarget(),
         )}
     </>
   );

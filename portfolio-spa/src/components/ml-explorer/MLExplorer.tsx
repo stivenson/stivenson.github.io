@@ -6,6 +6,7 @@ import { ALGORITHMS, AVAILABLE_SLUGS, getMeta, prefetchAlgorithm } from './regis
 import { parseExplorerState, withExplorerState } from './urlState';
 import type { TabId } from './types';
 import { useAlgorithm } from './useAlgorithm';
+import { OVERLAY_CLASS, useFullscreen } from './fullscreen';
 import './ml-explorer.css';
 
 /**
@@ -17,6 +18,12 @@ export function MLExplorer() {
   const { alg, tab } = parseExplorerState(params, AVAILABLE_SLUGS);
   const state = useAlgorithm(alg);
   const rootRef = useRef<HTMLElement>(null);
+  const fsButtonRef = useRef<HTMLButtonElement>(null);
+  const fullscreen = useFullscreen(rootRef, fsButtonRef);
+  const fullscreenActiveRef = useRef(false);
+  useEffect(() => {
+    fullscreenActiveRef.current = fullscreen.active;
+  });
 
   // Se lee desde el efecto de scroll sin ser dependencia: el primer clic en
   // una pestaña añade ?alg a la URL y eso no debe mover la página.
@@ -29,7 +36,8 @@ export function MLExplorer() {
   // guía), traer el explorador a la vista si quedó fuera de pantalla.
   useEffect(() => {
     const root = rootRef.current;
-    if (!hasAlgParamRef.current || !root) return;
+    // En pantalla completa el explorador ya ocupa la vista: nada que mover.
+    if (!hasAlgParamRef.current || !root || fullscreenActiveRef.current) return;
     const top = root.getBoundingClientRect().top;
     if (top >= 0 && top <= window.innerHeight * 0.6) return;
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -54,8 +62,35 @@ export function MLExplorer() {
   const select = (next: { alg?: string; tab?: TabId }) =>
     setParams(withExplorerState(params, { alg, tab, ...next }), { preventScrollReset: true });
 
+  const classes = [
+    'mlx',
+    fullscreen.active ? 'mlx--full' : '',
+    fullscreen.mode === 'overlay' ? OVERLAY_CLASS : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <section ref={rootRef} className="mlx" id="explorador" aria-label="Explorador de algoritmos de machine learning">
+    <section
+      ref={rootRef}
+      className={classes}
+      id="explorador"
+      aria-label="Explorador de algoritmos de machine learning"
+    >
+      <div className="mlx-bar">
+        <h2 className="mlx-title">El explorador</h2>
+        <button
+          ref={fsButtonRef}
+          type="button"
+          className="mlx-fs-btn"
+          aria-pressed={fullscreen.active}
+          title={fullscreen.active ? 'Salir de pantalla completa (Esc)' : 'Ver el explorador a pantalla completa'}
+          onClick={fullscreen.toggle}
+        >
+          <FullscreenIcon exit={fullscreen.active} />
+          <span>{fullscreen.active ? 'Salir de pantalla completa' : 'Pantalla completa'}</span>
+        </button>
+      </div>
       <AlgorithmMenu
         algorithms={ALGORITHMS}
         activeSlug={alg}
@@ -72,5 +107,29 @@ export function MLExplorer() {
         />
       </div>
     </section>
+  );
+}
+
+/** Cuatro esquinas hacia fuera (entrar) o hacia dentro (salir). */
+function FullscreenIcon({ exit }: { exit: boolean }) {
+  const d = exit
+    ? 'M6 2v4H2M10 2v4h4M6 14v-4H2M10 14v-4h4'
+    : 'M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4';
+  return (
+    <svg
+      className="mlx-fs-icon"
+      viewBox="0 0 16 16"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d={d} />
+    </svg>
   );
 }
