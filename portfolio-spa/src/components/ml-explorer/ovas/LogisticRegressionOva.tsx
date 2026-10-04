@@ -8,6 +8,9 @@ const PLOT = createPlot(360, 260, 30, [0, 10], [-0.1, 1.1]);
 
 const EXAMPLE_X = 4;
 
+/** Formatea con el signo menos tipográfico «−» (U+2212), el mismo del operador. */
+const signed = (v: number, digits: number) => v.toFixed(digits).replace('-', '−');
+
 export function LogisticRegressionOva() {
   const [b0, setB0] = useState(-4);
   const [b1, setB1] = useState(1);
@@ -57,8 +60,8 @@ export function LogisticRegressionOva() {
       readout={
         <>
           <span>
-            Con x = {EXAMPLE_X}: z = {b0.toFixed(1)} {b1 < 0 ? '−' : '+'} {Math.abs(b1).toFixed(2)}·{EXAMPLE_X} ={' '}
-            <b>{z.toFixed(2)}</b> → P(spam) = <b>{(sigmoid(z) * 100).toFixed(1)} %</b>
+            Con x = {EXAMPLE_X}: z = {signed(b0, 1)} {b1 < 0 ? '−' : '+'} {Math.abs(b1).toFixed(2)}·{EXAMPLE_X} ={' '}
+            <b>{signed(z, 2)}</b> → P(spam) = <b>{(sigmoid(z) * 100).toFixed(1)} %</b>
           </span>
           <span>
             Aciertos: <b>{hits} de {XS.length}</b> correos
@@ -96,7 +99,11 @@ export function LogisticRegressionOva() {
               stroke={OVA_COLORS.accent}
               strokeDasharray="5 4"
             />
-            <text x={PLOT.sx(boundary) + 4} y={PLOT.sy(1.05)} fontSize={10} fill={OVA_COLORS.accent}>
+            <text
+              x={PLOT.sx(boundary) + (boundary > 8 ? -4 : 4)}
+              y={PLOT.sy(1.05)}
+              textAnchor={boundary > 8 ? 'end' : 'start'}
+              fontSize={10} fill={OVA_COLORS.accent}>
               frontera
             </text>
           </g>

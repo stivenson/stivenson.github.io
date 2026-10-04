@@ -30,25 +30,25 @@ describe('KnnOva', () => {
     const svg = container.querySelector('svg');
     expect(svg?.getAttribute('role')).toBe('group');
 
-    const diamond = screen.getByRole('button', { name: /^Persona nueva: acción 6.4, ciencia ficción 7\./ });
+    const diamond = screen.getByRole('button', { name: /^Persona nueva: acción 6.4, ciencia ficción 7\. Muévela/ });
     expect(diamond.getAttribute('aria-roledescription')).toBe('punto movible');
     diamond.focus();
     expect(document.activeElement).toBe(diamond);
     const x0 = diamond.getAttribute('x');
 
     fireEvent.keyDown(diamond, { key: 'ArrowRight' });
-    const moved = screen.getByRole('button', { name: /^Persona nueva: acción 6.65, ciencia ficción 7\./ });
+    const moved = screen.getByRole('button', { name: /^Persona nueva: acción 6.65, ciencia ficción 7\. Muévela/ });
     expect(moved.getAttribute('x')).not.toBe(x0);
 
     // 0.65 + 0.25 · 3 = 7.4 exacto gracias al redondeo (sin él saldría 7.3999…).
     for (let i = 0; i < 3; i++) fireEvent.keyDown(moved, { key: 'ArrowRight' });
-    screen.getByRole('button', { name: /^Persona nueva: acción 7.4, ciencia ficción 7\./ });
+    screen.getByRole('button', { name: /^Persona nueva: acción 7.4, ciencia ficción 7\. Muévela/ });
 
     fireEvent.keyDown(moved, { key: 'ArrowDown', shiftKey: true });
-    screen.getByRole('button', { name: /^Persona nueva: acción 7.4, ciencia ficción 6\./ });
+    screen.getByRole('button', { name: /^Persona nueva: acción 7.4, ciencia ficción 6\. Muévela/ });
 
     fireEvent.click(screen.getByRole('button', { name: 'Restablecer' }));
-    screen.getByRole('button', { name: /^Persona nueva: acción 6.4, ciencia ficción 7\./ });
+    screen.getByRole('button', { name: /^Persona nueva: acción 6.4, ciencia ficción 7\. Muévela/ });
     expect(error).not.toHaveBeenCalled();
   });
 

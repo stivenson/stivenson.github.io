@@ -24,6 +24,14 @@ describe('DecisionTreeOva', () => {
     expect(error).not.toHaveBeenCalled();
   });
 
+  it('el aviso de sobreajuste no aparece con profundidad 3 y sí con 4', () => {
+    const { container } = render(<DecisionTreeOva />);
+    setDepth(3);
+    expect(status(container)).not.toMatch(/overfitting/);
+    setDepth(4);
+    expect(status(container)).toMatch(/empieza a encerrar puntos de ruido.*\(overfitting\)/);
+  });
+
   it('con profundidad 2 explica por qué el acierto no cambia', () => {
     const { container } = render(<DecisionTreeOva />);
     setDepth(2);

@@ -17,7 +17,7 @@ describe('LogisticRegressionOva', () => {
     const error = vi.spyOn(console, 'error');
     render(<LogisticRegressionOva />);
     expect(hitsText()).toBe('15 de 18');
-    expect(exampleText()).toContain('z = -4.0 + 1.00·4 = 0.00');
+    expect(exampleText()).toContain('z = −4.0 + 1.00·4 = 0.00');
 
     fireEvent.click(screen.getByRole('button', { name: 'Mejor ajuste (método de Newton)' }));
     expect(hitsText()).toBe('16 de 18');
@@ -35,8 +35,9 @@ describe('LogisticRegressionOva', () => {
     render(<LogisticRegressionOva />);
     fireEvent.change(sliders()[1], { target: { value: '-0.5' } });
     const text = exampleText();
-    expect(text).toContain('z = -4.0 − 0.50·4 = -6.00');
+    expect(text).toContain('z = −4.0 − 0.50·4 = −6.00');
     expect(text).not.toContain('+ -');
+    expect(text).not.toContain('-');
     expect(error).not.toHaveBeenCalled();
   });
 
