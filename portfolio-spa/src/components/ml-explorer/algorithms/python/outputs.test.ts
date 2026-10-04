@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import linearRegression from './linear-regression.out.txt?raw';
+import logisticRegression from './logistic-regression.out.txt?raw';
 
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
@@ -12,5 +13,10 @@ describe('cifras citadas en los textos', () => {
     expect(linearRegression).toContain('Casa de 120 m² y 3 habitaciones: 425 millones');
     expect(linearRegression).toContain('Por cada m² (b1): 2.47');
     expect(linearRegression).toContain('Por cada habitación (b2): 16.0');
+  });
+
+  it('Logistic Regression: «gratis» y enlaces suben el spam, el remitente conocido lo baja; 94 % de spam', () => {
+    expect(logisticRegression).toContain('Pesos [gratis, enlaces, conocido]: [ 1.84  0.99 -1.75]');
+    expect(logisticRegression).toContain('P(spam) = 94.4%');
   });
 });

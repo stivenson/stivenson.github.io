@@ -1,0 +1,9 @@
+Pesos [gratis, enlaces, conocido]: [ 1.84  0.99 -1.75]
+Intercepto b0: -4.83
+Exactitud con correos nuevos: 97.0%
+Matriz de confusión (filas = real, columnas = predicho; 0 = normal, 1 = spam):
+[[59  1]
+ [ 2 38]]
+gratis=0 enlaces=1 conocido=1 -> P(spam) = 0.4%
+gratis=2 enlaces=4 conocido=0 -> P(spam) = 94.4%
+gratis=5 enlaces=8 conocido=0 -> P(spam) = 100.0%

@@ -21,6 +21,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Linear Regression (regresión lineal)",
         "Precio de casas: ¿cuánto suma cada m² y cada habitación?",
     ),
+    (
+        "logistic-regression",
+        "Logistic Regression (regresión logística)",
+        "Detector de spam: probabilidad de que un correo sea spam según tres señales.",
+    ),
 ]
 
 
