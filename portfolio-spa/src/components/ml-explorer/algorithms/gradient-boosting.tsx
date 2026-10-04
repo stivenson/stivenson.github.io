@@ -123,7 +123,8 @@ const gradientBoosting: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          No supone linealidad ni necesita <G k="escalado">escalar</G> las <G k="feature">features</G>. Las etiquetas deben ser confiables: con la pérdida
+          No supone linealidad ni necesita <G k="escalado">escalar</G> las <G k="feature">features</G>. Las etiquetas
+          deben ser confiables: con la pérdida
           cuadrática, un valor atípico produce un residuo enorme que los árboles siguientes persiguen. Para regresión
           con <G k="outlier">outliers</G> existe la <G k="huber">pérdida de Huber</G> (<code>loss="huber"</code>).
         </p>
@@ -150,7 +151,8 @@ const gradientBoosting: AlgorithmModule = {
       deepDive: (
         <p>
           Al corregir errores paso a paso reduce sobre todo el <G k="sesgoVarianza">sesgo</G>, mientras que Random
-          Forest reduce sobre todo la <G k="sesgoVarianza">varianza</G>. <code>HistGradientBoostingClassifier</code> maneja valores faltantes y <G k="categorica">features categóricas</G>
+          Forest reduce sobre todo la <G k="sesgoVarianza">varianza</G>. <code>HistGradientBoostingClassifier</code>
+          maneja valores faltantes y <G k="categorica">features categóricas</G>{' '}
           de forma nativa y escala a millones de filas.
         </p>
       ),
@@ -178,7 +180,8 @@ const gradientBoosting: AlgorithmModule = {
           La defensa estándar es la <G k="paradaTemprana">parada temprana</G>: apartar una parte de los datos y detener el entrenamiento
           cuando la pérdida en ellos deja de bajar (<code>n_iter_no_change</code> y{' '}
           <code>validation_fraction</code> en scikit-learn). También ayudan árboles poco profundos, tasa pequeña y
-          entrenar cada árbol con una fracción de las filas (<code>subsample</code>). En HistGradientBoostingClassifier la parada temprana se activa sola con más
+          entrenar cada árbol con una fracción de las filas (<code>subsample</code>). En
+          HistGradientBoostingClassifier la parada temprana se activa sola con más
           de 10 000 filas (<code>early_stopping="auto"</code>).
         </p>
       ),
@@ -220,7 +223,7 @@ const gradientBoosting: AlgorithmModule = {
       deepDive: (
         <p>
           Elegir el número de árboles mirando los datos de prueba, como hace el ejercicio para mostrar la curva,
-          hace que esa medición quede optimista. En un proyecto real se elige con una parte de validación (o
+          hace que esa medición quede optimista. En un proyecto real se elige con una parte de validación (o{' '}
           <G k="validacionCruzada">validación cruzada</G>) y los datos de prueba se usan una sola vez, al final.
         </p>
       ),
