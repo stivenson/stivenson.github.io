@@ -504,7 +504,7 @@ export const GLOSSARY = {
   },
   varianza: {
     term: 'Varianza',
-    what: 'Qué tanto se esparcen los valores alrededor de su promedio: el promedio de las distancias al promedio, al cuadrado.',
+    what: 'Qué tanto se esparcen los valores alrededor de su promedio: el promedio de los cuadrados de las distancias al promedio.',
     why: 'En PCA, la dirección con más varianza es la que más diferencia a unos datos de otros; las de poca varianza suelen aportar poco, aunque no siempre.',
   },
   componentePrincipal: {
@@ -519,7 +519,7 @@ export const GLOSSARY = {
   },
   autovector: {
     term: 'Autovectores y autovalores',
-    what: 'Un autovector de una matriz es una dirección que la matriz solo estira, sin girarla; su autovalor dice cuánto la estira.',
+    what: 'Un autovector de una matriz es una dirección que la matriz solo estira o encoge (sin girarla); su autovalor dice cuánto la estira.',
     why: 'Los componentes principales son los autovectores de la matriz de covarianza, y cada autovalor es la varianza que captura el suyo.',
   },
   reconstruccion: {

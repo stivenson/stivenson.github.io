@@ -207,7 +207,7 @@ const dbscan: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          La distancia haversine trabaja en radianes, así que ε también: 300 m son 0.3 / 6371 radianes (6371 km es el
+          La distancia haversine trabaja en radianes, así que ε también: 300 m son 0.3 km / 6371 km ≈ 0.000047 radianes (6371 km es el
           radio de la Tierra). Con millones de puntos se usa un índice espacial o se agrupa primero por cuadrículas.
         </p>
       ),

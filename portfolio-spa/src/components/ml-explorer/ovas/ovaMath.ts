@@ -638,7 +638,8 @@ function assign(points: Pt[], centroids: Pt[]): KMeansState {
  * con su asignación; cada estado siguiente mueve cada centroide al promedio
  * de sus puntos y reasigna. Para cuando ninguna asignación cambia (igual que
  * KMeans(init=…, n_init=1, algorithm="lloyd") de scikit-learn). Un grupo que
- * se queda sin puntos conserva su centroide.
+ * se queda sin puntos conserva su centroide: queda quieto en su sitio
+ * (scikit-learn, en cambio, lo reubicaría en un punto lejano).
  */
 export function kmeansRun(points: Pt[], init: Pt[], maxIterations = 100): KMeansState[] {
   const states = [assign(points, init)];
@@ -692,7 +693,7 @@ export interface Merge {
 /**
  * Agrupamiento aglomerativo con enlace promedio (UPGMA): empieza con cada
  * punto solo y en cada paso une los dos grupos más cercanos. Da las mismas
- * uniones que linkage(points, "average") de scipy.
+ * uniones que linkage(points, "average") de scipy (sin empates de distancia).
  */
 export function averageLinkage(points: Pt[]): Merge[] {
   const n = points.length;

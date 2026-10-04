@@ -21,6 +21,8 @@ export function usePrefersReducedMotion(): boolean {
 /**
  * true mientras el elemento se ve en pantalla. Sin IntersectionObserver
  * (navegadores viejos, tests) se supone visible.
+ * El elemento debe existir (ref.current asignado) desde el primer montaje:
+ * el observador se crea una sola vez y no se entera si el ref cambia luego.
  */
 export function useInViewport(ref: RefObject<Element | null>): boolean {
   const [visible, setVisible] = useState(true);
