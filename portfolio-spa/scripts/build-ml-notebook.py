@@ -39,6 +39,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Detector de fraude: un árbol solo contra un bosque de 100, y qué señales pesan de verdad.",
     ),
     (
+        "gradient-boosting",
+        "Gradient Boosting (potenciación por gradiente)",
+        "Scoring de crédito: cada árbol corrige al anterior. La curva de pérdida dice cuándo parar.",
+    ),
+    (
         "knn",
         "KNN (k vecinos más cercanos)",
         "Recomendador: qué película ver según lo que les gustó a los usuarios más parecidos.",

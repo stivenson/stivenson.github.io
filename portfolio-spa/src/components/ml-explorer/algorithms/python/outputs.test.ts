@@ -5,6 +5,7 @@ import logisticRegression from './logistic-regression.out.txt?raw';
 import knn from './knn.out.txt?raw';
 
 import randomForest from './random-forest.out.txt?raw';
+import gradientBoosting from './gradient-boosting.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -55,5 +56,18 @@ describe('cifras citadas en los textos', () => {
     expect(randomForest).toMatch(/^\s+intentos\s+0\.06\s+0\.015$/m);
     expect(randomForest).toMatch(/^\s+antigüedad\s+0\.12\s+-0\.006$/m);
     expect(randomForest).toMatch(/^\s+monto\s+0\.44\s+0\.139$/m);
+  });
+
+  it('Gradient Boosting: la pérdida en datos nuevos toca fondo (0.504) con 24 árboles y sube a 0.611 con 300', () => {
+    expect(gradientBoosting).toContain('Impagos: 271 de 800 clientes');
+    expect(gradientBoosting).toContain('Menor pérdida en datos nuevos: 0.504 con 24 árboles');
+    expect(gradientBoosting).toMatch(/^\s+1 \|\s+0\.620 \|\s+0\.619$/m);
+    expect(gradientBoosting).toMatch(/^\s+300 \|\s+0\.265 \|\s+0\.611$/m);
+  });
+
+  it('Gradient Boosting: en entrenamiento la pérdida baja en cada fila de la tabla (de 0.620 a 0.265)', () => {
+    const train = [...gradientBoosting.matchAll(/^\s+\d+ \|\s+([\d.]+) \|/gm)].map((m) => Number(m[1]));
+    expect(train).toEqual([0.62, 0.53, 0.437, 0.386, 0.317, 0.265]);
+    for (let i = 1; i < train.length; i++) expect(train[i]).toBeLessThan(train[i - 1]);
   });
 });

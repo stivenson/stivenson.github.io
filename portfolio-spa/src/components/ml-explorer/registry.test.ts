@@ -14,6 +14,7 @@ describe('registry', () => {
       'logistic-regression',
       'decision-tree',
       'random-forest',
+      'gradient-boosting',
       'knn',
     ]);
   });

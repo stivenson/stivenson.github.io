@@ -1,0 +1,10 @@
+Impagos: 271 de 800 clientes
+Árboles | pérdida entrenamiento | pérdida datos nuevos
+      1 |                 0.620 |                0.619
+     10 |                 0.530 |                0.529
+     50 |                 0.437 |                0.506
+    100 |                 0.386 |                0.526
+    200 |                 0.317 |                0.565
+    300 |                 0.265 |                0.611
+
+Menor pérdida en datos nuevos: 0.504 con 24 árboles

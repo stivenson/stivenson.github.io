@@ -11,6 +11,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   'logistic-regression': () => import('./algorithms/logistic-regression'),
   'decision-tree': () => import('./algorithms/decision-tree'),
   'random-forest': () => import('./algorithms/random-forest'),
+  'gradient-boosting': () => import('./algorithms/gradient-boosting'),
   knn: () => import('./algorithms/knn'),
 };
 

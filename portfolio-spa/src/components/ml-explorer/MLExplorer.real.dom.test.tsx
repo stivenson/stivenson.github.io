@@ -171,3 +171,30 @@ it('Random Forest real (?alg=random-forest): recorre las 8 pestañas sin errores
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('Gradient Boosting real (?alg=gradient-boosting): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=gradient-boosting']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'Gradient Boosting' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
+      expect(svg).not.toBeNull();
+      expect(svg!.querySelectorAll('circle')).toHaveLength(21);
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('2.41');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});
