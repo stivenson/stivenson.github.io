@@ -65,8 +65,8 @@ const linearRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Funciona con pocas decenas de filas y escala a millones: entrenarla cuesta <Tex>{'O(n p^2)'}</Tex> con n
-          filas y p features, más <Tex>{'O(p^3)'}</Tex> para resolver el sistema; si n ≥ p domina el primer término. Si
-          hay más features que filas, existen infinitas soluciones y hace falta regularizar. Ridge (penalización L2)
+          filas y p <G k="feature">features</G>, más <Tex>{'O(p^3)'}</Tex> para resolver el sistema; si n ≥ p domina el primer término. Si
+          hay más features que filas, existen infinitas soluciones y hace falta regularizar. <G k="regularizacionL1L2">Ridge</G> (penalización L2)
           siempre da una solución única. Lasso (L1) no siempre: con features repetidas o colineales puede haber varias
           soluciones igual de buenas.
         </p>
@@ -110,10 +110,10 @@ const linearRegression: AlgorithmModule = {
           </p>
           <p>
             En la práctica no se invierte <Tex>{'X^\\top X'}</Tex>: el sistema se resuelve con una descomposición (QR o
-            SVD), que es numéricamente más estable. scikit-learn usa un solver de mínimos cuadrados. El costo crece
+            SVD), que es numéricamente más estable. scikit-learn usa un <G k="solver">solver</G> de mínimos cuadrados. El costo crece
             sobre todo con p, el número de features (con su cuadrado), y no tanto con n, el de filas (solo en
-            proporción): duplicar las filas duplica el tiempo; duplicar las features lo cuadruplica. El descenso de
-            gradiente (estocástico) se reserva para cuando hay muchísimas features o los datos no caben en memoria.
+            proporción): duplicar las filas duplica el tiempo; duplicar las features lo cuadruplica. El <G k="descensoGradiente">descenso de
+            gradiente</G> (estocástico) se reserva para cuando hay muchísimas features o los datos no caben en memoria.
           </p>
         </>
       ),
@@ -124,7 +124,7 @@ const linearRegression: AlgorithmModule = {
           <p>Dos supuestos principales:</p>
           <ul>
             <li>
-              <b>Linealidad:</b> cada feature suma o resta en línea recta. Si el precio sube cada vez más rápido con
+              <b>Linealidad:</b> cada <G k="feature">feature</G> suma o resta en línea recta. Si el precio sube cada vez más rápido con
               el área, una recta se queda corta.
             </li>
             <li>
@@ -132,7 +132,7 @@ const linearRegression: AlgorithmModule = {
               tiempo: el consumo de hoy se parece al de ayer.
             </li>
           </ul>
-          <p>Cómo revisarlos: grafica los residuos. Si forman una curva o un patrón, algún supuesto no se cumple.</p>
+          <p>Cómo revisarlos: grafica los <G k="residuo">residuos</G>. Si forman una curva o un patrón, algún supuesto no se cumple.</p>
         </>
       ),
       deepDive: (
@@ -175,23 +175,23 @@ const linearRegression: AlgorithmModule = {
               Sensible a <G k="outlier">outliers</G>:
             </b>{' '}
             como el error se eleva al cuadrado, un solo punto lejano arrastra la recta. En el simulador de la pestaña
-            Fórmula, «Añadir un outlier» sube el MSE de 0.10 a 2.57 (unas 25 veces) y baja la pendiente de 0.65 a
+            Fórmula, «Añadir un outlier» sube el <G k="mse">MSE</G> de 0.10 a 2.57 (unas 25 veces) y baja la pendiente de 0.65 a
             0.40.
           </li>
           <li>
-            <b>Solo ve rectas:</b> si la relación real es curva (rendimientos decrecientes, umbrales), se equivoca de
+            <b>Solo ve rectas:</b> si la relación real es curva (rendimientos decrecientes, <G k="umbral">umbrales</G>), se equivoca de
             forma sistemática.
           </li>
           <li>
-            <b>No descubre interacciones sola:</b> si el efecto del área depende del barrio, tienes que crear esa
-            feature a mano.
+            <b>No descubre interacciones sola:</b> si el efecto del área depende del barrio, tienes que crear esa{' '}
+            <G k="feature">feature</G> a mano.
           </li>
         </ul>
       ),
       deepDive: (
         <p>
-          Contra los outliers: regresión robusta (Huber, RANSAC). Contra la no linealidad: features transformadas
-          (x², log x) o árboles. Con features muy correlacionadas los pesos se vuelven inestables; Ridge (penalización
+          Contra los outliers: regresión robusta (<G k="huber">Huber</G>, RANSAC). Contra la no linealidad: features transformadas
+          (x², log x) o árboles. Con features muy correlacionadas los pesos se vuelven inestables; <G k="regularizacionL1L2">Ridge</G> (penalización
           L2) lo corrige.
         </p>
       ),
@@ -200,14 +200,14 @@ const linearRegression: AlgorithmModule = {
       essential: (
         <>
           <p className="mlx-rule">
-            No la uses si la respuesta cambia de golpe a partir de un umbral, o si el efecto de cada factor depende del
+            No la uses si la respuesta cambia de golpe a partir de un <G k="umbral">umbral</G>, o si el efecto de cada factor depende del
             contexto y no sabes de qué.
           </p>
           <p>
             Ejemplo: un motor casi no falla por debajo de 90 °C, y por encima sus fallas se disparan. Una recta reparte
             ese salto por todo el rango: se equivoca por debajo del umbral (predice fallas que no hay, o incluso
             cantidades negativas) y se queda corta a 100 °C. Elevar al cuadrado o sacar
-            logaritmo no crea un salto, y si no sabes dónde está el umbral tampoco puedes construir esa feature a mano.
+            logaritmo no crea un salto, y si no sabes dónde está el umbral tampoco puedes construir esa <G k="feature">feature</G> a mano.
           </p>
           <p>Tampoco sirve para predecir categorías (sí/no): para eso está la regresión logística.</p>
         </>

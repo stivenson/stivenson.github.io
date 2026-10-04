@@ -45,7 +45,7 @@ const knn: AlgorithmModule = {
       essential: (
         <>
           <p>
-            Úsalo con <b>conjuntos de datos pequeños o medianos y pocas features</b>, sobre todo cuando la idea de
+            Úsalo con <b>conjuntos de datos pequeños o medianos y pocas <G k="feature">features</G></b>, sobre todo cuando la idea de
             «parecido» es natural en el problema. No necesita entrenar, pero sí ejemplos que cubran bien los casos
             posibles.
           </p>
@@ -94,8 +94,8 @@ const knn: AlgorithmModule = {
             ignora el nivel de las notas; en el ejercicio, Caro (que calificó con 1 lo que Ana calificó con 4 y 5)
             saldría casi idéntica a ella. Entrenar es solo guardar los datos, pero cada predicción cuesta{' '}
             <Tex>{'O(n\\,p)'}</Tex> con búsqueda exhaustiva. k es el <G k="hiperparametro">hiperparámetro</G> clave:
-            con k pequeño el modelo es nervioso (mucha varianza); con k grande, rígido (mucho sesgo). Se elige con
-            validación cruzada y, con dos clases, suele ser impar para evitar empates.
+            con k pequeño el modelo es nervioso (mucha varianza); con k grande, rígido (mucho sesgo). Se elige con{' '}
+            <G k="validacionCruzada">validación cruzada</G> y, con dos clases, suele ser impar para evitar empates.
           </p>
         </>
       ),
@@ -104,7 +104,7 @@ const knn: AlgorithmModule = {
       essential: (
         <>
           <p>
-            Supone que <b>las features están en escalas comparables</b>.
+            Supone que <b>las <G k="feature">features</G> están en escalas comparables</b>.
           </p>
           <p>
             Ejemplo: si comparas personas por edad (20 a 60) y por salario (1 000 000 a 10 000 000), la diferencia de
@@ -155,7 +155,7 @@ const knn: AlgorithmModule = {
             Pruébalo en el simulador con k = 1.
           </li>
           <li>
-            <b>Sufre con muchas features:</b> en <G k="altaDimension">alta dimensionalidad</G> todos los puntos
+            <b>Sufre con muchas <G k="feature">features</G>:</b> en <G k="altaDimension">alta dimensionalidad</G> todos los puntos
             quedan casi igual de lejos.
           </li>
         </ul>
@@ -164,7 +164,7 @@ const knn: AlgorithmModule = {
         <p>
           La «maldición de la dimensionalidad»: a medida que crecen las features (sobre todo si muchas son ruido o
           irrelevantes), la distancia al vecino más cercano y al más lejano se vuelven casi iguales, y «el más
-          parecido» deja de significar algo. Reducir dimensiones con PCA antes de KNN suele ayudar.
+          parecido» deja de significar algo. Reducir dimensiones con <G k="pca">PCA</G> antes de KNN suele ayudar.
         </p>
       ),
     },
@@ -173,8 +173,8 @@ const knn: AlgorithmModule = {
         <>
           <p className="mlx-rule">No lo uses con datos ruidosos de muchas dimensiones.</p>
           <p>
-            Ejemplo: clasificar textos usando como features el conteo crudo de miles de palabras. Las distancias se
-            llenan de ruido y, además, cada predicción es lenta. (Con embeddings, entrenados para que la distancia sí
+            Ejemplo: clasificar textos usando como <G k="feature">features</G> el conteo crudo de miles de palabras. Las distancias se
+            llenan de ruido y, además, cada predicción es lenta. (Con <G k="embedding">embeddings</G>, entrenados para que la distancia sí
             signifique parecido, KNN vuelve a funcionar: ver Ejemplo real.)
           </p>
         </>
@@ -204,7 +204,7 @@ const knn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En producción hay millones de usuarios y productos: se usan representaciones aprendidas (embeddings),
+          En producción hay millones de usuarios y productos: se usan representaciones aprendidas (<G k="embedding">embeddings</G>),
           entrenadas para que «cerca» signifique «parecido» aunque tengan cientos de dimensiones, y búsqueda
           aproximada de vecinos. Otro reto es el «arranque en frío»: un usuario nuevo no tiene calificaciones con las
           que compararse.

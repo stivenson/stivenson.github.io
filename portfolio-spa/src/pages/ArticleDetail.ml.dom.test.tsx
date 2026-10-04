@@ -51,7 +51,7 @@ it('el artículo del explorador de ML se monta con su guía, sus enlaces y el ex
   const links = Array.from(container.querySelectorAll<HTMLAnchorElement>('.markdown-content a'));
   const internal = links.filter((a) => a.getAttribute('href')?.startsWith('#/articles/algoritmos-ml-explorador?alg='));
   const external = links.filter((a) => a.getAttribute('href')?.startsWith('https://colab.research.google.com/'));
-  expect(internal).toHaveLength(4);
+  expect(internal).toHaveLength(8);
   expect(external).toHaveLength(2);
   for (const a of internal) {
     expect(a.hasAttribute('target')).toBe(false);

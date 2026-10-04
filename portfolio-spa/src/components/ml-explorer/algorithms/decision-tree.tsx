@@ -32,7 +32,7 @@ const decisionTree: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Algoritmo CART: parte el espacio de features en rectángulos alineados con los ejes y asigna a cada uno la
+          Algoritmo CART: parte el espacio de <G k="feature">features</G> en rectángulos alineados con los ejes y asigna a cada uno la
           clase mayoritaria (o la media, en regresión). Es no paramétrico: su tamaño crece con los datos.
         </p>
       ),
@@ -54,9 +54,9 @@ const decisionTree: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          No necesita escalar las features. CART admite categóricas en teoría, pero scikit-learn exige convertirlas
+          No necesita escalar las <G k="feature">features</G>. CART admite categóricas en teoría, pero scikit-learn exige convertirlas
           antes a números (por ejemplo, con OrdinalEncoder). Además es la pieza básica de Random Forest y Gradient
-          Boosting, los modelos que suelen ganar en datos tabulares.
+          Boosting, los modelos que suelen ganar en <G k="tabular">datos tabulares</G>.
         </p>
       ),
     },
@@ -82,7 +82,7 @@ const decisionTree: AlgorithmModule = {
       ),
       deepDive: (
         <>
-          <p>En cada nodo se elige la feature j y el umbral t que minimizan la impureza ponderada de los hijos:</p>
+          <p>En cada nodo se elige la <G k="feature">feature</G> j y el <G k="umbral">umbral</G> t que minimizan la impureza ponderada de los hijos:</p>
           <Tex block>{'\\min_{j,\\,t}\\ \\frac{n_L}{n}\\,G(L) + \\frac{n_R}{n}\\,G(R)'}</Tex>
           <p>
             Es un algoritmo voraz: elige el mejor corte del momento sin mirar adelante, así que no garantiza el mejor
@@ -97,8 +97,8 @@ const decisionTree: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b>Ninguno fuerte.</b> No supone rectas ni distribuciones, y no necesita que las features estén en la
-            misma escala: solo pregunta «¿x ≤ umbral?».
+            <b>Ninguno fuerte.</b> No supone rectas ni distribuciones, y no necesita que las <G k="feature">features</G> estén en la
+            misma escala: solo pregunta «¿x ≤ <G k="umbral">umbral</G>?».
           </p>
           <p>Eso lo hace muy flexible, y también fácil de engañar: si lo dejas crecer, inventa una regla para cada dato raro.</p>
         </>
@@ -118,7 +118,7 @@ const decisionTree: AlgorithmModule = {
             equipo.
           </li>
           <li>
-            <b>Poca preparación de datos:</b> no hace falta escalar las features (en scikit-learn las categóricas sí
+            <b>Poca preparación de datos:</b> no hace falta escalar las <G k="feature">features</G> (en scikit-learn las categóricas sí
             hay que codificarlas como números).
           </li>
           <li>
@@ -157,7 +157,7 @@ const decisionTree: AlgorithmModule = {
         <p>
           Esa inestabilidad (alta varianza) es justo lo que corrigen los <G k="ensamble">ensambles</G>: Random Forest
           promedia muchos árboles (100 por defecto en scikit-learn), cada uno entrenado con una muestra distinta de los
-          datos y con un subconjunto al azar de features en cada corte (en clasificación).
+          datos y con un subconjunto al azar de <G k="feature">features</G> en cada corte (en clasificación).
         </p>
       ),
     },
@@ -165,18 +165,18 @@ const decisionTree: AlgorithmModule = {
       essential: (
         <>
           <p className="mlx-rule">
-            No uses un árbol solo (sin ensamble) cuando los datos son ruidosos o el patrón es complejo y lo que importa
+            No uses un árbol solo (sin <G k="ensamble">ensamble</G>) cuando los datos son ruidosos o el patrón es complejo y lo que importa
             es acertar.
           </p>
           <p>
-            Ahí, o sobreajusta, o queda tan podado que no capta el patrón. Úsalo para explicar y deja la
+            Ahí, o <G k="overfitting">sobreajusta</G>, o queda tan podado que no capta el patrón. Úsalo para explicar y deja la
             predicción a un ensamble.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          Regla práctica: si un árbol de profundidad 3 a 5 no da la exactitud que necesitas, no lo hagas más
+          Regla práctica: si un árbol de profundidad 3 a 5 no da la <G k="exactitud">exactitud</G> que necesitas, no lo hagas más
           profundo; pasa a Random Forest o Gradient Boosting.
         </p>
       ),
@@ -191,7 +191,7 @@ const decisionTree: AlgorithmModule = {
           <p>
             El ejercicio crea 500 clientes de juguete con ingreso, deuda y atrasos, y un 12 % de probabilidad de que
             cada etiqueta se voltee al azar (<G k="ruido">ruido</G>). Lee las reglas del árbol y la tabla final: ¿qué
-            pasa con la exactitud en datos nuevos cuando el árbol crece? Fíjate también en dos detalles: «ingreso ≤
+            pasa con la <G k="exactitud">exactitud</G> en datos nuevos cuando el árbol crece? Fíjate también en dos detalles: «ingreso ≤
             2.50» lleva a «paga» por ambos lados (el corte solo dejó grupos más puros), y la hoja «deuda &gt; 0.88 →
             paga» se apoya en muy pocos clientes: es ruido, no una regla. Para evitarlo se fija{' '}
             <code>min_samples_leaf</code>.
@@ -200,8 +200,8 @@ const decisionTree: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En producción se limita la profundidad o el número mínimo de clientes por hoja, se valida con validación
-          cruzada y se revisan las reglas con expertos del negocio: a veces el árbol encuentra un atajo que no es
+          En producción se limita la profundidad o el número mínimo de clientes por hoja, se valida con <G k="validacionCruzada">validación
+          cruzada</G> y se revisan las reglas con expertos del negocio: a veces el árbol encuentra un atajo que no es
           legal usar, como una variable que delata el barrio o el género.
         </p>
       ),

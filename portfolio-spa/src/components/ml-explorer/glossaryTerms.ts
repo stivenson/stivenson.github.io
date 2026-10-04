@@ -1,0 +1,76 @@
+import type { GlossaryKey } from './glossary';
+
+/**
+ * Términos técnicos que, si aparecen en una pestaña de un algoritmo, deben
+ * llevar su ficha 💡 (<G k>) al menos una vez en esa pestaña.
+ * Las regex van sin bandera: el test les añade `iu` y límites de palabra.
+ */
+export interface RequiredTerm {
+  re: string;
+  key: GlossaryKey;
+  /** Fichas más específicas que ya explican el término («kernel RBF» explica «kernel»). */
+  alsoBy?: GlossaryKey[];
+}
+
+export const REQUIRED_TERMS: readonly RequiredTerm[] = [
+  { re: 'features?', key: 'feature' },
+  { re: 'datasets?', key: 'dataset' },
+  { re: 'overfitting|sobreajust\\p{L}*', key: 'overfitting' },
+  { re: 'regularización', key: 'regularizacion', alsoBy: ['regularizacionL1L2'] },
+  { re: 'L1|L2|Lasso|Ridge', key: 'regularizacionL1L2' },
+  { re: 'kernels?', key: 'kernel', alsoBy: ['rbf'] },
+  { re: 'embeddings?', key: 'embedding' },
+  { re: 'umbral(es)?|thresholds?', key: 'umbral' },
+  { re: 'descenso (de|por) gradiente', key: 'descensoGradiente' },
+  { re: '(?<!descenso (?:de|por) )gradientes?', key: 'gradiente' },
+  { re: 'solvers?', key: 'solver' },
+  { re: 'bootstrap', key: 'bootstrap' },
+  { re: 'ensambles?', key: 'ensamble' },
+  { re: 'batch(es)?|mini-?lotes?', key: 'batch' },
+  { re: 'hiperparámetros?', key: 'hiperparametro' },
+  { re: 'validación cruzada', key: 'validacionCruzada' },
+  { re: '(?<!log-)odds', key: 'odds' },
+  { re: 'log-odds', key: 'logOdds' },
+  { re: 'residuos?', key: 'residuo' },
+  { re: 'MSE', key: 'mse' },
+  { re: 'R²', key: 'r2' },
+  { re: 'outliers?|valor(es)? atípicos?', key: 'outlier' },
+  { re: 'sigmoide', key: 'sigmoide' },
+  { re: 'softmax', key: 'softmax' },
+  { re: 'PCA', key: 'pca' },
+  { re: 'Gini', key: 'gini' },
+  { re: 'entropía', key: 'entropia' },
+  { re: 'ROC|AUC', key: 'rocAuc' },
+  { re: 'exactitud|accuracy', key: 'exactitud' },
+  { re: 'bagging', key: 'bagging' },
+  { re: 'OOB|out-of-bag', key: 'oob' },
+  { re: '(?<!Gradient )boosting', key: 'boosting' },
+  { re: 'tasa de aprendizaje|learning rate', key: 'tasaAprendizaje' },
+  { re: 'early stopping|parada temprana', key: 'paradaTemprana' },
+  { re: 'SHAP', key: 'shap' },
+  { re: 'Huber', key: 'huber' },
+  { re: 'hiperplanos?', key: 'hiperplano' },
+  { re: 'vectores de soporte|vector de soporte', key: 'vectorSoporte' },
+  { re: 'matriz de confusión', key: 'matrizConfusion' },
+  { re: 'log loss|pérdida logarítmica', key: 'perdidaLog' },
+  { re: 'frontera de decisión', key: 'frontera' },
+  { re: 'XGBoost|LightGBM|CatBoost', key: 'bibliotecasBoosting' },
+  { re: 'Transformers?', key: 'transformer' },
+  { re: 'redes convolucionales|red convolucional', key: 'redConvolucional' },
+  { re: 'redes neuronales|red neuronal', key: 'redNeuronal' },
+  { re: 'RBF', key: 'rbf' },
+  { re: 'SMO|LIBSVM', key: 'smo' },
+  { re: 'SVR', key: 'svr' },
+  { re: 'bigramas?|n-gramas?', key: 'ngrama' },
+  { re: 'escalad[oa]s?(?! de Platt)|estandariza\\p{L}*', key: 'escalado' },
+  { re: 'valores faltantes|NaN', key: 'faltantes' },
+  { re: 'datos tabulares|tabular(es)?', key: 'tabular' },
+  { re: 'clases desbalanceadas|desbalance', key: 'desbalance' },
+  { re: 'extrapola\\p{L}*', key: 'extrapolar' },
+  { re: 'calibra\\p{L}*', key: 'calibracion' },
+];
+
+/** Regex lista para buscar el término como palabra completa. */
+export function termRegExp(re: string): RegExp {
+  return new RegExp(`(?<![\\p{L}\\p{N}_-])(?:${re})(?![\\p{L}\\p{N}_])`, 'iu');
+}

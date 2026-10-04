@@ -61,8 +61,8 @@ const randomForest: AlgorithmModule = {
       deepDive: (
         <p>
           Funciona bien «de fábrica»: con los valores por defecto de scikit-learn (100 árboles, sin límite de
-          profundidad) suele quedar cerca de su mejor resultado. No necesita <G k="escalado">escalar</G> las features. Con{' '}
-          <code>oob_score=True</code> (<G k="oob">OOB</G>) estima su exactitud con las filas que cada árbol no vio (las que quedaron fuera de su <G k="bootstrap">muestra bootstrap</G>, cerca de un tercio), sin apartar un
+          profundidad) suele quedar cerca de su mejor resultado. No necesita <G k="escalado">escalar</G> las <G k="feature">features</G>. Con{' '}
+          <code>oob_score=True</code> (<G k="oob">OOB</G>) estima su <G k="exactitud">exactitud</G> con las filas que cada árbol no vio (las que quedaron fuera de su <G k="bootstrap">muestra bootstrap</G>, cerca de un tercio), sin apartar un
           conjunto de prueba.
         </p>
       ),
@@ -124,7 +124,7 @@ const randomForest: AlgorithmModule = {
       deepDive: (
         <p>
           No supone relaciones lineales ni distribuciones particulares, y no le afecta la escala de las features.
-          Lo que no puede hacer es <G k="extrapolar">extrapolar</G>: en regresión, nunca predice un valor fuera del rango de las
+          Lo que no puede hacer es <G k="extrapolar">extrapolar</G>: en <G k="regresion">regresión</G>, nunca predice un valor fuera del rango de las
           respuestas que vio al entrenar.
         </p>
       ),
@@ -138,7 +138,7 @@ const randomForest: AlgorithmModule = {
             77.7 % en compras nuevas y el bosque, 82.3 %.
           </li>
           <li>
-            <b>Poca preparación:</b> no hay que <G k="escalado">escalar</G> las <G k="feature">features</G> y funciona bien con los valores por defecto. En scikit-learn 1.6 además acepta valores faltantes (NaN).
+            <b>Poca preparación:</b> no hay que <G k="escalado">escalar</G> las <G k="feature">features</G> y funciona bien con los valores por defecto. En scikit-learn 1.6 además acepta <G k="faltantes">valores faltantes</G> (NaN).
           </li>
           <li>
             <b>Dice qué features pesan:</b> trae una medida de importancia de cada señal.
@@ -193,9 +193,9 @@ const randomForest: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Si buscas la máxima exactitud en datos tabulares, Gradient Boosting suele superarlo, a cambio de más
-          ajuste de <G k="hiperparametro">hiperparámetros</G>. Con imágenes, audio o texto largo, las redes
-          neuronales sacan mejores <G k="feature">features</G> que las columnas crudas.
+          Si buscas la máxima <G k="exactitud">exactitud</G> en <G k="tabular">datos tabulares</G>, Gradient Boosting suele superarlo, a cambio de más
+          ajuste de <G k="hiperparametro">hiperparámetros</G>. Con imágenes, audio o texto largo, las <G k="redNeuronal">redes
+          neuronales</G> sacan mejores <G k="feature">features</G> que las columnas crudas.
         </p>
       ),
     },
@@ -204,7 +204,7 @@ const randomForest: AlgorithmModule = {
         <>
           <p>
             <b>Detección de fraude.</b> Los bancos combinan señales como el monto, la hora, la distancia a la ciudad
-            habitual y los intentos fallidos de clave, y los ensambles de árboles son una de sus herramientas
+            habitual y los intentos fallidos de clave, y los <G k="ensamble">ensambles</G> de árboles son una de sus herramientas
             habituales.
           </p>
           <p>
@@ -221,7 +221,7 @@ const randomForest: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En la vida real el fraude es menos del 1 % de las compras: con tan pocos casos, la exactitud no sirve
+          En la vida real el fraude es menos del 1 % de las compras: con tan pocos casos, la <G k="exactitud">exactitud</G> no sirve
           (99 % se logra sin detectar nada). Se miden la <G k="precisionSensibilidad">precisión y la sensibilidad</G> con una{' '}
           <G k="matrizConfusion">matriz de confusión</G>, se ajusta el <G k="umbral">umbral</G> y se le da más peso
           a la <G k="desbalance">clase rara</G> (<code>class_weight="balanced"</code>).

@@ -32,14 +32,14 @@ const svm: AlgorithmModule = {
             cada lado, con pocos puntos dentro. Esa franja es el <G k="margen">margen</G>.
           </p>
           <p>
-            Se usa sobre todo para clasificar. Existe una versión para predecir números (SVR), que no cubre este
+            Se usa sobre todo para clasificar. Existe una versión para predecir números (<G k="svr">SVR</G>), que no cubre este
             explorador.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          SVM viene de <i>Support Vector Machine</i>, máquina de vectores de soporte. Con más de dos clases,{' '}
+          SVM viene de <i>Support Vector Machine</i>, máquina de <G k="vectorSoporte">vectores de soporte</G>. Con más de dos clases,{' '}
           <code>SVC</code> de scikit-learn entrena un modelo por cada par de clases (
           <G k="unoContraUno">uno contra uno</G>) y los pone a votar: con los 10 dígitos son 45 modelos.
         </p>
@@ -67,8 +67,8 @@ const svm: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Con texto o <G k="disperso">datos dispersos</G> suele bastar el kernel lineal (<code>LinearSVC</code>, mucho
-          más rápido). Con pocas features y fronteras curvas, el kernel RBF. Antes de entrenar hay que escalar las
+          Con texto o <G k="disperso">datos dispersos</G> suele bastar el <G k="kernel">kernel</G> lineal (<code>LinearSVC</code>, mucho
+          más rápido). Con pocas features y fronteras curvas, el <G k="rbf">kernel RBF</G>. Antes de entrenar hay que escalar las
           features.
         </p>
       ),
@@ -106,14 +106,14 @@ const svm: AlgorithmModule = {
           </Tex>
           <p>
             Su <G k="dual">forma dual</G> solo usa productos <Tex>{'x_i \\cdot x_j'}</Tex>. Cambiarlos por un{' '}
-            <G k="kernel">kernel</G> <Tex>{'K(x_i, x_j)'}</Tex> da fronteras curvas sin calcular features nuevas:
+            <G k="kernel">kernel</G> <Tex>{'K(x_i, x_j)'}</Tex> da fronteras curvas sin calcular <G k="feature">features</G> nuevas:
           </p>
           <Tex block>{'K_{\\text{RBF}}(x, z) = e^{-\\gamma \\lVert x - z \\rVert^2}'}</Tex>
           <p>
-            El simulador resuelve el dual con SMO, el mismo método de LIBSVM, la biblioteca que usa{' '}
+            El simulador resuelve el dual con <G k="smo">SMO</G>, el mismo método de LIBSVM, la biblioteca que usa{' '}
             <code>SVC</code>; sus cifras coinciden a dos decimales con las de scikit-learn (con{' '}
             <Tex>{'\\gamma'}</Tex> = 0.3 fijo y tolerancia fina, <code>tol=1e-6</code>). Valores por defecto en
-            scikit-learn: kernel RBF, C = 1 y <Tex>{'\\gamma'}</Tex> = <code>"scale"</code>.
+            scikit-learn: <G k="rbf">kernel RBF</G>, C = 1 y <Tex>{'\\gamma'}</Tex> = <code>"scale"</code>.
           </p>
         </>
       ),
@@ -123,17 +123,17 @@ const svm: AlgorithmModule = {
         <>
           <p>
             Supone que <b>las clases se pueden separar</b> con una frontera, aunque sea con algunos errores. Si no
-            se separan con una recta, el <G k="kernel">kernel RBF</G> permite curvas.
+            se separan con una recta, el <G k="rbf">kernel RBF</G> permite curvas.
           </p>
           <p>
-            También supone <b>features en escalas comparables</b>: el margen se mide con distancias, así que una
+            También supone <b><G k="feature">features</G> en escalas comparables</b>: el margen se mide con distancias, así que una
             feature en millones aplasta a otra entre 0 y 1. Por eso se aplica <G k="escalado">escalado</G> antes.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          En el ejercicio los píxeles van de 0 a 16 y se dividen por 16 para dejarlos entre 0 y 1. Con kernel RBF,{' '}
+          En el ejercicio los píxeles van de 0 a 16 y se dividen por 16 para dejarlos entre 0 y 1. Con <G k="rbf">kernel RBF</G>,{' '}
           <G k="gamma">γ</G> también depende de la escala: el valor <code>"scale"</code> lo ajusta según la varianza
           de los datos.
         </p>
@@ -143,15 +143,15 @@ const svm: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>Eficaz con muchas features:</b> en el ejercicio, con 64 features (los píxeles de cada imagen),
+            <b>Eficaz con muchas <G k="feature">features</G>:</b> en el ejercicio, con 64 features (los píxeles de cada imagen),
             acierta 98.7 % de dígitos nuevos con los valores por defecto.
           </li>
           <li>
-            <b>Fronteras flexibles:</b> con un kernel se adapta a formas curvas.
+            <b>Fronteras flexibles:</b> con un <G k="kernel">kernel</G> se adapta a formas curvas.
           </li>
           <li>
-            <b>Solo importan unos puntos:</b> la frontera depende solo de los vectores de soporte. Si son pocos el
-            modelo es pequeño; en el ejercicio, con RBF y C = 1, guarda 593 de 1 257 imágenes.
+            <b>Solo importan unos puntos:</b> la frontera depende solo de los <G k="vectorSoporte">vectores de soporte</G>. Si son pocos el
+            modelo es pequeño; en el ejercicio, con <G k="rbf">RBF</G> y C = 1, guarda 593 de 1 257 imágenes.
           </li>
         </ul>
       ),
@@ -176,11 +176,11 @@ const svm: AlgorithmModule = {
             <b>
               Sensible a C y <G k="gamma">γ</G>:
             </b>{' '}
-            en el ejercicio, el kernel RBF con C = 0.01 acierta solo 18.3 %; con C = 1, 98.7 %.
+            en el ejercicio, el <G k="rbf">kernel RBF</G> con C = 0.01 acierta solo 18.3 %; con C = 1, 98.7 %.
           </li>
           <li>
-            <b>Sin probabilidades directas:</b> entrega un puntaje con signo (proporcional a la distancia a la
-            frontera), no una probabilidad.
+            <b>Sin probabilidades directas:</b> entrega un puntaje con signo (con kernel lineal, proporcional a la
+            distancia a la frontera), no una probabilidad.
           </li>
         </ul>
       ),
@@ -200,17 +200,18 @@ const svm: AlgorithmModule = {
         <>
           <p className="mlx-rule">No lo uses con cientos de miles de filas o más.</p>
           <p>
-            Ejemplo: clasificar millones de transacciones. Entrenar una SVM con kernel RBF tardaría horas o días;
-            un modelo lineal o un ensamble de árboles tarda minutos.
+            Ejemplo: clasificar millones de transacciones. Entrenar una SVM con <G k="rbf">kernel RBF</G> tardaría horas o días;
+            un modelo lineal o un <G k="ensamble">ensamble</G> de árboles tarda minutos.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          Tampoco es buena idea si necesitas probabilidades bien calibradas (mejor regresión logística) o si las
+          Tampoco es buena idea si necesitas probabilidades bien <G k="calibracion">calibradas</G> (mejor regresión logística) o si las
           clases se solapan mucho y hay mucho <G k="ruido">ruido</G>: el modelo termina con casi todos los puntos
-          como vectores de soporte y pierde su ventaja. Para elegir C y γ se usa{' '}
-          <G k="validacionCruzada">validación cruzada</G>, que multiplica el tiempo de entrenamiento.
+          como <G k="vectorSoporte">vectores de soporte</G> y pierde su ventaja. Elegir C y γ con{' '}
+          <G k="validacionCruzada">validación cruzada</G> (ver Contras) multiplica el tiempo por pliegues ×
+          combinaciones.
         </p>
       ),
     },
@@ -223,17 +224,17 @@ const svm: AlgorithmModule = {
             <G k="redConvolucional">redes convolucionales</G> las superaran.
           </p>
           <p>
-            El ejercicio usa los 1 797 dígitos de 8×8 píxeles que trae scikit-learn. Compara kernel lineal y RBF con
+            El ejercicio usa los 1 797 dígitos de 8×8 píxeles que trae scikit-learn. Compara kernel lineal y <G k="rbf">RBF</G> con
             tres valores de C. Con RBF y C = 1 falla 7 de 540 imágenes nuevas (98.7 %); con C = 100 llega a 99.4 %.
-            Con C = 0.01 el modelo casi no aprende: las 1 257 imágenes de entrenamiento quedan como vectores de
-            soporte y acierta 18.3 %.
+            Con C = 0.01 el modelo casi no aprende: las 1 257 imágenes de entrenamiento quedan como <G k="vectorSoporte">vectores de
+            soporte</G> y acierta 18.3 %.
           </p>
         </>
       ),
       deepDive: (
         <p>
           Aquí el kernel lineal ya acierta 98.5 % (C = 1): en 64 dimensiones los dígitos casi se separan con planos.
-          La ventaja del RBF es pequeña. Esa es la regla con muchas features: prueba primero el lineal.
+          La ventaja del RBF es pequeña. Esa es la regla con muchas <G k="feature">features</G>: prueba primero el lineal.
         </p>
       ),
     },

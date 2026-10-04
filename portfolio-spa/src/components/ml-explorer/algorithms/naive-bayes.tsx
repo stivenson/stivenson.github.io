@@ -36,7 +36,7 @@ const naiveBayes: AlgorithmModule = {
       deepDive: (
         <p>
           Es un <G k="generativo">modelo generativo</G>: modela cómo se generan los datos de cada clase, <Tex>{'P(x \\mid y)'}</Tex>, y
-          usa el teorema de Bayes para invertirlo. Hay <G k="variantesNB">variantes</G> según el tipo de feature: <code>MultinomialNB</code>{' '}
+          usa el <G k="bayes">teorema de Bayes</G> para invertirlo. Hay <G k="variantesNB">variantes</G> según el tipo de feature: <code>MultinomialNB</code>{' '}
           (conteos de palabras), <code>BernoulliNB</code> (presencia sí/no) y <code>GaussianNB</code> (números
           continuos).
         </p>
@@ -74,8 +74,9 @@ const naiveBayes: AlgorithmModule = {
           <p>
             <b>Ejemplo:</b> llega la reseña «excelente calidad llegó rápido». Antes de leerla, positiva y negativa
             están empatadas (<G k="odds">odds</G> 1, porque hay 8 reseñas de cada una). Cada palabra multiplica esos odds por un
-            factor: «excelente» ×5.27, «calidad» ×1.05, «llegó» ×0.70, «rápido» ×3.16. Es decir, 1 × 5.27 × 1.05 × 0.70 × 3.16. Al final los odds son 12.34
-            a 1: probabilidad de 93 % de que sea positiva.
+            factor: «excelente» ×5.27, «calidad» ×1.05, «llegó» ×0.70, «rápido» ×3.16. Es decir,
+            1 × 5.27 × 1.05 × 0.70 × 3.16 ≈ 12.3 (con más decimales, 12.34). Al final los odds son 12.34 a 1:
+            probabilidad de 93 % de que sea positiva.
           </p>
           <p>
             Ese es el <G k="bayes">teorema de Bayes</G> con el supuesto «ingenuo» de que cada palabra aporta su evidencia por
@@ -169,8 +170,8 @@ const naiveBayes: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Si necesitas probabilidades confiables (por ejemplo, para fijar un <G k="umbral">umbral</G> de riesgo),
-          <G k="calibracion">calíbralas</G> con <code>CalibratedClassifierCV</code> o usa regresión logística. Con features continuas
+          Si necesitas probabilidades confiables (por ejemplo, para fijar un <G k="umbral">umbral</G> de riesgo),{' '}
+          <G k="calibracion">calíbralas</G> con <code>CalibratedClassifierCV</code> o usa regresión logística. Con <G k="feature">features</G> continuas
           muy correlacionadas, <code>GaussianNB</code> cuenta la misma información varias veces.
         </p>
       ),
@@ -178,7 +179,7 @@ const naiveBayes: AlgorithmModule = {
     whenNot: {
       essential: (
         <>
-          <p className="mlx-rule">No lo uses cuando las features están <G k="correlacion">muy correlacionadas</G> o el orden
+          <p className="mlx-rule">No lo uses cuando las <G k="feature">features</G> están <G k="correlacion">muy correlacionadas</G> o el orden
             importa.</p>
           <p>
             Ejemplo: «no fue nada excelente» sale 53 % positiva. El modelo ve «excelente», pero no entiende que «no…
@@ -203,7 +204,7 @@ const naiveBayes: AlgorithmModule = {
             palabra por palabra, qué tan típica era de spam o de correo normal: la misma idea de este algoritmo.
           </p>
           <p>
-            El ejercicio entrena <code>MultinomialNB</code> con 16 reseñas cortas (8 y 8, prior 0.50). «excelente
+            El ejercicio entrena <code>MultinomialNB</code> con 16 reseñas cortas (8 y 8, <G k="priorVerosimilitud">prior</G> 0.50). «excelente
             calidad llegó rápido» sale 93 % positiva y «no funciona mala compra», 5 %. «llegó la batería nueva»
             sale 28 %: «llegó» y «la» aparecieron más en reseñas negativas, y «nueva» no estaba en el vocabulario,
             así que se ignora.

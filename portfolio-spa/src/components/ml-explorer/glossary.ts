@@ -427,6 +427,31 @@ export const GLOSSARY = {
     what: 'La fracción de predicciones correctas: 90 aciertos de 100 son 90 %.',
     why: 'Es fácil de entender, pero engaña con clases desbalanceadas: acertar 99 % puede ser no detectar nada.',
   },
+  redNeuronal: {
+    term: 'Red neuronal',
+    what: 'Un modelo hecho de muchas capas de operaciones simples (sumas con pesos y una función que dobla el resultado) que se ajustan con los datos.',
+    why: 'Brillan con imágenes, audio y texto; con tablas pequeñas suelen perder contra los árboles y piden muchos más datos.',
+  },
+  regresion: {
+    term: 'Regresión',
+    what: 'Predecir un número: el precio de una casa, la demanda de mañana. Clasificar, en cambio, es elegir una categoría.',
+    why: 'Muchos algoritmos tienen las dos versiones; saber cuál necesitas decide la métrica y la salida del modelo.',
+  },
+  rbf: {
+    term: 'Kernel RBF (gaussiano)',
+    what: 'Un kernel que mide qué tan cerca están dos puntos: vale 1 si son iguales y baja hacia 0 al alejarse.',
+    why: 'Es el kernel por defecto de SVC: permite fronteras curvas, pero hay que elegir bien γ y escalar las features.',
+  },
+  smo: {
+    term: 'SMO y LIBSVM',
+    what: 'SMO es el método que entrena una SVM ajustando los pesos de dos puntos a la vez; LIBSVM es la biblioteca en C que lo implementa.',
+    why: 'scikit-learn usa LIBSVM por dentro en SVC, así que su velocidad y sus resultados vienen de ahí.',
+  },
+  svr: {
+    term: 'SVR (regresión con SVM)',
+    what: 'La versión de SVM que predice números: busca una franja que contenga la mayoría de los puntos y solo castiga los que quedan fuera.',
+    why: 'Sirve si te gusta la idea de SVM pero tu problema es estimar una cantidad, no una clase.',
+  },
 } satisfies Record<string, GlossaryEntry>;
 
 export type GlossaryKey = keyof typeof GLOSSARY;

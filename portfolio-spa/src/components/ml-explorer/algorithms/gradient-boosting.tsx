@@ -48,7 +48,7 @@ const gradientBoosting: AlgorithmModule = {
       essential: (
         <>
           <p>
-            Úsalo con <b><G k="tabular">datos en tabla</G></b> cuando quieres <b>la mayor exactitud posible</b> y tienes tiempo para
+            Úsalo con <b><G k="tabular">datos en tabla</G></b> cuando quieres <b>la mayor <G k="exactitud">exactitud</G> posible</b> y tienes tiempo para
             ajustarlo.
           </p>
           <ul>
@@ -64,9 +64,9 @@ const gradientBoosting: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En competencias de datos tabulares (Kaggle) XGBoost y LightGBM han sido protagonistas durante años, y
-          estudios comparativos muestran que los ensambles de árboles siguen siendo muy competitivos frente a las
-          redes neuronales en este tipo de datos. Es una tendencia, no una ley: depende del problema.
+          En competencias de datos tabulares (Kaggle) <G k="bibliotecasBoosting">XGBoost</G> y LightGBM han sido protagonistas durante años, y
+          estudios comparativos muestran que los <G k="ensamble">ensambles</G> de árboles siguen siendo muy competitivos frente a las{' '}
+          <G k="redNeuronal">redes neuronales</G> en este tipo de datos. Es una tendencia, no una ley: depende del problema.
         </p>
       ),
     },
@@ -125,7 +125,7 @@ const gradientBoosting: AlgorithmModule = {
         <p>
           No supone linealidad ni necesita <G k="escalado">escalar</G> las <G k="feature">features</G>. Las etiquetas
           deben ser confiables: con la pérdida
-          cuadrática, un valor atípico produce un residuo enorme que los árboles siguientes persiguen. Para regresión
+          cuadrática, un valor atípico produce un <G k="residuo">residuo</G> enorme que los árboles siguientes persiguen. Para regresión
           con <G k="outlier">outliers</G> existe la <G k="huber">pérdida de Huber</G> (<code>loss="huber"</code>).
         </p>
       ),
@@ -142,7 +142,7 @@ const gradientBoosting: AlgorithmModule = {
           </li>
           <li>
             <b>Poca preparación:</b> como el bosque, no hay que <G k="escalado">escalar</G>{' '}
-            <G k="feature">features</G>. XGBoost, LightGBM y
+            <G k="feature">features</G>. <G k="bibliotecasBoosting">XGBoost</G>, LightGBM y
             HistGradientBoosting aceptan <G k="faltantes">valores faltantes</G>; el GradientBoostingClassifier
             clásico, no (da error con NaN).
           </li>
@@ -152,7 +152,7 @@ const gradientBoosting: AlgorithmModule = {
         <p>
           Al corregir errores paso a paso reduce sobre todo el <G k="sesgoVarianza">sesgo</G>, mientras que Random
           Forest reduce sobre todo la <G k="sesgoVarianza">varianza</G>. <code>HistGradientBoostingClassifier</code>
-          maneja valores faltantes y <G k="categorica">features categóricas</G>{' '}
+          maneja <G k="faltantes">valores faltantes</G> y <G k="categorica">features categóricas</G>{' '}
           de forma nativa y escala a millones de filas.
         </p>
       ),
@@ -166,7 +166,7 @@ const gradientBoosting: AlgorithmModule = {
           </li>
           <li>
             <b>Entrenamiento secuencial:</b> cada árbol espera al anterior, así que los árboles no se reparten entre
-            procesadores. XGBoost, LightGBM y HistGradientBoosting sí reparten el trabajo dentro de cada árbol; el
+            procesadores. <G k="bibliotecasBoosting">XGBoost</G>, LightGBM y HistGradientBoosting sí reparten el trabajo dentro de cada árbol; el
             GradientBoostingClassifier clásico del ejercicio usa un solo núcleo.
           </li>
           <li>
@@ -198,7 +198,7 @@ const gradientBoosting: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Tampoco es la primera opción con imágenes, audio o texto largo (ahí ganan las redes neuronales), ni si
+          Tampoco es la primera opción con imágenes, audio o texto largo (ahí ganan las <G k="redNeuronal">redes neuronales</G>), ni si
           debes explicar cada decisión regla por regla. Para explicarlo se usan herramientas aparte, como los <G k="shap">valores
           SHAP</G>, que estiman cuánto aportó cada <G k="feature">feature</G> a una predicción.
         </p>
@@ -232,9 +232,18 @@ const gradientBoosting: AlgorithmModule = {
   Ova: GradientBoostingOva,
   python: { code, expectedOutput, colabNotebook: 'gradient-boosting' },
   inYourField: [
-    { area: 'Eléctrica', example: 'pronosticar la demanda de energía de cada hora a partir del clima, el día de la semana y los festivos.' },
-    { area: 'Mecánica', example: 'estimar el desgaste de una herramienta de corte a partir de la velocidad, el avance y la vibración.' },
-    { area: 'Industrial', example: 'predecir qué pedidos llegarán tarde según la ruta, el proveedor y la carga de la bodega.' },
+    {
+      area: 'Eléctrica',
+      example: 'pronosticar la demanda de energía de cada hora a partir del clima, el día de la semana y los festivos.',
+    },
+    {
+      area: 'Mecánica',
+      example: 'estimar el desgaste de una herramienta de corte a partir de la velocidad, el avance y la vibración.',
+    },
+    {
+      area: 'Industrial',
+      example: 'predecir qué pedidos llegarán tarde según la ruta, el proveedor y la carga de la bodega.',
+    },
   ],
   alternatives: ['random-forest', 'logistic-regression', 'mlp'],
 };
