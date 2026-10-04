@@ -21,6 +21,7 @@ import {
   SVM_CS,
   SVM_GAMMA,
   SVM_POINTS,
+  TREE_NOISE,
   TREE_POINTS,
 } from './datasets';
 import {
@@ -301,5 +302,16 @@ describe('OVA de Naive Bayes', () => {
   it('no ve el orden ni las negaciones: «no me encantó» sale 68 % y «no fue nada excelente», 53 %', () => {
     expect((explainNaiveBayes(model, 'no me encantó').pPositive * 100).toFixed(0)).toBe('68');
     expect((explainNaiveBayes(model, 'no fue nada excelente').pPositive * 100).toFixed(0)).toBe('53');
+  });
+});
+
+describe('TREE_NOISE', () => {
+  it('son dos puntos de TREE_POINTS con la etiqueta contraria a la de su zona', () => {
+    expect(TREE_NOISE).toHaveLength(2);
+    for (const p of TREE_NOISE) {
+      expect(TREE_POINTS.filter((q) => q.x === p.x && q.y === p.y && q.label === p.label)).toHaveLength(1);
+      // Regla limpia del dataset: impago (1) si la deuda pasa de 5.25.
+      expect(p.label).toBe(p.y > 5.25 ? 0 : 1);
+    }
   });
 });

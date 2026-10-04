@@ -24,6 +24,10 @@ describe('RandomForestOva', () => {
     expect(status(container)).toContain('acierta 27 de 28');
     expect(status(container)).toContain('acierta 38 de 40');
 
+    setIndex(3);
+    expect(screen.getByRole('slider').getAttribute('aria-valuetext')).toBe('30');
+    expect(status(container)).toContain('acierta 28 de 28');
+
     setIndex(4);
     expect(screen.getByRole('slider').getAttribute('aria-valuetext')).toBe('100');
     expect(status(container)).toContain('acierta 28 de 28');

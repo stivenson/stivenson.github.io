@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { FOREST_DEPTH, FOREST_SEED, FOREST_SIZES, FOREST_TEST, TREE_POINTS as POINTS } from './datasets';
+import { FOREST_DEPTH, FOREST_SEED, FOREST_SIZES, FOREST_TEST, TREE_NOISE as NOISE, TREE_POINTS as POINTS } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
 import { buildForest, forestAccuracy, forestVote } from './ovaMath';
 import { createPlot } from './plot';
@@ -7,11 +7,6 @@ import { createPlot } from './plot';
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const CELLS = 25;
 const CELL = 10 / CELLS;
-// Los dos clientes de ruido de TREE_POINTS (ver datasets.ts); se marcan con un anillo.
-const NOISE = [
-  { x: 3, y: 1.5 },
-  { x: 8, y: 8 },
-];
 const RING_R = 10;
 const MAX_TREES = FOREST_SIZES[FOREST_SIZES.length - 1];
 

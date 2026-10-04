@@ -40,23 +40,32 @@ export const LOGISTIC_B1: SliderRange = { min: -1, max: 3, step: 0.05 };
 
 // ---------- Árbol de decisión (x = ingreso, y = deuda, de 0 a 10) ----------
 
+/**
+ * Los dos clientes de ruido de TREE_POINTS: cada uno lleva la etiqueta contraria
+ * a la de sus vecinos. La OVA del bosque los marca con un anillo.
+ */
+export const TREE_NOISE: readonly LabeledPt[] = [
+  { x: 8, y: 8, label: 0 }, // paga aunque su deuda es alta
+  { x: 3, y: 1.5, label: 1 }, // no paga aunque su deuda es baja
+];
+
 export const TREE_POINTS: LabeledPt[] = [
   ...labeled(
     [
       [2, 1], [4, 2], [6, 1.5], [8, 3], [9, 1], [7, 5], [8.5, 5.5], [5, 3.5],
       [3, 2.5], [6.5, 4.5], [9, 4], [1, 3], [4.5, 5], [7.5, 2],
-      [8, 8], // ruido: paga aunque su deuda es alta
     ],
     0,
   ),
+  TREE_NOISE[0],
   ...labeled(
     [
       [1, 5], [2, 6.5], [1.5, 8], [3, 9], [5, 7.5], [6, 8.5], [8, 7], [9, 9],
       [2.5, 5.5], [4, 8], [7, 9.5], [0.8, 6],
-      [3, 1.5], // ruido: no paga aunque su deuda es baja
     ],
     1,
   ),
+  TREE_NOISE[1],
 ];
 
 // ---------- KNN (x = gusto por la acción, y = por la ciencia ficción) ----------

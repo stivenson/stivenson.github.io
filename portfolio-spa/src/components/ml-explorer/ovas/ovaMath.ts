@@ -465,7 +465,9 @@ export function trainSvm(points: LabeledPt[], C: number, kernel: Kernel, tol = 1
       lb = Math.max(lb, yG);
     }
   }
-  const rho = free > 0 ? sum / free : (ub + lb) / 2;
+  // Con una sola clase uno de los dos extremos queda infinito: se usa el otro (o 0) para que b sea finito.
+  const mid = Number.isFinite(ub) && Number.isFinite(lb) ? (ub + lb) / 2 : Number.isFinite(ub) ? ub : Number.isFinite(lb) ? lb : 0;
+  const rho = free > 0 ? sum / free : mid;
   return { kernel, points, alpha, b: -rho };
 }
 
@@ -507,7 +509,12 @@ export function svmAccuracy(m: SvmModel, points: LabeledPt[]): number {
 
 // ---------- Naive Bayes ----------
 
-/** Como CountVectorizer de scikit-learn: minúsculas y palabras de 2+ letras. */
+/**
+ * Como CountVectorizer de scikit-learn: minúsculas y palabras de 2+ letras.
+ * NFC junta letra + tilde combinante («e» + «´» → «é») para que la misma palabra
+ * escrita de dos formas cuente igual; \p{M} cubre las marcas que NFC no puede
+ * componer, para que no partan la palabra en dos.
+ */
 export function tokenize(text: string): string[] {
   return (text.normalize('NFC').toLowerCase().match(/[\p{L}\p{M}\p{N}_]+/gu) ?? []).filter(
     (w) => [...w].length >= 2,
@@ -547,7 +554,9 @@ export function trainNaiveBayes(docs: { text: string; label: 0 | 1 }[], alpha = 
     ]);
   }
   const n = docs.length;
-  return { vocabulary, logPrior: [Math.log(docsPerClass[0] / n), Math.log(docsPerClass[1] / n)], logLikelihood };
+  // Sin documentos no hay prior que estimar: se asume empate (evita log(0 / 0) = NaN).
+  const prior = (c: 0 | 1) => (n === 0 ? Math.log(0.5) : Math.log(docsPerClass[c] / n));
+  return { vocabulary, logPrior: [prior(0), prior(1)], logLikelihood };
 }
 
 export interface WordEvidence {

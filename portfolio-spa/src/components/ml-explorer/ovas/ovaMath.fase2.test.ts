@@ -209,3 +209,21 @@ describe('Naive Bayes', () => {
     expect(e.pPositive).toBeCloseTo(1 / 3);
   });
 });
+
+describe('guardas de casos límite', () => {
+  it('trainSvm con una sola clase deja b finito y clasifica todo como esa clase', () => {
+    const pts: LabeledPt[] = [
+      { x: 0, y: 0, label: 1 },
+      { x: 1, y: 1, label: 1 },
+    ];
+    const m = trainSvm(pts, 1, { kind: 'linear' });
+    expect(Number.isFinite(m.b)).toBe(true);
+    expect(svmDecision(m, { x: 5, y: 5 })).toBeGreaterThan(0);
+  });
+
+  it('trainNaiveBayes sin documentos da prior de empate, no NaN', () => {
+    const m = trainNaiveBayes([]);
+    expect(m.vocabulary).toEqual([]);
+    expect(explainNaiveBayes(m, 'hola mundo').pPositive).toBe(0.5);
+  });
+});
