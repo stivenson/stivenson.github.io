@@ -48,6 +48,19 @@ import {
   trainNaiveBayes,
   trainSvm,
 } from './ovaMath';
+import { DB_POINTS, DB_START, HC_CUT, HC_POINTS, HC_START_CUT, KM_MAX_K, KM_POINTS, KM_START_K, KM_STARTS, PCA_POINTS } from './datasets';
+import {
+  averageLinkage,
+  capturedShare,
+  covariance2,
+  cutTree,
+  dbscan,
+  kmeansRun,
+  mulberry32,
+  principalAngle,
+  randomInit,
+  silhouette,
+} from './ovaMath';
 
 describe('OVA de regresión lineal', () => {
   it('la recta inicial es ŷ ≈ 0.98 + 0.65·x, con MSE ≈ 0.10', () => {
@@ -313,5 +326,163 @@ describe('TREE_NOISE', () => {
       // Regla limpia del dataset: impago (1) si la deuda pasa de 5.25.
       expect(p.label).toBe(p.y > 5.25 ? 0 : 1);
     }
+  });
+});
+
+// ---------- Fase 3 ----------
+// Cifras contrastadas con scikit-learn 1.6.1 / scipy 1.14.1 (ver el plan de la fase 3):
+// KMeans(init=<los mismos centroides>, n_init=1, algorithm="lloyd") da la misma
+// inercia y las mismas etiquetas en los 12 casos (K = 1…6, arranques A y B);
+// linkage(HC_POINTS, "average") da las mismas 11 uniones y fcluster(…, "distance")
+// los mismos grupos en los 61 cortes del slider; PCA().explained_variance_ratio_[0]
+// = 0.946006; DBSCAN(eps, min_samples) da las mismas etiquetas y núcleos en las
+// 171 combinaciones del simulador.
+
+const kmeansFinal = (k: number, start: number) => {
+  const run = kmeansRun(KM_POINTS, randomInit(KM_POINTS, k, mulberry32(KM_STARTS[start].seed)));
+  const last = run.at(-1)!;
+  return { steps: run.length - 1, first: run[0].inertia, inertia: last.inertia, sil: silhouette(KM_POINTS, last.labels) };
+};
+
+describe('OVA de K-Means', () => {
+  it('24 puntos; K de 1 a 6, empieza en 3', () => {
+    expect(KM_POINTS).toHaveLength(24);
+    expect(KM_START_K).toBe(3);
+    expect(KM_MAX_K).toBe(6);
+  });
+
+  it('arranque A con K = 3: 6 pasos, la inercia baja de 294.05 a 15.18 y la silueta es 0.75', () => {
+    const a = kmeansFinal(3, 0);
+    expect(a.steps).toBe(6);
+    expect(a.first.toFixed(2)).toBe('294.05');
+    expect(a.inertia.toFixed(2)).toBe('15.18');
+    expect(a.sil.toFixed(2)).toBe('0.75');
+  });
+
+  it('arranque B con K = 3: se atasca en 123.31 (8 veces más), silueta 0.18', () => {
+    const b = kmeansFinal(3, 1);
+    expect(b.steps).toBe(2);
+    expect(b.inertia.toFixed(2)).toBe('123.31');
+    expect(b.sil.toFixed(2)).toBe('0.18');
+    expect(Math.round(b.inertia / kmeansFinal(3, 0).inertia)).toBe(8);
+  });
+
+  it('arranque A: la inercia baja siempre al subir K, pero la silueta es máxima en K = 3', () => {
+    const rows = [1, 2, 3, 4, 5, 6].map((k) => kmeansFinal(k, 0));
+    expect(rows.map((r) => r.inertia.toFixed(2))).toEqual(['209.39', '129.43', '15.18', '11.93', '11.02', '9.83']);
+    expect(rows.slice(1).map((r) => r.sil.toFixed(2))).toEqual(['0.43', '0.75', '0.64', '0.63', '0.46']);
+  });
+
+  it('15.18 es también la inercia de KMeans(n_clusters=3, n_init=10) de scikit-learn', () => {
+    // Valor de scikit-learn: 15.183749999999995.
+    expect(kmeansFinal(3, 0).inertia).toBeCloseTo(15.18375, 9);
+  });
+});
+
+describe('OVA de agrupamiento jerárquico', () => {
+  const merges = averageLinkage(HC_POINTS);
+  const groupsAt = (h: number) => Math.max(...cutTree(merges, HC_POINTS.length, h)) + 1;
+
+  it('las 11 alturas de unión coinciden con linkage(…, "average") de scipy', () => {
+    expect(merges.map((m) => m.height.toFixed(3))).toEqual([
+      '0.161', '0.197', '0.506', '0.532', '1.011', '1.075', '1.182', '1.362', '2.150', '5.269', '5.790',
+    ]);
+  });
+
+  it('el punto 12 (índice 11) se une al grupo de la derecha a altura 2.15', () => {
+    const m = merges[8];
+    expect(m.a).toBe(11);
+    expect(m.height.toFixed(2)).toBe('2.15');
+  });
+
+  it('corte inicial 3.0: 3 grupos de 4; entre 2.2 y 5.2 siempre 3; con 2.0, 4; con 5.5, 2; desde 5.8, 1', () => {
+    expect(HC_START_CUT).toBe(3);
+    expect(HC_CUT.max).toBe(6);
+    const labels = cutTree(merges, HC_POINTS.length, 3);
+    expect([0, 1, 2].map((g) => labels.filter((l) => l === g).length)).toEqual([4, 4, 4]);
+    for (let h = 22; h <= 52; h++) expect(groupsAt(h / 10)).toBe(3);
+    expect(groupsAt(2)).toBe(4);
+    expect(groupsAt(5.5)).toBe(2);
+    expect(groupsAt(5.8)).toBe(1);
+    expect(groupsAt(0)).toBe(12);
+  });
+});
+
+describe('OVA de PCA', () => {
+  const cov = covariance2(PCA_POINTS);
+
+  it('el primer componente está a 34° y captura 94.6 % (scikit-learn: 0.946006)', () => {
+    expect(principalAngle(cov).toFixed(2)).toBe('34.14');
+    expect(capturedShare(cov, principalAngle(cov))).toBeCloseTo(0.946006, 6);
+    expect((capturedShare(cov, 34) * 100).toFixed(1)).toBe('94.6');
+  });
+
+  it('el eje horizontal (0°) captura 66.5 %, el vertical 33.5 % y el perpendicular al mejor (124°) solo 5.4 %', () => {
+    expect((capturedShare(cov, 0) * 100).toFixed(1)).toBe('66.5');
+    expect((capturedShare(cov, 90) * 100).toFixed(1)).toBe('33.5');
+    expect((capturedShare(cov, 124) * 100).toFixed(1)).toBe('5.4');
+  });
+});
+
+describe('OVA de DBSCAN', () => {
+  it('59 puntos: dos lunas de 56 y 3 puntos sueltos', () => {
+    expect(DB_POINTS).toHaveLength(59);
+  });
+
+  it('inicio ε = 1.0, minPts = 4: las 2 lunas y 4 puntos de ruido (los 3 sueltos y la punta de una luna)', () => {
+    expect(DB_START).toEqual({ eps: 1, minPts: 4 });
+    const r = dbscan(DB_POINTS, 1, 4);
+    expect(r.clusters).toBe(2);
+    expect(r.labels.flatMap((l, i) => (l < 0 ? [i] : []))).toEqual([16, 56, 57, 58]);
+    expect(r.core.filter(Boolean)).toHaveLength(50);
+  });
+
+  it('ε = 0.8 parte las lunas en 4 grupos (9 de ruido); ε = 0.4 deja 55 de 59 como ruido; ε = 1.1 las funde en 1', () => {
+    expect(dbscan(DB_POINTS, 0.8, 4)).toMatchObject({ clusters: 4, noise: 9 });
+    expect(dbscan(DB_POINTS, 0.4, 4)).toMatchObject({ clusters: 1, noise: 55 });
+    expect(dbscan(DB_POINTS, 1.1, 4)).toMatchObject({ clusters: 1, noise: 3 });
+  });
+
+  it('con ε = 1.0, subir minPts a 6 deja 4 grupos y 13 puntos de ruido', () => {
+    expect(dbscan(DB_POINTS, 1, 6)).toMatchObject({ clusters: 4, noise: 13 });
+  });
+});
+
+describe('cifras de los ejemplos de los textos (fase 3)', () => {
+  it('K-Means › Fórmula: gastos 1, 2, 9 y 10 con centroides en 1 y 2 → grupos {1, 2} y {9, 10}, centroides 1.5 y 9.5, inercia 1, en 2 pasos', () => {
+    const pts = [1, 2, 9, 10].map((x) => ({ x, y: 0 }));
+    const run = kmeansRun(pts, [{ x: 1, y: 0 }, { x: 2, y: 0 }]);
+    expect(run[0].labels).toEqual([0, 1, 1, 1]);
+    expect(run[1].centroids[1].x).toBe(7);
+    expect(run[1].labels).toEqual([0, 0, 1, 1]);
+    expect(run.at(-1)!.centroids.map((c) => c.x)).toEqual([1.5, 9.5]);
+    expect(run.at(-1)!.inertia).toBe(1);
+    expect(run).toHaveLength(3); // arranque + 2 pasos (el 2.º ya no cambia nada)
+  });
+
+  it('Hierarchical › Fórmula: 0, 1, 5 y 7 se unen a 1, 2 y 5.5', () => {
+    const m = averageLinkage([0, 1, 5, 7].map((x) => ({ x, y: 0 })));
+    expect(m.map((u) => u.height)).toEqual([1, 2, 5.5]);
+  });
+
+  it('Hierarchical › Contras y Cuándo no usarlo: 10 000 datos → unos 50 millones de distancias (400 MB); 100 000 → 5 000 millones (40 GB)', () => {
+    const pairs = (n: number) => (n * (n - 1)) / 2;
+    expect(Math.round(pairs(10_000) / 1e6)).toBe(50);
+    expect(Math.round((pairs(10_000) * 8) / 1e6)).toBe(400);
+    expect(Math.round(pairs(100_000) / 1e9)).toBe(5);
+    expect(Math.round((pairs(100_000) * 8) / 1e9)).toBe(40);
+  });
+
+  it('DBSCAN › Fórmula: 0, 0.5, 1, 5 y 5.5 con ε = 0.5 y minPts = 3 → 0.5 núcleo, 0 y 1 borde, 5 y 5.5 ruido', () => {
+    const r = dbscan([0, 0.5, 1, 5, 5.5].map((x) => ({ x, y: 0 })), 0.5, 3);
+    expect(r.core).toEqual([false, true, false, false, false]);
+    expect(r.labels).toEqual([0, 0, 0, -1, -1]);
+  });
+
+  it('PCA › Fórmula: puntos sobre la diagonal → 45° captura 100 %, el eje horizontal 50 % y el perpendicular 0 %', () => {
+    const cov = covariance2([0, 1, 2, 3].map((v) => ({ x: v, y: v })));
+    expect(capturedShare(cov, 45)).toBeCloseTo(1, 12);
+    expect(capturedShare(cov, 0)).toBeCloseTo(0.5, 12);
+    expect(capturedShare(cov, 135)).toBeCloseTo(0, 12);
   });
 });

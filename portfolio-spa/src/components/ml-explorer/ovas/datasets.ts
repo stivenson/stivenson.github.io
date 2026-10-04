@@ -174,3 +174,62 @@ export const NB_REVIEWS: { text: string; label: 0 | 1 }[] = [
 
 /** Frase inicial del simulador (la primera reseña nueva del ejercicio). */
 export const NB_START = 'excelente calidad llegó rápido';
+
+// ---------- K-Means (24 clientes en tres nubes; sin etiquetas) ----------
+
+const xy = (pairs: [number, number][]): Pt[] => pairs.map(([x, y]) => ({ x, y }));
+
+export const KM_POINTS: Pt[] = xy([
+  [2.5, 3.5], [3.4, 2.1], [2.3, 2.1], [2.9, 2.5], [3.0, 1.2], [3.6, 2.4], [3.0, 2.4], [2.2, 2.8],
+  [7.8, 2.9], [7.1, 3.5], [6.6, 1.9], [7.5, 2.5], [5.9, 2.4], [6.9, 2.2], [6.2, 3.0], [7.8, 2.8],
+  [4.3, 7.8], [5.3, 7.3], [5.2, 8.2], [4.7, 6.9], [5.0, 7.7], [5.6, 6.6], [4.3, 6.9], [3.6, 7.6],
+]);
+/**
+ * Dos arranques (semillas de mulberry32 para sortear los centroides
+ * iniciales): con K = 3, el A llega a la buena solución en 6 pasos y el B
+ * se atasca en una peor. Fijos para que las cifras sean siempre las mismas.
+ */
+export const KM_STARTS = [
+  { id: 'A', seed: 11 },
+  { id: 'B', seed: 12 },
+] as const;
+export const KM_START_K = 3;
+export const KM_MAX_K = 6;
+
+// ---------- Agrupamiento jerárquico (12 puntos: tres grupos y uno intermedio) ----------
+
+export const HC_POINTS: Pt[] = xy([
+  [1.67, 1.91], [2.83, 2.33], [1.18, 2.0], [1.69, 2.07],
+  [2.4, 7.62], [3.32, 8.29], [3.36, 7.76], [2.45, 8.63],
+  [6.54, 5.55], [7.34, 4.56], [7.17, 4.66],
+  [5.6, 3.4],
+]);
+export const HC_CUT = { min: 0, max: 6, step: 0.1 } as const;
+export const HC_START_CUT = 3;
+
+// ---------- PCA (20 puntos: dos medidas muy correlacionadas) ----------
+
+export const PCA_POINTS: Pt[] = xy([
+  [1.2, 3.2], [2.1, 3.6], [2.0, 2.2], [4.2, 4.8], [-0.1, 2.1], [4.6, 4.6], [2.9, 3.7], [7.0, 6.2], [7.1, 4.9], [8.1, 7.8],
+  [6.7, 5.3], [4.9, 3.4], [6.9, 6.0], [8.3, 7.8], [3.6, 3.8], [6.3, 6.8], [4.9, 6.0], [8.2, 6.1], [3.2, 2.3], [4.3, 3.8],
+]);
+
+// ---------- DBSCAN (dos lunas entrelazadas y 3 puntos sueltos) ----------
+// Las lunas son make_moons(56, noise=0.07, random_state=3) de scikit-learn,
+// escaladas ×3, desplazadas y redondeadas a 2 decimales; un punto se movió
+// 0.01 para que ninguna distancia caiga justo en un valor de ε del slider.
+// Los 3 últimos puntos son ruido a propósito.
+
+export const DB_POINTS: Pt[] = xy([
+  [4.31, 5.67], [4.33, 1.99], [5.13, 5.7], [9.54, 3.37], [8.18, 1.78], [9.4, 4.55], [3.69, 5.77], [0.47, 3.88],
+  [9.24, 2.48], [6.08, 4.69], [7.55, 1.33], [2.64, 5.23], [4.73, 2.17], [3.49, 3.44], [9.36, 4.16], [6.18, 4.06],
+  [0.5, 2.7], [2.6, 5.75], [3.2, 5.93], [0.56, 4.4], [4.45, 5.21], [5.82, 4.92], [7.9, 1.58], [5.86, 1.58],
+  [8.36, 1.94], [9.17, 3.47], [6.03, 4.66], [4.33, 2.25], [8.66, 2.49], [6.54, 2.45], [3.39, 4.12], [3.8, 3.2],
+  [4.58, 2.68], [6.65, 3.15], [0.81, 4.25], [5.09, 1.65], [2.26, 5.6], [0.41, 3.78], [3.45, 5.69], [5.62, 1.17],
+  [3.31, 4.22], [1.66, 5.16], [3.9, 3.02], [5.26, 1.44], [9.17, 2.68], [8.53, 1.94], [6.77, 1.42], [7.2, 1.24],
+  [5.09, 5.55], [1.93, 5.52], [1.08, 4.92], [6.43, 2.68], [5.09, 5.37], [6.28, 3.96], [0.82, 4.01], [6.38, 1.42],
+  [1.2, 1.2], [9.0, 6.2], [4.8, 7.1],
+]);
+export const DB_EPS = { min: 0.2, max: 2, step: 0.1 } as const;
+export const DB_MIN_PTS = { min: 2, max: 10, step: 1 } as const;
+export const DB_START = { eps: 1, minPts: 4 } as const;
