@@ -830,9 +830,68 @@ p.mlx-py-error {
   border-left: 1px dashed rgba(85, 170, 255, 0.25);
 }
 
+/* ---------- Navegación al pie de cada pestaña ---------- */
+
+.mlx-pager {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(85, 170, 255, 0.2);
+}
+
+.mlx-pager button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.mlx-pager-next {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: #4c59d3;
+  border: 1px solid #4c59d3;
+  border-radius: 6px;
+  box-shadow: 0 0 12px rgba(76, 89, 211, 0.45);
+}
+
+.mlx-pager-next:hover {
+  background: #5d6af0;
+}
+
+.mlx-pager-prev {
+  padding: 6px 4px;
+  font-size: 13px;
+  color: var(--rf-text-muted, #9898b0);
+  background: none;
+  border: none;
+  text-decoration: underline;
+}
+
+.mlx-pager-prev:hover {
+  color: var(--electric-cyan, #55aaff);
+}
+
 /* ---------- Móvil ---------- */
 
 @media (max-width: 768px) {
+  .mlx-pager {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mlx-pager-next {
+    width: 100%;
+  }
+
+  .mlx-pager-prev {
+    align-self: flex-start;
+  }
+
   .mlx {
     grid-template-columns: minmax(0, 1fr);
   }

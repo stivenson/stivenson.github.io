@@ -149,7 +149,7 @@ function fakeModule(): AlgorithmModule {
 describe('AlgorithmTabs', () => {
   it.each(TAB_IDS)('pestaña %s', (tab) => {
     const html = renderToStaticMarkup(
-      h(AlgorithmTabs, { module: fakeModule(), meta: getMeta('linear-regression'), tab, onTab: () => {}, onAlg: () => {} }),
+      h(AlgorithmTabs, { module: fakeModule(), meta: getMeta('linear-regression'), tab, onTab: () => {}, onAlg: () => {}, onGoAlg: () => {} }),
     );
     expect(html).toContain('role="tablist"');
     expect(count(html, /role="tab"/g)).toBe(8);
@@ -170,7 +170,7 @@ describe('AlgorithmTabs', () => {
 });
 
 describe('AlgorithmPanel', () => {
-  const base = { meta: getMeta('knn'), tab: 'type' as TabId, onTab: () => {}, onAlg: () => {} };
+  const base = { meta: getMeta('knn'), tab: 'type' as TabId, onTab: () => {}, onAlg: () => {}, onGoAlg: () => {} };
 
   it('cargando', () => {
     const html = renderToStaticMarkup(h(AlgorithmPanel, { ...base, state: { status: 'loading' } }));

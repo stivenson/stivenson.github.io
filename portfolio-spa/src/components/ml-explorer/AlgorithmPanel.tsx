@@ -9,9 +9,10 @@ interface AlgorithmPanelProps {
   tab: TabId;
   onTab: (tab: TabId) => void;
   onAlg: (slug: string) => void;
+  onGoAlg: (slug: string) => void;
 }
 
-export function AlgorithmPanel({ meta, state, tab, onTab, onAlg }: AlgorithmPanelProps) {
+export function AlgorithmPanel({ meta, state, tab, onTab, onAlg, onGoAlg }: AlgorithmPanelProps) {
   return (
     <article className="mlx-panel">
       <header className="mlx-head">
@@ -42,7 +43,7 @@ export function AlgorithmPanel({ meta, state, tab, onTab, onAlg }: AlgorithmPane
       {state.status === 'ready' && (
         <>
           <SummaryChips row={state.module.row} onPick={onTab} />
-          <AlgorithmTabs module={state.module} meta={meta} tab={tab} onTab={onTab} onAlg={onAlg} />
+          <AlgorithmTabs module={state.module} meta={meta} tab={tab} onTab={onTab} onAlg={onAlg} onGoAlg={onGoAlg} />
         </>
       )}
     </article>

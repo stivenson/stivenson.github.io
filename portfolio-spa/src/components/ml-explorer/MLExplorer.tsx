@@ -32,11 +32,19 @@ export function MLExplorer() {
     hasAlgParamRef.current = params.has('alg');
   });
 
+  // «Siguiente algoritmo» desplaza a la barra de pestañas; el scroll al
+  // explorador completo sobraría.
+  const skipRootScrollRef = useRef(false);
+
   // Al cambiar de algoritmo (o al llegar con ?alg= desde un enlace de la
   // guía), traer el explorador a la vista si quedó fuera de pantalla.
   useEffect(() => {
     const root = rootRef.current;
     // En pantalla completa el explorador ya ocupa la vista: nada que mover.
+    if (skipRootScrollRef.current) {
+      skipRootScrollRef.current = false;
+      return;
+    }
     if (!hasAlgParamRef.current || !root || fullscreenActiveRef.current) return;
     const top = root.getBoundingClientRect().top;
     if (top >= 0 && top <= window.innerHeight * 0.6) return;
@@ -104,6 +112,10 @@ export function MLExplorer() {
           tab={tab}
           onTab={(t) => select({ tab: t })}
           onAlg={(slug) => select({ alg: slug })}
+          onGoAlg={(slug) => {
+            skipRootScrollRef.current = true;
+            select({ alg: slug, tab: 'type' });
+          }}
         />
       </div>
     </section>

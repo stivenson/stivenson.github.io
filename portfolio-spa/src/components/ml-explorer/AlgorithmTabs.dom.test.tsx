@@ -20,9 +20,9 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function Harness({ initial = 'type' as TabId }) {
+function Harness({ initial = 'type' as TabId, slug = 'alpha', onGoAlg = () => {} }: { initial?: TabId; slug?: string; onGoAlg?: (s: string) => void }) {
   const [tab, setTab] = useState<TabId>(initial);
-  return <AlgorithmTabs module={fakeModule('alpha')} meta={getMeta('alpha')} tab={tab} onTab={setTab} onAlg={() => {}} />;
+  return <AlgorithmTabs module={fakeModule(slug)} meta={getMeta(slug)} tab={tab} onTab={setTab} onAlg={() => {}} onGoAlg={onGoAlg} />;
 }
 
 const activeTab = () => screen.getByRole('tab', { selected: true });
@@ -93,5 +93,59 @@ describe('AlgorithmTabs: teclado (roving tabindex)', () => {
     expectActive('Ejemplo real');
     await press('Home');
     expectActive('Tipo');
+  });
+});
+
+describe('AlgorithmTabs: navegación al pie', () => {
+  const nav = () => screen.getByRole('navigation', { name: 'Navegación entre pestañas' });
+
+  it('en la primera pestaña hay Siguiente y no Anterior; el clic avanza, enfoca y desplaza', () => {
+    const error = vi.spyOn(console, 'error');
+    render(<Harness />);
+    expect(screen.getByRole('button', { name: 'Siguiente: Mejor caso de uso →' })).toBeTruthy();
+    expect(screen.queryByText(/Anterior/)).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Siguiente: Mejor caso de uso →' }));
+    expect(activeTab().textContent).toBe('Mejor caso de uso');
+    expect(document.activeElement).toBe(activeTab());
+    expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: 'start' }));
+    expect(error).not.toHaveBeenCalled();
+  });
+
+  it('en una intermedia aparecen ambos y Anterior retrocede', () => {
+    render(<Harness initial="formula" />);
+    expect(screen.getByRole('button', { name: 'Siguiente: Supuestos →' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: '← Anterior: Mejor caso de uso' }));
+    expect(activeTab().textContent).toBe('Mejor caso de uso');
+    expect(nav()).toBeTruthy();
+  });
+
+  it('en Ejemplo real ofrece el siguiente algoritmo disponible', () => {
+    const go = vi.fn();
+    render(<Harness initial="realWorld" onGoAlg={go} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Siguiente algoritmo: Beta →' }));
+    expect(go).toHaveBeenCalledWith('beta');
+    expect(scrollIntoView).not.toHaveBeenCalled(); // se desplaza al montar el nuevo algoritmo
+  });
+
+  it('en el último disponible vuelve al primero', () => {
+    const go = vi.fn();
+    render(<Harness initial="realWorld" slug="beta" onGoAlg={go} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Volver al primer algoritmo: Alpha →' }));
+    expect(go).toHaveBeenCalledWith('alpha');
+  });
+
+  it('en pantalla completa reinicia el scroll del panel en vez de la ventana', () => {
+    const { container } = render(
+      <div className="mlx--full">
+        <div className="mlx-main">
+          <Harness />
+        </div>
+      </div>,
+    );
+    const main = container.querySelector<HTMLElement>('.mlx-main')!;
+    main.scrollTop = 300;
+    fireEvent.click(screen.getByRole('button', { name: /^Siguiente: / }));
+    expect(main.scrollTop).toBe(0);
+    expect(scrollIntoView).not.toHaveBeenCalled();
   });
 });

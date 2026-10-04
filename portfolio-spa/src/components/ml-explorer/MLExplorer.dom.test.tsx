@@ -91,6 +91,30 @@ describe('MLExplorer: scroll al explorador', () => {
   });
 });
 
+describe('MLExplorer: navegación al pie de la pestaña', () => {
+  it('Siguiente cambia la pestaña y la URL', async () => {
+    renderAt('?alg=alpha&tab=type');
+    fireEvent.click(await screen.findByRole('button', { name: 'Siguiente: Mejor caso de uso →' }));
+    await waitFor(() => expect(location.search).toContain('tab=bestUse'));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe('Mejor caso de uso');
+  });
+
+  it('Siguiente algoritmo abre Beta en la pestaña Tipo y desplaza a la barra una sola vez', async () => {
+    const error = vi.spyOn(console, 'error');
+    renderAt('?alg=alpha&tab=realWorld');
+    await screen.findByRole('button', { name: 'Siguiente algoritmo: Beta →' });
+    scrollIntoView.mockClear();
+    fireEvent.click(await screen.findByRole('button', { name: 'Siguiente algoritmo: Beta →' }));
+    await screen.findByText('ESENCIAL-beta-type');
+    expect(location.search).toBe('?alg=beta&tab=type');
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalled());
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect((scrollIntoView.mock.contexts[0] as Element).classList.contains('mlx-tablist')).toBe(true);
+    expect(document.activeElement?.id).toBe('mlx-tab-type');
+    expect(error).not.toHaveBeenCalled();
+  });
+});
+
 describe('MLExplorer: URL inválida', () => {
   it('normaliza ?alg y ?tab desconocidos reemplazando la entrada del historial', async () => {
     renderAt('?alg=zzz&tab=hack');

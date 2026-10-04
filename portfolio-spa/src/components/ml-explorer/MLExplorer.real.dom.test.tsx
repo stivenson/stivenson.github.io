@@ -134,3 +134,13 @@ it('KNN real (?alg=knn): recorre las 8 pestañas sin errores', async () => {
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('Linear Regression real: en Ejemplo real el botón lleva a Logistic Regression', async () => {
+  render(
+    <MemoryRouter initialEntries={['/articles/x?alg=linear-regression&tab=realWorld']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  const btn = await screen.findByRole('button', { name: /^Siguiente algoritmo:/ }, { timeout: 10000 });
+  expect(btn.textContent).toBe('Siguiente algoritmo: Logistic Regression →');
+});
