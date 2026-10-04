@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { PCA_POINTS as POINTS } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
 import { capturedShare, covariance2, principalAngle, projectOnAxis } from './ovaMath';
@@ -17,6 +17,9 @@ export function PcaOva() {
   const t = (angle * Math.PI) / 180;
   const far = 12;
   const m = COV.mean;
+
+  /** El eje es más largo que el gráfico: se recorta al área de datos para que no invada los márgenes. */
+  const clipId = useId();
 
   return (
     <OvaFrame
@@ -45,7 +48,13 @@ export function PcaOva() {
       }
     >
       <svg viewBox={`0 0 ${PLOT.width} ${PLOT.height}`} role="img" aria-label="Puntos, el eje que se gira y la proyección de cada punto sobre él">
+        <defs>
+          <clipPath id={clipId}>
+            <rect x={PLOT.pad} y={PLOT.pad} width={PLOT.width - 2 * PLOT.pad} height={PLOT.height - 2 * PLOT.pad} />
+          </clipPath>
+        </defs>
         <line
+          clipPath={`url(#${clipId})`}
           x1={PLOT.sx(m.x - far * Math.cos(t))}
           y1={PLOT.sy(m.y - far * Math.sin(t))}
           x2={PLOT.sx(m.x + far * Math.cos(t))}

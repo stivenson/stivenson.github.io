@@ -11,7 +11,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { findGlued, toMarkedText } from '../algorithms/visibleText';
-import { AVAILABLE_SLUGS, loadAlgorithm } from '../registry';
+import { ALGORITHMS, AVAILABLE_SLUGS, loadAlgorithm } from '../registry';
 
 /** Frases que no deben aparecer en el encabezado de la OVA de cada algoritmo (sin distinguir mayúsculas). */
 const BANNED: Record<string, RegExp[]> = {
@@ -28,6 +28,11 @@ async function ovaCaption(slug: string): Promise<string> {
 }
 
 describe('encabezado (hint) de la OVA de cada algoritmo', () => {
+  it('cada clave de BANNED es un slug del registro (sin erratas que desactiven la regla)', () => {
+    const slugs = new Set(ALGORITHMS.map((a) => a.slug));
+    expect(Object.keys(BANNED).filter((s) => !slugs.has(s))).toEqual([]);
+  });
+
   it.each(AVAILABLE_SLUGS)('%s', async (slug) => {
     const text = await ovaCaption(slug);
     expect(text, `${slug}: la OVA no tiene figcaption`).not.toBe('');

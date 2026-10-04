@@ -60,7 +60,7 @@ export function HierarchicalOva() {
             </g>
           ))}
         </svg>
-        <svg viewBox={`0 0 ${TREE.width} ${TREE.height}`} role="img" aria-label="Dendrograma de los doce puntos con la línea de corte">
+        <svg viewBox={`0 0 ${TREE.width} ${TREE.height}`} role="img" aria-label={`Dendrograma de los doce puntos con la línea de corte en ${cut.toFixed(1)}`}>
           {MERGES.map((m, k) => {
             const node = LAYOUT.nodes[N + k];
             const stroke = color(N + k);

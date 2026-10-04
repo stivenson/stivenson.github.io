@@ -7,11 +7,13 @@ interface OvaFrameProps {
   children: ReactNode;
   /** Lectura en vivo de lo que muestra la figura. */
   readout?: ReactNode;
+  /** «off» silencia el readout (p. ej. mientras una animación lo cambia cada segundo). */
+  readoutLive?: 'polite' | 'off';
   controls?: ReactNode;
 }
 
 /** Marco común de todas las OVAs del explorador. */
-export function OvaFrame({ title, hint, children, readout, controls }: OvaFrameProps) {
+export function OvaFrame({ title, hint, children, readout, controls, readoutLive = 'polite' }: OvaFrameProps) {
   const titleId = useId();
   return (
     <figure className="mlx-ova" aria-labelledby={titleId}>
@@ -27,7 +29,7 @@ export function OvaFrame({ title, hint, children, readout, controls }: OvaFrameP
           <div className="mlx-ova-side">
             {controls && <div className="mlx-ova-controls">{controls}</div>}
             {readout && (
-              <div className="mlx-ova-readout" role="status" aria-atomic="true">
+              <div className="mlx-ova-readout" role="status" aria-live={readoutLive} aria-atomic="true">
                 {readout}
               </div>
             )}

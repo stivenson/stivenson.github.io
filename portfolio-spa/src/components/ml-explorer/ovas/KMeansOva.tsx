@@ -77,6 +77,7 @@ export function KMeansOva() {
           </div>
         </>
       }
+      readoutLive={playing ? 'off' : 'polite'}
       readout={
         <>
           <span>
@@ -104,7 +105,7 @@ export function KMeansOva() {
             const c = state.centroids[state.labels[i]];
             return (
               <line
-                key={`l${i}`}
+                key={`l${i}-${k}-${start}-${step}`}
                 className="mlx-km-link"
                 x1={PLOT.sx(p.x)}
                 y1={PLOT.sy(p.y)}

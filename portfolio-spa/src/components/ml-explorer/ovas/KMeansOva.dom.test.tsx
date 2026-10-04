@@ -138,4 +138,22 @@ describe('KMeansOva', () => {
     fireEvent.change(screen.getByRole('slider'), { target: { value: '1' } });
     expect(container.querySelector('svg')?.getAttribute('aria-label')).toContain('en 1 grupo,');
   });
+
+  it('mientras reproduce, el readout no se anuncia (aria-live="off"); al pausar o converger vuelve a anunciar', () => {
+    vi.useFakeTimers();
+    const { container } = render(<KMeansOva />);
+    const live = () => container.querySelector('[role="status"]')?.getAttribute('aria-live');
+    expect(live()).toBe('polite');
+    fireEvent.click(button('▶ Reproducir'));
+    expect(live()).toBe('off');
+    act(() => vi.advanceTimersByTime(KM_STEP_MS));
+    expect(live()).toBe('off');
+    fireEvent.click(button('⏸ Pausar'));
+    expect(live()).toBe('polite');
+    fireEvent.click(button('▶ Reproducir'));
+    expect(live()).toBe('off');
+    for (let i = 0; i < 6; i++) act(() => vi.advanceTimersByTime(KM_STEP_MS));
+    expect(status(container)).toContain('Convergió');
+    expect(live()).toBe('polite');
+  });
 });

@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { HierarchicalOva } from './HierarchicalOva';
+import { CLUSTER_COLORS, OVA_COLORS } from './OvaFrame';
 
 afterEach(() => {
   cleanup();
@@ -48,5 +49,32 @@ describe('HierarchicalOva', () => {
     expect(container.querySelector('[role="status"]')?.contains(hint)).toBe(false);
     expect(hint.textContent).toContain('Entre 2.2 y 5.2');
     expect(hint.textContent).toContain('a altura 2.15');
+  });
+
+  it('uniones por encima del corte en gris, las de abajo y los puntos con el color de su grupo', () => {
+    const { container } = render(<HierarchicalOva />);
+    const tree = () => container.querySelectorAll('svg')[1];
+    const strokes = () => Array.from(tree().querySelectorAll('g'), (g) => g.getAttribute('stroke'));
+    const groupColors = new Set<string>(CLUSTER_COLORS);
+    // Corte 3.0: las 2 uniones de arriba (5.2 y la raíz) quedan grises; las 9 de abajo, en color.
+    expect(strokes().filter((s) => s === OVA_COLORS.axis)).toHaveLength(2);
+    expect(strokes().filter((s) => s !== null && groupColors.has(s))).toHaveLength(9);
+    const fills = Array.from(container.querySelectorAll('svg')[0].querySelectorAll('circle'), (c) => c.getAttribute('fill'));
+    expect(new Set(fills).size).toBe(3);
+    // Puntos 1-4, 5-8 y 9-12 comparten color dentro de su grupo.
+    expect(new Set(fills.slice(0, 4)).size).toBe(1);
+    expect(new Set(fills.slice(4, 8)).size).toBe(1);
+    expect(new Set(fills.slice(8, 12)).size).toBe(1);
+    cut('6');
+    expect(strokes().filter((s) => s === OVA_COLORS.axis)).toHaveLength(0);
+    expect(new Set(Array.from(container.querySelectorAll('svg')[0].querySelectorAll('circle'), (c) => c.getAttribute('fill'))).size).toBe(1);
+  });
+
+  it('el aria-label del dendrograma dice el corte actual', () => {
+    const { container } = render(<HierarchicalOva />);
+    const label = () => container.querySelectorAll('svg')[1].getAttribute('aria-label') ?? '';
+    expect(label()).toContain('corte en 3.0');
+    cut('2');
+    expect(label()).toContain('corte en 2.0');
   });
 });

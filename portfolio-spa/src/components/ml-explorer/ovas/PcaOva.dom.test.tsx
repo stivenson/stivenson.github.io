@@ -36,4 +36,13 @@ describe('PcaOva', () => {
     const hint = screen.getByText(/las líneas rosas son lo que se pierde/);
     expect(container.querySelector('[role="status"]')?.contains(hint)).toBe(false);
   });
+
+  it('el eje se recorta al área del gráfico con un clipPath propio', () => {
+    const { container } = render(<PcaOva />);
+    const axis = container.querySelector('svg > line');
+    const ref = /^url\(#(.+)\)$/.exec(axis?.getAttribute('clip-path') ?? '');
+    expect(ref).not.toBeNull();
+    const clip = Array.from(container.querySelectorAll('clipPath')).find((c) => c.id === ref![1]);
+    expect(clip?.querySelector('rect')).not.toBeNull();
+  });
 });

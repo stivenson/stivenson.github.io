@@ -1028,9 +1028,24 @@ p.mlx-py-error {
   transition: transform 0.6s ease-in-out;
 }
 
+/* Las líneas punto→centroide (x2/y2 no se pueden animar con CSS) se montan de nuevo en cada
+   paso y aparecen cuando la cruz ya llegó: así nunca apuntan a donde ya no está. */
+.mlx-km-link {
+  animation: mlx-km-link-in 0.25s ease-out 0.6s both;
+}
+
+@keyframes mlx-km-link-in {
+  from {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mlx-km-centroid {
     transition: none;
+  }
+  .mlx-km-link {
+    animation: none;
   }
 }
 
