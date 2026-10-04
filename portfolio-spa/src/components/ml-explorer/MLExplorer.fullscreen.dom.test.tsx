@@ -59,6 +59,12 @@ afterEach(() => {
   delete proto.requestFullscreen;
   delete (document as Partial<Document>).exitFullscreen;
   delete (document as Partial<FsDocument>).fullscreenElement;
+  const wproto = HTMLElement.prototype as unknown as Record<string, unknown>;
+  delete wproto.webkitRequestFullscreen;
+  const wdoc = document as unknown as Record<string, unknown>;
+  delete wdoc.webkitExitFullscreen;
+  delete wdoc.webkitFullscreenElement;
+  document.body.innerHTML = '';
 });
 
 async function renderExplorer() {
@@ -197,5 +203,111 @@ describe('MLExplorer: pantalla completa', () => {
     fireEvent.click(screen.getByRole('button', { name: /Beta/ }));
     await screen.findByText(/ESENCIAL-beta/);
     expect(scroll).not.toHaveBeenCalled();
+  });
+  it('un doble clic mientras requestFullscreen está pendiente pide una sola vez', async () => {
+    let resolve!: () => void;
+    const request = vi.fn(function (this: Element) {
+      return new Promise<void>((r) => {
+        resolve = () => {
+          setFullscreenElement(this);
+          r();
+        };
+      });
+    });
+    HTMLElement.prototype.requestFullscreen = request;
+    document.exitFullscreen = vi.fn(() => Promise.resolve());
+    const { section, button } = await renderExplorer();
+    fireEvent.click(button);
+    fireEvent.click(button);
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(document.exitFullscreen).not.toHaveBeenCalled();
+    await act(async () => resolve());
+    expect(section.classList.contains('mlx--full')).toBe(true);
+    expect(section.classList.contains('mlx--overlay')).toBe(false);
+  });
+
+  it('si requestFullscreen rechaza tras haber entrado en nativo, no pasa a overlay', async () => {
+    HTMLElement.prototype.requestFullscreen = vi.fn(function (this: Element) {
+      setFullscreenElement(this);
+      return Promise.reject(new Error('tarde'));
+    });
+    const { section, button } = await renderExplorer();
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(section.classList.contains('mlx--full')).toBe(true);
+    expect(section.classList.contains('mlx--overlay')).toBe(false);
+  });
+
+  it('si exitFullscreen rechaza y seguimos en pantalla completa, el estado sigue en nativo', async () => {
+    HTMLElement.prototype.requestFullscreen = vi.fn(function (this: Element) {
+      setFullscreenElement(this);
+      return Promise.resolve();
+    });
+    document.exitFullscreen = vi.fn(() => Promise.reject(new Error('no')));
+    const { section, button } = await renderExplorer();
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(section.classList.contains('mlx--full')).toBe(true);
+  });
+
+  it('usa los prefijos webkit (Safari de macOS < 16.4)', async () => {
+    const wdoc = document as unknown as Record<string, unknown>;
+    const setWebkit = (el: Element | null) => {
+      Object.defineProperty(document, 'webkitFullscreenElement', { configurable: true, value: el });
+      document.dispatchEvent(new Event('webkitfullscreenchange'));
+    };
+    const request = vi.fn(function (this: Element) {
+      setWebkit(this);
+    });
+    const exit = vi.fn(() => setWebkit(null));
+    (HTMLElement.prototype as unknown as Record<string, unknown>).webkitRequestFullscreen = request;
+    wdoc.webkitExitFullscreen = exit;
+    const { section, button } = await renderExplorer();
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(request).toHaveBeenCalledTimes(1);
+    expect(section.classList.contains('mlx--full')).toBe(true);
+    expect(section.classList.contains('mlx--overlay')).toBe(false);
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(exit).toHaveBeenCalledTimes(1);
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('en overlay, lo que queda fuera del explorador es inert; al salir se restaura', async () => {
+    const outside = document.createElement('nav');
+    document.body.prepend(outside);
+    const { section, button } = await renderExplorer();
+    fireEvent.click(button);
+    expect(outside.hasAttribute('inert')).toBe(true);
+    expect(section.hasAttribute('inert')).toBe(false);
+    expect(section.closest('[inert]')).toBeNull();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(outside.hasAttribute('inert')).toBe(false);
+  });
+
+  it('desmontar en overlay restaura el overflow, quita inert y los listeners', async () => {
+    const outside = document.createElement('nav');
+    const alreadyInert = document.createElement('aside');
+    alreadyInert.setAttribute('inert', '');
+    document.body.prepend(outside, alreadyInert);
+    document.body.style.overflow = 'auto';
+    const remove = vi.spyOn(document, 'removeEventListener');
+    const { button, unmount } = await renderExplorer();
+    fireEvent.click(button);
+    expect(document.body.style.overflow).toBe('hidden');
+    unmount();
+    expect(document.body.style.overflow).toBe('auto');
+    expect(outside.hasAttribute('inert')).toBe(false);
+    expect(alreadyInert.hasAttribute('inert')).toBe(true);
+    expect(remove).toHaveBeenCalledWith('keydown', expect.any(Function));
   });
 });
