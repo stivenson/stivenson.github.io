@@ -10,6 +10,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   'linear-regression': () => import('./algorithms/linear-regression'),
   'logistic-regression': () => import('./algorithms/logistic-regression'),
   'decision-tree': () => import('./algorithms/decision-tree'),
+  knn: () => import('./algorithms/knn'),
 };
 
 type Entry = Omit<AlgorithmMeta, 'available'>;

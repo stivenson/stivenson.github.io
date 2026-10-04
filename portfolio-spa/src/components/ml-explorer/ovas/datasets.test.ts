@@ -120,4 +120,11 @@ describe('OVA de KNN', () => {
     expect(result.votes).toEqual(votes);
     expect(result.winner).toBe(winner);
   });
+
+  it('con k = 1 el vecino más cercano es el punto de ruido (6.5, 7.2)', () => {
+    const noise = KNN_POINTS.findIndex((p) => p.x === 6.5 && p.y === 7.2);
+    expect(noise).toBe(11);
+    expect(KNN_POINTS[noise].label).toBe(0);
+    expect(knnVote(KNN_POINTS, KNN_START, 1).neighbors[0]).toBe(11); // (6.5, 7.2), el ruido
+  });
 });

@@ -131,7 +131,7 @@ function fakeModule(): AlgorithmModule {
       { area: 'Eléctrica', example: 'b' },
       { area: 'Industrial', example: 'c' },
     ],
-    alternatives: ['knn'],
+    alternatives: ['knn', 'naive-bayes'],
   };
 }
 
@@ -152,8 +152,8 @@ describe('AlgorithmTabs', () => {
     expect(html.includes('Mejor prueba con')).toBe(tab === 'whenNot');
     expect(html.includes('<figure')).toBe(tab === 'type');
     if (tab === 'whenNot') {
-      expect(html).toContain('KNN');
-      expect(html).toContain('(próximamente)');
+      expect(html).toContain('KNN →');
+      expect(html).toContain('Naive Bayes (próximamente)');
     }
   });
 });

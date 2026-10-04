@@ -1,0 +1,8 @@
+Vecino: Beto  distancia = 0.00
+Vecino: Fer   distancia = 1.41
+Vecino: Dani  distancia = 1.73
+
+Recomendaciones para Ana (promedio de sus 3 vecinos):
+  Interestelar  3.7 / 5
+  Alien         1.3 / 5
+  Matrix        1.3 / 5
