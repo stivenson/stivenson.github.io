@@ -327,3 +327,28 @@ it('Hierarchical Clustering real (?alg=hierarchical-clustering): recorre las 8 p
 
   expect(error).not.toHaveBeenCalled();
 });
+
+it('PCA real (?alg=pca): recorre las 8 pestañas sin errores', async () => {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/x?alg=pca']}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: 'PCA' })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      expect(container.querySelector('.mlx-tabpanel svg[role="img"]')).not.toBeNull();
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('captura 66.5 %');
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+});

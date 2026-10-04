@@ -73,6 +73,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "DBSCAN (agrupamiento por densidad)",
         "Reportes de huecos en un mapa: zonas de forma libre y puntos aislados como ruido.",
     ),
+    (
+        "pca",
+        "PCA (análisis de componentes principales)",
+        "Compresión de imágenes: cada dígito de 64 píxeles guardado con k números.",
+    ),
 ]
 
 

@@ -21,6 +21,7 @@ describe('registry', () => {
       'k-means',
       'hierarchical-clustering',
       'dbscan',
+      'pca',
     ]);
   });
 

@@ -1,0 +1,11 @@
+1797 imágenes de 64 píxeles
+
+k números | varianza retenida | error típico por píxel
+        1 |              15% |                  4.00
+        2 |              29% |                  3.66
+        5 |              54% |                  2.92
+       10 |              74% |                  2.22
+       20 |              89% |                  1.41
+       40 |              99% |                  0.47
+
+Para retener el 90 % bastan 21 de 64 componentes

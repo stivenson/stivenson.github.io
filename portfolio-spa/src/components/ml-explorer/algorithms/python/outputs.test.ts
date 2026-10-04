@@ -8,6 +8,7 @@ import randomForest from './random-forest.out.txt?raw';
 import gradientBoosting from './gradient-boosting.out.txt?raw';
 import svm from './svm.out.txt?raw';
 import naiveBayes from './naive-bayes.out.txt?raw';
+import pca from './pca.out.txt?raw';
 import hierarchical from './hierarchical-clustering.out.txt?raw';
 import kMeans from './k-means.out.txt?raw';
 import dbscan from './dbscan.out.txt?raw';
@@ -132,5 +133,19 @@ describe('cifras citadas en los textos', () => {
     expect(hierarchical).toContain('grupo 1: sube-1, sube-2, sube-3, sube-4\n  grupo 2: pico-1, pico-2, pico-3, pico-4\n  grupo 3: baja-1, baja-2, baja-3, baja-4');
     expect(hierarchical).toContain('grupo 2: baja-1, baja-2, baja-3, baja-4, pico-1, pico-2, pico-3, pico-4');
     expect(hierarchical).toContain('Correlación cofenética: 0.87 (cerca de 1 = el árbol respeta bien las distancias)');
+  });
+  it('PCA: 1797 imágenes de 64 píxeles; varianza retenida y error típico por píxel; 21 componentes para el 90 %', () => {
+    expect(pca).toContain('1797 imágenes de 64 píxeles');
+    expect(pca).toContain('k números | varianza retenida | error típico por píxel');
+    const rows = [...pca.matchAll(/^\s+(\d+) \|\s+(\d+)% \|\s+([\d.]+)$/gm)].map((m) => [Number(m[1]), Number(m[2]), Number(m[3])]);
+    expect(rows).toEqual([
+      [1, 15, 4.0],
+      [2, 29, 3.66],
+      [5, 54, 2.92],
+      [10, 74, 2.22],
+      [20, 89, 1.41],
+      [40, 99, 0.47],
+    ]);
+    expect(pca).toContain('Para retener el 90 % bastan 21 de 64 componentes');
   });
 });

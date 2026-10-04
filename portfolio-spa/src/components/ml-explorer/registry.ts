@@ -18,6 +18,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   'k-means': () => import('./algorithms/k-means'),
   'hierarchical-clustering': () => import('./algorithms/hierarchical-clustering'),
   dbscan: () => import('./algorithms/dbscan'),
+  pca: () => import('./algorithms/pca'),
 };
 
 type Entry = Omit<AlgorithmMeta, 'available'>;
