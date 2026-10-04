@@ -189,12 +189,16 @@ describe('LaTeX de los algoritmos', () => {
   // Un `\;` en un string JS (en vez de `\\;`) llega a KaTeX como `;` y se ve un punto y coma suelto.
   const texWithStraySemicolon = (html: string) =>
     Array.from(html.matchAll(/<annotation encoding="application\/x-tex">([\s\S]*?)<\/annotation>/g), (m) => m[1]).filter(
-      (tex) => /(^|[^\\]);/.test(tex),
+      // Un `\t`, `\f`, `\b`… sin doble barra llega como carácter de control (`\text` → tabulador + «ext»).
+      (tex) => /(^|[^\\]);/.test(tex) || /[\x00-\x1f]/.test(tex),
     );
 
   it('detecta el error en una fórmula de prueba', () => {
     expect(texWithStraySemicolon(renderToStaticMarkup(h(Tex, null, 'a ;\\propto; b')))).toHaveLength(1);
     expect(texWithStraySemicolon(renderToStaticMarkup(h(Tex, null, 'a \\;\\propto\\; b')))).toHaveLength(0);
+    // `\times` con una sola barra: el `\t` es un tabulador y KaTeX ve «a imes b».
+    expect(texWithStraySemicolon(renderToStaticMarkup(h(Tex, null, 'a \times b')))).toHaveLength(1);
+    expect(texWithStraySemicolon(renderToStaticMarkup(h(Tex, null, 'a \\times b')))).toHaveLength(0);
   });
 
   it.each(AVAILABLE_SLUGS)('%s: ninguna fórmula tiene un «;» sin barra', async (slug) => {
@@ -204,9 +208,35 @@ describe('LaTeX de los algoritmos', () => {
       for (const part of ['essential', 'deepDive'] as const) {
         const node = mod.tabs[tab][part];
         if (node == null) continue;
-        bad.push(...texWithStraySemicolon(renderToStaticMarkup(node as never)));
+        const html = renderToStaticMarkup(node as never);
+        bad.push(...texWithStraySemicolon(html));
+        // Otros caracteres de control (`\f`, `\b`…) hacen fallar a KaTeX.
+        if (html.includes('katex-error')) bad.push(`${tab}/${part}: katex-error`);
       }
     }
     expect(bad).toEqual([]);
+  });
+});
+
+describe('LaTeX en el código fuente', () => {
+  const sources = {
+    ...import.meta.glob('./algorithms/*.tsx', { query: '?raw', import: 'default', eager: true }),
+    ...import.meta.glob('./ovas/*.tsx', { query: '?raw', import: 'default', eager: true }),
+  } as Record<string, string>;
+  // En un string JS, `\;` (una barra) se queda en `;`: hay que escribir `\\;`. Lo mismo con `\,` `\!` `\:`.
+  const strayTexSpacing = (src: string) =>
+    src.split('\n').flatMap((line, i) => (/(?<!\\)\\[;,!:]/.test(line) ? [`${i + 1}: ${line.trim()}`] : []));
+
+  it('detecta el error en un fragmento de prueba', () => {
+    expect(strayTexSpacing(String.raw`<Tex>{'a \;\propto\; b'}</Tex>`)).toHaveLength(1);
+    expect(strayTexSpacing(String.raw`<Tex>{'a \\;\\propto\\, b'}</Tex>`)).toHaveLength(0);
+  });
+
+  it('lee los archivos de algoritmos y OVAs', () => {
+    expect(Object.keys(sources).length).toBeGreaterThanOrEqual(AVAILABLE_SLUGS.length * 2);
+  });
+
+  it.each(Object.keys(sources))('%s: ningún espaciado TeX con una sola barra', (file) => {
+    expect(strayTexSpacing(sources[file])).toEqual([]);
   });
 });

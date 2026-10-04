@@ -2,44 +2,14 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { AVAILABLE_SLUGS, loadAlgorithm } from '../registry';
 import { TAB_IDS } from '../types';
+import { CLOSE, OPEN, toMarkedText } from './visibleText';
 
-const OPEN = '';
-const CLOSE = '';
 const WORDY = /[\p{L}\p{N}]/u;
+/** Puntuación que cierra y pide espacio después: «riesgo),[[término]]» está pegado. */
+const CLOSING_PUNCT = /[,;:.)»!?]/u;
+/** Lo que no puede seguir a un término sin espacio: letra, dígito o una apertura. */
+const OPENING = /[(«]/u;
 
-/** Reemplaza cada <span class="katex"> (con su <span> envolvente) por marcadores, contando spans. */
-function markTex(html: string): string {
-  const start = '<span><span class="katex">';
-  let out = '';
-  let i = 0;
-  for (;;) {
-    const at = html.indexOf(start, i);
-    if (at < 0) return out + html.slice(i);
-    out += html.slice(i, at);
-    let depth = 0;
-    let j = at;
-    const tag = /<(\/?)span\b[^>]*>/g;
-    tag.lastIndex = at;
-    for (let m = tag.exec(html); m; m = tag.exec(html)) {
-      depth += m[1] ? -1 : 1;
-      j = tag.lastIndex;
-      if (depth === 0) break;
-    }
-    out += OPEN + CLOSE;
-    i = j;
-  }
-}
-
-/** Texto visible con marcadores alrededor de cada término del glosario y cada fórmula en línea. */
-function toMarkedText(html: string): string {
-  const withGloss = html.replace(
-    /<button[^>]*class="mlx-gl"[^>]*>[\s\S]*?<\/button>/g,
-    (b) => OPEN + b.replace(/<[^>]*>/g, '') + CLOSE,
-  );
-  return markTex(withGloss)
-    .replace(/<[^>]*>/g, '')
-    .replace(/&(amp|lt|gt|quot|#x27);/g, (_, e: string) => ({ amp: '&', lt: '<', gt: '>', quot: '"', '#x27': "'" })[e]!);
-}
 
 export function findGlued(text: string): string[] {
   const bad: string[] = [];
@@ -47,7 +17,9 @@ export function findGlued(text: string): string[] {
   for (let m = re.exec(text); m; m = re.exec(text)) {
     const before = [...text.slice(0, m.index)].pop() ?? '';
     const after = [...text.slice(m.index + m[0].length)][0] ?? '';
-    if (WORDY.test(before) || WORDY.test(after)) {
+    const gluedBefore = WORDY.test(before) || CLOSING_PUNCT.test(before);
+    const gluedAfter = WORDY.test(after) || OPENING.test(after);
+    if (gluedBefore || gluedAfter) {
       const from = Math.max(0, m.index - 25);
       bad.push(text.slice(from, m.index + m[0].length + 25).replaceAll(OPEN, '[[').replaceAll(CLOSE, ']]'));
     }
@@ -60,6 +32,12 @@ describe('findGlued', () => {
     expect(findGlued(`a${OPEN}x${CLOSE} b`)).toHaveLength(1);
     expect(findGlued(`a ${OPEN}x${CLOSE}b`)).toHaveLength(1);
     expect(findGlued(`a (${OPEN}x${CLOSE}), b`)).toHaveLength(0);
+    expect(findGlued(`«${OPEN}x${CLOSE}» y ${OPEN}y${CLOSE}.`)).toHaveLength(0);
+    expect(findGlued(`riesgo),${OPEN}x${CLOSE} con`)).toHaveLength(1);
+    expect(findGlued(`fin.${OPEN}x${CLOSE} b`)).toHaveLength(1);
+    expect(findGlued(`a»${OPEN}x${CLOSE} b`)).toHaveLength(1);
+    expect(findGlued(`a ${OPEN}x${CLOSE}(b)`)).toHaveLength(1);
+    expect(findGlued(`a ${OPEN}x${CLOSE}«b»`)).toHaveLength(1);
   });
 });
 
@@ -77,6 +55,7 @@ describe('espacios alrededor de términos del glosario y fórmulas', () => {
           }
         }
       }
+      if (problems.length) console.log(problems.join('\n'));
       expect(problems).toEqual([]);
     });
   }
