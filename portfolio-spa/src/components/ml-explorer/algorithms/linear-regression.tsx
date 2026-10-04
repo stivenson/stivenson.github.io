@@ -112,8 +112,8 @@ const linearRegression: AlgorithmModule = {
             En la práctica no se invierte <Tex>{'X^\\top X'}</Tex>: el sistema se resuelve con una descomposición (QR o
             SVD), que es numéricamente más estable. scikit-learn usa un solver de mínimos cuadrados. El costo crece
             sobre todo con p, el número de features (con su cuadrado), y no tanto con n, el de filas (solo en
-            proporción): duplicar las filas duplica el tiempo; duplicar las features lo cuadruplica. El descenso de gradiente (estocástico) se reserva para cuando hay muchísimas features o los
-            datos no caben en memoria.
+            proporción): duplicar las filas duplica el tiempo; duplicar las features lo cuadruplica. El descenso de
+            gradiente (estocástico) se reserva para cuando hay muchísimas features o los datos no caben en memoria.
           </p>
         </>
       ),

@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { ArticleDetail } from './ArticleDetail';
@@ -68,5 +68,37 @@ it('el artículo del explorador de ML se monta con su guía, sus enlaces y el ex
   expect(container.querySelector('.markdown-content > .mlx')).not.toBeNull();
   expect(container.querySelector('.mlx-boot')).toBeNull();
 
+  // La lista de comprobación (☐) es una lista aparte de la de consejos.
+  const checkItems = Array.from(container.querySelectorAll('.markdown-content li')).filter((li) =>
+    li.textContent?.includes('☐'),
+  );
+  expect(checkItems).toHaveLength(5);
+  const checkList = checkItems[0].parentElement;
+  expect(checkList?.tagName).toBe('OL');
+  for (const li of checkItems) expect(li.parentElement).toBe(checkList);
+  const tips = Array.from(container.querySelectorAll('.markdown-content ul > li')).filter((li) =>
+    li.textContent?.startsWith('Ejecuta todos los ejercicios'),
+  );
+  expect(tips).toHaveLength(1);
+  expect(tips[0].parentElement).not.toBe(checkList);
+
   expect(error).not.toHaveBeenCalled();
+});
+
+it('cambiar de pestaña no remonta el explorador', async () => {
+  const { container } = render(
+    <MemoryRouter initialEntries={['/articles/algoritmos-ml-explorador']}>
+      <Routes>
+        <Route path="/articles/:slug" element={<ArticleDetail />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+  await screen.findByRole('heading', { name: 'Linear Regression' }, { timeout: 10000 });
+  const before = container.querySelector('.mlx');
+  expect(before).not.toBeNull();
+  const tabs = await screen.findAllByRole('tab', {}, { timeout: 10000 });
+  const target = tabs.find((t) => t.getAttribute('aria-selected') !== 'true')!;
+  fireEvent.click(target);
+  expect(target.getAttribute('aria-selected')).toBe('true');
+  expect(container.querySelector('.mlx')).toBe(before);
 });

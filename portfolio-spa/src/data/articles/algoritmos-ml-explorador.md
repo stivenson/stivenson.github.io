@@ -2,7 +2,7 @@
 title: "Algoritmos de Machine Learning: Explorador Interactivo"
 date: "2026-10-03"
 slug: "algoritmos-ml-explorador"
-description: "Los 17 algoritmos del cheatsheet clásico de machine learning, explicados columna por columna —tipo, caso de uso, fórmula, supuestos, pros, contras y ejemplo real— con simuladores y Python que corre en tu navegador."
+description: "Los 17 algoritmos del cheatsheet clásico de machine learning, explicados columna por columna —tipo, caso de uso, fórmula, supuestos, pros, contras y ejemplo real— con simuladores y Python que corre en tu navegador. Los primeros cuatro ya están completos; el resto llega por entregas."
 tags: ["Machine Learning", "Python", "Algoritmos", "OVA", "Ciencia de datos"]
 ---
 
@@ -22,17 +22,17 @@ Está escrito para estudiantes de Datos y Sistemas y para profesionales de cualq
 
 Responde de arriba abajo:
 
-1. **¿Tus datos traen la respuesta que quieres predecir?** (el precio, «spam / no spam», «paga / no paga»)
-   - **Sí → aprendizaje supervisado.** Sigue con la pregunta 2.
+1. **Antes de todo: ¿tus datos son imágenes, texto, audio o series largas?** Entonces mira las redes neuronales: CNN, RNN o Transformer *(próximamente)*. Si no, sigue con la pregunta 2.
+2. **¿Tus datos traen la respuesta que quieres predecir?** (el precio, «spam / no spam», «paga / no paga»)
+   - **Sí → aprendizaje supervisado.** Sigue con la pregunta 3.
    - **No → aprendizaje no supervisado.** ¿Buscas grupos? K-Means, Hierarchical Clustering o DBSCAN *(próximamente)*. ¿Quieres resumir muchas columnas en pocas? PCA *(próximamente)*.
-2. **¿Predices un número o una categoría?**
+3. **¿Predices un número o una categoría?**
    - **Un número** (precio, consumo, tiempo): empieza por [Linear Regression](#/articles/algoritmos-ml-explorador?alg=linear-regression&tab=type).
-   - **Una categoría** (sí/no, tipo A/B/C): empieza por [Logistic Regression](#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=type).
-3. **¿Tienes que explicar cada decisión a otra persona?**
-   - **Sí:** un [Decision Tree](#/articles/algoritmos-ml-explorador?alg=decision-tree&tab=type) poco profundo, o los modelos lineales de la pregunta 2.
-   - **No, lo que importa es acertar:** Random Forest o Gradient Boosting *(próximamente)*.
-4. **¿Pocos datos, y la idea de «se parece a…» es natural en tu problema?** Prueba [KNN](#/articles/algoritmos-ml-explorador?alg=knn&tab=type).
-5. **¿Imágenes, texto, audio o series largas?** Redes neuronales: CNN, RNN o Transformer *(próximamente)*.
+   - **Una categoría** (sí/no, tipo A/B/C): empieza por [Logistic Regression](#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=type). Para texto corto, como detectar spam, Naive Bayes es una alternativa clásica *(próximamente)*.
+4. **¿Tienes que explicar cada decisión a otra persona?**
+   - **Sí:** un [Decision Tree](#/articles/algoritmos-ml-explorador?alg=decision-tree&tab=type) poco profundo, o los modelos lineales de la pregunta 3.
+   - **No, lo que importa es acertar:** Random Forest, Gradient Boosting o SVM *(próximamente)*.
+5. **¿Conjunto pequeño o mediano, con pocas columnas, y la idea de «se parece a…» es natural en tu problema?** Prueba [KNN](#/articles/algoritmos-ml-explorador?alg=knn&tab=type) (escala antes las columnas).
 
 > **Regla práctica:** empieza por el modelo más simple que pueda funcionar y úsalo como línea base. Pasa a uno más complejo solo si mejora claramente con datos que el modelo no vio.
 
@@ -47,8 +47,8 @@ Responde de arriba abajo:
 - Cambia los datos de un ejercicio por los de tu trabajo: todos usan solo numpy, scikit-learn y matplotlib.
 - Antes de elegir un algoritmo para un proyecto real, repasa esta lista:
 
-- ☐ ¿Separé datos de entrenamiento y de prueba?
-- ☐ ¿Tengo una línea base simple con la cual comparar?
-- ☐ ¿Revisé los supuestos del algoritmo (pestaña *Supuestos*)?
-- ☐ ¿Sé qué error es más caro en mi problema: la falsa alarma o el caso que se escapa?
-- ☐ ¿Puedo explicar la decisión del modelo si me lo piden?
+1. ☐ ¿Separé datos de entrenamiento y de prueba?
+2. ☐ ¿Tengo una línea base simple con la cual comparar?
+3. ☐ ¿Revisé los supuestos del algoritmo (pestaña *Supuestos*)?
+4. ☐ ¿Sé qué error es más caro en mi problema: la falsa alarma o el caso que se escapa?
+5. ☐ ¿Puedo explicar la decisión del modelo si me lo piden?
