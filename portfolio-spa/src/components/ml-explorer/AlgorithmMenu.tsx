@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { GROUP_LABELS, GROUP_ORDER, type AlgorithmMeta } from './types';
 
 interface AlgorithmMenuProps {
@@ -17,8 +18,49 @@ export function AlgorithmMenu({ algorithms, activeSlug, onSelect, onPrefetch }: 
     items: algorithms.filter((a) => a.group === group),
   }));
 
+  const navRef = useRef<HTMLElement>(null);
+  const [more, setMore] = useState({ up: false, down: false });
+
+  // En escritorio la lista hace scroll dentro del menú: el ítem activo debe
+  // verse. Se mueve solo el menú (scrollTop); scrollIntoView movería también
+  // la ventana y el lector perdería su sitio en el artículo.
+  useEffect(() => {
+    const nav = navRef.current;
+    const item = nav?.querySelector<HTMLElement>('.mlx-menu-item.is-active');
+    if (!nav || !item || nav.scrollHeight <= nav.clientHeight) return;
+    const box = nav.getBoundingClientRect();
+    const r = item.getBoundingClientRect();
+    const pad = 48; // fuera del difuminado de los bordes
+    if (r.top < box.top + pad) nav.scrollTop -= box.top + pad - r.top;
+    else if (r.bottom > box.bottom - pad) nav.scrollTop += r.bottom - (box.bottom - pad);
+  }, [activeSlug]);
+
+  // Difuminado arriba/abajo mientras queden ítems fuera de la vista.
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const update = () => {
+      const max = nav.scrollHeight - nav.clientHeight;
+      const up = max > 1 && nav.scrollTop > 1;
+      const down = max > 1 && nav.scrollTop < max - 1;
+      setMore((prev) => (prev.up === up && prev.down === down ? prev : { up, down }));
+    };
+    update();
+    nav.addEventListener('scroll', update, { passive: true });
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(update);
+    ro?.observe(nav);
+    return () => {
+      nav.removeEventListener('scroll', update);
+      ro?.disconnect();
+    };
+  }, []);
+
   return (
-    <nav className="mlx-menu" aria-label="Algoritmos">
+    <nav
+      ref={navRef}
+      className={`mlx-menu${more.up ? ' is-more-up' : ''}${more.down ? ' is-more-down' : ''}`}
+      aria-label="Algoritmos"
+    >
       <label className="mlx-menu-select">
         <span>Algoritmo</span>
         <select value={activeSlug} onChange={(e) => onSelect(e.target.value)}>
