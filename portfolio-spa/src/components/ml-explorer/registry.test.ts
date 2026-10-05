@@ -24,6 +24,7 @@ describe('registry', () => {
       'pca',
       'mlp',
       'cnn',
+      'rnn',
     ]);
   });
 

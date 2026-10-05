@@ -21,6 +21,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   pca: () => import('./algorithms/pca'),
   mlp: () => import('./algorithms/mlp'),
   cnn: () => import('./algorithms/cnn'),
+  rnn: () => import('./algorithms/rnn'),
 };
 
 type Entry = Omit<AlgorithmMeta, 'available'>;

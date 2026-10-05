@@ -14,6 +14,7 @@ import kMeans from './k-means.out.txt?raw';
 import dbscan from './dbscan.out.txt?raw';
 import mlp from './mlp.out.txt?raw';
 import cnn from './cnn.out.txt?raw';
+import rnn from './rnn.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -169,5 +170,14 @@ describe('cifras citadas en los textos', () => {
     expect(cnn.match(/Tras max pooling 2×2 \(3×3\)/g)).toHaveLength(2);
     expect(cnn).toContain('Pesos de un filtro de 3×3: 9, los mismos en las 36 posiciones');
     expect(cnn).toContain('Una capa densa de 64 píxeles a 36 salidas necesitaría 2304 pesos');
+  });
+  it('RNN: con w = 0.9 la influencia del primer dato baja de 5.0e-01 a 2.4e-02 (10), 6.2e-06 (20) y 5.8e-14 (50); w = 0.5 → 2.0e-04 con 10; comprobación 0.0242', () => {
+    const row = (T: number) => rnn.match(new RegExp(`^\\s+${T} \\|\\s+(\\S+) \\|\\s+(\\S+) \\|\\s+(\\S+)$`, 'm'))!.slice(1);
+    expect(row(1)).toEqual(['5.0e-01', '5.0e-01', '5.0e-01']);
+    expect(row(10)).toEqual(['2.0e-04', '2.4e-02', '4.3e-02']);
+    expect(row(20)[1]).toBe('6.2e-06');
+    expect(row(50)[1]).toBe('5.8e-14');
+    expect(Number(row(50)[2])).toBeLessThan(1e-12); // aun con w = 1.0 se desvanece
+    expect(rnn).toContain('regla de la cadena 0.0242, numérica 0.0242');
   });
 });

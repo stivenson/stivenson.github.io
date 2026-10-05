@@ -386,3 +386,7 @@ it('MLP real (?alg=mlp): recorre las 8 pestañas sin errores', async () => {
 it('CNN real (?alg=cnn): recorre las 8 pestañas sin errores', async () => {
   await tourRealAlgorithm('cnn', 'CNN', 'Suma de productos: 2 → tras ReLU: 2');
 });
+
+it('RNN real (?alg=rnn): recorre las 8 pestañas sin errores', async () => {
+  await tourRealAlgorithm('rnn', 'RNN', 'Influencia de x₁ en la salida: 0.024 (1 en 41)');
+});

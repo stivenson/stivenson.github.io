@@ -94,6 +94,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "CNN (red neuronal convolucional)",
         "Detector de bordes: una convolución, ReLU y max pooling hechos a mano con NumPy.",
     ),
+    (
+        "rnn",
+        "RNN (red neuronal recurrente)",
+        "La memoria de una RNN mínima: cuánto influye la primera medición en la salida final.",
+    ),
 ]
 
 PYTORCH_NOTE = (
