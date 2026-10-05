@@ -193,13 +193,13 @@ describe('cifras citadas en los textos', () => {
     expect(transformer).toContain('con codificación posicional: «banco» cambia 0.30 al invertir la frase');
   });
 
-  it('Autoencoders: 1000 normales y 10 fraudes; k = 1 detecta 9, k = 2 los 10 (0.17 contra 20.06); con k = 4 el error de los fraudes baja a 0.97 y detecta 9', () => {
+  it('Autoencoders: 1000 normales y 10 fraudes; k = 1 detecta 9, k = 2 los 10 (0.17 contra 20.06); con k = 4 el error de los fraudes baja a 0.70 y detecta 9', () => {
     expect(autoencoders).toContain('1000 compras normales para entrenar y 10 fraudes que el modelo nunca ve');
     const rows = [...autoencoders.matchAll(/^\s+(\d) \|\s+([\d.]+) \|\s+([\d.]+) \|\s+(\d+) de 10$/gm)].map((m) => m.slice(1).map(Number));
     expect(rows).toEqual([
       [1, 0.52, 20.49, 9],
       [2, 0.17, 20.06, 10],
-      [4, 0.02, 0.97, 9],
+      [4, 0.01, 0.7, 9],
     ]);
   });
 });

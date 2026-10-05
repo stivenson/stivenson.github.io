@@ -3,4 +3,4 @@
 cuello k | error normales | error fraudes | fraudes detectados
        1 |           0.52 |         20.49 |         9 de 10
        2 |           0.17 |         20.06 |        10 de 10
-       4 |           0.02 |          0.97 |         9 de 10
+       4 |           0.01 |          0.70 |         9 de 10

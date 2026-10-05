@@ -15,7 +15,7 @@ fraudes = (fraudes - media) / desv
 print(f"{len(normales)} compras normales para entrenar y {len(fraudes)} fraudes que el modelo nunca ve")
 
 
-def entrenar(X, k, pasos=3000, tasa=0.05):
+def entrenar(X, k, pasos=10000, tasa=0.05):
     """Autoencoder lineal: codifica 6 números en k (cuello de botella) y los decodifica de vuelta."""
     r = np.random.default_rng(0)
     W_cod = 0.1 * r.normal(size=(6, k))

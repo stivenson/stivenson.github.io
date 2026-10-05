@@ -26,7 +26,8 @@ const autoencoders: AlgorithmModule = {
               <G k="noSupervisado">No supervisado</G>:
             </b>{' '}
             no necesita etiquetas. La respuesta que aprende a dar es la propia entrada: el{' '}
-            <G k="autoencoder">autoencoder</G> es una <G k="redNeuronal">red neuronal</G> que aprende a copiar sus datos.
+            <G k="autoencoder">autoencoder</G> es una <G k="redNeuronal">red neuronal</G> que aprende a copiar sus
+            datos.
           </p>
           <p>
             El truco es que la copia pasa por un <G k="cuelloBotella">cuello de botella</G>: una capa con menos números
@@ -58,16 +59,14 @@ const autoencoders: AlgorithmModule = {
             <li>Fallas incipientes en máquinas, con las lecturas de sus sensores.</li>
             <li>Comprimir imágenes o señales en pocos números para usarlos en otro modelo.</li>
           </ul>
-          <p className="mlx-rule">
-            Entrénalo solo con datos normales y marca como sospechoso lo que reconstruye mal.
-          </p>
+          <p className="mlx-rule">Entrénalo solo con datos normales y marca como sospechoso lo que reconstruye mal.</p>
         </>
       ),
       deepDive: (
         <p>
           Con <G k="desbalance">clases desbalanceadas</G> extremas (1 fraude cada 10 000 compras), un clasificador
-          supervisado apenas ve ejemplos de fraude; el <G k="autoencoder">autoencoder</G> no los necesita para
-          entrenar. Si los datos son imágenes, el codificador y el decodificador suelen ser{' '}
+          supervisado apenas ve ejemplos de fraude; el <G k="autoencoder">autoencoder</G> no los necesita para entrenar.
+          Si los datos son imágenes, el codificador y el decodificador suelen ser{' '}
           <G k="redConvolucional">redes convolucionales</G>.
         </p>
       ),
@@ -78,14 +77,19 @@ const autoencoders: AlgorithmModule = {
           <p>
             <b>Ejemplo:</b> cada compra del simulador tiene 6 medidas. El <G k="autoencoder">autoencoder</G> las
             comprime en k = 2 números y las vuelve a expandir a 6. Las compras normales siguen un patrón de 2 factores,
-            así que se reconstruyen casi perfectas: error medio 0.012. Los fraudes no siguen el patrón: error medio 2.44.
+            así que se reconstruyen casi perfectas: error medio 0.012. Los fraudes no siguen el patrón: error medio
+            2.44.
           </p>
           <p>
             Con un <G k="umbral">umbral</G> igual al mayor error entre las normales (0.035), los 3 fraudes quedan por
             encima. El ejercicio de Python usa un umbral algo más bajo, el percentil 99 de las normales, para no
             depender de una sola compra.
           </p>
-          <Tex block>{'z = f(x), \\qquad \\hat{x} = g(z), \\qquad \\text{error}(x) = \\frac{1}{d}\\sum_{j=1}^{d} (x_j - \\hat{x}_j)^2'}</Tex>
+          <Tex block>
+            {
+              'z = f(x), \\qquad \\hat{x} = g(z), \\qquad \\text{error}(x) = \\frac{1}{d}\\sum_{j=1}^{d} (x_j - \\hat{x}_j)^2'
+            }
+          </Tex>
           <p>
             <Tex>{'f'}</Tex> es el codificador, <Tex>{'z'}</Tex> el código (k números), <Tex>{'g'}</Tex> el
             decodificador y <Tex>{'d'}</Tex> el número de medidas. Se entrena para que el{' '}
@@ -99,13 +103,13 @@ const autoencoders: AlgorithmModule = {
             Si <Tex>{'f'}</Tex> y <Tex>{'g'}</Tex> son lineales y el error es cuadrático, la mejor solución reconstruye
             igual que <G k="pca">PCA</G> (Baldi y Hornik, 1989): su código ocupa el mismo subespacio que los k primeros{' '}
             <G k="componentePrincipal">componentes principales</G>, con los ejes posiblemente girados. El simulador usa
-            esa solución exacta; el ejercicio de Python llega
-            a ella con <G k="descensoGradiente">descenso de gradiente</G>.
+            esa solución exacta; el ejercicio de Python llega a ella con{' '}
+            <G k="descensoGradiente">descenso de gradiente</G>.
           </p>
           <p>
             Lo que distingue al autoencoder de PCA son las <G k="capaOculta">capas ocultas</G> con{' '}
-            <G k="funcionActivacion">funciones de activación</G>: con ellas comprime estructuras curvas. Se entrena como cualquier red, con{' '}
-            <G k="retropropagacion">retropropagación</G>.
+            <G k="funcionActivacion">funciones de activación</G>: con ellas comprime estructuras curvas. Se entrena como
+            cualquier red, con <G k="retropropagacion">retropropagación</G>.
           </p>
         </>
       ),
@@ -125,10 +129,10 @@ const autoencoders: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Las <G k="feature">features</G> deben estar en escalas parecidas (
-          <G k="escalado">estandarizadas</G>): si no, el error de una medida grande tapa el de las demás. El
-          ejercicio las estandariza con la media y la desviación de las compras normales, y aplica lo mismo a los
-          fraudes.
+          Las <G k="feature">features</G> deben estar en escalas parecidas: si no, el error de una medida grande tapa el
+          de las demás. El ejercicio las <G k="escalado">estandariza</G> con la media y la desviación de las compras
+          normales, y aplica lo mismo a los fraudes. Las del simulador no están estandarizadas, pero ya tienen escalas
+          parecidas (desviaciones entre 0.8 y 1.9).
         </p>
       ),
     },
@@ -152,9 +156,8 @@ const autoencoders: AlgorithmModule = {
       deepDive: (
         <p>
           El error de cada medida también orienta la revisión: si una compra se reconstruye mal sobre todo en «distancia
-          a casa», esa es la medida que se salió del patrón. El código del{' '}
-          <G k="cuelloBotella">cuello de botella</G> sirve además como <G k="feature">features</G> compactas para otro
-          modelo.
+          a casa», esa es la medida que se salió del patrón. El código del <G k="cuelloBotella">cuello de botella</G>{' '}
+          sirve además como <G k="feature">features</G> compactas para otro modelo.
         </p>
       ),
     },
@@ -162,8 +165,8 @@ const autoencoders: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>El tamaño del cuello es delicado:</b> en el ejercicio, con k = 1 detecta 9 de 10 fraudes; con 2,
-            los 10, y con 4 vuelve a 9. Si es tan ancho como la entrada, copia todo, también el fraude.
+            <b>El tamaño del cuello es delicado:</b> en el ejercicio, con k = 1 detecta 9 de 10 fraudes; con 2, los 10,
+            y con 4 vuelve a 9. Si es tan ancho como la entrada, copia todo, también el fraude.
           </li>
           <li>
             <b>Difícil de ajustar:</b> capas, <G k="neurona">neuronas</G>, <G k="epoca">épocas</G> y{' '}
@@ -178,27 +181,30 @@ const autoencoders: AlgorithmModule = {
       deepDive: (
         <p>
           En el simulador, con k = 5 se escapa un fraude y con k = 6 no detecta ninguno: el{' '}
-          <G k="autoencoder">autoencoder</G> reconstruye todo sin error. En el ejercicio, con k = 4 el error medio de los
-          fraudes baja de 20.06 a 0.97 y se escapa uno. Contra eso: elegir k con datos de validación que tengan algunas{' '}
-          <G k="anomalia">anomalías</G> conocidas.
+          <G k="autoencoder">autoencoder</G> reconstruye todo sin error. En el ejercicio, con k = 4 el error medio de
+          los fraudes baja de 20.06 a 0.70 y se escapa uno. Contra eso: elegir k con datos de validación que tengan
+          algunas <G k="anomalia">anomalías</G> conocidas.
         </p>
       ),
     },
     whenNot: {
       essential: (
         <>
-          <p className="mlx-rule">No lo uses si un <G k="pca">PCA</G> ya resuelve el problema o si tienes muchos ejemplos etiquetados.</p>
+          <p className="mlx-rule">
+            No lo uses si un <G k="pca">PCA</G> ya resuelve el problema o si tienes muchos ejemplos etiquetados.
+          </p>
           <p>
-            Ejemplo: si tienes 50 000 fraudes confirmados, entrena un clasificador supervisado (Random Forest o
-            Gradient Boosting): aprende directamente qué distingue al fraude. Y si los datos son pocos y el patrón es
-            lineal, PCA da lo mismo sin entrenar una red.
+            Ejemplo: si tienes 50 000 fraudes confirmados, entrena un clasificador supervisado (Random Forest o Gradient
+            Boosting): aprende directamente qué distingue al fraude. Y si los datos son pocos y el patrón es lineal, PCA
+            da lo mismo sin entrenar una red.
           </p>
         </>
       ),
       deepDive: (
         <p>
           Con pocas medidas y <G k="anomalia">anomalías</G> que son puntos aislados en el espacio, DBSCAN o Isolation
-          Forest (un <G k="ensamble">ensamble</G> de árboles que aísla lo raro con pocos cortes) son más simples y fáciles de explicar.
+          Forest (un <G k="ensamble">ensamble</G> de árboles que aísla lo raro con pocos cortes) son más simples y
+          fáciles de explicar.
         </p>
       ),
     },
@@ -206,8 +212,8 @@ const autoencoders: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b>Detección de fraude.</b> Los bancos marcan compras sospechosas comparándolas con el patrón normal de
-            cada cliente; un <G k="autoencoder">autoencoder</G> es una de las herramientas para aprender ese patrón.
+            <b>Detección de fraude.</b> Los bancos marcan compras sospechosas comparándolas con el patrón normal de cada
+            cliente; un <G k="autoencoder">autoencoder</G> es una de las herramientas para aprender ese patrón.
           </p>
           <p>
             El ejercicio entrena un autoencoder lineal con 1 000 compras normales simuladas y lo prueba con 10 fraudes.
@@ -234,9 +240,18 @@ const autoencoders: AlgorithmModule = {
   Ova: AutoencoderOva,
   python: { code, expectedOutput, colabNotebook: 'autoencoders' },
   inYourField: [
-    { area: 'Mecánica', example: 'avisar cuando las vibraciones de una bomba dejan de parecerse a las de su funcionamiento normal.' },
-    { area: 'Eléctrica', example: 'detectar medidores con consumos que no siguen el patrón de su zona (posibles fraudes o fallas).' },
-    { area: 'Industrial', example: 'marcar lotes de producción cuyas mediciones de calidad se salen del patrón habitual.' },
+    {
+      area: 'Mecánica',
+      example: 'avisar cuando las vibraciones de una bomba dejan de parecerse a las de su funcionamiento normal.',
+    },
+    {
+      area: 'Eléctrica',
+      example: 'detectar medidores con consumos que no siguen el patrón de su zona (posibles fraudes o fallas).',
+    },
+    {
+      area: 'Industrial',
+      example: 'marcar lotes de producción cuyas mediciones de calidad se salen del patrón habitual.',
+    },
   ],
   alternatives: ['pca', 'dbscan'],
 };
