@@ -479,6 +479,12 @@
   mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent);
 }
 
+/* Identificadores largos (HistGradientBoostingClassifier) en un teléfono de 320 px. */
+.mlx-tabpanel p code,
+.mlx-tabpanel li code {
+  overflow-wrap: anywhere;
+}
+
 .mlx-nowrap {
   white-space: nowrap;
 }
