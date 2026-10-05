@@ -12,7 +12,7 @@ const transformer: AlgorithmModule = {
     bestUse: 'Texto y secuencias largas',
     formula: 'Self-attention: cada token pondera a todos los demás',
     assumptions: 'Muchísimos datos y mucho cómputo',
-    pros: 'El mejor en lenguaje; se entrena en paralelo',
+    pros: 'El estándar actual en lenguaje; se entrena en paralelo',
     cons: 'Muy costoso; puede inventar respuestas',
     whenNot: 'Pocos datos, poco cómputo o una tarea simple',
     realWorld: 'ChatGPT, traducción automática',
@@ -30,8 +30,8 @@ const transformer: AlgorithmModule = {
           </p>
           <p>
             Es la <G k="redNeuronal">red neuronal</G> detrás de los modelos de lenguaje actuales. Su pieza clave es la{' '}
-            <G k="atencion">atención</G>: para representar cada palabra, mira todas las demás de la frase a la vez, no una
-            por una como una RNN.
+            <G k="atencion">atención</G>: para representar cada palabra, mira todas las demás de la frase a la vez, no
+            una por una como una RNN.
           </p>
         </>
       ),
@@ -39,8 +39,8 @@ const transformer: AlgorithmModule = {
         <p>
           Hay dos familias principales (<G k="bertGpt">BERT y GPT</G>). BERT lee la frase entera en ambas direcciones y
           sirve para clasificar y buscar. GPT lee de izquierda a derecha y aprende a predecir el siguiente{' '}
-          <G k="token">token</G>; con eso genera texto. El <G k="transformer">Transformer</G> original (2017) tenía las dos partes y se diseñó
-          para traducir.
+          <G k="token">token</G>; con eso genera texto. El <G k="transformer">Transformer</G> original (2017) tenía las
+          dos partes y se diseñó para traducir.
         </p>
       ),
     },
@@ -70,8 +70,8 @@ const transformer: AlgorithmModule = {
             ejemplos y una sola GPU.
           </p>
           <p>
-            Los <G k="transformer">Transformers</G> también se usan con imágenes y audio, cortados en trozos que hacen de{' '}
-            <G k="token">tokens</G>.
+            Los <G k="transformer">Transformers</G> también se usan con imágenes y audio, cortados en trozos que hacen
+            de <G k="token">tokens</G>.
           </p>
         </>
       ),
@@ -80,20 +80,22 @@ const transformer: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b>Ejemplo:</b> en «el banco del río», cada palabra tiene un <G k="embedding">embedding</G> de juguete
-            con 4 números: [función, cosa, dinero, naturaleza]. «Banco» es [0, 1, 1, 1] y «río» es [0, 1, 0, 2].
-            Su puntaje es el producto punto dividido por √4: (1 + 2) / 2 = 1.5. Con «el», 0.
+            <b>Ejemplo:</b> en «el banco del río», cada palabra tiene un <G k="embedding">embedding</G> de juguete con 4
+            números: [función, cosa, dinero, naturaleza]. «Banco» es [0, 1, 1, 1] y «río» es [0, 1, 0, 2]. Su puntaje es
+            el producto punto dividido por √4: (1 + 2) / 2 = 1.5. Con «el», 0.
           </p>
           <p>
             La <G k="softmax">softmax</G> convierte los puntajes de «banco» en pesos que suman 1: 0.09 para «el» y
-            «del», 0.41 para «banco» y «río». La nueva versión de «banco» es el promedio de las cuatro palabras con
-            esos pesos: queda con naturaleza 1.23 y dinero 0.41, inclinada hacia naturaleza.
+            «del», 0.41 para «banco» y «río». La nueva versión de «banco» es el promedio de las cuatro palabras con esos
+            pesos: queda con naturaleza 1.23 y dinero 0.41, inclinada hacia naturaleza.
           </p>
-          <Tex block>{'\\text{Atención}(Q, K, V) = \\text{softmax}\\!\\left(\\frac{Q K^\\top}{\\sqrt{d}}\\right) V'}</Tex>
+          <Tex block>
+            {'\\text{Atención}(Q, K, V) = \\text{softmax}\\!\\left(\\frac{Q K^\\top}{\\sqrt{d}}\\right) V'}
+          </Tex>
           <p>
-            <Tex>{'Q'}</Tex>, <Tex>{'K'}</Tex> y <Tex>{'V'}</Tex> (consultas, claves y valores) salen de multiplicar
-            los embeddings por tres matrices de pesos aprendidas; <Tex>{'d'}</Tex> es su número de columnas. En el
-            ejemplo y en el simulador, las tres son los embeddings sin cambio.
+            <Tex>{'Q'}</Tex>, <Tex>{'K'}</Tex> y <Tex>{'V'}</Tex> (consultas, claves y valores) salen de multiplicar los
+            embeddings por tres matrices de pesos aprendidas; <Tex>{'d'}</Tex> es su número de columnas. En el ejemplo y
+            en el simulador, las tres son los embeddings sin cambio.
           </p>
         </>
       ),
@@ -109,9 +111,9 @@ const transformer: AlgorithmModule = {
             ve los anteriores, porque al generar texto el siguiente todavía no existe.
           </p>
           <p>
-            Un bloque real tiene varias cabezas de atención en paralelo, cada una con sus matrices, seguidas de una
-            capa densa. Los modelos apilan decenas de bloques. El costo de la atención crece con el cuadrado del
-            número de <G k="token">tokens</G>: el doble de texto cuesta cuatro veces más.
+            Un bloque real tiene varias cabezas de atención en paralelo, cada una con sus matrices, seguidas de una capa
+            densa. Los modelos apilan decenas de bloques. El costo de la atención crece con el cuadrado del número de{' '}
+            <G k="token">tokens</G>: el doble de texto cuesta cuatro veces más.
           </p>
         </>
       ),
@@ -132,8 +134,8 @@ const transformer: AlgorithmModule = {
       deepDive: (
         <p>
           Por eso casi nunca se entrena desde cero: se parte de un modelo preentrenado de forma{' '}
-          <G k="autosupervisado">autosupervisada</G> con miles de millones de palabras, que ya captó patrones de gramática y
-          muchas asociaciones, y se ajusta a la tarea.
+          <G k="autosupervisado">autosupervisada</G> con miles de millones de palabras, que ya captó patrones de
+          gramática y muchas asociaciones, y se ajusta a la tarea.
         </p>
       ),
     },
@@ -173,14 +175,15 @@ const transformer: AlgorithmModule = {
             es una <G k="alucinacion">alucinación</G>.
           </li>
           <li>
-            <b>Hereda los sesgos</b> del texto con que se entrenó, y es difícil saber por qué respondió lo que respondió.
+            <b>Hereda los sesgos</b> del texto con que se entrenó, y es difícil saber por qué respondió lo que
+            respondió.
           </li>
         </ul>
       ),
       deepDive: (
         <p>
-          Para reducir las alucinaciones se le dan documentos de referencia junto con la pregunta y se le pide citar
-          la fuente; aun así hay que comprobar lo importante. El costo cuadrático en la longitud limita cuántos{' '}
+          Para reducir las alucinaciones se le dan documentos de referencia junto con la pregunta y se le pide citar la
+          fuente; aun así hay que comprobar lo importante. El costo cuadrático en la longitud limita cuántos{' '}
           <G k="token">tokens</G> lee de una vez.
         </p>
       ),
@@ -188,7 +191,9 @@ const transformer: AlgorithmModule = {
     whenNot: {
       essential: (
         <>
-          <p className="mlx-rule">No lo uses si la tarea es simple, hay pocos datos o necesitas una respuesta exacta y auditable.</p>
+          <p className="mlx-rule">
+            No lo uses si la tarea es simple, hay pocos datos o necesitas una respuesta exacta y auditable.
+          </p>
           <p>
             Ejemplo: separar spam con unos cientos de correos etiquetados. Naive Bayes o una regresión logística
             entrenan en un segundo y aciertan casi igual. Y para calcular una cifra, mejor una fórmula o una consulta a
@@ -199,7 +204,8 @@ const transformer: AlgorithmModule = {
       deepDive: (
         <p>
           Con secuencias numéricas cortas, como sensores en un dispositivo pequeño, una RNN o un modelo de árboles es
-          más barato. Con <G k="tabular">datos tabulares</G>, los <G k="ensamble">ensambles</G> de árboles siguen siendo la primera opción.
+          más barato. Con <G k="tabular">datos tabulares</G>, los <G k="ensamble">ensambles</G> de árboles siguen siendo
+          la primera opción.
         </p>
       ),
     },
@@ -211,21 +217,22 @@ const transformer: AlgorithmModule = {
             traducir, en el artículo «Attention Is All You Need» («La atención es todo lo que necesitas»).
           </p>
           <p>
-            <G k="llm">ChatGPT</G> es un modelo tipo <G k="bertGpt">GPT</G>: predice el siguiente{' '}
-            <G k="token">token</G> y fue ajustado para conversar.
+            <G k="llm">ChatGPT</G> es un modelo tipo <G k="bertGpt">GPT</G>: predice el siguiente <G k="token">token</G>{' '}
+            y fue ajustado para conversar.
           </p>
           <p>
             El ejercicio calcula a mano la <G k="atencion">atención</G> de 4 tokens. En «el banco del río», «banco»
             atiende 0.41 a «río» y sale con naturaleza 1.23; en «el banco cobra interés», con dinero 1.38. Con{' '}
-            <G k="mascaraCausal">máscara causal</G>, «banco» aún no ve «río». Al invertir la frase, «banco» cambia 0.00 sin posición y 0.30 con ella.
+            <G k="mascaraCausal">máscara causal</G>, «banco» aún no ve «río». Al invertir la frase, «banco» cambia 0.00
+            sin posición y 0.30 con ella.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          Un modelo de lenguaje, por sí solo, no consulta una base de datos de hechos: elige palabras probables. Por eso redacta y
-          traduce con fluidez, pero puede <G k="alucinacion">alucinar</G>. El notebook de Colab trae una celda opcional
-          con la misma atención en <G k="pytorch">PyTorch</G>, que da los mismos pesos.
+          Un modelo de lenguaje, por sí solo, no consulta una base de datos de hechos: elige palabras probables. Por eso
+          redacta y traduce con fluidez, pero puede <G k="alucinacion">alucinar</G>. El notebook de Colab trae una celda
+          opcional con la misma atención en <G k="pytorch">PyTorch</G>, que da los mismos pesos.
         </p>
       ),
     },
@@ -233,9 +240,20 @@ const transformer: AlgorithmModule = {
   Ova: TransformerOva,
   python: { code, expectedOutput, colabNotebook: 'transformer' },
   inYourField: [
-    { area: 'Civil', example: 'buscar en cientos de especificaciones técnicas el párrafo que responde una duda, por significado y no por palabra exacta.' },
-    { area: 'Industrial', example: 'clasificar los reportes de fallas escritos por los operarios según el equipo y la causa probable.' },
-    { area: 'Sistemas', example: 'asistentes que sugieren código; el código que proponen hay que revisarlo y probarlo como cualquier otro.' },
+    {
+      area: 'Civil',
+      example:
+        'buscar en cientos de especificaciones técnicas el párrafo que responde una duda, por significado y no por palabra exacta.',
+    },
+    {
+      area: 'Industrial',
+      example: 'clasificar los reportes de fallas escritos por los operarios según el equipo y la causa probable.',
+    },
+    {
+      area: 'Sistemas',
+      example:
+        'asistentes que sugieren código; el código que proponen hay que revisarlo y probarlo como cualquier otro.',
+    },
   ],
   alternatives: ['naive-bayes', 'rnn'],
 };

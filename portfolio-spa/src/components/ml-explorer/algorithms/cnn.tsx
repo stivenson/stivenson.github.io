@@ -29,16 +29,16 @@ const cnn: AlgorithmModule = {
             <G k="redNeuronal">red neuronal</G> pensada para datos en cuadrícula, como los píxeles de una foto.
           </p>
           <p>
-            En vez de mirar cada píxel por separado, recorre la imagen con <b>filtros pequeños</b> (por ejemplo, de
-            3×3) que detectan patrones locales: bordes, esquinas, texturas. Esa operación es la{' '}
+            En vez de mirar cada píxel por separado, recorre la imagen con <b>filtros pequeños</b> (por ejemplo, de 3×3)
+            que detectan patrones locales: bordes, esquinas, texturas. Esa operación es la{' '}
             <G k="convolucion">convolución</G>, y de ahí el nombre: <i>Convolutional Neural Network</i>.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          Las primeras capas aprenden bordes; las siguientes combinan bordes en formas y las últimas, formas en
-          objetos. Al final suele ir un MLP pequeño que clasifica. Además de clasificar, las{' '}
+          Las primeras capas aprenden bordes; las siguientes combinan bordes en formas y las últimas, formas en objetos.
+          Al final suele ir un MLP pequeño que clasifica. Además de clasificar, las{' '}
           <G k="redConvolucional">redes convolucionales</G> localizan objetos en la imagen y la segmentan píxel a píxel.
         </p>
       ),
@@ -73,17 +73,19 @@ const cnn: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b>Ejemplo:</b> un filtro de 3×3 para bordes verticales tiene −1 en la columna izquierda, 0 en el centro y
-            1 a la derecha. Sobre la esquina de arriba a la izquierda del «7» del simulador, la fila de arriba es fondo y
-            en las otras dos hay tinta en el centro y a la derecha: fila por fila da 0 + 1 + 1 = 2. Donde el trazo termina a la derecha, la
-            suma da −3 y la <G k="relu">ReLU</G> la deja en 0.
+            <b>Ejemplo:</b> un filtro de 3×3 para bordes verticales tiene −1 en la columna izquierda, 0 en el centro y 1
+            a la derecha. Sobre la esquina de arriba a la izquierda del «7» del simulador, la fila de arriba es fondo y
+            en las otras dos hay tinta en el centro y a la derecha: fila por fila da 0 + 1 + 1 = 2. Donde el trazo
+            termina a la derecha, la suma da −3 y la <G k="relu">ReLU</G> la deja en 0.
           </p>
           <p>
             Repetir la cuenta en las 36 posiciones da un <G k="mapaActivacion">mapa de activación</G> de 6×6: alto donde
             hay un borde izquierdo de un trazo. Después, el <G k="pooling">max pooling</G> de 2×2 resume cada bloque con
             su máximo y deja un mapa de 3×3.
           </p>
-          <Tex block>{'S_{i,j} = \\sum_{a=0}^{2} \\sum_{b=0}^{2} I_{i+a,\\, j+b}\\, K_{a,b}, \\qquad A = \\max(0, S)'}</Tex>
+          <Tex block>
+            {'S_{i,j} = \\sum_{a=0}^{2} \\sum_{b=0}^{2} I_{i+a,\\, j+b}\\, K_{a,b}, \\qquad A = \\max(0, S)'}
+          </Tex>
           <p>
             <Tex>{'I'}</Tex> es la imagen, <Tex>{'K'}</Tex> el filtro (sus 9 pesos se aprenden) y <Tex>{'A'}</Tex> el
             mapa tras la ReLU. Una capa tiene muchos filtros y cada uno produce su propio mapa.
@@ -110,8 +112,8 @@ const cnn: AlgorithmModule = {
         <>
           <p>
             Supone que <b>lo que importa está en los vecinos</b>: un borde es un cambio entre píxeles contiguos. Si
-            barajas las columnas de una tabla, nada cambia; si barajas los píxeles de una foto, se pierde la imagen.
-            La <G k="convolucion">convolución</G> aprovecha justo ese orden.
+            barajas las columnas de una tabla, nada cambia; si barajas los píxeles de una foto, se pierde la imagen. La{' '}
+            <G k="convolucion">convolución</G> aprovecha justo ese orden.
           </p>
           <p>
             También supone que <b>un patrón significa lo mismo en cualquier lugar</b>: un borde arriba a la izquierda es
@@ -123,8 +125,8 @@ const cnn: AlgorithmModule = {
         <p>
           La <G k="convolucion">convolución</G> es equivariante: si el 7 se mueve, el mapa se mueve igual. El{' '}
           <G k="pooling">pooling</G> añade un poco de invariancia: el resumen casi no cambia ante desplazamientos de un
-          píxel, pero no ante giros ni cambios de escala: si todas las fotos de entrenamiento están derechas, una foto girada puede fallar. Para eso se usa el{' '}
-          <G k="aumentoDatos">aumento de datos</G>.
+          píxel, pero no ante giros ni cambios de escala: si todas las fotos de entrenamiento están derechas, una foto
+          girada puede fallar. Para eso se usa el <G k="aumentoDatos">aumento de datos</G>.
         </p>
       ),
     },
@@ -132,8 +134,8 @@ const cnn: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>Pocos pesos:</b> en el ejercicio, un filtro de 3×3 usa 9 pesos en las 36 posiciones; una capa densa de
-            64 píxeles a 36 salidas necesitaría 2 304.
+            <b>Pocos pesos:</b> en el ejercicio, un filtro de 3×3 usa 9 pesos en las 36 posiciones; una capa densa de 64
+            píxeles a 36 salidas necesitaría 2 304.
           </li>
           <li>
             <b>Aprende qué mirar:</b> los filtros se ajustan solos; nadie le dice que busque bordes.
@@ -182,8 +184,8 @@ const cnn: AlgorithmModule = {
           <p className="mlx-rule">No la uses con datos sin estructura espacial, como una tabla de clientes.</p>
           <p>
             Ejemplo: predecir la rotación de clientes con edad, plan y consumo. El orden de las columnas no significa
-            nada, así que la <G k="convolucion">convolución</G> no tiene vecinos que aprovechar. Un <G k="ensamble">ensamble</G> de
-            árboles o una SVM funcionan mejor y con muchos menos datos.
+            nada, así que la <G k="convolucion">convolución</G> no tiene vecinos que aprovechar. Un{' '}
+            <G k="ensamble">ensamble</G> de árboles o una SVM funcionan mejor y con muchos menos datos.
           </p>
         </>
       ),
@@ -212,8 +214,8 @@ const cnn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En la práctica no se programan los filtros: se define la red con <G k="pytorch">PyTorch o TensorFlow</G> y
-          se parte de una red ya entrenada (<G k="transferencia">ajuste fino</G>). El notebook de Colab trae, como celda
+          En la práctica no se programan los filtros: se define la red con <G k="pytorch">PyTorch o TensorFlow</G> y se
+          parte de una red ya entrenada (<G k="transferencia">ajuste fino</G>). El notebook de Colab trae, como celda
           opcional, la misma <G k="convolucion">convolución</G> hecha con PyTorch, que da el mismo mapa.
         </p>
       ),
@@ -223,7 +225,10 @@ const cnn: AlgorithmModule = {
   python: { code, expectedOutput, colabNotebook: 'cnn' },
   inYourField: [
     { area: 'Civil', example: 'detectar fisuras y desprendimientos en fotos de puentes tomadas con dron.' },
-    { area: 'Industrial', example: 'inspección visual de piezas en una línea de producción: aceptar o rechazar cada una.' },
+    {
+      area: 'Industrial',
+      example: 'inspección visual de piezas en una línea de producción: aceptar o rechazar cada una.',
+    },
     { area: 'Agronómica', example: 'reconocer plagas o enfermedades en fotos de hojas tomadas con el celular.' },
   ],
   alternatives: ['svm', 'transformer'],

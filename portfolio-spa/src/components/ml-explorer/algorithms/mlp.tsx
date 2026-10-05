@@ -26,8 +26,8 @@ const mlp: AlgorithmModule = {
               <G k="supervisado">Supervisado</G>:
             </b>{' '}
             aprende de ejemplos que ya traen la respuesta, como la regresión logística. La diferencia es que entre la
-            entrada y la salida pone <b>capas de neuronas</b> que aprenden sus propias{' '}
-            <G k="feature">features</G> intermedias.
+            entrada y la salida pone <b>capas de neuronas</b> que aprenden sus propias <G k="feature">features</G>{' '}
+            intermedias.
           </p>
           <p>
             Es la <G k="redNeuronal">red neuronal</G> más básica: el perceptrón multicapa (MLP, por{' '}
@@ -66,8 +66,9 @@ const mlp: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Con <G k="tabular">datos tabulares</G> de miles de filas, Gradient Boosting suele igualar o superar a un MLP con mucho menos ajuste. El MLP brilla cuando las features son señales crudas y numerosas
-          (píxeles, audio) o cuando se combina con otras redes.
+          Con <G k="tabular">datos tabulares</G> de miles de filas, Gradient Boosting suele igualar o superar a un MLP
+          con mucho menos ajuste. El MLP brilla cuando las features son señales crudas y numerosas (píxeles, audio) o
+          cuando se combina con otras redes.
         </p>
       ),
     },
@@ -81,8 +82,8 @@ const mlp: AlgorithmModule = {
           </p>
           <p>
             Una sola neurona traza una recta y no puede separar <G k="xor">XOR</G>. Con dos neuronas en la{' '}
-            <G k="capaOculta">capa oculta</G> sí: una se enciende en «al menos una entrada activa», otra en «no las dos»,
-            y la salida pide ambas. Así (1, 0) da casi 1 y (1, 1), casi 0.
+            <G k="capaOculta">capa oculta</G> sí: una se enciende en «al menos una entrada activa», otra en «no las
+            dos», y la salida pide ambas. Así (1, 0) da casi 1 y (1, 1), casi 0.
           </p>
           <Tex block>{'h = \\sigma(W_1 x + b_1), \\qquad \\hat{y} = \\sigma(W_2 h + b_2)'}</Tex>
           <p>
@@ -116,13 +117,17 @@ const mlp: AlgorithmModule = {
         <>
           <p>
             Supone que hay <b>muchos datos</b>: tiene muchos pesos que ajustar. En el ejercicio, la red de 32{' '}
-            <G k="neurona">neuronas</G> tiene 2 410 parámetros (pesos y sesgos) para 1 257 imágenes de entrenamiento, y aun así acierta en datos
-            nuevos porque los dígitos se parecen mucho entre sí. Con muchos menos datos, memoriza (
-            <G k="overfitting">sobreajuste</G>).
+            <G k="neurona">neuronas</G> tiene 2 410 parámetros (pesos y sesgos) para 1 257 imágenes de entrenamiento, y
+            aun así acierta en datos nuevos porque los dígitos se parecen mucho entre sí. Con muchos menos datos,
+            memoriza (<G k="overfitting">sobreajuste</G>).
           </p>
           <p>
-            También supone <b><G k="feature">features</G> en escalas parecidas</b>: con una feature de 0 a 1 y otra de 0 a 100 000, el
-            entrenamiento avanza a saltos. Por eso el ejercicio divide los píxeles entre 16.
+            También supone{' '}
+            <b>
+              <G k="feature">features</G> en escalas parecidas
+            </b>
+            : con una feature de 0 a 1 y otra de 0 a 100 000, el entrenamiento avanza a saltos. Por eso el ejercicio
+            divide los píxeles entre 16.
           </p>
         </>
       ),
@@ -145,22 +150,22 @@ const mlp: AlgorithmModule = {
           <li>
             <b>
               Aprende sus propias <G k="feature">features</G>:
-            </b> en el ejercicio, la red de 32 <G k="neurona">neuronas</G> acierta el 97.6 % de los
-            dígitos nuevos a partir de los píxeles crudos.
+            </b>{' '}
+            en el ejercicio, la red de 32 <G k="neurona">neuronas</G> acierta el 97.6 % de los dígitos nuevos a partir
+            de los píxeles crudos.
           </li>
           <li>
-            <b>Escala con los datos:</b> con más ejemplos y más neuronas suele seguir mejorando, cuando un modelo
-            lineal ya no mejora.
+            <b>Escala con los datos:</b> con más ejemplos y más neuronas suele seguir mejorando, cuando un modelo lineal
+            ya no mejora.
           </li>
         </ul>
       ),
       deepDive: (
         <p>
-          La misma maquinaria (capas, <G k="retropropagacion">retropropagación</G>, descenso por{' '}
-          <G k="batch">lotes</G>) sirve para
-          imágenes, texto y audio, y corre rápido en una <G k="gpu">GPU</G>. Con 2 neuronas ocultas la red del ejercicio
-          solo acierta el 49.8 % en datos nuevos; con 8, el 91.3 %: con un entrenamiento corto, el tamaño de la capa
-          importa mucho.
+          La misma maquinaria (capas, <G k="retropropagacion">retropropagación</G>, descenso por <G k="batch">lotes</G>)
+          sirve para imágenes, texto y audio, y corre rápido en una <G k="gpu">GPU</G>. Con 2 neuronas ocultas la red
+          del ejercicio solo acierta el 49.8 % en datos nuevos; con 8, el 91.3 %: con un entrenamiento corto, el tamaño
+          de la capa importa mucho.
         </p>
       ),
     },
@@ -171,12 +176,12 @@ const mlp: AlgorithmModule = {
             <b>Caja negra:</b> 2 410 pesos no se leen uno por uno. No sabes por qué decidió lo que decidió.
           </li>
           <li>
-            <b>Muchas perillas:</b> capas, <G k="neurona">neuronas</G>,{' '}
-            <G k="tasaAprendizaje">tasa de aprendizaje</G>, <G k="epoca">épocas</G>, regularización. Una mala elección y no aprende o memoriza.
+            <b>Muchas perillas:</b> capas, <G k="neurona">neuronas</G>, <G k="tasaAprendizaje">tasa de aprendizaje</G>,{' '}
+            <G k="epoca">épocas</G>, regularización. Una mala elección y no aprende o memoriza.
           </li>
           <li>
-            <b>Resultados que varían:</b> los pesos arrancan al azar. Con otra semilla, la red de 32 apenas cambia,
-            pero la de 2 cambia mucho: las redes pequeñas son las más inestables. El ejercicio fija{' '}
+            <b>Resultados que varían:</b> los pesos arrancan al azar. Con otra semilla, la red de 32 apenas cambia, pero
+            la de 2 cambia mucho: las redes pequeñas son las más inestables. El ejercicio fija{' '}
             <code>random_state=0</code>.
           </li>
         </ul>
@@ -185,7 +190,7 @@ const mlp: AlgorithmModule = {
         <>
           <p>
             Contra el <G k="overfitting">sobreajuste</G>: más datos, <G k="regularizacionL1L2">regularización L2</G>,{' '}
-            <G k="dropout">dropout</G> o parar cuando el error en validación deja de bajar (
+            <G k="dropout">dropout</G> o parar cuando el acierto en validación deja de mejorar (
             <code>early_stopping=True</code>).
           </p>
           <p>
@@ -208,8 +213,8 @@ const mlp: AlgorithmModule = {
       deepDive: (
         <p>
           Tampoco es la mejor red para imágenes grandes (usa una <G k="redConvolucional">red convolucional</G>) ni para
-          texto o secuencias largas (usa un <G k="transformer">Transformer</G>): el MLP trata cada entrada por separado y
-          no aprovecha qué píxeles son vecinos ni el orden de las palabras.
+          texto o secuencias largas (usa un <G k="transformer">Transformer</G>): el MLP trata cada entrada por separado
+          y no aprovecha qué píxeles son vecinos ni el orden de las palabras.
         </p>
       ),
     },
@@ -231,9 +236,9 @@ const mlp: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            En producción las redes se entrenan con <G k="pytorch">PyTorch o TensorFlow</G>, en{' '}
-            <G k="gpu">GPU</G> y por <G k="batch">lotes</G>. El notebook de Colab trae, como celda opcional, una red
-            equivalente en PyTorch: su acierto es parecido, no idéntico, porque cambian el sorteo de los pesos y otros detalles del entrenamiento.
+            En producción las redes se entrenan con <G k="pytorch">PyTorch o TensorFlow</G>, en <G k="gpu">GPU</G> y por{' '}
+            <G k="batch">lotes</G>. El notebook de Colab trae, como celda opcional, una red equivalente en PyTorch: su
+            acierto es parecido, no idéntico, porque cambian el sorteo de los pesos y otros detalles del entrenamiento.
           </p>
           <p>
             El ejercicio entrena 150 <G k="epoca">épocas</G> y para ahí a propósito, para que corra en segundos en el
@@ -246,9 +251,18 @@ const mlp: AlgorithmModule = {
   Ova: MlpOva,
   python: { code, expectedOutput, colabNotebook: 'mlp' },
   inYourField: [
-    { area: 'Eléctrica', example: 'estimar la demanda de la próxima hora a partir de decenas de lecturas de la red y del clima.' },
-    { area: 'Mecánica', example: 'predecir el desgaste de una herramienta de corte con las señales de vibración y corriente del motor.' },
-    { area: 'Química', example: 'predecir una propiedad de una mezcla a partir de su composición y las condiciones del proceso.' },
+    {
+      area: 'Eléctrica',
+      example: 'estimar la demanda de la próxima hora a partir de decenas de lecturas de la red y del clima.',
+    },
+    {
+      area: 'Mecánica',
+      example: 'predecir el desgaste de una herramienta de corte con las señales de vibración y corriente del motor.',
+    },
+    {
+      area: 'Química',
+      example: 'predecir una propiedad de una mezcla a partir de su composición y las condiciones del proceso.',
+    },
   ],
   alternatives: ['gradient-boosting', 'logistic-regression'],
 };

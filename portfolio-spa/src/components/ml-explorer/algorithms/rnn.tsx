@@ -25,8 +25,8 @@ const rnn: AlgorithmModule = {
             <b>
               <G k="supervisado">Supervisado</G>:
             </b>{' '}
-            aprende de secuencias que ya traen la respuesta: la demanda de mañana, la palabra siguiente, el texto de
-            un audio. Es una <G k="redNeuronal">red neuronal</G> que lee los datos <b>uno por uno y en orden</b>.
+            aprende de secuencias que ya traen la respuesta: la demanda de mañana, la palabra siguiente, el texto de un
+            audio. Es una <G k="redNeuronal">red neuronal</G> que lee los datos <b>uno por uno y en orden</b>.
           </p>
           <p>
             Mientras lee, guarda una memoria, el <G k="estadoOculto">estado oculto</G>, que mezcla lo que ya traía con
@@ -72,14 +72,20 @@ const rnn: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b>Ejemplo:</b> una RNN de una sola <G k="neurona">neurona</G> con <Tex>{'w = 0.9'}</Tex> lee 10
-            mediciones. La primera entra multiplicada por <Tex>{'u = 0.5'}</Tex>; luego, en cada uno de los 9 pasos
-            siguientes, su efecto se multiplica por 0.9 y por la pendiente de tanh, que es como mucho 1. Sin la
-            pendiente quedaría 0.5 · 0.9<sup>9</sup> = 0.19; con ella, el simulador da 0.024: 1 en 41. La fórmula de abajo mide de{' '}
-            <Tex>{'h_1'}</Tex> a <Tex>{'h_T'}</Tex>; por <Tex>{'x_1'}</Tex> entra además el factor{' '}
-            <Tex>{'u\\,(1 - h_1^2)'}</Tex>.
+            <b>Ejemplo:</b> una RNN de una sola <G k="neurona">neurona</G> con <Tex>{'w = 0.9'}</Tex> lee 10 mediciones.
+            La primera entra multiplicada por <Tex>{'u = 0.5'}</Tex>; luego, en cada uno de los 9 pasos siguientes, su
+            efecto se multiplica por 0.9 y por la pendiente de tanh, que es como mucho 1. Sin la pendiente quedaría 0.5
+            · 0.9<sup>9</sup> = 0.19; con ella, el simulador da 0.024: 1 en 41.
           </p>
-          <Tex block>{'h_t = \\tanh(w\\, h_{t-1} + u\\, x_t), \\qquad \\frac{\\partial h_T}{\\partial h_1} = \\prod_{t=2}^{T} w\\, (1 - h_t^2)'}</Tex>
+          <p>
+            La fórmula de abajo mide de <Tex>{'h_1'}</Tex> a <Tex>{'h_T'}</Tex>; por <Tex>{'x_1'}</Tex> entra además el
+            factor <Tex>{'u\\,(1 - h_1^2)'}</Tex>.
+          </p>
+          <Tex block>
+            {
+              'h_t = \\tanh(w\\, h_{t-1} + u\\, x_t), \\qquad \\frac{\\partial h_T}{\\partial h_1} = \\prod_{t=2}^{T} w\\, (1 - h_t^2)'
+            }
+          </Tex>
           <p>
             <Tex>{'h_t'}</Tex> es el <G k="estadoOculto">estado oculto</G> en el paso <Tex>{'t'}</Tex> y{' '}
             <Tex>{'x_t'}</Tex> el dato que entra. El producto de la derecha es lo que lleva hacia atrás la{' '}
@@ -144,9 +150,9 @@ const rnn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Un <G k="transformer">Transformer</G> compara cada <G k="token">token</G> con todos los anteriores, así que su costo crece con
-          el cuadrado de la longitud. La RNN crece en línea recta. Por eso hay arquitecturas recientes que vuelven a
-          ideas recurrentes para textos muy largos.
+          Un <G k="transformer">Transformer</G> compara cada <G k="token">token</G> con todos los anteriores, así que su
+          costo crece con el cuadrado de la longitud. La RNN crece en línea recta. Por eso hay arquitecturas recientes
+          que vuelven a ideas recurrentes para textos muy largos.
         </p>
       ),
     },
@@ -168,9 +174,9 @@ const rnn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          La <G k="lstm">LSTM</G> y la GRU reducen el desvanecimiento; recortar el{' '}
-          <G k="gradiente">gradiente</G> evita la explosión. Para dependencias de cientos o miles de pasos, el{' '}
-          <G k="transformer">Transformer</G> las reemplazó en casi todas las tareas de texto.
+          La <G k="lstm">LSTM</G> y la GRU reducen el desvanecimiento; recortar el <G k="gradiente">gradiente</G> evita
+          la explosión. Para dependencias de cientos o miles de pasos, el <G k="transformer">Transformer</G> las
+          reemplazó en casi todas las tareas de texto.
         </p>
       ),
     },
@@ -188,8 +194,8 @@ const rnn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Para pronosticar series de una sola variable con poca historia, los métodos estadísticos clásicos (como
-          ARIMA) o un modelo de árboles con valores rezagados suelen ganarle y son más fáciles de revisar.
+          Para pronosticar series de una sola variable con poca historia, los métodos estadísticos clásicos (como ARIMA)
+          o un modelo de árboles con valores rezagados suelen ganarle y son más fáciles de revisar.
         </p>
       ),
     },
@@ -198,8 +204,7 @@ const rnn: AlgorithmModule = {
         <>
           <p>
             <b>Reconocimiento de voz y predicción de series.</b> Hacia 2015-2016 los dictados por voz y los traductores
-            automáticos usaban <G k="lstm">LSTM</G>; luego llegaron los{' '}
-            <G k="transformer">Transformers</G>.
+            automáticos usaban <G k="lstm">LSTM</G>; luego llegaron los <G k="transformer">Transformers</G>.
           </p>
           <p>
             El ejercicio no entrena una red: mide su memoria. Con 50 mediciones y la regla de la cadena, calcula cuánto
@@ -223,8 +228,14 @@ const rnn: AlgorithmModule = {
   python: { code, expectedOutput, colabNotebook: 'rnn' },
   inYourField: [
     { area: 'Eléctrica', example: 'pronosticar la carga de un transformador hora a hora con su historia reciente.' },
-    { area: 'Mecánica', example: 'detectar el inicio de una falla en un rodamiento leyendo la señal de vibración en tiempo real.' },
-    { area: 'Ambiental', example: 'predecir el nivel de un río a partir de la lluvia y los caudales de las horas anteriores.' },
+    {
+      area: 'Mecánica',
+      example: 'detectar el inicio de una falla en un rodamiento leyendo la señal de vibración en tiempo real.',
+    },
+    {
+      area: 'Ambiental',
+      example: 'predecir el nivel de un río a partir de la lluvia y los caudales de las horas anteriores.',
+    },
   ],
   alternatives: ['transformer', 'gradient-boosting'],
 };

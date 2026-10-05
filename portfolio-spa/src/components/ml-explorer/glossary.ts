@@ -119,7 +119,7 @@ export const GLOSSARY = {
   },
   interpretable: {
     term: 'Modelo interpretable',
-    what: 'Un modelo cuyo razonamiento puedes leer y explicar, como «cada m² suma 2.5 millones».',
+    what: 'Un modelo cuyas reglas puedes leer y explicar, como «cada m² suma 2.5 millones».',
     why: 'En crédito, salud o decisiones públicas a menudo es obligatorio explicar por qué se decidió algo.',
   },
   bootstrap: {
@@ -680,7 +680,7 @@ export const GLOSSARY = {
   llm: {
     term: 'Modelo de lenguaje grande (LLM)',
     what: 'Un Transformer tipo GPT con miles de millones de pesos, entrenado para predecir el siguiente token en enormes cantidades de texto. ChatGPT es uno, ajustado además para conversar.',
-    why: 'Redacta, resume y traduce con fluidez, pero no consulta una base de datos de hechos: puede inventar.',
+    why: 'Redacta, resume y traduce con fluidez, pero, por sí solo, no consulta una base de datos de hechos: puede inventar.',
   },
   alucinacion: {
     term: 'Alucinación',
