@@ -3,11 +3,6 @@ import article from './algoritmos-ml-explorador.md?raw';
 import { ALGORITHMS, AVAILABLE_SLUGS } from '../../components/ml-explorer/registry';
 import { TAB_IDS } from '../../components/ml-explorer/types';
 
-const NUMBER_WORDS = [
-  'cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez',
-  'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete',
-];
-
 const internalLinks = Array.from(article.matchAll(/\]\((#\/articles\/algoritmos-ml-explorador\?[^)\s]+)\)/g), (m) => m[1]);
 
 describe('artículo del explorador: enlaces y description al día', () => {
@@ -23,13 +18,16 @@ describe('artículo del explorador: enlaces y description al día', () => {
     if (tab !== null) expect(TAB_IDS as readonly string[]).toContain(tab);
   });
 
-  it('la description cuenta en palabras los algoritmos ya disponibles', () => {
+  it('la guía enlaza los 17 algoritmos, cada uno al menos una vez', () => {
+    const algs = new Set(internalLinks.map((h) => new URLSearchParams(h.slice(h.indexOf('?') + 1)).get('alg')));
+    expect([...algs].sort()).toEqual([...AVAILABLE_SLUGS].sort());
+    expect(AVAILABLE_SLUGS).toHaveLength(ALGORITHMS.length);
+  });
+
+  it('ni la description ni el artículo prometen entregas futuras', () => {
     const description = article.match(/^description:\s*"(.*)"$/m)?.[1] ?? '';
-    expect(NUMBER_WORDS).toHaveLength(ALGORITHMS.length + 1);
-    const n = NUMBER_WORDS[AVAILABLE_SLUGS.length];
-    // Con todos disponibles ya no son «los primeros»: son todos.
-    const phrase = AVAILABLE_SLUGS.length === ALGORITHMS.length ? `Los ${n} ya están completos` : `Los primeros ${n} ya están completos`;
-    expect(description).toContain(phrase);
+    expect(description).toContain('Los 17 algoritmos');
+    expect(article).not.toMatch(/próximamente|«pronto»|entregas|ya están completos|los primeros \p{L}+ ya/iu);
   });
 });
 
