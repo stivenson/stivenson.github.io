@@ -19,6 +19,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   'hierarchical-clustering': () => import('./algorithms/hierarchical-clustering'),
   dbscan: () => import('./algorithms/dbscan'),
   pca: () => import('./algorithms/pca'),
+  mlp: () => import('./algorithms/mlp'),
 };
 
 type Entry = Omit<AlgorithmMeta, 'available'>;

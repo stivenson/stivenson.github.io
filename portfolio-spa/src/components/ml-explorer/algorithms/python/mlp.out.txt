@@ -1,0 +1,8 @@
+1257 imágenes para entrenar y 540 nuevas para medir
+
+neuronas ocultas | pesos | entrenamiento | datos nuevos
+               2 |   160 |         52.7% |        49.8%
+               8 |   610 |         94.4% |        91.3%
+              32 |  2410 |         98.8% |        97.6%
+
+Primera imagen nueva (es un 1): 1 con 88%, 8 con 11%

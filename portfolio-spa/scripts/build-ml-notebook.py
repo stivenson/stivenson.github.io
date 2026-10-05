@@ -5,6 +5,11 @@ notebooks/algoritmos-ml/<slug>.ipynb (el botón «Abrir en Colab» de cada
 ejercicio abre el suyo). Es el mismo código que corre en el navegador con
 Pyodide. No borra notebooks de algoritmos que no estén en la lista.
 
+Las redes neuronales (fase 4) llevan además una celda opcional con PyTorch
+(scripts/ml-pytorch/<slug>.py), justo después del ejercicio. Esa celda no
+falla si PyTorch no está instalado (o está roto): lo atrapa con
+try/except (ImportError, OSError).
+
 Uso (desde portfolio-spa/):  python3 scripts/build-ml-notebook.py
 """
 import json
@@ -14,6 +19,7 @@ SPA = Path(__file__).resolve().parent.parent
 PY_DIR = SPA / "src/components/ml-explorer/algorithms/python"
 OUT = SPA.parent / "notebooks/algoritmos-ml.ipynb"
 OUT_DIR = SPA.parent / "notebooks/algoritmos-ml"
+PYTORCH_DIR = SPA / "scripts/ml-pytorch"
 ARTICLE = "https://stivenson.github.io/#/articles/algoritmos-ml-explorador"
 
 # Mismo orden que el menú del explorador. Cada fase agrega sus algoritmos.
@@ -78,7 +84,17 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "PCA (análisis de componentes principales)",
         "Compresión de imágenes: cada dígito de 64 píxeles guardado con k números.",
     ),
+    (
+        "mlp",
+        "Neural Networks, MLP (perceptrón multicapa)",
+        "Dígitos escritos a mano: cuánto acierta una red según el número de neuronas ocultas.",
+    ),
 ]
+
+PYTORCH_NOTE = (
+    "**Opcional: con PyTorch.** La celda siguiente hace lo mismo con PyTorch, la biblioteca que se usa en la práctica. "
+    "Colab ya lo trae instalado; si no está, la celda solo avisa y no falla. Ejecuta antes la celda del ejercicio."
+)
 
 
 def lines(text: str) -> list[str]:
@@ -98,6 +114,17 @@ def code(text: str, cell_id: str) -> dict:
         "outputs": [],
         "source": lines(text),
     }
+
+
+def pytorch_cells(slug: str) -> list[dict]:
+    """Nota y celda opcional de PyTorch, si el algoritmo la tiene."""
+    path = PYTORCH_DIR / f"{slug}.py"
+    if not path.exists():
+        return []
+    return [
+        markdown(PYTORCH_NOTE, f"{slug}-pytorch-nota"),
+        code(path.read_text(encoding="utf-8").rstrip("\n"), f"{slug}-pytorch"),
+    ]
 
 
 def wrap(cells: list[dict]) -> dict:
@@ -136,6 +163,7 @@ def main() -> None:
             )
         )
         cells.append(code((PY_DIR / f"{slug}.py").read_text(encoding="utf-8").rstrip("\n"), f"{slug}-codigo"))
+        cells.extend(pytorch_cells(slug))
 
     write(OUT, wrap(cells))
     for slug, title, summary in ALGORITHMS:
@@ -147,6 +175,7 @@ def main() -> None:
                 "intro",
             ),
             code(source, f"{slug}-codigo"),
+            *pytorch_cells(slug),
         ]
         write(OUT_DIR / f"{slug}.ipynb", wrap(single))
     print(f"Escrito {OUT.relative_to(SPA.parent)} y {len(ALGORITHMS)} notebooks individuales")

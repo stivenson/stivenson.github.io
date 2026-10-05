@@ -161,3 +161,18 @@ describe('AlgorithmTabs: un «Siguiente algoritmo» que no llegó a montar no de
     expect(document.activeElement).toBe(document.body);
   });
 });
+
+describe('AlgorithmTabs: alternativas aún no disponibles', () => {
+  // Desde la fase 4 los 17 algoritmos reales están disponibles: «próximamente» se prueba con el registry falso.
+  it('una alternativa «pronto» sale deshabilitada y con «(próximamente)»; una disponible lleva «→»', () => {
+    const onAlg = vi.fn();
+    const mod = { ...fakeModule('alpha'), alternatives: ['beta', 'gamma'] };
+    render(<AlgorithmTabs module={mod} meta={getMeta('alpha')} tab="whenNot" onTab={() => {}} onAlg={onAlg} onGoAlg={() => {}} consumeReveal={() => false} />);
+    const soon = screen.getByRole('button', { name: 'G Gamma (próximamente)' }) as HTMLButtonElement;
+    expect(soon.disabled).toBe(true);
+    const ready = screen.getByRole('button', { name: 'B Beta →' }) as HTMLButtonElement;
+    expect(ready.disabled).toBe(false);
+    fireEvent.click(ready);
+    expect(onAlg).toHaveBeenCalledWith('beta');
+  });
+});

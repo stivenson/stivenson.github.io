@@ -12,6 +12,7 @@ import pca from './pca.out.txt?raw';
 import hierarchical from './hierarchical-clustering.out.txt?raw';
 import kMeans from './k-means.out.txt?raw';
 import dbscan from './dbscan.out.txt?raw';
+import mlp from './mlp.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -147,5 +148,16 @@ describe('cifras citadas en los textos', () => {
       [40, 99, 0.47],
     ]);
     expect(pca).toContain('Para retener el 90 % bastan 21 de 64 componentes');
+  });
+
+  it('MLP: 1257 imágenes para entrenar y 540 nuevas; 2, 8 y 32 neuronas → 49.8 %, 91.3 % y 97.6 % en datos nuevos; 2410 pesos; el 1 con 88 %', () => {
+    expect(mlp).toContain('1257 imágenes para entrenar y 540 nuevas para medir');
+    const rows = [...mlp.matchAll(/^\s+(\d+) \|\s+(\d+) \|\s+([\d.]+)% \|\s+([\d.]+)%$/gm)].map((m) => m.slice(1).map(Number));
+    expect(rows).toEqual([
+      [2, 160, 52.7, 49.8],
+      [8, 610, 94.4, 91.3],
+      [32, 2410, 98.8, 97.6],
+    ]);
+    expect(mlp).toContain('Primera imagen nueva (es un 1): 1 con 88%, 8 con 11%');
   });
 });

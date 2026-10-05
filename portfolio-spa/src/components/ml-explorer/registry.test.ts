@@ -22,6 +22,7 @@ describe('registry', () => {
       'hierarchical-clustering',
       'dbscan',
       'pca',
+      'mlp',
     ]);
   });
 

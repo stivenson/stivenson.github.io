@@ -352,3 +352,33 @@ it('PCA real (?alg=pca): recorre las 8 pestañas sin errores', async () => {
 
   expect(error).not.toHaveBeenCalled();
 });
+
+/** Recorre las 8 pestañas de un algoritmo real; en Fórmula comprueba la OVA (svg role="img"), su lectura y KaTeX. */
+async function tourRealAlgorithm(slug: string, heading: string, readout: string) {
+  const error = vi.spyOn(console, 'error');
+  const { container } = render(
+    <MemoryRouter initialEntries={[`/articles/x?alg=${slug}`]}>
+      <MLExplorer />
+    </MemoryRouter>,
+  );
+  expect(screen.getByRole('heading', { name: heading })).toBeTruthy();
+  await screen.findByRole('tab', { name: TAB_LABELS.formula }, { timeout: 10000 });
+
+  for (const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab', { name: TAB_LABELS[id] }));
+    expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+
+    if (id === 'formula') {
+      expect(container.querySelector('.mlx-tabpanel svg[role="img"]')).not.toBeNull();
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent?.replace(/\s+/g, ' ')).toContain(readout);
+      expect(container.querySelector('.katex')).not.toBeNull();
+    }
+  }
+
+  expect(error).not.toHaveBeenCalled();
+}
+
+it('MLP real (?alg=mlp): recorre las 8 pestañas sin errores', async () => {
+  await tourRealAlgorithm('mlp', 'Neural Networks (MLP)', 'Aciertos: 15 de 20');
+});

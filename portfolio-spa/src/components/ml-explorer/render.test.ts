@@ -164,7 +164,7 @@ describe('AlgorithmTabs', () => {
     expect(html.includes('<figure')).toBe(tab === 'type');
     if (tab === 'whenNot') {
       expect(html).toContain('KNN →');
-      expect(html).toContain('Neural Networks (MLP) (próximamente)');
+      expect(html).toContain('Neural Networks (MLP) →');
     }
   });
 });

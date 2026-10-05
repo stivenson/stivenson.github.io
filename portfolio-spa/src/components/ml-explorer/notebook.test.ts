@@ -49,6 +49,32 @@ describe('notebook de Colab', () => {
   });
 });
 
+/** Las redes neuronales ya disponibles: cada una lleva una celda opcional de PyTorch. */
+const NEURAL = ['mlp', 'cnn', 'rnn', 'transformer', 'autoencoders'].filter((s) => AVAILABLE_SLUGS.includes(s));
+
+describe('celdas opcionales de PyTorch (fase 4)', () => {
+  it.each(NEURAL)('%s: va justo después del ejercicio, en ambos notebooks, y no falla sin PyTorch', (slug) => {
+    const raw = singleFiles[`../../../../notebooks/algoritmos-ml/${slug}.ipynb`];
+    const single = (JSON.parse(raw) as { cells: Cell[] }).cells;
+    for (const list of [cells, single]) {
+      const i = list.findIndex((c) => c.id === `${slug}-codigo`);
+      expect(list[i + 1]?.id).toBe(`${slug}-pytorch-nota`);
+      const opt = list[i + 2];
+      expect(opt?.id).toBe(`${slug}-pytorch`);
+      expect(opt.cell_type).toBe('code');
+      const src = opt.source.join('');
+      expect(src.startsWith('# Opcional')).toBe(true);
+      // Un PyTorch ausente lanza ImportError; uno instalado pero roto, OSError.
+      expect(src).toContain('except (ImportError, OSError):');
+    }
+  });
+
+  it('solo las redes neuronales tienen celda de PyTorch', () => {
+    const withTorch = cells.filter((c) => c.id.endsWith('-pytorch')).map((c) => c.id.replace(/-pytorch$/, ''));
+    expect(withTorch).toEqual(NEURAL);
+  });
+});
+
 describe('notebooks individuales de Colab', () => {
   it.each(AVAILABLE_SLUGS)('%s: un notebook con una sola celda de codigo identica al .py', (slug) => {
     const raw = singleFiles[`../../../../notebooks/algoritmos-ml/${slug}.ipynb`];
@@ -57,7 +83,8 @@ describe('notebooks individuales de Colab', () => {
     expect(nb.nbformat).toBe(4);
     const ids = nb.cells.map((c) => c.id);
     expect(new Set(ids).size).toBe(ids.length);
-    const codeCells = nb.cells.filter((c) => c.cell_type === 'code');
+    // Una sola celda del ejercicio; las redes neuronales llevan además una opcional de PyTorch.
+    const codeCells = nb.cells.filter((c) => c.cell_type === 'code' && c.id !== `${slug}-pytorch`);
     expect(codeCells).toHaveLength(1);
     expect(codeCells[0].source.join('')).toBe(pyFiles[`./algorithms/python/${slug}.py`].replace(/\n+$/, ''));
     const md = nb.cells.filter((c) => c.cell_type === 'markdown').map((c) => c.source.join('')).join('\n');
