@@ -16,6 +16,7 @@ import mlp from './mlp.out.txt?raw';
 import cnn from './cnn.out.txt?raw';
 import rnn from './rnn.out.txt?raw';
 import transformer from './transformer.out.txt?raw';
+import autoencoders from './autoencoders.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -172,6 +173,7 @@ describe('cifras citadas en los textos', () => {
     expect(cnn).toContain('Pesos de un filtro de 3×3: 9, los mismos en las 36 posiciones');
     expect(cnn).toContain('Una capa densa de 64 píxeles a 36 salidas necesitaría 2304 pesos');
   });
+
   it('RNN: con w = 0.9 la influencia del primer dato baja de 5.0e-01 a 2.4e-02 (10), 6.2e-06 (20) y 5.8e-14 (50); w = 0.5 → 2.0e-04 con 10; comprobación 0.0242', () => {
     const row = (T: number) => rnn.match(new RegExp(`^\\s+${T} \\|\\s+(\\S+) \\|\\s+(\\S+) \\|\\s+(\\S+)$`, 'm'))!.slice(1);
     expect(row(1)).toEqual(['5.0e-01', '5.0e-01', '5.0e-01']);
@@ -181,6 +183,7 @@ describe('cifras citadas en los textos', () => {
     expect(Number(row(50)[2])).toBeLessThan(1e-12); // aun con w = 1.0 se desvanece
     expect(rnn).toContain('regla de la cadena 0.0242, numérica 0.0242');
   });
+
   it('Transformer: banco atiende 0.41 a río y sale con naturaleza 1.23; con interés, dinero 1.38; causal 0.18 / 0.82; invertir: 0.00 sin posición y 0.30 con ella', () => {
     expect(transformer).toMatch(/^\s+banco\s+0\.09\s+0\.41\s+0\.09\s+0\.41$/m);
     expect(transformer).toContain('«banco» después de la atención: dinero 0.41, naturaleza 1.23');
@@ -188,5 +191,15 @@ describe('cifras citadas en los textos', () => {
     expect(transformer).toMatch(/^\s+banco\s+0\.18\s+0\.82\s+0\.00\s+0\.00$/m);
     expect(transformer).toContain('sin codificación posicional: «banco» cambia 0.00 al invertir la frase');
     expect(transformer).toContain('con codificación posicional: «banco» cambia 0.30 al invertir la frase');
+  });
+
+  it('Autoencoders: 1000 normales y 10 fraudes; k = 1 detecta 9, k = 2 los 10 (0.17 contra 20.06); con k = 4 el error de los fraudes baja a 0.97 y detecta 9', () => {
+    expect(autoencoders).toContain('1000 compras normales para entrenar y 10 fraudes que el modelo nunca ve');
+    const rows = [...autoencoders.matchAll(/^\s+(\d) \|\s+([\d.]+) \|\s+([\d.]+) \|\s+(\d+) de 10$/gm)].map((m) => m.slice(1).map(Number));
+    expect(rows).toEqual([
+      [1, 0.52, 20.49, 9],
+      [2, 0.17, 20.06, 10],
+      [4, 0.02, 0.97, 9],
+    ]);
   });
 });

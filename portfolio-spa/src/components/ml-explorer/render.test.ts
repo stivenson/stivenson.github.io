@@ -106,7 +106,7 @@ describe('render en servidor', () => {
 const count = (html: string, re: RegExp) => (html.match(re) ?? []).length;
 
 describe('AlgorithmMenu', () => {
-  it('lista 17 algoritmos en 4 grupos, todos «pronto» mientras no haya disponibles', () => {
+  it('lista 17 algoritmos en 4 grupos, todos disponibles desde la fase 4', () => {
     const html = renderToStaticMarkup(
       h(AlgorithmMenu, { algorithms: ALGORITHMS, activeSlug: 'knn', onSelect: () => {}, onPrefetch: () => {} }),
     );
@@ -118,6 +118,19 @@ describe('AlgorithmMenu', () => {
     expect(count(html, /<option[^>]*disabled/g)).toBe(ALGORITHMS.filter((a) => !a.available).length);
     expect(count(html, /aria-current="true"/g)).toBe(1);
     expect(html).toMatch(/<button[^>]*aria-current="true"[^>]*>[^]*?KNN/);
+    expect(ALGORITHMS.every((a) => a.available)).toBe(true);
+    expect(count(html, /mlx-soon/g)).toBe(0);
+  });
+
+  it('con un registry falso (solo 3 disponibles), los otros 14 salen «pronto» y deshabilitados', () => {
+    // Ya no queda ningún algoritmo real «próximamente»: se prueba con una lista falsa.
+    const fake = ALGORITHMS.map((a, i) => ({ ...a, available: i < 3 }));
+    const html = renderToStaticMarkup(
+      h(AlgorithmMenu, { algorithms: fake, activeSlug: fake[0].slug, onSelect: () => {}, onPrefetch: () => {} }),
+    );
+    expect(count(html, /mlx-soon/g)).toBe(14);
+    expect(count(html, /<button[^>]*disabled/g)).toBe(14);
+    expect(count(html, /<option[^>]*disabled/g)).toBe(14);
   });
 });
 

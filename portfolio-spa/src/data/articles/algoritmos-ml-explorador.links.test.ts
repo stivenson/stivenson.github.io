@@ -26,7 +26,10 @@ describe('artículo del explorador: enlaces y description al día', () => {
   it('la description cuenta en palabras los algoritmos ya disponibles', () => {
     const description = article.match(/^description:\s*"(.*)"$/m)?.[1] ?? '';
     expect(NUMBER_WORDS).toHaveLength(ALGORITHMS.length + 1);
-    expect(description).toContain(`Los primeros ${NUMBER_WORDS[AVAILABLE_SLUGS.length]} ya están completos`);
+    const n = NUMBER_WORDS[AVAILABLE_SLUGS.length];
+    // Con todos disponibles ya no son «los primeros»: son todos.
+    const phrase = AVAILABLE_SLUGS.length === ALGORITHMS.length ? `Los ${n} ya están completos` : `Los primeros ${n} ya están completos`;
+    expect(description).toContain(phrase);
   });
 });
 

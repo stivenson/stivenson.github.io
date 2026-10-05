@@ -23,6 +23,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   cnn: () => import('./algorithms/cnn'),
   rnn: () => import('./algorithms/rnn'),
   transformer: () => import('./algorithms/transformer'),
+  autoencoders: () => import('./algorithms/autoencoders'),
 };
 
 type Entry = Omit<AlgorithmMeta, 'available'>;

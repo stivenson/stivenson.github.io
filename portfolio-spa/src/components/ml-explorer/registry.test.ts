@@ -26,7 +26,9 @@ describe('registry', () => {
       'cnn',
       'rnn',
       'transformer',
+      'autoencoders',
     ]);
+    expect(AVAILABLE_SLUGS).toHaveLength(ALGORITHMS.length);
   });
 
   it('toda alternativa de todo algoritmo disponible existe en el registry', async () => {

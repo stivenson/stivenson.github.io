@@ -394,3 +394,7 @@ it('RNN real (?alg=rnn): recorre las 8 pestañas sin errores', async () => {
 it('Transformer real (?alg=transformer): recorre las 8 pestañas sin errores', async () => {
   await tourRealAlgorithm('transformer', 'Transformer (BERT, GPT)', 'dinero 0.41 · naturaleza 1.23');
 });
+
+it('Autoencoders real (?alg=autoencoders): recorre las 8 pestañas sin errores', async () => {
+  await tourRealAlgorithm('autoencoders', 'Autoencoders', 'Fraudes detectados: 3 de 3');
+});

@@ -104,6 +104,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Transformer (BERT, GPT)",
         "Self-attention a mano con 4 palabras: cómo «banco» toma su sentido de la frase.",
     ),
+    (
+        "autoencoders",
+        "Autoencoders (autocodificadores)",
+        "Detector de fraude sin etiquetas: el error de reconstrucción delata las compras raras.",
+    ),
 ]
 
 PYTORCH_NOTE = (
