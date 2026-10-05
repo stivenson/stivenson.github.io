@@ -20,6 +20,7 @@ const LOADERS: Record<string, ModuleLoader> = {
   dbscan: () => import('./algorithms/dbscan'),
   pca: () => import('./algorithms/pca'),
   mlp: () => import('./algorithms/mlp'),
+  cnn: () => import('./algorithms/cnn'),
 };
 
 type Entry = Omit<AlgorithmMeta, 'available'>;

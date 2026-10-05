@@ -382,3 +382,7 @@ async function tourRealAlgorithm(slug: string, heading: string, readout: string)
 it('MLP real (?alg=mlp): recorre las 8 pestañas sin errores', async () => {
   await tourRealAlgorithm('mlp', 'Neural Networks (MLP)', 'Aciertos: 15 de 20');
 });
+
+it('CNN real (?alg=cnn): recorre las 8 pestañas sin errores', async () => {
+  await tourRealAlgorithm('cnn', 'CNN', 'Suma de productos: 2 → tras ReLU: 2');
+});

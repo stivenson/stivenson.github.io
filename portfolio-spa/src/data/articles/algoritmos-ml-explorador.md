@@ -2,7 +2,7 @@
 title: "Algoritmos de Machine Learning: Explorador Interactivo"
 date: "2026-10-03"
 slug: "algoritmos-ml-explorador"
-description: "Los 17 algoritmos del cheatsheet clásico de machine learning, explicados columna por columna —tipo, caso de uso, fórmula, supuestos, pros, contras y ejemplo real— con simuladores y Python que corre en tu navegador. Los primeros trece ya están completos; el resto llega por entregas."
+description: "Los 17 algoritmos del cheatsheet clásico de machine learning, explicados columna por columna —tipo, caso de uso, fórmula, supuestos, pros, contras y ejemplo real— con simuladores y Python que corre en tu navegador. Los primeros catorce ya están completos; el resto llega por entregas."
 tags: ["Machine Learning", "Python", "Algoritmos", "OVA", "Ciencia de datos"]
 ---
 

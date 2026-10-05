@@ -13,6 +13,7 @@ import hierarchical from './hierarchical-clustering.out.txt?raw';
 import kMeans from './k-means.out.txt?raw';
 import dbscan from './dbscan.out.txt?raw';
 import mlp from './mlp.out.txt?raw';
+import cnn from './cnn.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -159,5 +160,14 @@ describe('cifras citadas en los textos', () => {
       [32, 2410, 98.8, 97.6],
     ]);
     expect(mlp).toContain('Primera imagen nueva (es un 1): 1 con 88%, 8 con 11%');
+  });
+
+  it('CNN: el vertical se enciende en el borde izquierdo (máximo 3); el horizontal, arriba de la barra (2 3 3 3 3 2); 9 pesos contra 2304', () => {
+    expect(cnn).toContain('[[2 0 0 0 0 0]\n [2 0 1 1 0 0]\n [1 1 2 0 0 0]\n [0 2 3 0 0 0]\n [0 3 3 0 0 0]\n [0 2 2 0 0 0]]');
+    expect(cnn).toContain('[[2 3 3 3 3 2]');
+    expect(cnn).toContain('[[3 3 3]\n [1 1 0]\n [0 0 0]]');
+    expect(cnn.match(/Tras max pooling 2×2 \(3×3\)/g)).toHaveLength(2);
+    expect(cnn).toContain('Pesos de un filtro de 3×3: 9, los mismos en las 36 posiciones');
+    expect(cnn).toContain('Una capa densa de 64 píxeles a 36 salidas necesitaría 2304 pesos');
   });
 });

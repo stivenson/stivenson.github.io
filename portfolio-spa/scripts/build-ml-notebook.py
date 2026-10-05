@@ -89,6 +89,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "Neural Networks, MLP (perceptrón multicapa)",
         "Dígitos escritos a mano: cuánto acierta una red según el número de neuronas ocultas.",
     ),
+    (
+        "cnn",
+        "CNN (red neuronal convolucional)",
+        "Detector de bordes: una convolución, ReLU y max pooling hechos a mano con NumPy.",
+    ),
 ]
 
 PYTORCH_NOTE = (

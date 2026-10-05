@@ -23,6 +23,7 @@ describe('registry', () => {
       'dbscan',
       'pca',
       'mlp',
+      'cnn',
     ]);
   });
 
