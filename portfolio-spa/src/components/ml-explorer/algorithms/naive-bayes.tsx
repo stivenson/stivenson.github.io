@@ -23,19 +23,19 @@ const naiveBayes: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="supervisado">Supervisado</G>:
+              <G k="supervisado" after=":">Supervisado</G>
             </b>{' '}
             aprende de ejemplos con respuesta (reseñas marcadas como positivas o negativas).
           </p>
           <p>
-            Es un clasificador <b>probabilístico</b>: cuenta con qué frecuencia aparece cada palabra (sus <G k="feature">features</G>) en
+            Es un clasificador <b>probabilístico</b>: cuenta con qué frecuencia aparece cada palabra (sus <G k="feature" after=")">features</G> en
             cada clase y con esas cuentas calcula la probabilidad de cada clase para un texto nuevo.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          Es un <G k="generativo">modelo generativo</G>: modela cómo se generan los datos de cada clase, <Tex>{'P(x \\mid y)'}</Tex>, y
+          Es un <G k="generativo" after=":">modelo generativo</G> modela cómo se generan los datos de cada clase, <Tex after=",">{'P(x \\mid y)'}</Tex> y
           usa el <G k="bayes">teorema de Bayes</G> para invertirlo. Hay <G k="variantesNB">variantes</G> según el tipo de feature: <code>MultinomialNB</code>{' '}
           (conteos de palabras), <code>BernoulliNB</code> (presencia sí/no) y <code>GaussianNB</code> (números
           continuos).
@@ -62,7 +62,7 @@ const naiveBayes: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Con <G k="desbalance">clases desbalanceadas</G>, <code>ComplementNB</code> suele funcionar mejor que <code>MultinomialNB</code>.
+          Con <G k="desbalance" after=",">clases desbalanceadas</G> <code>ComplementNB</code> suele funcionar mejor que <code>MultinomialNB</code>.
           Aprende en una sola pasada por los datos y admite <G k="incremental">entrenamiento por partes</G> (<code>partial_fit</code>), útil
           cuando los textos llegan en flujo.
         </p>
@@ -73,7 +73,7 @@ const naiveBayes: AlgorithmModule = {
         <>
           <p>
             <b>Ejemplo:</b> llega la reseña «excelente calidad llegó rápido». Antes de leerla, positiva y negativa
-            están empatadas (<G k="odds">odds</G> 1, porque hay 8 reseñas de cada una). Cada palabra multiplica esos odds por un
+            están empatadas <G before="(" k="odds">odds</G> 1, porque hay 8 reseñas de cada una). Cada palabra multiplica esos odds por un
             factor: «excelente» ×5.27, «calidad» ×1.05, «llegó» ×0.70, «rápido» ×3.16. Es decir,
             1 × 5.27 × 1.05 × 0.70 × 3.16 ≈ 12.3 (con más decimales, 12.34). Al final los odds son 12.34 a 1:
             probabilidad de 93 % de que sea positiva.
@@ -82,7 +82,7 @@ const naiveBayes: AlgorithmModule = {
             Ese es el <G k="bayes">teorema de Bayes</G> con el supuesto «ingenuo» de que cada palabra aporta su evidencia por
             separado:
           </p>
-          <Tex block>{'P(\\text{pos} \\mid \\text{texto}) \\;\\propto\\; P(\\text{pos}) \\cdot \\prod_{w \\in \\text{texto}} P(w \\mid \\text{pos})'}</Tex>
+          <Tex block>{'\\begin{aligned} P(\\text{pos} \\mid \\text{texto}) \\;&\\propto\\; P(\\text{pos}) \\\\ &\\quad \\cdot \\prod_{w \\in \\text{texto}} P(w \\mid \\text{pos}) \\end{aligned}'}</Tex>
           <p>
             <Tex>{'P(\\text{pos})'}</Tex> es el <G k="priorVerosimilitud">prior</G> (qué fracción de reseñas es
             positiva) y <Tex>{'P(w \\mid \\text{pos})'}</Tex> la <G k="priorVerosimilitud">verosimilitud</G> de cada
@@ -93,13 +93,13 @@ const naiveBayes: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Con <G k="suavizadoLaplace">suavizado de Laplace</G> (<Tex>{'\\alpha = 1'}</Tex>, el valor por defecto):
+            Con <G k="suavizadoLaplace">suavizado de Laplace</G> (<Tex after=",">{'\\alpha = 1'}</Tex> el valor por defecto):
           </p>
           <Tex block>{'P(w \\mid c) = \\frac{\\text{conteo}(w, c) + \\alpha}{\\text{palabras}(c) + \\alpha\\,V}'}</Tex>
           <p>
             <Tex>{'V'}</Tex> es el tamaño del <G k="vocabulario">vocabulario</G> (38 palabras en el ejercicio). Para no multiplicar cientos
             de números pequeños, se suman logaritmos. El factor de cada palabra en el simulador es{' '}
-            <Tex>{'P(w \\mid \\text{pos}) / P(w \\mid \\text{neg})'}</Tex>.
+            <Tex after=".">{'P(w \\mid \\text{pos}) / P(w \\mid \\text{neg})'}</Tex>
           </p>
         </>
       ),
@@ -110,9 +110,11 @@ const naiveBayes: AlgorithmModule = {
           <p>
             Supone que{' '}
             <b>
-              <G k="independenciaCondicional">las palabras son independientes entre sí, una vez se sabe la clase</G>
-            </b>
-            . Por eso es «ingenuo».
+              <G k="independenciaCondicional" after=".">
+                las palabras son independientes entre sí, una vez se sabe la clase
+              </G>
+            </b>{' '}
+            Por eso es «ingenuo».
           </p>
           <p>
             Ejemplo: «no» y «funciona» suelen ir juntas en las reseñas negativas, pero el modelo las cuenta como dos
@@ -125,7 +127,7 @@ const naiveBayes: AlgorithmModule = {
         <p>
           El supuesto casi nunca se cumple, y aun así el modelo suele clasificar bien: para elegir la clase basta con
           que el orden de las probabilidades sea correcto, aunque sus valores estén exagerados. Usar pares de palabras
-          (<G k="ngrama">bigramas</G>, <code>ngram_range=(1, 2)</code>) capta algo del orden, como «no funciona».
+          <G before="(" k="ngrama" after=",">bigramas</G> <code>ngram_range=(1, 2)</code>) capta algo del orden, como «no funciona».
         </p>
       ),
     },
@@ -147,7 +149,7 @@ const naiveBayes: AlgorithmModule = {
       deepDive: (
         <p>
           Escala a vocabularios de cientos de miles de palabras porque solo guarda un conteo por palabra y clase.
-          Tiene muy pocos <G k="hiperparametro">hiperparámetros</G> (básicamente <Tex>{'\\alpha'}</Tex>), así que
+          Tiene muy pocos <G k="hiperparametro">hiperparámetros</G> (básicamente <Tex after="),">{'\\alpha'}</Tex> así que
           es difícil equivocarse al configurarlo.
         </p>
       ),
@@ -191,7 +193,7 @@ const naiveBayes: AlgorithmModule = {
       deepDive: (
         <p>
           Con datos abundantes, una regresión logística o una SVM lineal sobre las mismas palabras suelen acertar
-          más. Para captar el sentido de frases completas se usan <G k="transformer">modelos de lenguaje (Transformer)</G>.
+          más. Para captar el sentido de frases completas se usan <G k="transformer" after=".">modelos de lenguaje (Transformer)</G>
         </p>
       ),
     },

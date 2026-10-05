@@ -90,7 +90,7 @@ const knn: AlgorithmModule = {
           <p>Predicción de clase:</p>
           <Tex block>{'\\hat{y} = \\arg\\max_c \\sum_{i \\in N_k(x)} \\mathbb{1}[y_i = c]'}</Tex>
           <p>
-            Variantes: ponderar cada voto por <Tex>{'1/d'}</Tex>, o usar distancia Manhattan o coseno. Ojo: el coseno
+            Variantes: ponderar cada voto por <Tex after=",">{'1/d'}</Tex> o usar distancia Manhattan o coseno. Ojo: el coseno
             ignora el nivel de las notas; en el ejercicio, Caro (que calificó con 1 lo que Ana calificó con 4 y 5)
             saldría casi idéntica a ella. Entrenar es solo guardar los datos, pero cada predicción cuesta{' '}
             <Tex>{'O(n\\,p)'}</Tex> con búsqueda exhaustiva. k es el <G k="hiperparametro">hiperparámetro</G> clave:
@@ -151,11 +151,11 @@ const knn: AlgorithmModule = {
             <b>Lento al predecir:</b> compara el caso nuevo con todos los ejemplos guardados.
           </li>
           <li>
-            <b>Sensible al <G k="ruido">ruido</G>:</b> con k pequeño, un ejemplo mal etiquetado cambia la respuesta.
+            <b>Sensible al <G k="ruido" after=":">ruido</G></b> con k pequeño, un ejemplo mal etiquetado cambia la respuesta.
             Pruébalo en el simulador con k = 1.
           </li>
           <li>
-            <b>Sufre con muchas <G k="feature">features</G>:</b> en <G k="altaDimension">alta dimensionalidad</G> todos los puntos
+            <b>Sufre con muchas <G k="feature" after=":">features</G></b> en <G k="altaDimension">alta dimensionalidad</G> todos los puntos
             quedan casi igual de lejos.
           </li>
         </ul>
@@ -174,7 +174,7 @@ const knn: AlgorithmModule = {
           <p className="mlx-rule">No lo uses con datos ruidosos de muchas dimensiones.</p>
           <p>
             Ejemplo: clasificar textos usando como <G k="feature">features</G> el conteo crudo de miles de palabras. Las distancias se
-            llenan de ruido y, además, cada predicción es lenta. (Con <G k="embedding">embeddings</G>, entrenados para que la distancia sí
+            llenan de ruido y, además, cada predicción es lenta. (Con <G k="embedding" after=",">embeddings</G> entrenados para que la distancia sí
             signifique parecido, KNN vuelve a funcionar: ver Ejemplo real.)
           </p>
         </>
@@ -204,7 +204,7 @@ const knn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En producción hay millones de usuarios y productos: se usan representaciones aprendidas (<G k="embedding">embeddings</G>),
+          En producción hay millones de usuarios y productos: se usan representaciones aprendidas <G before="(" k="embedding" after="),">embeddings</G>
           entrenadas para que «cerca» signifique «parecido» aunque tengan cientos de dimensiones, y búsqueda
           aproximada de vecinos. Otro reto es el «arranque en frío»: un usuario nuevo no tiene calificaciones con las
           que compararse.

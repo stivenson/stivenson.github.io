@@ -23,7 +23,7 @@ const linearRegression: AlgorithmModule = {
         <>
           <p>
             <b>Supervisado:</b> aprende de ejemplos que ya traen la respuesta. Le das casas con su{' '}
-            <G k="feature">área y número de habitaciones</G> y su <G k="etiqueta">precio real</G>, y aprende a
+            <G k="feature">área y número de habitaciones</G> y su <G k="etiqueta" after=",">precio real</G> y aprende a
             estimar el precio de casas nuevas.
           </p>
           <p>
@@ -35,8 +35,8 @@ const linearRegression: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Dados pares <Tex>{'(x_i, y_i)'}</Tex>, busca una función lineal en los parámetros:{' '}
-            <Tex>{'f(x) = b_0 + b_1 x_1 + \\dots + b_p x_p'}</Tex>.
+            Dados pares <Tex after=",">{'(x_i, y_i)'}</Tex> busca una función lineal en los parámetros:{' '}
+            <Tex after=".">{'f(x) = b_0 + b_1 x_1 + \\dots + b_p x_p'}</Tex>
           </p>
           <p>
             «Lineal» se refiere a los pesos b, no a las x: <Tex>{'y = b_0 + b_1 x + b_2 x^2'}</Tex> también es
@@ -65,7 +65,7 @@ const linearRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Funciona con pocas decenas de filas y escala a millones: entrenarla cuesta <Tex>{'O(n p^2)'}</Tex> con n
-          filas y p <G k="feature">features</G>, más <Tex>{'O(p^3)'}</Tex> para resolver el sistema; si n ≥ p domina el primer término. Si
+          filas y p <G k="feature" after=",">features</G> más <Tex>{'O(p^3)'}</Tex> para resolver el sistema; si n ≥ p domina el primer término. Si
           hay más features que filas, existen infinitas soluciones y hace falta regularizar. <G k="regularizacionL1L2">Ridge</G> (penalización L2)
           siempre da una solución única. Lasso (L1) no siempre: con features repetidas o colineales puede haber varias
           soluciones igual de buenas.
@@ -81,11 +81,11 @@ const linearRegression: AlgorithmModule = {
           </p>
           <Tex block>{'80 + 2.5 \\times 120 + 15 \\times 3 = 425 \\text{ millones}'}</Tex>
           <p>
-            La fórmula general es esa misma suma, con un peso por cada <G k="feature">feature</G>:
+            La fórmula general es esa misma suma, con un peso por cada <G k="feature" after=":">feature</G>
           </p>
           <Tex block>{'\\hat{y} = b_0 + b_1 x_1 + b_2 x_2 + \\dots'}</Tex>
           <p>
-            ¿Cómo elige los pesos? Busca la recta con el menor <G k="mse">error cuadrático medio</G>: el promedio de
+            ¿Cómo elige los pesos? Busca la recta con el menor <G k="mse" after=":">error cuadrático medio</G> el promedio de
             los <G k="residuo">residuos</G> al cuadrado. En el simulador, cada cuadrado amarillo es un residuo al
             cuadrado.
           </p>
@@ -99,8 +99,7 @@ const linearRegression: AlgorithmModule = {
           <Tex block>{'b = (X^\\top X)^{-1} X^\\top y'}</Tex>
           <p>
             Con una sola variable:{' '}
-            <Tex>{'b_1 = \\frac{\\sum (x_i-\\bar{x})(y_i-\\bar{y})}{\\sum (x_i-\\bar{x})^2},\\quad b_0 = \\bar{y} - b_1\\bar{x}'}</Tex>
-            . Es lo que calcula el simulador cada vez que mueves un punto.
+            <Tex after=".">{'b_1 = \\frac{\\sum (x_i-\\bar{x})(y_i-\\bar{y})}{\\sum (x_i-\\bar{x})^2},\\quad b_0 = \\bar{y} - b_1\\bar{x}'}</Tex> Es lo que calcula el simulador cada vez que mueves un punto.
           </p>
           <p>
             En la ecuación normal, X es la tabla de datos con una columna de unos al inicio: esa columna es la que
@@ -109,7 +108,7 @@ const linearRegression: AlgorithmModule = {
             columnas.
           </p>
           <p>
-            En la práctica no se invierte <Tex>{'X^\\top X'}</Tex>: el sistema se resuelve con una descomposición (QR o
+            En la práctica no se invierte <Tex after=":">{'X^\\top X'}</Tex> el sistema se resuelve con una descomposición (QR o
             SVD), que es numéricamente más estable. scikit-learn usa un <G k="solver">solver</G> de mínimos cuadrados. El costo crece
             sobre todo con p, el número de features (con su cuadrado), y no tanto con n, el de filas (solo en
             proporción): duplicar las filas duplica el tiempo; duplicar las features lo cuadruplica. El <G k="descensoGradiente">descenso de
@@ -132,7 +131,7 @@ const linearRegression: AlgorithmModule = {
               tiempo: el consumo de hoy se parece al de ayer.
             </li>
           </ul>
-          <p>Cómo revisarlos: grafica los <G k="residuo">residuos</G>. Si forman una curva o un patrón, algún supuesto no se cumple.</p>
+          <p>Cómo revisarlos: grafica los <G k="residuo" after=".">residuos</G> Si forman una curva o un patrón, algún supuesto no se cumple.</p>
         </>
       ),
       deepDive: (
@@ -151,7 +150,7 @@ const linearRegression: AlgorithmModule = {
           </li>
           <li>
             <b>
-              <G k="interpretable">Interpretable</G>:
+              <G k="interpretable" after=":">Interpretable</G>
             </b>{' '}
             cada peso se lee directo: «cada m² suma 2.5 millones, con el mismo número de habitaciones». Ideal cuando tienes que justificar la decisión.
           </li>
@@ -172,14 +171,14 @@ const linearRegression: AlgorithmModule = {
         <ul>
           <li>
             <b>
-              Sensible a <G k="outlier">outliers</G>:
+              Sensible a <G k="outlier" after=":">outliers</G>
             </b>{' '}
             como el error se eleva al cuadrado, un solo punto lejano arrastra la recta. En el simulador de la pestaña
             Fórmula, «Añadir un outlier» sube el <G k="mse">MSE</G> de 0.10 a 2.57 (unas 25 veces) y baja la pendiente de 0.65 a
             0.40.
           </li>
           <li>
-            <b>Solo ve rectas:</b> si la relación real es curva (rendimientos decrecientes, <G k="umbral">umbrales</G>), se equivoca de
+            <b>Solo ve rectas:</b> si la relación real es curva (rendimientos decrecientes, <G k="umbral" after="),">umbrales</G> se equivoca de
             forma sistemática.
           </li>
           <li>
@@ -190,7 +189,7 @@ const linearRegression: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Contra los outliers: regresión robusta (<G k="huber">Huber</G>, RANSAC). Contra la no linealidad: features transformadas
+          Contra los outliers: regresión robusta <G before="(" k="huber" after=",">Huber</G> RANSAC). Contra la no linealidad: features transformadas
           (x², log x) o árboles. Con features muy correlacionadas los pesos se vuelven inestables; <G k="regularizacionL1L2">Ridge</G> (penalización
           L2) lo corrige.
         </p>
@@ -200,7 +199,7 @@ const linearRegression: AlgorithmModule = {
       essential: (
         <>
           <p className="mlx-rule">
-            No la uses si la respuesta cambia de golpe a partir de un <G k="umbral">umbral</G>, o si el efecto de cada factor depende del
+            No la uses si la respuesta cambia de golpe a partir de un <G k="umbral" after=",">umbral</G> o si el efecto de cada factor depende del
             contexto y no sabes de qué.
           </p>
           <p>
@@ -232,7 +231,7 @@ const linearRegression: AlgorithmModule = {
           <p>
             El ejercicio genera 200 casas de juguete cuyo precio real es 80 + 2.5 por m² + 15 por habitación, más
             ruido. Mira si el modelo recupera esos números y qué tan bien predice casas que no vio (
-            <G k="entrenamientoPrueba">datos de prueba</G>, medido con <G k="r2">R²</G>).
+            <G k="entrenamientoPrueba" after=",">datos de prueba</G> medido con <G k="r2" after=").">R²</G>
           </p>
         </>
       ),

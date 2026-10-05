@@ -22,10 +22,10 @@ const randomForest: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b><G k="supervisado">Supervisado</G>:</b> aprende de ejemplos que ya traen la respuesta (compras marcadas como fraude o no).
+            <b><G k="supervisado" after=":">Supervisado</G></b> aprende de ejemplos que ya traen la respuesta (compras marcadas como fraude o no).
           </p>
           <p>
-            Es un <G k="ensamble">ensamble</G>: <b>entrena muchos árboles de decisión distintos y los pone a votar</b>.
+            Es un <G k="ensamble" after=":">ensamble</G> <b>entrena muchos árboles de decisión distintos y los pone a votar</b>.
             Cada árbol por separado se equivoca bastante; la mayoría de votos, mucho menos, siempre que los árboles no se equivoquen en los mismos casos (ver Supuestos).
           </p>
           <p>
@@ -36,7 +36,7 @@ const randomForest: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Combina dos fuentes de azar: <G k="bagging">bagging</G> (cada árbol ve una <G k="bootstrap">muestra bootstrap</G>) y <G k="feature">features</G> al azar en cada corte. Fue propuesto por Leo Breiman en 2001.
+          Combina dos fuentes de azar: <G k="bagging">bagging</G> (cada árbol ve una <G k="bootstrap" after=")">muestra bootstrap</G> y <G k="feature">features</G> al azar en cada corte. Fue propuesto por Leo Breiman en 2001.
         </p>
       ),
     },
@@ -62,11 +62,11 @@ const randomForest: AlgorithmModule = {
         <>
         <p>
           Funciona bien «de fábrica»: con los valores por defecto de scikit-learn (100 árboles, sin límite de
-          profundidad) suele quedar cerca de su mejor resultado. No necesita <G k="escalado">escalar</G> las <G k="feature">features</G>.
+          profundidad) suele quedar cerca de su mejor resultado. No necesita <G k="escalado">escalar</G> las <G k="feature" after=".">features</G>
         </p>
         <p>
           Con{' '}
-          <code>oob_score=True</code> (<G k="oob">OOB</G>) estima su <G k="exactitud">exactitud</G> con las filas que cada árbol no vio (las que quedaron fuera de su <G k="bootstrap">muestra bootstrap</G>, cerca de un tercio), sin apartar un
+          <code>oob_score=True</code> <G before="(" k="oob" after=")">OOB</G> estima su <G k="exactitud">exactitud</G> con las filas que cada árbol no vio (las que quedaron fuera de su <G k="bootstrap" after=",">muestra bootstrap</G> cerca de un tercio), sin apartar un
           conjunto de prueba.
         </p>
         </>
@@ -82,12 +82,12 @@ const randomForest: AlgorithmModule = {
           <p>Para que los árboles no sean copias, cada uno se entrena distinto:</p>
           <ol>
             <li>
-              Con una <G k="bootstrap">muestra bootstrap</G>: se sacan al azar tantas filas como hay, con
+              Con una <G k="bootstrap" after=":">muestra bootstrap</G> se sacan al azar tantas filas como hay, con
               reposición. Algunas se repiten y otras quedan fuera.
             </li>
             <li>En cada corte, el árbol solo puede elegir entre unas pocas <G k="feature">features</G> sorteadas.</li>
           </ol>
-          <Tex block>{'\\hat{y}(x) = \\text{mayoría}\\{\\,h_1(x),\\ h_2(x),\\ \\dots,\\ h_B(x)\\,\\}'}</Tex>
+          <Tex block>{'\\hat{y}(x) = \\text{mayoría}\\{\\,h_1(x),\\ \\dots,\\ h_B(x)\\,\\}'}</Tex>
           <p>
             <Tex>{'h_b'}</Tex> es el árbol número <Tex>{'b'}</Tex> y <Tex>{'B'}</Tex> el número de árboles. Mueve
             el simulador de 1 a 100 árboles: con los mismos datos del árbol de decisión, el acierto en 40 clientes
@@ -99,12 +99,12 @@ const randomForest: AlgorithmModule = {
         <>
           <p>
             Por qué funciona: si cada árbol tiene <G k="sesgoVarianza">varianza</G> <Tex>{'\\sigma^2'}</Tex> y la correlación entre dos
-            árboles es <Tex>{'\\rho'}</Tex>, el promedio de <Tex>{'B'}</Tex> árboles tiene varianza
+            árboles es <Tex after=",">{'\\rho'}</Tex> el promedio de <Tex>{'B'}</Tex> árboles tiene varianza
           </p>
           <Tex block>{'\\rho\\,\\sigma^2 + \\frac{1-\\rho}{B}\\,\\sigma^2'}</Tex>
           <p>
-            Más árboles borran el segundo término; el primero solo baja si los árboles se parecen menos (
-            <Tex>{'\\rho'}</Tex> pequeño). Para eso sirve sortear features: en clasificación scikit-learn usa{' '}
+            Más árboles borran el segundo término; el primero solo baja si los árboles se parecen menos{' '}
+            <Tex before="(">{'\\rho'}</Tex> pequeño). Para eso sirve sortear features: en clasificación scikit-learn usa{' '}
             <Tex>{'\\sqrt{p}'}</Tex> features por corte (<code>max_features="sqrt"</code>). En realidad,
             scikit-learn no cuenta votos: promedia las probabilidades de los árboles, lo que casi siempre da la
             misma clase.
@@ -129,7 +129,7 @@ const randomForest: AlgorithmModule = {
       deepDive: (
         <p>
           No supone relaciones lineales ni distribuciones particulares, y no le afecta la escala de las features.
-          Lo que no puede hacer es <G k="extrapolar">extrapolar</G>: en <G k="regresion">regresión</G>, nunca predice un valor fuera del rango de las
+          Lo que no puede hacer es <G k="extrapolar" after=":">extrapolar</G> en <G k="regresion" after=",">regresión</G> nunca predice un valor fuera del rango de las
           respuestas que vio al entrenar.
         </p>
       ),
@@ -138,8 +138,8 @@ const randomForest: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>Reduce el <G k="overfitting">sobreajuste</G>:</b> un árbol profundo memoriza el{' '}
-            <G k="ruido">ruido</G>; al promediar muchos, ese ruido se diluye. En el ejercicio, el árbol solo acierta
+            <b>Reduce el <G k="overfitting" after=":">sobreajuste</G></b> un árbol profundo memoriza el{' '}
+            <G k="ruido" after=";">ruido</G> al promediar muchos, ese ruido se diluye. En el ejercicio, el árbol solo acierta
             77.7 % en compras nuevas y el bosque, 82.3 %.
           </li>
           <li>
@@ -154,7 +154,7 @@ const randomForest: AlgorithmModule = {
         <p>
           Los árboles se entrenan de forma independiente, así que se reparten entre los núcleos del procesador (
           <code>n_jobs=-1</code>). Ojo con la importancia «de fábrica» (<code>feature_importances_</code>): mide cuánta <G k="gini">impureza</G> quitó cada feature y favorece a las que tienen muchos valores distintos. En el ejercicio,
-          «antigüedad» (que no influye en el fraude) saca 0.12, más que «intentos»; la <G k="importanciaPermutacion">importancia por permutación</G> (medida en los datos nuevos) la deja en −0.006, es decir, en nada. Otra trampa: si dos features están muy <G k="correlacion">correlacionadas</G>, ambas medidas se reparten la importancia entre ellas.
+          «antigüedad» (que no influye en el fraude) saca 0.12, más que «intentos»; la <G k="importanciaPermutacion">importancia por permutación</G> (medida en los datos nuevos) la deja en −0.006, es decir, en nada. Otra trampa: si dos features están muy <G k="correlacion" after=",">correlacionadas</G> ambas medidas se reparten la importancia entre ellas.
         </p>
       ),
     },
@@ -178,7 +178,7 @@ const randomForest: AlgorithmModule = {
         <p>
           Cada árbol crece sin límite por defecto, así que el modelo ocupa memoria y el tiempo de predicción crece
           con el número de árboles y su profundidad. En el simulador, con 100 árboles el bosque todavía vota
-          «impago» (60 de 100 árboles) en el cliente de <G k="ruido">ruido</G> de abajo a la izquierda (ingreso 3, deuda 1.5), que no pagó aunque su deuda es baja: promediar reduce el <G k="overfitting">sobreajuste</G>, no lo
+          «impago» (60 de 100 árboles) en el cliente de <G k="ruido">ruido</G> de abajo a la izquierda (ingreso 3, deuda 1.5), que no pagó aunque su deuda es baja: promediar reduce el <G k="overfitting" after=",">sobreajuste</G> no lo
           elimina.
         </p>
       ),
@@ -199,8 +199,8 @@ const randomForest: AlgorithmModule = {
       deepDive: (
         <>
         <p>
-          Si buscas la máxima <G k="exactitud">exactitud</G> en <G k="tabular">datos tabulares</G>, Gradient Boosting suele superarlo, a cambio de más
-          ajuste de <G k="hiperparametro">hiperparámetros</G>.
+          Si buscas la máxima <G k="exactitud">exactitud</G> en <G k="tabular" after=",">datos tabulares</G> Gradient Boosting suele superarlo, a cambio de más
+          ajuste de <G k="hiperparametro" after=".">hiperparámetros</G>
         </p>
         <p>
           Con imágenes, audio o texto largo, las <G k="redNeuronal">redes
@@ -234,7 +234,7 @@ const randomForest: AlgorithmModule = {
         <p>
           En la vida real el fraude es menos del 1 % de las compras: con tan pocos casos, la <G k="exactitud">exactitud</G> no sirve
           (99 % se logra sin detectar nada). Se miden la <G k="precisionSensibilidad">precisión y la sensibilidad</G> con una{' '}
-          <G k="matrizConfusion">matriz de confusión</G>.
+          <G k="matrizConfusion" after=".">matriz de confusión</G>
         </p>
         <p>
           Además se ajusta el <G k="umbral">umbral</G> y se le da más peso

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { portalTarget } from './fullscreen';
 import { GLOSSARY, type GlossaryKey } from './glossary';
@@ -10,15 +10,36 @@ import { GLOSSARY, type GlossaryKey } from './glossary';
  * Con el explorador a pantalla completa se monta dentro de él (portalTarget):
  * fuera no se vería.
  */
-export function G({ k, children }: { k: GlossaryKey; children?: ReactNode }) {
+export function G({
+  k,
+  children,
+  before,
+  after,
+}: {
+  k: GlossaryKey;
+  children?: ReactNode;
+  /** Puntuación pegada al término («(», «.»…): va con él en un nowrap. */
+  before?: string;
+  after?: string;
+}) {
   const [open, setOpen] = useState(false);
   const entry = GLOSSARY[k];
   const opener = useRef<HTMLButtonElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
   const close = () => setOpen(false);
 
-  // Escape cierra la ficha estés donde estés; al cerrar, el foco vuelve al término.
+  // showModal() deja inerte el resto de la página: el foco no sale de la ficha
+  // y los lectores de pantalla solo ven la ficha. Al cerrar, el foco vuelve al término.
   useEffect(() => {
     if (!open) return;
+    const d = dialog.current;
+    if (d && !d.open) {
+      if (typeof d.showModal === 'function') d.showModal();
+      else d.setAttribute('open', ''); // navegadores sin <dialog> modal (y jsdom)
+    }
+    d?.querySelector<HTMLButtonElement>('.mlx-gl-ok')?.focus();
+    // Escape cierra la ficha esté donde esté el foco (el «cancel» nativo del
+    // <dialog> se intercepta abajo para que React lleve el estado).
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false);
     };
@@ -30,29 +51,62 @@ export function G({ k, children }: { k: GlossaryKey; children?: ReactNode }) {
     };
   }, [open]);
 
+  function onKeyDown(e: KeyboardEvent<HTMLDialogElement>) {
+    if (e.key !== 'Tab') return;
+    // Respaldo del atrapado de foco donde showModal() no existe: Tab da la vuelta dentro de la ficha.
+    const items = [...e.currentTarget.querySelectorAll<HTMLElement>('button, [href], [tabindex]:not([tabindex="-1"])')];
+    if (items.length === 0) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey ? active === first || !e.currentTarget.contains(active) : active === last || !e.currentTarget.contains(active)) {
+      e.preventDefault();
+      (e.shiftKey ? last : first).focus();
+    }
+  }
+
+  const term = (
+    <button ref={opener} type="button" className="mlx-gl" onClick={() => setOpen(true)} aria-haspopup="dialog">
+      {children ?? entry.term}
+    </button>
+  );
+
   return (
     <>
-      <button ref={opener} type="button" className="mlx-gl" onClick={() => setOpen(true)} aria-haspopup="dialog">
-        {children ?? entry.term}
-      </button>
+      {before || after ? (
+        <span className="mlx-nowrap">
+          {before}
+          {term}
+          {after}
+        </span>
+      ) : (
+        term
+      )}
       {open &&
         createPortal(
-          <div
+          <dialog
+            ref={dialog}
             className="mlx-gl-modal"
-            role="dialog"
-            aria-modal="true"
             aria-label={entry.term}
-            onClick={close}
+            // El clic en el fondo llega al propio <dialog>; en la ficha, a sus hijos.
+            onClick={(e) => {
+              if (e.target === e.currentTarget) close();
+            }}
+            onCancel={(e) => {
+              e.preventDefault();
+              close();
+            }}
+            onKeyDown={onKeyDown}
           >
-            <div className="mlx-gl-box" onClick={(e) => e.stopPropagation()}>
+            <div className="mlx-gl-box">
               <strong>💡 {entry.term}</strong>
               <p>{entry.what}</p>
               <p className="mlx-gl-why">{entry.why}</p>
-              <button type="button" onClick={close} autoFocus>
+              <button type="button" className="mlx-gl-ok" onClick={close}>
                 Entendido
               </button>
             </div>
-          </div>,
+          </dialog>,
           portalTarget(),
         )}
     </>

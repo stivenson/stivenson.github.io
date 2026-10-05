@@ -23,25 +23,25 @@ const svm: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="supervisado">Supervisado</G>:
+              <G k="supervisado" after=":">Supervisado</G>
             </b>{' '}
             aprende de ejemplos con respuesta (imágenes de dígitos con el número que muestran).
           </p>
           <p>
             Busca la <G k="frontera">frontera</G> que <b>separa las clases dejando la franja más ancha posible</b> a
-            cada lado, con pocos puntos dentro. Esa franja es el <G k="margen">margen</G>.
+            cada lado, con pocos puntos dentro. Esa franja es el <G k="margen" after=".">margen</G>
           </p>
           <p>
-            Se usa sobre todo para clasificar. Existe una versión para predecir números (<G k="svr">SVR</G>), que no cubre este
+            Se usa sobre todo para clasificar. Existe una versión para predecir números <G before="(" k="svr" after="),">SVR</G> que no cubre este
             explorador.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          SVM viene de <i>Support Vector Machine</i>, máquina de <G k="vectorSoporte">vectores de soporte</G>. Con más de dos clases,{' '}
+          SVM viene de <i>Support Vector Machine</i>, máquina de <G k="vectorSoporte" after=".">vectores de soporte</G> Con más de dos clases,{' '}
           <code>SVC</code> de scikit-learn entrena un modelo por cada par de clases (
-          <G k="unoContraUno">uno contra uno</G>) y los pone a votar: con los 10 dígitos son 45 modelos.
+          <G k="unoContraUno" after=")">uno contra uno</G> y los pone a votar: con los 10 dígitos son 45 modelos.
         </p>
       ),
     },
@@ -68,7 +68,7 @@ const svm: AlgorithmModule = {
       deepDive: (
         <p>
           Con texto o <G k="disperso">datos dispersos</G> suele bastar el <G k="kernel">kernel</G> lineal (<code>LinearSVC</code>, mucho
-          más rápido). Con pocas features y fronteras curvas, el <G k="rbf">kernel RBF</G>. Antes de entrenar hay que escalar las
+          más rápido). Con pocas features y fronteras curvas, el <G k="rbf" after=".">kernel RBF</G> Antes de entrenar hay que escalar las
           features.
         </p>
       ),
@@ -78,13 +78,13 @@ const svm: AlgorithmModule = {
         <>
           <p>
             <b>Ejemplo:</b> en el simulador, con kernel lineal y C = 1, la franja mide 2.13 de ancho y la definen solo
-            5 de los 22 puntos: los <G k="vectorSoporte">vectores de soporte</G>. Si borras cualquier otro punto, la
+            5 de los 22 puntos: los <G k="vectorSoporte" after=".">vectores de soporte</G> Si borras cualquier otro punto, la
             frontera no se mueve.
           </p>
           <p>
-            La frontera es una recta (o un <G k="hiperplano">hiperplano</G>) y el margen se mide así:
+            La frontera es una recta (o un <G k="hiperplano" after=")">hiperplano</G> y el margen se mide así:
           </p>
-          <Tex block>{'w \\cdot x + b = 0, \\qquad \\text{ancho del margen} = \\frac{2}{\\lVert w \\rVert}'}</Tex>
+          <Tex block>{'\\begin{gathered} w \\cdot x + b = 0 \\\\ \\text{ancho del margen} = \\frac{2}{\\lVert w \\rVert} \\end{gathered}'}</Tex>
           <p>
             <Tex>{'w'}</Tex> es la dirección perpendicular a la frontera y <Tex>{'b'}</Tex> la desplaza. Maximizar
             el margen es lo mismo que hacer <Tex>{'\\lVert w \\rVert'}</Tex> lo más pequeño posible.
@@ -99,21 +99,21 @@ const svm: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Problema de <G k="margenBlando">margen blando</G>:
+            Problema de <G k="margenBlando" after=":">margen blando</G>
           </p>
           <Tex block>
-            {'\\min_{w,b,\\xi}\\ \\tfrac12\\lVert w\\rVert^2 + C\\sum_i \\xi_i \\quad \\text{sujeto a}\\quad y_i(w\\cdot x_i + b) \\ge 1 - \\xi_i,\\ \\ \\xi_i \\ge 0'}
+            {'\\begin{gathered} \\min_{w,b,\\xi}\\ \\tfrac12\\lVert w\\rVert^2 + C\\sum_i \\xi_i \\\\ \\text{sujeto a}\\quad y_i(w\\cdot x_i + b) \\ge 1 - \\xi_i \\\\ \\xi_i \\ge 0 \\end{gathered}'}
           </Tex>
           <p>
-            Su <G k="dual">forma dual</G> solo usa productos <Tex>{'x_i \\cdot x_j'}</Tex>. Cambiarlos por un{' '}
+            Su <G k="dual">forma dual</G> solo usa productos <Tex after=".">{'x_i \\cdot x_j'}</Tex> Cambiarlos por un{' '}
             <G k="kernel">kernel</G> <Tex>{'K(x_i, x_j)'}</Tex> da fronteras curvas sin calcular <G k="feature">features</G> nuevas:
           </p>
           <Tex block>{'K_{\\text{RBF}}(x, z) = e^{-\\gamma \\lVert x - z \\rVert^2}'}</Tex>
           <p>
-            El simulador resuelve el dual con <G k="smo">SMO</G>, el mismo método de LIBSVM, la biblioteca que usa{' '}
+            El simulador resuelve el dual con <G k="smo" after=",">SMO</G> el mismo método de LIBSVM, la biblioteca que usa{' '}
             <code>SVC</code>; sus cifras coinciden a dos decimales con las de scikit-learn (con{' '}
             <Tex>{'\\gamma'}</Tex> = 0.3 fijo y tolerancia fina, <code>tol=1e-6</code>). Valores por defecto en
-            scikit-learn: <G k="rbf">kernel RBF</G>, C = 1 y <Tex>{'\\gamma'}</Tex> = <code>"scale"</code>.
+            scikit-learn: <G k="rbf" after=",">kernel RBF</G> C = 1 y <Tex>{'\\gamma'}</Tex> = <code>"scale"</code>.
           </p>
         </>
       ),
@@ -133,7 +133,7 @@ const svm: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En el ejercicio los píxeles van de 0 a 16 y se dividen por 16 para dejarlos entre 0 y 1. Con <G k="rbf">kernel RBF</G>,{' '}
+          En el ejercicio los píxeles van de 0 a 16 y se dividen por 16 para dejarlos entre 0 y 1. Con <G k="rbf" after=",">kernel RBF</G>{' '}
           <G k="gamma">γ</G> también depende de la escala: el valor <code>"scale"</code> lo ajusta según la varianza
           de los datos.
         </p>
@@ -143,23 +143,23 @@ const svm: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>Eficaz con muchas <G k="feature">features</G>:</b> en el ejercicio, con 64 features (los píxeles de cada imagen),
+            <b>Eficaz con muchas <G k="feature" after=":">features</G></b> en el ejercicio, con 64 features (los píxeles de cada imagen),
             acierta 98.7 % de dígitos nuevos con los valores por defecto.
           </li>
           <li>
             <b>Fronteras flexibles:</b> con un <G k="kernel">kernel</G> se adapta a formas curvas.
           </li>
           <li>
-            <b>Solo importan unos puntos:</b> la frontera depende solo de los <G k="vectorSoporte">vectores de soporte</G>. Si son pocos el
+            <b>Solo importan unos puntos:</b> la frontera depende solo de los <G k="vectorSoporte" after=".">vectores de soporte</G> Si son pocos el
             modelo es pequeño; en el ejercicio, con <G k="rbf">RBF</G> y C = 1, guarda 593 de 1 257 imágenes.
           </li>
         </ul>
       ),
       deepDive: (
         <p>
-          El problema de optimización es <G k="convexo">convexo</G>: no hay mínimos locales que atrapen al
+          El problema de optimización es <G k="convexo" after=":">convexo</G> no hay mínimos locales que atrapen al
           algoritmo, así que el óptimo que encuentra es el global. Maximizar el margen actúa como{' '}
-          <G k="regularizacion">regularización</G>, por eso suele resistir bien el{' '}
+          <G k="regularizacion" after=",">regularización</G> por eso suele resistir bien el{' '}
           <G k="overfitting">sobreajuste</G> con muchas features, si C y γ están bien elegidos (con γ muy grande el
           RBF rodea cada punto y memoriza).
         </p>
@@ -174,7 +174,7 @@ const svm: AlgorithmModule = {
           </li>
           <li>
             <b>
-              Sensible a C y <G k="gamma">γ</G>:
+              Sensible a C y <G k="gamma" after=":">γ</G>
             </b>{' '}
             en el ejercicio, el <G k="rbf">kernel RBF</G> con C = 0.01 acierta solo 18.3 %; con C = 1, 98.7 %.
           </li>
@@ -188,9 +188,9 @@ const svm: AlgorithmModule = {
         <p>
           scikit-learn advierte que <code>SVC</code> se vuelve poco práctico por encima de decenas de miles de filas.
           Con <code>probability=True</code> estima probabilidades con{' '}
-          <G k="validacionCruzada">validación cruzada</G> interna (<G k="calibracion">escalado de Platt</G>): entrena
+          <G k="validacionCruzada">validación cruzada</G> interna <G before="(" k="calibracion" after="):">escalado de Platt</G> entrena
           más lento y esas probabilidades pueden no coincidir con la clase que da <code>predict</code>. C y{' '}
-          <Tex>{'\\gamma'}</Tex> son <G k="hiperparametro">hiperparámetros</G>: se eligen juntos con validación
+          <Tex>{'\\gamma'}</Tex> son <G k="hiperparametro" after=":">hiperparámetros</G> se eligen juntos con validación
           cruzada.
         </p>
       ),
@@ -234,7 +234,7 @@ const svm: AlgorithmModule = {
       deepDive: (
         <p>
           Aquí el kernel lineal ya acierta 98.5 % (C = 1): en 64 dimensiones los dígitos casi se separan con planos.
-          La ventaja del RBF es pequeña. Esa es la regla con muchas <G k="feature">features</G>: prueba primero el lineal.
+          La ventaja del RBF es pequeña. Esa es la regla con muchas <G k="feature" after=":">features</G> prueba primero el lineal.
         </p>
       ),
     },

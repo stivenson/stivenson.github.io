@@ -23,13 +23,13 @@ const rnn: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="supervisado">Supervisado</G>:
+              <G k="supervisado" after=":">Supervisado</G>
             </b>{' '}
             aprende de secuencias que ya traen la respuesta: la demanda de mañana, la palabra siguiente, el texto de un
             audio. Es una <G k="redNeuronal">red neuronal</G> que lee los datos <b>uno por uno y en orden</b>.
           </p>
           <p>
-            Mientras lee, guarda una memoria, el <G k="estadoOculto">estado oculto</G>, que mezcla lo que ya traía con
+            Mientras lee, guarda una memoria, el <G k="estadoOculto" after=",">estado oculto</G> que mezcla lo que ya traía con
             el dato nuevo. Por eso se llama recurrente (<i>Recurrent Neural Network</i>): usa su propia salida anterior
             como entrada.
           </p>
@@ -39,7 +39,7 @@ const rnn: AlgorithmModule = {
         <p>
           Puede dar una salida al final (clasificar una reseña completa), una por paso (etiquetar cada palabra) o
           generar otra secuencia (traducir). Las versiones que se usan en la práctica son la{' '}
-          <G k="lstm">LSTM y la GRU</G>, que guardan mejor la memoria.
+          <G k="lstm" after=",">LSTM y la GRU</G> que guardan mejor la memoria.
         </p>
       ),
     },
@@ -55,7 +55,7 @@ const rnn: AlgorithmModule = {
             <li>Dispositivos pequeños que procesan audio o sensores en tiempo real, paso a paso.</li>
           </ul>
           <p className="mlx-rule">
-            Para texto largo, prefiere un <G k="transformer">Transformer</G>; para series cortas en tabla, prueba antes
+            Para texto largo, prefiere un <G k="transformer" after=";">Transformer</G> para series cortas en tabla, prueba antes
             un modelo de árboles con valores rezagados como columnas (la demanda de ayer, la de anteayer…).
           </p>
         </>
@@ -73,31 +73,31 @@ const rnn: AlgorithmModule = {
         <>
           <p>
             <b>Ejemplo:</b> una RNN de una sola <G k="neurona">neurona</G> con <Tex>{'w = 0.9'}</Tex> lee 10 mediciones.
-            La primera entra multiplicada por <Tex>{'u = 0.5'}</Tex>; luego, en cada uno de los 9 pasos siguientes, su
+            La primera entra multiplicada por <Tex after=";">{'u = 0.5'}</Tex> luego, en cada uno de los 9 pasos siguientes, su
             efecto se multiplica por 0.9 y por la pendiente de tanh, que es como mucho 1. Sin la pendiente quedaría 0.5
             · 0.9<sup>9</sup> = 0.19; con ella, el simulador da 0.024: 1 en 41.
           </p>
           <p>
-            La fórmula de abajo mide de <Tex>{'h_1'}</Tex> a <Tex>{'h_T'}</Tex>; por <Tex>{'x_1'}</Tex> entra además el
-            factor <Tex>{'u\\,(1 - h_1^2)'}</Tex>.
+            La fórmula de abajo mide de <Tex>{'h_1'}</Tex> a <Tex after=";">{'h_T'}</Tex> por <Tex>{'x_1'}</Tex> entra además el
+            factor <Tex after=".">{'u\\,(1 - h_1^2)'}</Tex>
           </p>
           <Tex block>
             {
-              'h_t = \\tanh(w\\, h_{t-1} + u\\, x_t), \\qquad \\frac{\\partial h_T}{\\partial h_1} = \\prod_{t=2}^{T} w\\, (1 - h_t^2)'
+              '\\begin{gathered} h_t = \\tanh(w\\, h_{t-1} + u\\, x_t) \\\\ \\frac{\\partial h_T}{\\partial h_1} = \\prod_{t=2}^{T} w\\, (1 - h_t^2) \\end{gathered}'
             }
           </Tex>
           <p>
             <Tex>{'h_t'}</Tex> es el <G k="estadoOculto">estado oculto</G> en el paso <Tex>{'t'}</Tex> y{' '}
             <Tex>{'x_t'}</Tex> el dato que entra. El producto de la derecha es lo que lleva hacia atrás la{' '}
-            <G k="retropropagacion">retropropagación</G>: si cada factor es menor que 1, el{' '}
-            <G k="desvanecimiento">gradiente se desvanece</G>.
+            <G k="retropropagacion" after=":">retropropagación</G> si cada factor es menor que 1, el{' '}
+            <G k="desvanecimiento" after=".">gradiente se desvanece</G>
           </p>
         </>
       ),
       deepDive: (
         <>
           <p>
-            Con vectores, <Tex>{'h_t = \\tanh(W h_{t-1} + U x_t + b)'}</Tex>, y los mismos <Tex>{'W'}</Tex> y{' '}
+            Con vectores, <Tex after=",">{'h_t = \\tanh(W h_{t-1} + U x_t + b)'}</Tex> y los mismos <Tex>{'W'}</Tex> y{' '}
             <Tex>{'U'}</Tex> se usan en todos los pasos. Para entrenar se «desenrolla» la red en el tiempo, como una red
             de T capas que comparten pesos, y se aplica la <G k="retropropagacion">retropropagación</G> (BPTT, por sus
             siglas en inglés).
@@ -106,7 +106,7 @@ const rnn: AlgorithmModule = {
             El factor por paso depende de los pesos. Si los factores son mayores que 1 durante muchos pasos (pasa con
             matrices de pesos grandes, no en esta neurona con tanh, que se satura), el gradiente explota en vez de
             desvanecerse. Lo primero se frena recortando el gradiente; lo segundo pide otra arquitectura, como la{' '}
-            <G k="lstm">LSTM</G>, cuya memoria pasa de un paso al siguiente casi sin multiplicarse.
+            <G k="lstm" after=",">LSTM</G> cuya memoria pasa de un paso al siguiente casi sin multiplicarse.
           </p>
         </>
       ),
@@ -140,7 +140,7 @@ const rnn: AlgorithmModule = {
             <b>Secuencias de cualquier longitud:</b> los mismos pesos sirven para 10 o para 10 000 pasos.
           </li>
           <li>
-            <b>Memoria compacta:</b> todo el pasado se resume en el <G k="estadoOculto">estado oculto</G>, de tamaño
+            <b>Memoria compacta:</b> todo el pasado se resume en el <G k="estadoOculto" after=",">estado oculto</G> de tamaño
             fijo.
           </li>
           <li>
@@ -160,12 +160,12 @@ const rnn: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>Olvida lo lejano:</b> el <G k="desvanecimiento">gradiente se desvanece</G>. En el ejercicio, con w = 0.9
+            <b>Olvida lo lejano:</b> el <G k="desvanecimiento" after=".">gradiente se desvanece</G> En el ejercicio, con w = 0.9
             la influencia del primer dato pasa de 0.024 (10 pasos) a 5.8e-14 (50 pasos).
           </li>
           <li>
             <b>Lenta de entrenar:</b> el paso 2 necesita el resultado del paso 1, así que no se reparte bien en una{' '}
-            <G k="gpu">GPU</G>.
+            <G k="gpu" after=".">GPU</G>
           </li>
           <li>
             <b>Inestable:</b> con matrices de pesos grandes, el gradiente también puede explotar; hay que recortarlo.
@@ -184,7 +184,7 @@ const rnn: AlgorithmModule = {
       essential: (
         <>
           <p className="mlx-rule">
-            No la uses con secuencias largas donde importa lo lejano: usa un <G k="transformer">Transformer</G>.
+            No la uses con secuencias largas donde importa lo lejano: usa un <G k="transformer" after=".">Transformer</G>
           </p>
           <p>
             Ejemplo: resumir un contrato de 20 páginas. Lo que dice la cláusula 1 puede cambiar el sentido de la
@@ -204,7 +204,7 @@ const rnn: AlgorithmModule = {
         <>
           <p>
             <b>Reconocimiento de voz y predicción de series.</b> Hacia 2015-2016 los dictados por voz y los traductores
-            automáticos usaban <G k="lstm">LSTM</G>; luego llegaron los <G k="transformer">Transformers</G>.
+            automáticos usaban <G k="lstm" after=";">LSTM</G> luego llegaron los <G k="transformer" after=".">Transformers</G>
           </p>
           <p>
             El ejercicio no entrena una red: mide su memoria. Con 50 mediciones y la regla de la cadena, calcula cuánto
@@ -218,7 +218,7 @@ const rnn: AlgorithmModule = {
         <p>
           Ese número multiplica el <G k="gradiente">gradiente</G> que recibiría el primer paso al entrenar: si es seis
           millonésimas, sus pesos casi no se corrigen. En la práctica se usa <code>torch.nn.LSTM</code> o{' '}
-          <code>torch.nn.GRU</code> de <G k="pytorch">PyTorch</G>; el notebook de Colab trae una celda opcional que
+          <code>torch.nn.GRU</code> de <G k="pytorch" after=";">PyTorch</G> el notebook de Colab trae una celda opcional que
           repite la medición con una RNN de PyTorch.
         </p>
       ),

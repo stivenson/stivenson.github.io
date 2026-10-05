@@ -103,7 +103,7 @@ export function useFullscreen(rootRef: RefObject<HTMLElement | null>, buttonRef:
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       // Con una ficha 💡 abierta, Escape solo cierra la ficha.
-      if (rootRef.current?.querySelector('[role="dialog"]')) return;
+      if (rootRef.current?.querySelector('dialog, [role="dialog"]')) return;
       setMode('none');
     };
     document.addEventListener('keydown', onKey);

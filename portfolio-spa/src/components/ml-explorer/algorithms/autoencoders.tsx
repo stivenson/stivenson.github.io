@@ -23,14 +23,14 @@ const autoencoders: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="noSupervisado">No supervisado</G>:
+              <G k="noSupervisado" after=":">No supervisado</G>
             </b>{' '}
             no necesita etiquetas. La respuesta que aprende a dar es la propia entrada: el{' '}
             <G k="autoencoder">autoencoder</G> es una <G k="redNeuronal">red neuronal</G> que aprende a copiar sus
             datos.
           </p>
           <p>
-            El truco es que la copia pasa por un <G k="cuelloBotella">cuello de botella</G>: una capa con menos números
+            El truco es que la copia pasa por un <G k="cuelloBotella" after=":">cuello de botella</G> una capa con menos números
             que la entrada. Para copiar bien, la red tiene que aprender el patrón de los datos.
           </p>
           <p>
@@ -67,7 +67,7 @@ const autoencoders: AlgorithmModule = {
           Con <G k="desbalance">clases desbalanceadas</G> extremas (1 fraude cada 10 000 compras), un clasificador
           supervisado apenas ve ejemplos de fraude; el <G k="autoencoder">autoencoder</G> no los necesita para entrenar.
           Si los datos son imágenes, el codificador y el decodificador suelen ser{' '}
-          <G k="redConvolucional">redes convolucionales</G>.
+          <G k="redConvolucional" after=".">redes convolucionales</G>
         </p>
       ),
     },
@@ -87,7 +87,7 @@ const autoencoders: AlgorithmModule = {
           </p>
           <Tex block>
             {
-              'z = f(x), \\qquad \\hat{x} = g(z), \\qquad \\text{error}(x) = \\frac{1}{d}\\sum_{j=1}^{d} (x_j - \\hat{x}_j)^2'
+              '\\begin{gathered} z = f(x), \\qquad \\hat{x} = g(z) \\\\ \\text{error}(x) = \\frac{1}{d}\\sum_{j=1}^{d} (x_j - \\hat{x}_j)^2 \\end{gathered}'
             }
           </Tex>
           <p>
@@ -102,14 +102,14 @@ const autoencoders: AlgorithmModule = {
           <p>
             Si <Tex>{'f'}</Tex> y <Tex>{'g'}</Tex> son lineales y el error es cuadrático, la mejor solución reconstruye
             igual que <G k="pca">PCA</G> (Baldi y Hornik, 1989): su código ocupa el mismo subespacio que los k primeros{' '}
-            <G k="componentePrincipal">componentes principales</G>, con los ejes posiblemente girados. El simulador usa
+            <G k="componentePrincipal" after=",">componentes principales</G> con los ejes posiblemente girados. El simulador usa
             esa solución exacta; el ejercicio de Python llega a ella con{' '}
-            <G k="descensoGradiente">descenso de gradiente</G>.
+            <G k="descensoGradiente" after=".">descenso de gradiente</G>
           </p>
           <p>
             Lo que distingue al autoencoder de PCA son las <G k="capaOculta">capas ocultas</G> con{' '}
-            <G k="funcionActivacion">funciones de activación</G>: con ellas comprime estructuras curvas. Se entrena como
-            cualquier red, con <G k="retropropagacion">retropropagación</G>.
+            <G k="funcionActivacion" after=":">funciones de activación</G> con ellas comprime estructuras curvas. Se entrena como
+            cualquier red, con <G k="retropropagacion" after=".">retropropagación</G>
           </p>
         </>
       ),
@@ -149,7 +149,7 @@ const autoencoders: AlgorithmModule = {
           </li>
           <li>
             <b>Una señal fácil de usar:</b> el <G k="reconstruccion">error de reconstrucción</G> es un número por dato;
-            basta elegir un <G k="umbral">umbral</G>.
+            basta elegir un <G k="umbral" after=".">umbral</G>
           </li>
         </ul>
       ),
@@ -169,8 +169,8 @@ const autoencoders: AlgorithmModule = {
             y con 4 vuelve a 9. Si es tan ancho como la entrada, copia todo, también el fraude.
           </li>
           <li>
-            <b>Difícil de ajustar:</b> capas, <G k="neurona">neuronas</G>, <G k="epoca">épocas</G> y{' '}
-            <G k="umbral">umbral</G>, sin etiquetas que digan cuál es mejor.
+            <b>Difícil de ajustar:</b> capas, <G k="neurona" after=",">neuronas</G> <G k="epoca">épocas</G> y{' '}
+            <G k="umbral" after=",">umbral</G> sin etiquetas que digan cuál es mejor.
           </li>
           <li>
             <b>Falsas alarmas:</b> lo raro no siempre es fraude; un cliente que viaja por primera vez también
@@ -231,7 +231,7 @@ const autoencoders: AlgorithmModule = {
           </p>
           <p>
             El notebook de Colab trae, como celda opcional, un <G k="autoencoder">autoencoder</G> no lineal en{' '}
-            <G k="pytorch">PyTorch</G>, con una <G k="capaOculta">capa oculta</G> antes y después del cuello.
+            <G k="pytorch" after=",">PyTorch</G> con una <G k="capaOculta">capa oculta</G> antes y después del cuello.
           </p>
         </>
       ),

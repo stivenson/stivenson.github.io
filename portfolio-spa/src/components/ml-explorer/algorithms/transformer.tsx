@@ -23,23 +23,23 @@ const transformer: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="autosupervisado">Autosupervisado</G> y luego <G k="supervisado">supervisado</G>:
+              <G k="autosupervisado">Autosupervisado</G> y luego <G k="supervisado" after=":">supervisado</G>
             </b>{' '}
             primero aprende de enormes cantidades de texto sin etiquetar, adivinando palabras tapadas o la palabra
             siguiente; después se ajusta con pocos ejemplos etiquetados para una tarea concreta.
           </p>
           <p>
             Es la <G k="redNeuronal">red neuronal</G> detrás de los modelos de lenguaje actuales. Su pieza clave es la{' '}
-            <G k="atencion">atención</G>: para representar cada palabra, mira todas las demás de la frase a la vez, no
+            <G k="atencion" after=":">atención</G> para representar cada palabra, mira todas las demás de la frase a la vez, no
             una por una como una RNN.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          Hay dos familias principales (<G k="bertGpt">BERT y GPT</G>). BERT lee la frase entera en ambas direcciones y
+          Hay dos familias principales <G before="(" k="bertGpt" after=").">BERT y GPT</G> BERT lee la frase entera en ambas direcciones y
           sirve para clasificar y buscar. GPT lee de izquierda a derecha y aprende a predecir el siguiente{' '}
-          <G k="token">token</G>; con eso genera texto. El <G k="transformer">Transformer</G> original (2017) tenía las
+          <G k="token" after=";">token</G> con eso genera texto. El <G k="transformer">Transformer</G> original (2017) tenía las
           dos partes y se diseñó para traducir.
         </p>
       ),
@@ -65,13 +65,13 @@ const transformer: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Entrenar un <G k="llm">modelo de lenguaje grande</G> cuesta millones de dólares en <G k="gpu">GPU</G>.
+            Entrenar un <G k="llm">modelo de lenguaje grande</G> cuesta millones de dólares en <G k="gpu" after=".">GPU</G>
             Ajustar uno pequeño de tipo <G k="bertGpt">BERT</G> a una clasificación de textos se hace con unos miles de
             ejemplos y una sola GPU.
           </p>
           <p>
             Los <G k="transformer">Transformers</G> también se usan con imágenes y audio, cortados en trozos que hacen
-            de <G k="token">tokens</G>.
+            de <G k="token" after=".">tokens</G>
           </p>
         </>
       ),
@@ -93,7 +93,7 @@ const transformer: AlgorithmModule = {
             {'\\text{Atención}(Q, K, V) = \\text{softmax}\\!\\left(\\frac{Q K^\\top}{\\sqrt{d}}\\right) V'}
           </Tex>
           <p>
-            <Tex>{'Q'}</Tex>, <Tex>{'K'}</Tex> y <Tex>{'V'}</Tex> (consultas, claves y valores) salen de multiplicar los
+            <Tex after=",">{'Q'}</Tex> <Tex>{'K'}</Tex> y <Tex>{'V'}</Tex> (consultas, claves y valores) salen de multiplicar los
             embeddings por tres matrices de pesos aprendidas; <Tex>{'d'}</Tex> es su número de columnas. En el ejemplo y
             en el simulador, las tres son los embeddings sin cambio.
           </p>
@@ -107,13 +107,13 @@ const transformer: AlgorithmModule = {
             la posición).
           </p>
           <p>
-            Los modelos tipo <G k="bertGpt">GPT</G> añaden una <G k="mascaraCausal">máscara causal</G>: cada token solo
+            Los modelos tipo <G k="bertGpt">GPT</G> añaden una <G k="mascaraCausal" after=":">máscara causal</G> cada token solo
             ve los anteriores, porque al generar texto el siguiente todavía no existe.
           </p>
           <p>
             Un bloque real tiene varias cabezas de atención en paralelo, cada una con sus matrices, seguidas de una capa
             densa. Los modelos apilan decenas de bloques. El costo de la atención crece con el cuadrado del número de{' '}
-            <G k="token">tokens</G>: el doble de texto cuesta cuatro veces más.
+            <G k="token" after=":">tokens</G> el doble de texto cuesta cuatro veces más.
           </p>
         </>
       ),
@@ -148,7 +148,7 @@ const transformer: AlgorithmModule = {
           </li>
           <li>
             <b>Se entrena en paralelo:</b> a diferencia de la RNN, procesa todos los tokens a la vez, y eso aprovecha
-            bien la <G k="gpu">GPU</G>.
+            bien la <G k="gpu" after=".">GPU</G>
           </li>
           <li>
             <b>Un modelo, muchas tareas:</b> el mismo modelo preentrenado sirve para traducir, resumir, clasificar o
@@ -172,7 +172,7 @@ const transformer: AlgorithmModule = {
           </li>
           <li>
             <b>Puede inventar:</b> genera texto probable, no verificado. Una cita o una cifra falsa dicha con seguridad
-            es una <G k="alucinacion">alucinación</G>.
+            es una <G k="alucinacion" after=".">alucinación</G>
           </li>
           <li>
             <b>Hereda los sesgos</b> del texto con que se entrenó, y es difícil saber por qué respondió lo que
@@ -197,14 +197,14 @@ const transformer: AlgorithmModule = {
           <p>
             Ejemplo: separar spam con unos cientos de correos etiquetados. Naive Bayes o una regresión logística
             entrenan en un segundo y aciertan casi igual. Y para calcular una cifra, mejor una fórmula o una consulta a
-            la base de datos que un <G k="llm">modelo de lenguaje</G>.
+            la base de datos que un <G k="llm" after=".">modelo de lenguaje</G>
           </p>
         </>
       ),
       deepDive: (
         <p>
           Con secuencias numéricas cortas, como sensores en un dispositivo pequeño, una RNN o un modelo de árboles es
-          más barato. Con <G k="tabular">datos tabulares</G>, los <G k="ensamble">ensambles</G> de árboles siguen siendo
+          más barato. Con <G k="tabular" after=",">datos tabulares</G> los <G k="ensamble">ensambles</G> de árboles siguen siendo
           la primera opción.
         </p>
       ),
@@ -217,13 +217,13 @@ const transformer: AlgorithmModule = {
             traducir, en el artículo «Attention Is All You Need» («La atención es todo lo que necesitas»).
           </p>
           <p>
-            <G k="llm">ChatGPT</G> es un modelo tipo <G k="bertGpt">GPT</G>: predice el siguiente <G k="token">token</G>{' '}
+            <G k="llm">ChatGPT</G> es un modelo tipo <G k="bertGpt" after=":">GPT</G> predice el siguiente <G k="token">token</G>{' '}
             y fue ajustado para conversar.
           </p>
           <p>
             El ejercicio calcula a mano la <G k="atencion">atención</G> de 4 tokens. En «el banco del río», «banco»
             atiende 0.41 a «río» y sale con naturaleza 1.23; en «el banco cobra interés», con dinero 1.38. Con{' '}
-            <G k="mascaraCausal">máscara causal</G>, «banco» aún no ve «río». Al invertir la frase, «banco» cambia 0.00
+            <G k="mascaraCausal" after=",">máscara causal</G> «banco» aún no ve «río». Al invertir la frase, «banco» cambia 0.00
             sin posición y 0.30 con ella.
           </p>
         </>
@@ -231,8 +231,8 @@ const transformer: AlgorithmModule = {
       deepDive: (
         <p>
           Un modelo de lenguaje, por sí solo, no consulta una base de datos de hechos: elige palabras probables. Por eso
-          redacta y traduce con fluidez, pero puede <G k="alucinacion">alucinar</G>. El notebook de Colab trae una celda
-          opcional con la misma atención en <G k="pytorch">PyTorch</G>, que da los mismos pesos.
+          redacta y traduce con fluidez, pero puede <G k="alucinacion" after=".">alucinar</G> El notebook de Colab trae una celda
+          opcional con la misma atención en <G k="pytorch" after=",">PyTorch</G> que da los mismos pesos.
         </p>
       ),
     },

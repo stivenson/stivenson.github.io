@@ -23,12 +23,12 @@ const pca: AlgorithmModule = {
         <>
           <p>
             <b>Reducción de dimensionalidad:</b> no predice nada. Toma datos con muchas columnas (
-            <G k="feature">features</G>) y los resume en <b>pocas columnas nuevas</b> que conservan casi toda la
+            <G k="feature" after=")">features</G> y los resume en <b>pocas columnas nuevas</b> que conservan casi toda la
             variación de los datos.
           </p>
           <p>
-            Como el agrupamiento, es <G k="noSupervisado">no supervisado</G>: no usa ninguna respuesta, solo cómo
-            varían los datos. Las columnas nuevas son los <G k="componentePrincipal">componentes principales</G>.
+            Como el agrupamiento, es <G k="noSupervisado" after=":">no supervisado</G> no usa ninguna respuesta, solo cómo
+            varían los datos. Las columnas nuevas son los <G k="componentePrincipal" after=".">componentes principales</G>
           </p>
           <p>
             <b>¿Cómo se evalúa sin respuestas?</b> Con la <G k="varianzaExplicada">varianza retenida</G> (qué
@@ -81,17 +81,17 @@ const pca: AlgorithmModule = {
           </p>
           <p>
             En el simulador los puntos no están en una recta perfecta. El eje horizontal conserva el 66.5 % de la{' '}
-            <G k="varianza">varianza</G>; girado a 34° llega al máximo, 94.6 %. Ese eje es el primer{' '}
-            <G k="componentePrincipal">componente principal</G>.
+            <G k="varianza" after=";">varianza</G> girado a 34° llega al máximo, 94.6 %. Ese eje es el primer{' '}
+            <G k="componentePrincipal" after=".">componente principal</G>
           </p>
           <p>
             Esas direcciones son los <G k="autovector">autovectores</G> de la matriz de covarianza:
           </p>
-          <Tex block>{'\\Sigma = \\frac{1}{n-1} X_c^\\top X_c, \\qquad \\Sigma\\, v_j = \\lambda_j\\, v_j'}</Tex>
+          <Tex block>{'\\begin{gathered} \\Sigma = \\frac{1}{n-1} X_c^\\top X_c \\\\ \\Sigma\\, v_j = \\lambda_j\\, v_j \\end{gathered}'}</Tex>
           <p>
             <Tex>{'X_c'}</Tex> son los datos con la media restada. Cada <Tex>{'v_j'}</Tex> es una dirección y{' '}
             <Tex>{'\\lambda_j'}</Tex> la varianza que captura. El primer componente tiene el{' '}
-            <Tex>{'\\lambda'}</Tex> más grande, y la fracción que conserva es <Tex>{'\\lambda_1 / \\sum_j \\lambda_j'}</Tex>.
+            <Tex>{'\\lambda'}</Tex> más grande, y la fracción que conserva es <Tex after=".">{'\\lambda_1 / \\sum_j \\lambda_j'}</Tex>
           </p>
         </>
       ),
@@ -105,7 +105,7 @@ const pca: AlgorithmModule = {
           <p>
             scikit-learn elige el método según la forma de los datos: con muchas más filas que columnas, como en el
             ejercicio, calcula <Tex>{'\\Sigma'}</Tex> y sus autovectores; si no, usa la descomposición en valores
-            singulares (SVD) de <Tex>{'X_c'}</Tex>, sin formar <Tex>{'\\Sigma'}</Tex>. El signo de cada componente es
+            singulares (SVD) de <Tex after=",">{'X_c'}</Tex> sin formar <Tex after=".">{'\\Sigma'}</Tex> El signo de cada componente es
             arbitrario: dos programas pueden dar el mismo eje apuntando en sentidos opuestos.
           </p>
           <p>
@@ -132,7 +132,7 @@ const pca: AlgorithmModule = {
       deepDive: (
         <p>
           Para estructuras curvas existen versiones no lineales: <code>KernelPCA</code>, los <G k="autoencoder">autoencoders</G> (redes que
-          aprenden a comprimir) y, solo para dibujar, <G k="tsneUmap">t-SNE y UMAP</G>. Los{' '}
+          aprenden a comprimir) y, solo para dibujar, <G k="tsneUmap" after=".">t-SNE y UMAP</G> Los{' '}
           <G k="outlier">outliers</G> también afectan a PCA: como la varianza usa cuadrados, un punto muy lejano
           puede llevarse un componente entero.
         </p>
@@ -147,7 +147,7 @@ const pca: AlgorithmModule = {
           </li>
           <li>
             <b>Modelos más rápidos y estables:</b> con menos <G k="feature">features</G> se entrena más rápido y hay
-            menos riesgo de <G k="overfitting">sobreajuste</G>.
+            menos riesgo de <G k="overfitting" after=".">sobreajuste</G>
           </li>
           <li>
             <b>Sin parámetros delicados:</b> el único es cuántos componentes guardar, y la{' '}
@@ -221,7 +221,7 @@ const pca: AlgorithmModule = {
           </p>
           <p>
             El ejercicio usa los 1 797 dígitos de 8×8 píxeles (64 números por imagen) que trae scikit-learn. Con 2
-            componentes se retiene el 29 % de la <G k="varianza">varianza</G>; con 10, el 74 %; con 20, el 89 %; y
+            componentes se retiene el 29 % de la <G k="varianza" after=";">varianza</G> con 10, el 74 %; con 20, el 89 %; y
             con 40, el 99 %. La figura muestra un dígito reconstruido con 2, 5, 10 y 20 números.
           </p>
         </>

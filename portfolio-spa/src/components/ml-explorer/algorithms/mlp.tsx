@@ -23,7 +23,7 @@ const mlp: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="supervisado">Supervisado</G>:
+              <G k="supervisado" after=":">Supervisado</G>
             </b>{' '}
             aprende de ejemplos que ya traen la respuesta, como la regresión logística. La diferencia es que entre la
             entrada y la salida pone <b>capas de neuronas</b> que aprenden sus propias <G k="feature">features</G>{' '}
@@ -32,7 +32,7 @@ const mlp: AlgorithmModule = {
           <p>
             Es la <G k="redNeuronal">red neuronal</G> más básica: el perceptrón multicapa (MLP, por{' '}
             <i>Multi-Layer Perceptron</i>). Cada <G k="neurona">neurona</G> hace una suma con pesos y la dobla con una{' '}
-            <G k="funcionActivacion">función de activación</G>.
+            <G k="funcionActivacion" after=".">función de activación</G>
           </p>
         </>
       ),
@@ -81,24 +81,24 @@ const mlp: AlgorithmModule = {
             sumaría −10 y daría 0.00005: casi 0.
           </p>
           <p>
-            Una sola neurona traza una recta y no puede separar <G k="xor">XOR</G>. Con dos neuronas en la{' '}
+            Una sola neurona traza una recta y no puede separar <G k="xor" after=".">XOR</G> Con dos neuronas en la{' '}
             <G k="capaOculta">capa oculta</G> sí: una se enciende en «al menos una entrada activa», otra en «no las
             dos», y la salida pide ambas. Así (1, 0) da casi 1 y (1, 1), casi 0.
           </p>
-          <Tex block>{'h = \\sigma(W_1 x + b_1), \\qquad \\hat{y} = \\sigma(W_2 h + b_2)'}</Tex>
+          <Tex block>{'\\begin{gathered} h = \\sigma(W_1 x + b_1) \\\\ \\hat{y} = \\sigma(W_2 h + b_2) \\end{gathered}'}</Tex>
           <p>
             <Tex>{'x'}</Tex> es la entrada, <Tex>{'h'}</Tex> la salida de la capa oculta y <Tex>{'\\hat{y}'}</Tex> la
             predicción. Las matrices <Tex>{'W'}</Tex> y los vectores <Tex>{'b'}</Tex> son los pesos que se aprenden;{' '}
-            <Tex>{'\\sigma'}</Tex> es la <G k="funcionActivacion">función de activación</G>.
+            <Tex>{'\\sigma'}</Tex> es la <G k="funcionActivacion" after=".">función de activación</G>
           </p>
         </>
       ),
       deepDive: (
         <>
           <p>
-            Se entrena con <G k="descensoGradiente">descenso de gradiente</G>: la{' '}
+            Se entrena con <G k="descensoGradiente" after=":">descenso de gradiente</G> la{' '}
             <G k="retropropagacion">retropropagación</G> calcula cuánto contribuyó cada peso al error (la{' '}
-            <G k="perdidaLog">pérdida logarítmica</G>, al clasificar) y cada peso se mueve un poco en contra.
+            <G k="perdidaLog" after=",">pérdida logarítmica</G> al clasificar) y cada peso se mueve un poco en contra.
           </p>
           <p>
             scikit-learn usa por defecto <G k="relu">ReLU</G> en las capas ocultas, el optimizador Adam,{' '}
@@ -119,7 +119,7 @@ const mlp: AlgorithmModule = {
             Supone que hay <b>muchos datos</b>: tiene muchos pesos que ajustar. En el ejercicio, la red de 32{' '}
             <G k="neurona">neuronas</G> tiene 2 410 parámetros (pesos y sesgos) para 1 257 imágenes de entrenamiento, y
             aun así acierta en datos nuevos porque los dígitos se parecen mucho entre sí. Con muchos menos datos,
-            memoriza (<G k="overfitting">sobreajuste</G>).
+            memoriza <G before="(" k="overfitting" after=").">sobreajuste</G>
           </p>
           <p>
             También supone{' '}
@@ -145,11 +145,11 @@ const mlp: AlgorithmModule = {
         <ul>
           <li>
             <b>Fronteras curvas y complejas:</b> con <G k="capaOculta">capas ocultas</G> resuelve problemas como{' '}
-            <G k="xor">XOR</G>, que ningún modelo lineal resuelve.
+            <G k="xor" after=",">XOR</G> que ningún modelo lineal resuelve.
           </li>
           <li>
             <b>
-              Aprende sus propias <G k="feature">features</G>:
+              Aprende sus propias <G k="feature" after=":">features</G>
             </b>{' '}
             en el ejercicio, la red de 32 <G k="neurona">neuronas</G> acierta el 97.6 % de los dígitos nuevos a partir
             de los píxeles crudos.
@@ -162,8 +162,8 @@ const mlp: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          La misma maquinaria (capas, <G k="retropropagacion">retropropagación</G>, descenso por <G k="batch">lotes</G>)
-          sirve para imágenes, texto y audio, y corre rápido en una <G k="gpu">GPU</G>. Con 2 neuronas ocultas la red
+          La misma maquinaria (capas, <G k="retropropagacion" after=",">retropropagación</G> descenso por <G k="batch" after=")">lotes</G>
+          sirve para imágenes, texto y audio, y corre rápido en una <G k="gpu" after=".">GPU</G> Con 2 neuronas ocultas la red
           del ejercicio solo acierta el 49.8 % en datos nuevos; con 8, el 91.3 %: con un entrenamiento corto, el tamaño
           de la capa importa mucho.
         </p>
@@ -176,8 +176,8 @@ const mlp: AlgorithmModule = {
             <b>Caja negra:</b> 2 410 pesos no se leen uno por uno. No sabes por qué decidió lo que decidió.
           </li>
           <li>
-            <b>Muchas perillas:</b> capas, <G k="neurona">neuronas</G>, <G k="tasaAprendizaje">tasa de aprendizaje</G>,{' '}
-            <G k="epoca">épocas</G>, regularización. Una mala elección y no aprende o memoriza.
+            <b>Muchas perillas:</b> capas, <G k="neurona" after=",">neuronas</G> <G k="tasaAprendizaje" after=",">tasa de aprendizaje</G>{' '}
+            <G k="epoca" after=",">épocas</G> regularización. Una mala elección y no aprende o memoriza.
           </li>
           <li>
             <b>Resultados que varían:</b> los pesos arrancan al azar. Con otra semilla, la red de 32 apenas cambia, pero
@@ -189,12 +189,12 @@ const mlp: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Contra el <G k="overfitting">sobreajuste</G>: más datos, <G k="regularizacionL1L2">regularización L2</G>,{' '}
+            Contra el <G k="overfitting" after=":">sobreajuste</G> más datos, <G k="regularizacionL1L2" after=",">regularización L2</G>{' '}
             <G k="dropout">dropout</G> o parar cuando el acierto en validación deja de mejorar (
             <code>early_stopping=True</code>).
           </p>
           <p>
-            Para explicar predicciones existen técnicas como <G k="shap">SHAP</G>, pero son aproximadas.
+            Para explicar predicciones existen técnicas como <G k="shap" after=",">SHAP</G> pero son aproximadas.
           </p>
         </>
       ),
@@ -212,8 +212,8 @@ const mlp: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Tampoco es la mejor red para imágenes grandes (usa una <G k="redConvolucional">red convolucional</G>) ni para
-          texto o secuencias largas (usa un <G k="transformer">Transformer</G>): el MLP trata cada entrada por separado
+          Tampoco es la mejor red para imágenes grandes (usa una <G k="redConvolucional" after=")">red convolucional</G> ni para
+          texto o secuencias largas (usa un <G k="transformer" after="):">Transformer</G> el MLP trata cada entrada por separado
           y no aprovecha qué píxeles son vecinos ni el orden de las palabras.
         </p>
       ),
@@ -236,8 +236,8 @@ const mlp: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            En producción las redes se entrenan con <G k="pytorch">PyTorch o TensorFlow</G>, en <G k="gpu">GPU</G> y por{' '}
-            <G k="batch">lotes</G>. El notebook de Colab trae, como celda opcional, una red equivalente en PyTorch: su
+            En producción las redes se entrenan con <G k="pytorch" after=",">PyTorch o TensorFlow</G> en <G k="gpu">GPU</G> y por{' '}
+            <G k="batch" after=".">lotes</G> El notebook de Colab trae, como celda opcional, una red equivalente en PyTorch: su
             acierto es parecido, no idéntico, porque cambian el sorteo de los pesos y otros detalles del entrenamiento.
           </p>
           <p>

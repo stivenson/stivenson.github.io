@@ -23,7 +23,7 @@ const cnn: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="supervisado">Supervisado</G>:
+              <G k="supervisado" after=":">Supervisado</G>
             </b>{' '}
             aprende de imágenes que ya traen su etiqueta («gato», «tumor», «7»). Es una{' '}
             <G k="redNeuronal">red neuronal</G> pensada para datos en cuadrícula, como los píxeles de una foto.
@@ -31,7 +31,7 @@ const cnn: AlgorithmModule = {
           <p>
             En vez de mirar cada píxel por separado, recorre la imagen con <b>filtros pequeños</b> (por ejemplo, de 3×3)
             que detectan patrones locales: bordes, esquinas, texturas. Esa operación es la{' '}
-            <G k="convolucion">convolución</G>, y de ahí el nombre: <i>Convolutional Neural Network</i>.
+            <G k="convolucion" after=",">convolución</G> y de ahí el nombre: <i>Convolutional Neural Network</i>.
           </p>
         </>
       ),
@@ -63,7 +63,7 @@ const cnn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Partir de una red entrenada con millones de fotos (<G k="transferencia">aprendizaje por transferencia</G>)
+          Partir de una red entrenada con millones de fotos <G before="(" k="transferencia" after=")">aprendizaje por transferencia</G>
           permite buenos resultados con cientos de imágenes por clase. Desde 2020 los Vision{' '}
           <G k="transformer">Transformers</G> compiten con ellas cuando hay muchísimos datos.
         </p>
@@ -84,7 +84,7 @@ const cnn: AlgorithmModule = {
             su máximo y deja un mapa de 3×3.
           </p>
           <Tex block>
-            {'S_{i,j} = \\sum_{a=0}^{2} \\sum_{b=0}^{2} I_{i+a,\\, j+b}\\, K_{a,b}, \\qquad A = \\max(0, S)'}
+            {'\\begin{gathered} S_{i,j} = \\sum_{a=0}^{2} \\sum_{b=0}^{2} I_{i+a,\\, j+b}\\, K_{a,b} \\\\ A = \\max(0, S) \\end{gathered}'}
           </Tex>
           <p>
             <Tex>{'I'}</Tex> es la imagen, <Tex>{'K'}</Tex> el filtro (sus 9 pesos se aprenden) y <Tex>{'A'}</Tex> el
@@ -102,7 +102,7 @@ const cnn: AlgorithmModule = {
           <p>
             Con una imagen en color, cada filtro tiene 3×3×3 pesos (uno por canal rojo, verde y azul). El entrenamiento
             es el de cualquier red: <G k="retropropagacion">retropropagación</G> y{' '}
-            <G k="descensoGradiente">descenso de gradiente</G>.
+            <G k="descensoGradiente" after=".">descenso de gradiente</G>
           </p>
         </>
       ),
@@ -126,7 +126,7 @@ const cnn: AlgorithmModule = {
           La <G k="convolucion">convolución</G> es equivariante: si el 7 se mueve, el mapa se mueve igual. El{' '}
           <G k="pooling">pooling</G> añade un poco de invariancia: el resumen casi no cambia ante desplazamientos de un
           píxel, pero no ante giros ni cambios de escala: si todas las fotos de entrenamiento están derechas, una foto
-          girada puede fallar. Para eso se usa el <G k="aumentoDatos">aumento de datos</G>.
+          girada puede fallar. Para eso se usa el <G k="aumentoDatos" after=".">aumento de datos</G>
         </p>
       ),
     },
@@ -148,7 +148,7 @@ const cnn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En 2012, AlexNet, una <G k="redConvolucional">red convolucional</G> entrenada en <G k="gpu">GPU</G>, ganó el
+          En 2012, AlexNet, una <G k="redConvolucional">red convolucional</G> entrenada en <G k="gpu" after=",">GPU</G> ganó el
           concurso ImageNet con un error top-5 de 15 % (falla si la clase correcta no está entre sus 5 primeras
           opciones), contra 26 % del segundo. Compartir pesos también hace que el modelo resista mejor el{' '}
           <G k="overfitting">sobreajuste</G> que una red densa con las mismas salidas, porque tiene muchos menos pesos.
@@ -162,10 +162,10 @@ const cnn: AlgorithmModule = {
             <b>Necesita muchas imágenes etiquetadas:</b> miles por clase si se entrena desde cero.
           </li>
           <li>
-            <b>Costosa:</b> entrenar una red grande toma horas o días en <G k="gpu">GPU</G>.
+            <b>Costosa:</b> entrenar una red grande toma horas o días en <G k="gpu" after=".">GPU</G>
           </li>
           <li>
-            <b>Caja negra:</b> se pueden dibujar los <G k="mapaActivacion">mapas de activación</G>, pero no explican del
+            <b>Caja negra:</b> se pueden dibujar los <G k="mapaActivacion" after=",">mapas de activación</G> pero no explican del
             todo por qué decide.
           </li>
         </ul>
@@ -202,7 +202,7 @@ const cnn: AlgorithmModule = {
         <>
           <p>
             <b>Reconocimiento facial e imágenes médicas.</b> Desbloquear el teléfono con la cara o señalar zonas
-            sospechosas en una radiografía son tareas de <G k="redConvolucional">redes convolucionales</G>.
+            sospechosas en una radiografía son tareas de <G k="redConvolucional" after=".">redes convolucionales</G>
           </p>
           <p>
             El ejercicio hace a mano lo que hace la primera capa: pasa dos filtros de 3×3 sobre un «7» de 8×8 píxeles.
@@ -215,7 +215,7 @@ const cnn: AlgorithmModule = {
       deepDive: (
         <p>
           En la práctica no se programan los filtros: se define la red con <G k="pytorch">PyTorch o TensorFlow</G> y se
-          parte de una red ya entrenada (<G k="transferencia">ajuste fino</G>). El notebook de Colab trae, como celda
+          parte de una red ya entrenada <G before="(" k="transferencia" after=").">ajuste fino</G> El notebook de Colab trae, como celda
           opcional, la misma <G k="convolucion">convolución</G> hecha con PyTorch, que da el mismo mapa.
         </p>
       ),

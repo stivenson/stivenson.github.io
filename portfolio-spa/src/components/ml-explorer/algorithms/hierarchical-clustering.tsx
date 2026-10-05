@@ -23,14 +23,14 @@ const hierarchicalClustering: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="noSupervisado">No supervisado</G>:
+              <G k="noSupervisado" after=":">No supervisado</G>
             </b>{' '}
             los datos no traen respuesta. El algoritmo agrupa lo parecido sin que nadie le diga qué grupos existen.
           </p>
           <p>
             En vez de dar un solo reparto, arma un <b>árbol de parecidos</b>: empieza con cada dato solo y une, paso a
             paso, los dos grupos más cercanos hasta tener uno. Ese árbol se dibuja como un{' '}
-            <G k="dendrograma">dendrograma</G>, y cortarlo a una altura da los grupos.
+            <G k="dendrograma" after=",">dendrograma</G> y cortarlo a una altura da los grupos.
           </p>
           <p>
             <b>¿Cómo se evalúa sin respuestas?</b> Con pistas, no con un acierto: un salto grande de altura entre dos
@@ -77,16 +77,16 @@ const hierarchicalClustering: AlgorithmModule = {
             <b>Ejemplo:</b> cuatro puntos sobre una recta, en 0, 1, 5 y 7. Primero se unen 0 y 1 (distancia 1).
             Luego 5 y 7 (distancia 2). Al final se unen los dos grupos: la distancia entre ellos es el promedio de las
             4 distancias entre sus puntos, (5 + 7 + 4 + 6) / 4 = 5.5. Esas tres alturas (1, 2 y 5.5) son las del{' '}
-            <G k="dendrograma">dendrograma</G>.
+            <G k="dendrograma" after=".">dendrograma</G>
           </p>
           <p>
-            Esa regla para medir la distancia entre grupos se llama <G k="enlace">enlace</G>. Con enlace promedio:
+            Esa regla para medir la distancia entre grupos se llama <G k="enlace" after=".">enlace</G> Con enlace promedio:
           </p>
           <Tex block>{'d(A, B) = \\frac{1}{|A|\\,|B|} \\sum_{a \\in A} \\sum_{b \\in B} d(a, b)'}</Tex>
           <p>
             <Tex>{'|A|'}</Tex> y <Tex>{'|B|'}</Tex> son los tamaños de los grupos. En cada paso se unen los dos grupos
-            con menor <Tex>{'d(A, B)'}</Tex>. Cortar el árbol a la altura <Tex>{'h'}</Tex> deja juntos los grupos que
-            se unieron por debajo de <Tex>{'h'}</Tex>.
+            con menor <Tex after=".">{'d(A, B)'}</Tex> Cortar el árbol a la altura <Tex>{'h'}</Tex> deja juntos los grupos que
+            se unieron por debajo de <Tex after=".">{'h'}</Tex>
           </p>
         </>
       ),
@@ -122,7 +122,7 @@ const hierarchicalClustering: AlgorithmModule = {
       deepDive: (
         <p>
           Con distancia euclidiana valen las mismas precauciones que en K-Means: <G k="escalado">escalar</G> las{' '}
-          <G k="feature">features</G> y vigilar los <G k="outlier">outliers</G>. También supone que una jerarquía tiene
+          <G k="feature">features</G> y vigilar los <G k="outlier" after=".">outliers</G> También supone que una jerarquía tiene
           sentido: el árbol siempre anida los grupos (un grupo de 3 vive dentro de uno de 8), aunque los datos no lo
           hagan.
         </p>
@@ -164,7 +164,7 @@ const hierarchicalClustering: AlgorithmModule = {
             árbol.
           </li>
           <li>
-            <b>El resultado depende del <G k="enlace">enlace</G>:</b> simple, completo, promedio o Ward pueden dar
+            <b>El resultado depende del <G k="enlace" after=":">enlace</G></b> simple, completo, promedio o Ward pueden dar
             árboles muy distintos con los mismos datos.
           </li>
         </ul>
@@ -173,7 +173,7 @@ const hierarchicalClustering: AlgorithmModule = {
         <p>
           En el simulador, el punto 12 queda entre dos grupos y termina unido al de la derecha a altura 2.15: un
           punto ambiguo se asigna igual que uno claro, sin aviso. Con datos grandes se agrupa primero con K-Means en
-          unos cientos de grupos pequeños y luego se aplica el jerárquico a sus <G k="centroide">centroides</G>.
+          unos cientos de grupos pequeños y luego se aplica el jerárquico a sus <G k="centroide" after=".">centroides</G>
         </p>
       ),
     },

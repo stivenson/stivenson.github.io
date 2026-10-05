@@ -201,7 +201,10 @@ describe('AlgorithmPanel', () => {
 describe('LaTeX de los algoritmos', () => {
   // Un `\;` en un string JS (en vez de `\\;`) llega a KaTeX como `;` y se ve un punto y coma suelto.
   const texWithStraySemicolon = (html: string) =>
-    Array.from(html.matchAll(/<annotation encoding="application\/x-tex">([\s\S]*?)<\/annotation>/g), (m) => m[1]).filter(
+    Array.from(html.matchAll(/<annotation encoding="application\/x-tex">([\s\S]*?)<\/annotation>/g), (m) =>
+      // `&` (columnas de aligned) sale como `&amp;`: su «;» no es LaTeX.
+      m[1].replace(/&(amp|lt|gt|quot|#x27);/g, '&'),
+    ).filter(
       // Un `\t`, `\f`, `\b`… sin doble barra llega como carácter de control (`\text` → tabulador + «ext»).
       (tex) => /(^|[^\\]);/.test(tex) || /[\x00-\x1f]/.test(tex),
     );

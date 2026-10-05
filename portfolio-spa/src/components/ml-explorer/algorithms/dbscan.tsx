@@ -23,9 +23,9 @@ const dbscan: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="noSupervisado">No supervisado</G>:
+              <G k="noSupervisado" after=":">No supervisado</G>
             </b>{' '}
-            los datos no traen respuesta. El algoritmo descubre los grupos (<G k="cluster">clusters</G>) solo.
+            los datos no traen respuesta. El algoritmo descubre los grupos <G before="(" k="cluster" after=")">clusters</G> solo.
           </p>
           <p>
             DBSCAN llama grupo a <b>toda zona con muchos puntos juntos</b>, tenga la forma que tenga, y deja fuera
@@ -43,7 +43,7 @@ const dbscan: AlgorithmModule = {
         <p>
           DBSCAN viene de <i>Density-Based Spatial Clustering of Applications with Noise</i>: agrupamiento espacial
           basado en densidad para datos con ruido (Ester y otros, 1996). Su versión moderna,{' '}
-          <G k="hdbscan">HDBSCAN</G>, prueba todas las densidades a la vez; OPTICS, también en scikit-learn, es
+          <G k="hdbscan" after=",">HDBSCAN</G> prueba todas las densidades a la vez; OPTICS, también en scikit-learn, es
           otra opción para grupos de densidades distintas.
         </p>
       ),
@@ -67,7 +67,7 @@ const dbscan: AlgorithmModule = {
         <p>
           Con un índice espacial (árboles KD o Ball) cada búsqueda de vecinos es rápida, y DBSCAN escala a cientos
           de miles de puntos en pocas dimensiones. Con muchas <G k="feature">features</G> las distancias se
-          parecen todas y la densidad pierde sentido (ver <G k="altaDimension">alta dimensionalidad</G>).
+          parecen todas y la densidad pierde sentido (ver <G k="altaDimension" after=").">alta dimensionalidad</G>
         </p>
       ),
     },
@@ -81,10 +81,10 @@ const dbscan: AlgorithmModule = {
             5.5 tienen 2 cada uno y ningún núcleo cerca: son ruido.
           </p>
           <p>Las reglas, para cada punto p:</p>
-          <Tex block>{'N_\\varepsilon(p) = \\{\\, q : d(p, q) \\le \\varepsilon \\,\\}, \\qquad p \\text{ es núcleo si } |N_\\varepsilon(p)| \\ge \\text{minPts}'}</Tex>
+          <Tex block>{'\\begin{gathered} N_\\varepsilon(p) = \\{\\, q : d(p, q) \\le \\varepsilon \\,\\} \\\\ p \\text{ es núcleo si } |N_\\varepsilon(p)| \\ge \\text{minPts} \\end{gathered}'}</Tex>
           <p>
             Dos núcleos vecinos van al mismo grupo, y así se encadena todo el grupo. Un punto que no es núcleo pero
-            está en el vecindario de uno es <G k="puntoNucleo">punto de borde</G>; el resto es ruido.
+            está en el vecindario de uno es <G k="puntoNucleo" after=";">punto de borde</G> el resto es ruido.
           </p>
         </>
       ),
@@ -108,7 +108,7 @@ const dbscan: AlgorithmModule = {
           </p>
           <p>
             Como todo método de distancias, también supone <G k="feature">features</G> en escalas comparables y una
-            distancia con sentido. En el ejercicio se usa la <G k="haversine">distancia haversine</G>, que mide
+            distancia con sentido. En el ejercicio se usa la <G k="haversine" after=",">distancia haversine</G> que mide
             sobre la Tierra a partir de latitud y longitud.
           </p>
         </>
@@ -116,7 +116,7 @@ const dbscan: AlgorithmModule = {
       deepDive: (
         <p>
           Para elegir ε se suele ordenar la distancia de cada punto a su vecino número minPts, contándose él
-          mismo como el primero, y buscar el codo de esa curva. Para <G k="minPts">minPts</G>, una regla común es
+          mismo como el primero, y buscar el codo de esa curva. Para <G k="minPts" after=",">minPts</G> una regla común es
           el doble del número de features (4 en un mapa); en el ejercicio se usa 5, un poco más exigente.
         </p>
       ),
@@ -148,11 +148,11 @@ const dbscan: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>Sensible a <G k="epsilon">ε</G>:</b> en el simulador, con ε = 0.8 las dos lunas salen partidas en 4
+            <b>Sensible a <G k="epsilon" after=":">ε</G></b> en el simulador, con ε = 0.8 las dos lunas salen partidas en 4
             grupos; con 1.1 se funden en 1.
           </li>
           <li>
-            <b>Sensible a <G k="minPts">minPts</G>:</b> con ε = 1.0, subir minPts de 4 a 6 pasa de 2 grupos y 4
+            <b>Sensible a <G k="minPts" after=":">minPts</G></b> con ε = 1.0, subir minPts de 4 a 6 pasa de 2 grupos y 4
             puntos de ruido a 4 grupos y 13 de ruido.
           </li>
           <li>
@@ -196,7 +196,7 @@ const dbscan: AlgorithmModule = {
           </p>
           <p>
             El ejercicio simula 145 reportes de huecos en la vía: un barrio, una avenida larga, un mercado y reportes
-            aislados. Con la <G k="haversine">distancia haversine</G>, <G k="epsilon">ε</G> = 300 m y{' '}
+            aislados. Con la <G k="haversine" after=",">distancia haversine</G> <G k="epsilon">ε</G> = 300 m y{' '}
             <G k="minPts">minPts</G> = 5, encuentra 3 zonas (62, 40 y 30 reportes) y deja 13 como ruido.
           </p>
           <p>

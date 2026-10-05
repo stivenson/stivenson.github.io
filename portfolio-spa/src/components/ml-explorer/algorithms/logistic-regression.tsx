@@ -23,7 +23,7 @@ const logisticRegression: AlgorithmModule = {
         <>
           <p>
             <b>Supervisado:</b> aprende de correos que ya vienen marcados como «spam» o «normal» (la{' '}
-            <G k="etiqueta">etiqueta</G>).
+            <G k="etiqueta" after=").">etiqueta</G>
           </p>
           <p>
             A pesar del nombre, <b>sirve para clasificar</b> (sí/no, spam/normal, paga/no paga), no para predecir
@@ -34,7 +34,7 @@ const logisticRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Es un modelo lineal generalizado: modela <Tex>{'P(y=1 \\mid x)'}</Tex> aplicando la función <G k="sigmoide">sigmoide</G> a una
-          combinación lineal de las <G k="feature">features</G>. Con más de dos clases se usa la versión multinomial (<G k="softmax">softmax</G>).
+          combinación lineal de las <G k="feature" after=".">features</G> Con más de dos clases se usa la versión multinomial <G before="(" k="softmax" after=").">softmax</G>
         </p>
       ),
     },
@@ -58,7 +58,7 @@ const logisticRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Cuando el modelo está bien especificado y hay datos suficientes, sus probabilidades suelen estar bien{' '}
-          <G k="calibracion">calibradas</G>: de los casos a los que asigna 70 %, cerca de 7 de cada 10 son positivos. Entrena rápido incluso
+          <G k="calibracion" after=":">calibradas</G> de los casos a los que asigna 70 %, cerca de 7 de cada 10 son positivos. Entrena rápido incluso
           con millones de filas y miles de <G k="feature">features</G> dispersas, como las palabras de un texto.
         </p>
       ),
@@ -81,11 +81,11 @@ const logisticRegression: AlgorithmModule = {
       deepDive: (
         <>
           <p>Los pesos se eligen minimizando la <G k="entropia">entropía</G> cruzada (equivale a maximizar la verosimilitud):</p>
-          <Tex block>{'\\min_b\\ -\\frac{1}{n}\\sum_i \\left[y_i \\log p_i + (1-y_i)\\log(1-p_i)\\right]'}</Tex>
+          <Tex block>{'\\begin{aligned} \\min_b\\ -\\frac{1}{n}\\sum_i \\Big[\\, & y_i \\log p_i \\\\ & + (1-y_i)\\log(1-p_i) \\,\\Big] \\end{aligned}'}</Tex>
           <p>
             No hay solución cerrada: se resuelve con <G k="descensoGradiente">descenso de gradiente</G> o con el método de Newton (scikit-learn
-            usa por defecto L-BFGS, una variante de Newton que aproxima la curvatura, y le suma una penalización <G k="regularizacionL1L2">L2</G>;
-            ver Supuestos). El <G k="gradiente">gradiente</G> es simple: <Tex>{'\\frac{1}{n}\\sum_i (p_i - y_i)\\,x_i'}</Tex>. El botón
+            usa por defecto L-BFGS, una variante de Newton que aproxima la curvatura, y le suma una penalización <G k="regularizacionL1L2" after=";">L2</G>
+            ver Supuestos). El <G k="gradiente">gradiente</G> es simple: <Tex after=".">{'\\frac{1}{n}\\sum_i (p_i - y_i)\\,x_i'}</Tex> El botón
             «Mejor ajuste» del simulador usa Newton, que además aprovecha la curvatura: llega al óptimo en pocas
             iteraciones (unas 8 con estos datos).
           </p>
@@ -96,7 +96,7 @@ const logisticRegression: AlgorithmModule = {
       essential: (
         <>
           <p>
-            Supone que el <G k="logOdds">log-odds</G> cambia en línea recta con cada <G k="feature">feature</G>.
+            Supone que el <G k="logOdds">log-odds</G> cambia en línea recta con cada <G k="feature" after=".">feature</G>
           </p>
           <p>
             En palabras simples: cada «gratis» adicional multiplica los <G k="odds">odds</G> del spam (probabilidad de spam ÷
@@ -110,7 +110,7 @@ const logisticRegression: AlgorithmModule = {
       deepDive: (
         <p>
           <Tex>{'e^{b_j}'}</Tex> es la razón de odds: subir <Tex>{'x_j'}</Tex> en una unidad, con las demás features
-          fijas, multiplica los odds por <Tex>{'e^{b_j}'}</Tex>. Si las clases se separan perfectamente, los pesos
+          fijas, multiplica los odds por <Tex after=".">{'e^{b_j}'}</Tex> Si las clases se separan perfectamente, los pesos
           crecen sin límite; por eso scikit-learn aplica por defecto <G k="regularizacionL1L2">regularización L2</G> con C = 1 (C es el inverso de
           la fuerza: C más pequeño, pesos más pequeños). Los pesos del ejercicio salen con esa regularización.
         </p>
@@ -125,13 +125,13 @@ const logisticRegression: AlgorithmModule = {
           </li>
           <li>
             <b>
-              <G k="interpretable">Interpretable</G>:
+              <G k="interpretable" after=":">Interpretable</G>
             </b>{' '}
             cada peso dice si una señal empuja hacia «sí» o hacia «no», y cuánto, si las demás señales no cambian.
           </li>
           <li>
             <b>
-              Rápida y difícil de <G k="overfitting">sobreajustar</G>:
+              Rápida y difícil de <G k="overfitting" after=":">sobreajustar</G>
             </b> con pocas <G k="feature">features</G> entrena en segundos y rara vez memoriza los
             datos.
           </li>
@@ -168,7 +168,7 @@ const logisticRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Se puede curvar la frontera con features polinómicas, a costa de interpretabilidad. Con clases muy
-          desbalanceadas (1 fraude por cada 1 000 transacciones) hay que ajustar los pesos de clase o el <G k="umbral">umbral</G>.
+          desbalanceadas (1 fraude por cada 1 000 transacciones) hay que ajustar los pesos de clase o el <G k="umbral" after=".">umbral</G>
         </p>
       ),
     },
@@ -185,7 +185,7 @@ const logisticRegression: AlgorithmModule = {
       deepDive: (
         <p>
           Señal de alarma: un árbol o un Random Forest acierta claramente más con los mismos datos. Eso sugiere que la
-          frontera no es lineal o que faltan interacciones entre <G k="feature">features</G>.
+          frontera no es lineal o que faltan interacciones entre <G k="feature" after=".">features</G>
         </p>
       ),
     },
@@ -194,20 +194,20 @@ const logisticRegression: AlgorithmModule = {
         <>
           <p>
             <b>Detección de spam.</b> Los filtros de spam suman evidencia de muchas señales: palabras, enlaces,
-            remitente. La regresión logística hace esa suma y además permite ajustar el <G k="umbral">umbral</G>: es mejor dejar pasar un
+            remitente. La regresión logística hace esa suma y además permite ajustar el <G k="umbral" after=":">umbral</G> es mejor dejar pasar un
             spam que perder un correo importante.
           </p>
           <p>
             El ejercicio crea 400 correos de juguete con tres señales: cuántas veces dice «gratis», cuántos enlaces
             trae y si el remitente es conocido. Mira los pesos (¿qué señal aleja del spam?): el 1.84 de «gratis»
             significa que cada «gratis» extra multiplica los <G k="odds">odds</G> de spam por e^1.84 ≈ 6.3, con las otras señales
-            fijas. Revisa también la <G k="matrizConfusion">matriz de confusión</G>.
+            fijas. Revisa también la <G k="matrizConfusion" after=".">matriz de confusión</G>
           </p>
         </>
       ),
       deepDive: (
         <p>
-          En producción el texto se convierte en miles de <G k="feature">features</G> (bolsa de palabras o TF-IDF) con <G k="regularizacionL1L2">regularización L2</G>,
+          En producción el texto se convierte en miles de <G k="feature">features</G> (bolsa de palabras o TF-IDF) con <G k="regularizacionL1L2" after=",">regularización L2</G>
           y el umbral se elige con la curva de precisión y exhaustividad, no con el 0.5 por defecto.
         </p>
       ),

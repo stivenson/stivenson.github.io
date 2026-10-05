@@ -54,9 +54,9 @@ const decisionTree: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          No necesita escalar las <G k="feature">features</G>. CART admite categóricas en teoría, pero scikit-learn exige convertirlas
+          No necesita escalar las <G k="feature" after=".">features</G> CART admite categóricas en teoría, pero scikit-learn exige convertirlas
           antes a números (por ejemplo, con OrdinalEncoder). Además es la pieza básica de Random Forest y Gradient
-          Boosting, los modelos que suelen ganar en <G k="tabular">datos tabulares</G>.
+          Boosting, los modelos que suelen ganar en <G k="tabular" after=".">datos tabulares</G>
         </p>
       ),
     },
@@ -69,9 +69,9 @@ const decisionTree: AlgorithmModule = {
           </p>
           <p>
             <b>Ejemplo:</b> 10 clientes, 5 pagan y 5 no. Qué tan mezclado está el grupo se mide con la{' '}
-            <G k="gini">impureza de Gini</G>:
+            <G k="gini" after=":">impureza de Gini</G>
           </p>
-          <Tex block>{'G = 1 - p_{\\text{paga}}^2 - p_{\\text{impago}}^2 = 1 - 0.5^2 - 0.5^2 = 0.5'}</Tex>
+          <Tex block>{'\\begin{aligned} G &= 1 - p_{\\text{paga}}^2 - p_{\\text{impago}}^2 \\\\ &= 1 - 0.5^2 - 0.5^2 = 0.5 \\end{aligned}'}</Tex>
           <p>
             La pregunta «¿deuda ≤ 0.4?» deja a un lado 4 que pagan y 1 que no (G = 1 − 0.8² − 0.2² = 0.32), y al otro 1
             que paga y 4 que no (también 0.32). La impureza baja de 0.5 a 0.32. El árbol prueba todas las preguntas
@@ -98,7 +98,7 @@ const decisionTree: AlgorithmModule = {
         <>
           <p>
             <b>Ninguno fuerte.</b> No supone rectas ni distribuciones, y no necesita que las <G k="feature">features</G> estén en la
-            misma escala: solo pregunta «¿x ≤ <G k="umbral">umbral</G>?».
+            misma escala: solo pregunta «¿x ≤ <G k="umbral" after="?».">umbral</G>
           </p>
           <p>Eso lo hace muy flexible, y también fácil de engañar: si lo dejas crecer, inventa una regla para cada dato raro.</p>
         </>
@@ -140,7 +140,7 @@ const decisionTree: AlgorithmModule = {
         <ul>
           <li>
             <b>
-              <G k="overfitting">Sobreajuste</G>:
+              <G k="overfitting" after=":">Sobreajuste</G>
             </b>{' '}
             un árbol profundo memoriza. En el ejercicio, con profundidad 15 acierta 99.7 % en entrenamiento pero solo
             70 % con datos nuevos.
@@ -155,7 +155,7 @@ const decisionTree: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Esa inestabilidad (alta varianza) es justo lo que corrigen los <G k="ensamble">ensambles</G>: Random Forest
+          Esa inestabilidad (alta varianza) es justo lo que corrigen los <G k="ensamble" after=":">ensambles</G> Random Forest
           promedia muchos árboles (100 por defecto en scikit-learn), cada uno entrenado con una muestra distinta de los
           datos y con un subconjunto al azar de <G k="feature">features</G> en cada corte (en clasificación).
         </p>
@@ -165,11 +165,11 @@ const decisionTree: AlgorithmModule = {
       essential: (
         <>
           <p className="mlx-rule">
-            No uses un árbol solo (sin <G k="ensamble">ensamble</G>) cuando los datos son ruidosos o el patrón es complejo y lo que importa
+            No uses un árbol solo (sin <G k="ensamble" after=")">ensamble</G> cuando los datos son ruidosos o el patrón es complejo y lo que importa
             es acertar.
           </p>
           <p>
-            Ahí, o <G k="overfitting">sobreajusta</G>, o queda tan podado que no capta el patrón. Úsalo para explicar y deja la
+            Ahí, o <G k="overfitting" after=",">sobreajusta</G> o queda tan podado que no capta el patrón. Úsalo para explicar y deja la
             predicción a un ensamble.
           </p>
         </>
@@ -190,7 +190,7 @@ const decisionTree: AlgorithmModule = {
           </p>
           <p>
             El ejercicio crea 500 clientes de juguete con ingreso, deuda y atrasos, y un 12 % de probabilidad de que
-            cada etiqueta se voltee al azar (<G k="ruido">ruido</G>). Lee las reglas del árbol y la tabla final: ¿qué
+            cada etiqueta se voltee al azar <G before="(" k="ruido" after=").">ruido</G> Lee las reglas del árbol y la tabla final: ¿qué
             pasa con la <G k="exactitud">exactitud</G> en datos nuevos cuando el árbol crece? Fíjate también en dos detalles: «ingreso ≤
             2.50» lleva a «paga» por ambos lados (el corte solo dejó grupos más puros), y la hoja «deuda &gt; 0.88 →
             paga» se apoya en muy pocos clientes: es ruido, no una regla. Para evitarlo se fija{' '}

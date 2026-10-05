@@ -23,18 +23,18 @@ const kMeans: AlgorithmModule = {
         <>
           <p>
             <b>
-              <G k="noSupervisado">No supervisado</G>:
+              <G k="noSupervisado" after=":">No supervisado</G>
             </b>{' '}
             los datos <b>no traen respuesta</b>. Nadie le dice al algoritmo a qué grupo pertenece cada cliente; tiene
-            que descubrir los grupos (<G k="cluster">clusters</G>) solo, a partir de qué tan parecidos son.
+            que descubrir los grupos <G before="(" k="cluster" after=")">clusters</G> solo, a partir de qué tan parecidos son.
           </p>
           <p>
             K-Means reparte los datos en <b>K grupos</b>, con K elegido por ti. Cada grupo queda representado por su{' '}
-            <G k="centroide">centroide</G>, el punto promedio de sus miembros.
+            <G k="centroide" after=",">centroide</G> el punto promedio de sus miembros.
           </p>
           <p>
             <b>¿Cómo se evalúa sin respuestas?</b> No hay «acierto» que medir. Se mira qué tan apretados quedan los
-            grupos (la <G k="inercia">inercia</G>) y qué tan separados están entre sí (la <G k="silueta">silueta</G>).
+            grupos (la <G k="inercia" after=")">inercia</G> y qué tan separados están entre sí (la <G k="silueta" after=").">silueta</G>
             Ninguna de las dos dice si los grupos sirven para tu negocio: eso lo decide alguien que conozca los datos.
           </p>
         </>
@@ -42,7 +42,7 @@ const kMeans: AlgorithmModule = {
       deepDive: (
         <p>
           La inercia siempre baja al subir K (con K igual al número de puntos vale 0), así que no sirve sola para
-          elegir K: se busca el punto donde deja de bajar mucho, el <G k="codo">método del codo</G>. La silueta sí
+          elegir K: se busca el punto donde deja de bajar mucho, el <G k="codo" after=".">método del codo</G> La silueta sí
           puede empeorar con K de más. En el ejercicio, ambas apuntan a K = 3; con datos reales muchas veces no hay
           un codo claro. Y ojo: la <G k="silueta">silueta</G> también premia los grupos redondos, así que con formas
           alargadas puede preferir un reparto peor.
@@ -67,7 +67,7 @@ const kMeans: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Cada paso cuesta del orden de n × K × d operaciones (puntos × grupos × <G k="feature">features</G>), así que
+          Cada paso cuesta del orden de n × K × d operaciones (puntos × grupos × <G k="feature" after="),">features</G> así que
           escala a millones de filas. Con muchos datos, <code>MiniBatchKMeans</code> actualiza los{' '}
           <G k="centroide">centroides</G> con lotes pequeños (y con <code>partial_fit</code> puede recibirlos por
           partes).
@@ -85,7 +85,7 @@ const kMeans: AlgorithmModule = {
             y 9.5, nadie cambia de grupo y el algoritmo para.
           </p>
           <p>
-            Lo que minimiza es la <G k="inercia">inercia</G>: la suma de las distancias al cuadrado de cada punto a su
+            Lo que minimiza es la <G k="inercia" after=":">inercia</G> la suma de las distancias al cuadrado de cada punto a su
             centroide. Al final del ejemplo vale 0.25 × 4 = 1.
           </p>
           <Tex block>{'J = \\sum_{i=1}^{n} \\lVert x_i - \\mu_{c(i)} \\rVert^2'}</Tex>
@@ -99,14 +99,14 @@ const kMeans: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Es el algoritmo de Lloyd. Cada paso no puede subir <Tex>{'J'}</Tex>: asignar al centroide más cercano lo
+            Es el algoritmo de Lloyd. Cada paso no puede subir <Tex after=":">{'J'}</Tex> asignar al centroide más cercano lo
             baja o lo deja igual, y el promedio es el punto que minimiza la suma de distancias al cuadrado de un grupo.
             Como hay un número finito de formas de repartir los puntos, siempre termina.
           </p>
           <p>
-            Pero termina en un <G k="minimoLocal">mínimo local</G>, que depende del arranque. En el simulador, con K = 3
+            Pero termina en un <G k="minimoLocal" after=",">mínimo local</G> que depende del arranque. En el simulador, con K = 3
             el arranque A baja la inercia de 294.05 a 15.18 en 6 pasos; el B se atasca en 123.31, 8 veces peor.
-            scikit-learn elige los centroides iniciales con <G k="kmeansPP">k-means++</G>, que los reparte lejos
+            scikit-learn elige los centroides iniciales con <G k="kmeansPP" after=",">k-means++</G> que los reparte lejos
             entre sí, y con <code>n_init=10</code> (como en el ejercicio) repite 10 arranques y se queda con la menor
             inercia. Ojo: desde la versión 1.4 el valor por defecto es <code>n_init="auto"</code>, que con k-means++
             hace un solo arranque.
@@ -121,12 +121,12 @@ const kMeans: AlgorithmModule = {
             Supone <b>grupos redondeados y de tamaño parecido</b>: cada punto va al <G k="centroide">centroide</G> más cercano, así que la
             frontera entre dos grupos es siempre una recta (un plano, con más features) a mitad de camino entre los
             dos centroides. Si los grupos son lunas, anillos o franjas
-            largas, los corta mal (ver <G k="grupoGlobular">grupos globulares</G>).
+            largas, los corta mal (ver <G k="grupoGlobular" after=").">grupos globulares</G>
           </p>
           <p>
             También supone <b>que la distancia tiene sentido</b>: todas las <G k="feature">features</G> deben estar en
             escalas comparables. En el ejercicio el gasto está en cientos de miles de pesos y las visitas en unidades; sin{' '}
-            <G k="escalado">escalarlas</G>, el gasto taparía a las visitas.
+            <G k="escalado" after=",">escalarlas</G> el gasto taparía a las visitas.
           </p>
         </>
       ),
@@ -173,7 +173,7 @@ const kMeans: AlgorithmModule = {
             <b>Depende del arranque:</b> en el simulador, el arranque B termina con una inercia 8 veces mayor que el A.
           </li>
           <li>
-            <b>Sensible a <G k="outlier">outliers</G>:</b> un punto muy lejano arrastra el promedio de su grupo y
+            <b>Sensible a <G k="outlier" after=":">outliers</G></b> un punto muy lejano arrastra el promedio de su grupo y
             puede quedarse con un <G k="centroide">centroide</G> para él solo.
           </li>
         </ul>
