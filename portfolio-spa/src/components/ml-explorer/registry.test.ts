@@ -25,6 +25,7 @@ describe('registry', () => {
       'mlp',
       'cnn',
       'rnn',
+      'transformer',
     ]);
   });
 

@@ -15,6 +15,7 @@ import dbscan from './dbscan.out.txt?raw';
 import mlp from './mlp.out.txt?raw';
 import cnn from './cnn.out.txt?raw';
 import rnn from './rnn.out.txt?raw';
+import transformer from './transformer.out.txt?raw';
 /**
  * Cifras de la salida de los ejercicios que aparecen en los textos del
  * explorador. Los .out.txt se generan y verifican con Python real
@@ -179,5 +180,13 @@ describe('cifras citadas en los textos', () => {
     expect(row(50)[1]).toBe('5.8e-14');
     expect(Number(row(50)[2])).toBeLessThan(1e-12); // aun con w = 1.0 se desvanece
     expect(rnn).toContain('regla de la cadena 0.0242, numérica 0.0242');
+  });
+  it('Transformer: banco atiende 0.41 a río y sale con naturaleza 1.23; con interés, dinero 1.38; causal 0.18 / 0.82; invertir: 0.00 sin posición y 0.30 con ella', () => {
+    expect(transformer).toMatch(/^\s+banco\s+0\.09\s+0\.41\s+0\.09\s+0\.41$/m);
+    expect(transformer).toContain('«banco» después de la atención: dinero 0.41, naturaleza 1.23');
+    expect(transformer).toContain('«banco» después de la atención: dinero 1.38, naturaleza 0.35');
+    expect(transformer).toMatch(/^\s+banco\s+0\.18\s+0\.82\s+0\.00\s+0\.00$/m);
+    expect(transformer).toContain('sin codificación posicional: «banco» cambia 0.00 al invertir la frase');
+    expect(transformer).toContain('con codificación posicional: «banco» cambia 0.30 al invertir la frase');
   });
 });

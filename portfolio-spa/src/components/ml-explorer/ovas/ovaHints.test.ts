@@ -17,6 +17,8 @@ import { ALGORITHMS, AVAILABLE_SLUGS, loadAlgorithm } from '../registry';
 const BANNED: Record<string, RegExp[]> = {
   pca: [/información/i],
   dbscan: [/núcleos que se tocan/i],
+  // Sin exagerar: el simulador calcula pesos, no «entiende» ni «piensa».
+  transformer: [/\bentiende\b/i, /\bpiensa\b/i, /comprende/i],
 };
 
 /** Texto visible del <figcaption> de la OVA. */

@@ -1,0 +1,26 @@
+«el banco del río»: cuánto atiende cada palabra (fila) a cada otra (columna)
+                el    banco      del      río
+       el     0.31     0.19     0.31     0.19
+    banco     0.09     0.41     0.09     0.41
+      del     0.31     0.19     0.31     0.19
+      río     0.05     0.24     0.05     0.65
+«banco» después de la atención: dinero 0.41, naturaleza 1.23
+
+«el banco cobra interés»: cuánto atiende cada palabra (fila) a cada otra (columna)
+                el    banco    cobra  interés
+       el     0.35     0.22     0.22     0.22
+    banco     0.08     0.35     0.21     0.35
+    cobra     0.08     0.21     0.27     0.44
+  interés     0.04     0.19     0.25     0.52
+«banco» después de la atención: dinero 1.38, naturaleza 0.35
+
+Con máscara causal (estilo GPT): «banco» aún no ve «río»
+                el    banco      del      río
+       el     1.00     0.00     0.00     0.00
+    banco     0.18     0.82     0.00     0.00
+      del     0.38     0.23     0.38     0.00
+      río     0.05     0.24     0.05     0.65
+
+sin codificación posicional: «banco» cambia 0.00 al invertir la frase
+
+con codificación posicional: «banco» cambia 0.30 al invertir la frase

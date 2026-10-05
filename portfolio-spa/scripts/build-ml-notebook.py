@@ -99,6 +99,11 @@ ALGORITHMS: list[tuple[str, str, str]] = [
         "RNN (red neuronal recurrente)",
         "La memoria de una RNN mínima: cuánto influye la primera medición en la salida final.",
     ),
+    (
+        "transformer",
+        "Transformer (BERT, GPT)",
+        "Self-attention a mano con 4 palabras: cómo «banco» toma su sentido de la frase.",
+    ),
 ]
 
 PYTORCH_NOTE = (
