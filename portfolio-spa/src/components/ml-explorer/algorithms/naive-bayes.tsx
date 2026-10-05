@@ -191,7 +191,7 @@ const naiveBayes: AlgorithmModule = {
       deepDive: (
         <p>
           Con datos abundantes, una regresión logística o una SVM lineal sobre las mismas palabras suelen acertar
-          más. Para entender el significado de frases completas se usan <G k="transformer">modelos de lenguaje (Transformer)</G>.
+          más. Para captar el sentido de frases completas se usan <G k="transformer">modelos de lenguaje (Transformer)</G>.
         </p>
       ),
     },

@@ -1060,3 +1060,25 @@ p.mlx-py-error {
   flex: 1 1 220px;
   min-width: 0;
 }
+
+/* ---------- Fase 4: redes neuronales ---------- */
+
+/* MLP: los 3 sliders de cada neurona, juntos y con su nombre. */
+.mlx-ova-controls .mlx-mlp-neuron[role='group'] {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 6px 8px;
+  border: 1px solid rgba(85, 170, 255, 0.2);
+  border-radius: 6px;
+}
+
+/* CNN: el filtro se desliza a la posición siguiente. */
+.mlx-cnn-window {
+  transition: transform 0.3s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-cnn-window {
+    transition: none;
+  }
+}

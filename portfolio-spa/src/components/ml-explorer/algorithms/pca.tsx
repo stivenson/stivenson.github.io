@@ -131,7 +131,7 @@ const pca: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Para estructuras curvas existen versiones no lineales: <code>KernelPCA</code>, los autoencoders (redes que
+          Para estructuras curvas existen versiones no lineales: <code>KernelPCA</code>, los <G k="autoencoder">autoencoders</G> (redes que
           aprenden a comprimir) y, solo para dibujar, <G k="tsneUmap">t-SNE y UMAP</G>. Los{' '}
           <G k="outlier">outliers</G> también afectan a PCA: como la varianza usa cuadrados, un punto muy lejano
           puede llevarse un componente entero.

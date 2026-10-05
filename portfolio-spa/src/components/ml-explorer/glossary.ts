@@ -209,8 +209,8 @@ export const GLOSSARY = {
   },
   gradiente: {
     term: 'Gradiente',
-    what: 'La dirección en que más rápido sube el error si mueves la predicción. Ir en sentido contrario lo baja.',
-    why: 'Gradient Boosting entrena cada árbol para apuntar en esa dirección contraria; con error cuadrático, eso es el residuo.',
+    what: 'La dirección en que más rápido sube el error si mueves la predicción (o los pesos de un modelo). Ir en sentido contrario lo baja.',
+    why: 'Gradient Boosting entrena cada árbol para apuntar en esa dirección contraria (con error cuadrático, eso es el residuo); una red neuronal mueve cada peso un poco en ese sentido.',
   },
   paradaTemprana: {
     term: 'Parada temprana (early stopping)',
@@ -354,8 +354,8 @@ export const GLOSSARY = {
   },
   transformer: {
     term: 'Transformer',
-    what: 'La arquitectura de red neuronal detrás de los modelos de lenguaje actuales; lee cada palabra en el contexto de las demás.',
-    why: 'Entiende negaciones y orden, a cambio de mucho más cómputo y datos.',
+    what: 'La arquitectura de red neuronal detrás de los modelos de lenguaje actuales, como ChatGPT; procesa cada palabra en el contexto de las demás.',
+    why: 'Capta negaciones y orden de las palabras mucho mejor que contar palabras, a cambio de mucho más cómputo y datos.',
   },
   correlacion: {
     term: 'Correlación',
@@ -566,6 +566,156 @@ export const GLOSSARY = {
     term: 'Grupos globulares (convexos)',
     what: 'Grupos con forma de nube redondeada, sin entrantes: la recta entre dos de sus puntos queda dentro del grupo.',
     why: 'K-Means supone grupos así y de tamaño parecido; con lunas, anillos o franjas largas los corta mal.',
+  },
+  neurona: {
+    term: 'Neurona (artificial)',
+    what: 'Una operación pequeña: multiplica cada entrada por un peso, suma todo más un sesgo y pasa el resultado por una función de activación.',
+    why: 'Una sola neurona traza una recta (o un plano); muchas, en capas, trazan fronteras curvas.',
+  },
+  capaOculta: {
+    term: 'Capa oculta',
+    what: 'Un grupo de neuronas entre la entrada y la salida. Nadie le dice qué calcular: aprende sus propias features intermedias.',
+    why: 'Sin capas ocultas, la red es un modelo lineal; con una ya puede aproximar fronteras curvas, si tiene neuronas suficientes.',
+  },
+  funcionActivacion: {
+    term: 'Función de activación',
+    what: 'La función que dobla la suma de cada neurona: sigmoide, tanh o ReLU, por ejemplo.',
+    why: 'Sin ella, apilar capas daría otra vez una suma con pesos: una recta, por muchas capas que tenga la red.',
+  },
+  relu: {
+    term: 'ReLU',
+    what: 'La función de activación más usada: deja pasar los números positivos y convierte los negativos en 0.',
+    why: 'Es barata de calcular y, a diferencia de la sigmoide, no aplana el gradiente cuando la suma es grande.',
+  },
+  retropropagacion: {
+    term: 'Retropropagación (backpropagation)',
+    what: 'La regla de la cadena aplicada capa por capa, de la salida hacia la entrada, para saber cuánto contribuyó cada peso al error.',
+    why: 'Da el gradiente de todos los pesos en una sola pasada hacia atrás; con él, el descenso de gradiente ajusta la red.',
+  },
+  epoca: {
+    term: 'Época',
+    what: 'Una pasada completa por todos los datos de entrenamiento.',
+    why: 'Las redes suelen necesitar decenas o cientos de épocas; demasiadas pueden llevar al sobreajuste.',
+  },
+  xor: {
+    term: 'XOR (o exclusivo)',
+    what: 'La regla «sí cuando una de las dos entradas está activa, pero no las dos». En un plano, sus dos clases quedan en esquinas opuestas.',
+    why: 'Ninguna recta separa sus clases: es el ejemplo clásico de por qué hacen falta capas ocultas.',
+  },
+  convolucion: {
+    term: 'Convolución',
+    what: 'Deslizar un filtro pequeño (por ejemplo, de 3×3) por toda la imagen y, en cada posición, sumar los productos del filtro por los píxeles que cubre.',
+    why: 'El mismo filtro detecta el mismo patrón (un borde, una esquina) en cualquier lugar de la imagen.',
+  },
+  filtro: {
+    term: 'Filtro (kernel) de convolución',
+    what: 'Una cuadrícula pequeña de pesos, como 3×3, que se desliza sobre la imagen. En una CNN sus pesos se aprenden.',
+    why: 'Cada filtro se especializa en un patrón; una capa tiene decenas de filtros. No es el mismo «kernel» de la SVM.',
+  },
+  mapaActivacion: {
+    term: 'Mapa de activación (feature map)',
+    what: 'La cuadrícula de resultados de un filtro: un número por posición, alto donde la imagen se parece al patrón del filtro.',
+    why: 'Las capas siguientes trabajan sobre estos mapas, no sobre los píxeles: así combinan bordes en formas y formas en objetos.',
+  },
+  pooling: {
+    term: 'Pooling',
+    what: 'Reducir un mapa resumiendo cada bloque (por ejemplo, de 2×2) con un solo número, casi siempre el máximo.',
+    why: 'Achica el mapa a la mitad y hace que la red tolere que el patrón se mueva un píxel, más o menos. La convolución es equivariante: si el patrón se mueve, el mapa se mueve igual; el pooling añade un poco de invariancia: el resumen casi no cambia.',
+  },
+  aumentoDatos: {
+    term: 'Aumento de datos (data augmentation)',
+    what: 'Crear ejemplos nuevos a partir de los que hay: girar, recortar, voltear o cambiar el brillo de cada imagen.',
+    why: 'Con pocos datos ayuda a que la red no memorice; la etiqueta no cambia porque la foto esté un poco girada.',
+  },
+  transferencia: {
+    term: 'Aprendizaje por transferencia (fine-tuning)',
+    what: 'Partir de una red ya entrenada con millones de ejemplos y reentrenar solo un poco con tus datos.',
+    why: 'Permite usar redes grandes con cientos de ejemplos en vez de millones.',
+  },
+  estadoOculto: {
+    term: 'Estado oculto (memoria de la RNN)',
+    what: 'Un vector que la RNN actualiza en cada paso de la secuencia, combinando lo que ya traía con el dato nuevo.',
+    why: 'Es todo lo que la red recuerda del pasado: si una información no queda en él, se pierde.',
+  },
+  desvanecimiento: {
+    term: 'Gradiente que se desvanece (o que explota)',
+    what: 'Al retropropagar por muchos pasos, el gradiente se multiplica una y otra vez por factores: si son menores que 1 se encoge hacia 0; si son mayores que 1 de forma sostenida (pasa con matrices de pesos grandes, no en una sola neurona con tanh, que se satura), crece sin control.',
+    why: 'Con un gradiente casi nulo, los primeros pasos de la secuencia no aprenden nada: la RNN olvida lo lejano.',
+  },
+  lstm: {
+    term: 'LSTM y GRU',
+    what: 'Versiones de la RNN con «compuertas» que deciden qué guardar, qué olvidar y qué dejar salir de la memoria.',
+    why: 'Su memoria tiene un camino casi directo entre pasos, así que el gradiente se desvanece mucho menos.',
+  },
+  autosupervisado: {
+    term: 'Aprendizaje autosupervisado',
+    what: 'Aprender de datos sin etiquetar inventándose la tarea: tapar una palabra y adivinarla, o adivinar la palabra siguiente.',
+    why: 'Permite aprovechar miles de millones de textos que nadie etiquetó; después basta ajustar con pocos ejemplos.',
+  },
+  token: {
+    term: 'Token',
+    what: 'La unidad en que se corta el texto antes de dárselo al modelo: una palabra, un trozo de palabra o un signo.',
+    why: 'Los modelos de lenguaje leen y generan tokens, no letras ni palabras; su límite de texto se mide en tokens.',
+  },
+  atencion: {
+    term: 'Atención (self-attention)',
+    what: 'Para cada token, un promedio de todos los tokens de la frase, con pesos que dicen cuánto se relaciona con cada uno.',
+    why: 'Así «banco» toma información de «río» o de «interés» según la frase, sin importar a cuántas palabras de distancia estén.',
+  },
+  codificacionPosicional: {
+    term: 'Codificación posicional',
+    what: 'Números que se suman al embedding de cada token según su posición en la frase (en el original, senos y cosenos).',
+    why: 'La atención por sí sola no ve el orden: sin esto, «Ana llama a Luis» y «Luis llama a Ana» serían iguales para el modelo.',
+  },
+  mascaraCausal: {
+    term: 'Máscara causal',
+    what: 'Una regla que prohíbe a cada token mirar los tokens que vienen después de él.',
+    why: 'Es lo que usan los modelos tipo GPT: generan texto de izquierda a derecha, así que al entrenar no pueden ver el futuro.',
+  },
+  bertGpt: {
+    term: 'BERT y GPT',
+    what: 'Dos familias de Transformer. BERT lee la frase completa en ambas direcciones y sirve para clasificar y buscar texto; GPT lee de izquierda a derecha y genera texto.',
+    why: 'Elegir entre ellas depende de si necesitas clasificar o buscar (BERT) o redactar y conversar (GPT).',
+  },
+  llm: {
+    term: 'Modelo de lenguaje grande (LLM)',
+    what: 'Un Transformer tipo GPT con miles de millones de pesos, entrenado para predecir el siguiente token en enormes cantidades de texto. ChatGPT es uno, ajustado además para conversar.',
+    why: 'Redacta, resume y traduce con fluidez, pero no consulta una base de datos de hechos: puede inventar.',
+  },
+  alucinacion: {
+    term: 'Alucinación',
+    what: 'Una respuesta fluida y convincente que es falsa: una cita, una cifra o una referencia que no existe.',
+    why: 'Pasa porque el modelo elige palabras probables, no verificadas. Hay que comprobar lo que importa.',
+  },
+  autoencoder: {
+    term: 'Autoencoder',
+    what: 'Una red que aprende a copiar su entrada pasando por un cuello de botella: un codificador comprime y un decodificador reconstruye.',
+    why: 'Solo aprende a copiar bien lo que se parece a sus datos de entrenamiento y reconstruye mal lo raro: por eso sirve para detectar anomalías.',
+  },
+  cuelloBotella: {
+    term: 'Cuello de botella (código latente)',
+    what: 'La capa más estrecha del autoencoder: los pocos números con que resume cada dato.',
+    why: 'Si es muy estrecho pierde información de los datos normales; si es tan ancho como la entrada, puede copiarlo todo, también lo raro.',
+  },
+  anomalia: {
+    term: 'Detección de anomalías',
+    what: 'Encontrar los datos que no se parecen a la mayoría: fraudes, fallas de una máquina, lecturas imposibles de un sensor.',
+    why: 'Casi nunca hay ejemplos etiquetados de cada anomalía posible, así que se aprende cómo es lo normal y se marca lo que se aleja.',
+  },
+  gpu: {
+    term: 'GPU',
+    what: 'Una tarjeta gráfica: un procesador con miles de núcleos pequeños que hacen muchas multiplicaciones a la vez.',
+    why: 'Entrenar redes grandes es sobre todo multiplicar matrices; en una GPU va decenas de veces más rápido que en el procesador.',
+  },
+  pytorch: {
+    term: 'PyTorch y TensorFlow',
+    what: 'Bibliotecas de Python para construir y entrenar redes neuronales: calculan los gradientes solas y usan la GPU.',
+    why: 'Son lo que se usa en la práctica; aquí no corren en el navegador, por eso los ejercicios usan NumPy o scikit-learn.',
+  },
+  dropout: {
+    term: 'Dropout',
+    what: 'Durante el entrenamiento, apagar al azar una fracción de las neuronas en cada paso (por ejemplo, la mitad).',
+    why: 'La red no puede depender de una sola neurona, y eso reduce el sobreajuste.',
   },
 } satisfies Record<string, GlossaryEntry>;
 

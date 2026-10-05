@@ -139,7 +139,7 @@ const dbscan: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Lo que marca como ruido sirve como detector de anomalías sin entrenar nada más. Los{' '}
+          Lo que marca como ruido sirve como detector de <G k="anomalia">anomalías</G> sin entrenar nada más. Los{' '}
           <G k="outlier">outliers</G> no deforman los grupos, como sí pasa con los promedios de K-Means.
         </p>
       ),
