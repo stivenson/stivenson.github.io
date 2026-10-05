@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { RichPanel, RetroIcon, MarkdownRenderer, PageShell } from '../components';
+import { RichPanel, RetroIcon, PageShell } from '../components';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { getArticleBySlug, getAllArticles, formatArticleDate } from '../data/articles';
 
 export function ArticleDetail() {

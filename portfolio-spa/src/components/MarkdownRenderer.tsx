@@ -4,12 +4,24 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeRaw from 'rehype-raw';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import ini from 'react-syntax-highlighter/dist/esm/languages/prism/ini';
+import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { Components } from 'react-markdown';
 import { InteractiveSVG } from './InteractiveSVG';
 import { LazyIframe } from './LazyIframe';
 import 'katex/dist/katex.min.css';
+
+// Solo los lenguajes que usan los artículos (el Prism completo pesa ~1 MB).
+// Un bloque con otro lenguaje se ve como texto plano: si un artículo nuevo
+// usa otro, regístralo aquí.
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('ini', ini);
+SyntaxHighlighter.registerLanguage('python', python);
+SyntaxHighlighter.registerLanguage('sql', sql);
 
 // El explorador de ML solo lo usa un artículo: se descarga aparte cuando el
 // markdown lo pide con <ml-explorer></ml-explorer>.

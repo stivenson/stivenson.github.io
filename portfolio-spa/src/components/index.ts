@@ -6,7 +6,8 @@ export { Header } from './Header';
 export { Timeline } from './Timeline';
 export { Tag, TagList } from './Tag';
 export { RetroIcon } from './RetroIcon';
-export { MarkdownRenderer } from './MarkdownRenderer';
+// MarkdownRenderer no se exporta aquí: impórtalo de './MarkdownRenderer' para
+// que sus dependencias pesadas queden en el chunk diferido de los artículos.
 export { InteractiveSVG } from './InteractiveSVG';
 export { LazyIframe } from './LazyIframe';
 export { TerminalHero } from './TerminalHero';

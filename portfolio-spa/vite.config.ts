@@ -64,6 +64,12 @@ function serveRootStatic(): Plugin {
 export default defineConfig({
   plugins: [react(), buildStamp(), serveRootStatic()],
   base: './',
+  // rehype-katex trae su propia copia de KaTeX (0.16) y el explorador usa la
+  // 0.18: sin dedupe salen las dos (~600 KB cada una). Además la hoja de
+  // estilos que se carga es la de la 0.18.
+  resolve: {
+    dedupe: ['katex'],
+  },
   // El worker de Pyodide hace import() de una URL del CDN: necesita salir
   // como modulo ES (el formato iife por defecto no admite import dinamico).
   worker: {
@@ -84,6 +90,8 @@ export default defineConfig({
           // rollup so they land in the lazily-loaded ArticleDetail chunk.
           if (/[\\/]react-router|[\\/]react-dom|[\\/]scheduler|[\\/]react[\\/]/.test(id)) return 'react-vendor'
           if (id.includes('framer-motion')) return 'framer'
+          // KaTeX: compartido por los artículos (rehype-katex) y el explorador ML.
+          if (/[\\/]katex[\\/]/.test(id)) return 'katex'
         }
       }
     }

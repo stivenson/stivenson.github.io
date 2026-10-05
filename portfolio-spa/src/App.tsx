@@ -1,7 +1,11 @@
 import { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { Header, Sidebar, RetroIcon } from './components';
+// Import directo (no el barril ./components): el barril arrastraría al chunk de
+// entrada el renderer de markdown (Prism, KaTeX, parse5) de los artículos.
+import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
+import { RetroIcon } from './components/RetroIcon';
 import { AnimatedPage } from './components/motion/AnimatedPage';
 import './styles/tokens.css';
 import './styles/typography.css';
