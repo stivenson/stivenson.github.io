@@ -61,6 +61,34 @@ import {
   randomInit,
   silhouette,
 } from './ovaMath';
+import {
+  AE_FRAUD,
+  AE_NORMAL,
+  AE_START_K,
+  CNN_IMAGE,
+  CNN_KERNELS,
+  MLP_SOLUTION,
+  MLP_START,
+  RNN_INPUTS,
+  RNN_START,
+  RNN_U,
+  TF_EMBEDDINGS,
+  TF_SENTENCES,
+  XOR_POINTS,
+} from './datasets';
+import {
+  conv2d,
+  fitLinearAutoencoder,
+  maxPool2,
+  mlpForward,
+  mlpHits,
+  positionalEncoding,
+  reconstructionError,
+  relu,
+  rnnInfluence,
+  selfAttention,
+  sigmoid as sig,
+} from './ovaMath';
 
 describe('OVA de regresión lineal', () => {
   it('la recta inicial es ŷ ≈ 0.98 + 0.65·x, con MSE ≈ 0.10', () => {
@@ -484,5 +512,194 @@ describe('cifras de los ejemplos de los textos (fase 3)', () => {
     expect(capturedShare(cov, 45)).toBeCloseTo(1, 12);
     expect(capturedShare(cov, 0)).toBeCloseTo(0.5, 12);
     expect(capturedShare(cov, 135)).toBeCloseTo(0, 12);
+  });
+});
+
+// ---------- Fase 4 ----------
+// Cifras contrastadas con NumPy 2.0.2 / scipy 1.14.1 / scikit-learn 1.6.1 (ver el plan de la fase 4):
+// la mejor recta sobre XOR_POINTS (búsqueda exhaustiva en Python) acierta 15 de 20;
+// scipy.signal.correlate2d(CNN_IMAGE, filtro, "valid") da los mismos mapas; la derivada
+// numérica de la RNN en NumPy da las mismas influencias (3 cifras); la atención con
+// NumPy da los mismos pesos; PCA(k) de scikit-learn da los mismos errores de reconstrucción.
+
+describe('OVA del MLP (XOR)', () => {
+  it('20 puntos, 5 en cada esquina; el arranque acierta 15 y la solución 20', () => {
+    expect(XOR_POINTS).toHaveLength(20);
+    expect(mlpHits(MLP_START, XOR_POINTS)).toBe(15);
+    expect(mlpHits(MLP_SOLUTION, XOR_POINTS)).toBe(20);
+  });
+
+  it('ninguna recta acierta más de 15 de 20 (búsqueda por todas las rectas que pasan cerca de dos puntos)', () => {
+    let best = 0;
+    for (const a of XOR_POINTS) {
+      for (const b of XOR_POINTS) {
+        if (a === b) continue;
+        const n = { x: a.y - b.y, y: b.x - a.x };
+        for (const off of [-1e-6, 1e-6]) {
+          for (const sign of [1, -1]) {
+            const hits = XOR_POINTS.filter((p) => (sign * ((p.x - a.x) * n.x + (p.y - a.y) * n.y + off) > 0 ? 1 : 0) === p.label).length;
+            best = Math.max(best, hits);
+          }
+        }
+      }
+    }
+    expect(best).toBe(15);
+  });
+
+  it('Fórmula: con la solución, (1, 0) da casi 1 (clase 1) y (1, 1) casi 0 (clase 0); σ(10) = 0.99995', () => {
+    expect(mlpForward(MLP_SOLUTION, { x: 1, y: 0 }).y).toBeGreaterThan(0.9999);
+    expect(mlpForward(MLP_SOLUTION, { x: 1, y: 1 }).y).toBeLessThan(0.0001);
+    expect(sig(10).toFixed(5)).toBe('0.99995');
+    expect(sig(-10).toFixed(5)).toBe('0.00005');
+  });
+});
+
+describe('OVA de la CNN', () => {
+  const maps = CNN_KERNELS.map((k) => relu(conv2d(CNN_IMAGE, k.kernel as unknown as number[][])));
+
+  it('imagen 8×8 → mapa 6×6 → pooling 3×3', () => {
+    expect(maps[0]).toHaveLength(6);
+    expect(maps[0][0]).toHaveLength(6);
+    expect(maxPool2(maps[0])).toHaveLength(3);
+  });
+
+  it('filtro vertical: los mismos números que el ejercicio de Python; 13 de 36 casillas activas, máximo 3', () => {
+    expect(maps[0]).toEqual([
+      [2, 0, 0, 0, 0, 0],
+      [2, 0, 1, 1, 0, 0],
+      [1, 1, 2, 0, 0, 0],
+      [0, 2, 3, 0, 0, 0],
+      [0, 3, 3, 0, 0, 0],
+      [0, 2, 2, 0, 0, 0],
+    ]);
+    expect(maps[0].flat().filter((v) => v > 0)).toHaveLength(13);
+    expect(maxPool2(maps[0])).toEqual([
+      [2, 1, 0],
+      [2, 3, 0],
+      [3, 3, 0],
+    ]);
+  });
+
+  it('filtro horizontal: se enciende en el borde de arriba de la barra (fila 1: 2 3 3 3 3 2); 8 casillas activas', () => {
+    expect(maps[1][0]).toEqual([2, 3, 3, 3, 3, 2]);
+    expect(maps[1].flat().filter((v) => v > 0)).toHaveLength(8);
+    expect(maxPool2(maps[1])).toEqual([
+      [3, 3, 3],
+      [1, 1, 0],
+      [0, 0, 0],
+    ]);
+  });
+
+  it('Fórmula: en la primera posición el filtro vertical da 2; la casilla (fila 5, columna 4) suma −3 y ReLU la deja en 0', () => {
+    const raw = conv2d(CNN_IMAGE, CNN_KERNELS[0].kernel as unknown as number[][]);
+    expect(raw[0][0]).toBe(2);
+    expect(raw[4][3]).toBe(-3);
+    expect(maps[0][4][3]).toBe(0);
+  });
+});
+
+describe('OVA de la RNN', () => {
+  const first = (w: number, steps: number) => rnnInfluence(RNN_INPUTS.slice(0, steps), w, RNN_U)[0];
+
+  it('30 mediciones; arranque w = 0.9 y 10 pasos', () => {
+    expect(RNN_INPUTS).toHaveLength(30);
+    expect(RNN_START).toEqual({ w: 0.9, steps: 10 });
+  });
+
+  it('w = 0.9: la influencia del primer dato cae de 0.498 (1 paso) a 0.024 (10), 6.2e-6 (20) y 2.5e-7 (30)', () => {
+    expect(first(0.9, 1).toFixed(3)).toBe('0.498');
+    expect(first(0.9, 10).toFixed(3)).toBe('0.024');
+    expect(first(0.9, 20).toExponential(1)).toBe('6.2e-6');
+    expect(first(0.9, 30).toExponential(1)).toBe('2.5e-7');
+  });
+
+  it('w = 0.5 con 10 pasos: 2.0e-4; w = 1.0 con 30 pasos: 1.5e-6 (aun con w = 1 se desvanece)', () => {
+    expect(first(0.5, 10).toExponential(1)).toBe('2.0e-4');
+    expect(first(1, 30).toExponential(1)).toBe('1.5e-6');
+  });
+
+  it('el último dato influye cerca de 0.5 (= u·tanh′); Fórmula: sin la pendiente de tanh quedaría 0.5 · 0.9^9 = 0.19', () => {
+    const g = rnnInfluence(RNN_INPUTS.slice(0, 10), 0.9, RNN_U);
+    expect(g[9].toFixed(2)).toBe('0.45');
+    expect((RNN_U * 0.9 ** 9).toFixed(2)).toBe('0.19');
+  });
+});
+
+describe('OVA del Transformer', () => {
+  const att = (words: readonly string[], opts: { pe?: boolean; causal?: boolean } = {}) => {
+    let X = words.map((w) => TF_EMBEDDINGS[w]);
+    if (opts.pe) {
+      const pe = positionalEncoding(X.length, X[0].length);
+      X = X.map((r, i) => r.map((v, c) => v + pe[i][c]));
+    }
+    return selfAttention(X, opts.causal);
+  };
+  const row = (r: number[]) => r.map((v) => v.toFixed(2));
+
+  it('«el banco del río»: banco atiende 0.41 a sí mismo y 0.41 a río; sale con dinero 0.41 y naturaleza 1.23', () => {
+    const a = att(TF_SENTENCES[0]);
+    expect(row(a.weights[1])).toEqual(['0.09', '0.41', '0.09', '0.41']);
+    expect(row(a.out[1]).slice(2)).toEqual(['0.41', '1.23']);
+  });
+
+  it('«el banco cobra interés»: banco sale con dinero 1.38 y naturaleza 0.35', () => {
+    const a = att(TF_SENTENCES[1]);
+    expect(row(a.weights[1])).toEqual(['0.08', '0.35', '0.21', '0.35']);
+    expect(row(a.out[1]).slice(2)).toEqual(['1.38', '0.35']);
+  });
+
+  it('con máscara causal, banco solo ve «el» y a sí mismo: 0.18 y 0.82', () => {
+    expect(row(att(TF_SENTENCES[0], { causal: true }).weights[1])).toEqual(['0.18', '0.82', '0.00', '0.00']);
+  });
+
+  it('al invertir «el banco del río», banco cambia 0.00 sin codificación posicional y 0.30 con ella', () => {
+    const rev = [...TF_SENTENCES[0]].reverse();
+    const change = (pe: boolean) => {
+      const a = att(TF_SENTENCES[0], { pe }).out[1];
+      const b = att(rev, { pe }).out[rev.indexOf('banco')];
+      return Math.max(...a.map((v, c) => Math.abs(v - b[c])));
+    };
+    expect(change(false).toFixed(2)).toBe('0.00');
+    expect(change(true).toFixed(2)).toBe('0.30');
+  });
+
+  it('Fórmula: puntaje banco·río = 3/√4 = 1.5 y banco·el = 0', () => {
+    const dot = (a: number[], b: number[]) => a.reduce((s, v, i) => s + v * b[i], 0) / 2;
+    expect(dot(TF_EMBEDDINGS.banco, TF_EMBEDDINGS['río'])).toBe(1.5);
+    expect(dot(TF_EMBEDDINGS.banco, TF_EMBEDDINGS.el)).toBe(0);
+  });
+});
+
+describe('OVA del autoencoder', () => {
+  const run = (k: number) => {
+    const ae = fitLinearAutoencoder(AE_NORMAL, k);
+    const normal = AE_NORMAL.map((r) => reconstructionError(ae, r));
+    const fraud = AE_FRAUD.map((r) => reconstructionError(ae, r));
+    const threshold = Math.max(...normal);
+    const mean = (v: number[]) => v.reduce((a, b) => a + b, 0) / v.length;
+    return { normal: mean(normal), fraud: mean(fraud), fraudErrors: fraud, threshold, detected: fraud.filter((e) => e > threshold + 1e-9).length };
+  };
+
+  it('40 normales y 3 fraudes con 6 medidas; arranca con k = 2', () => {
+    expect(AE_NORMAL).toHaveLength(40);
+    expect(AE_FRAUD).toHaveLength(3);
+    expect(AE_NORMAL.every((r) => r.length === 6)).toBe(true);
+    expect(AE_START_K).toBe(2);
+  });
+
+  it('k = 2: error medio 0.012 en normales y 2.44 en fraudes; umbral 0.035; detecta 3 de 3', () => {
+    const r = run(2);
+    expect(r.normal.toFixed(3)).toBe('0.012');
+    expect(r.fraud.toFixed(2)).toBe('2.44');
+    expect(r.threshold.toFixed(3)).toBe('0.035');
+    expect(r.detected).toBe(3);
+    expect(r.fraudErrors[0].toFixed(2)).toBe('6.39');
+  });
+
+  it('k = 1 detecta 1 de 3; k = 3 y 4, 3 de 3; k = 5, 2 de 3; k = 6 copia todo y no detecta ninguno', () => {
+    expect([1, 2, 3, 4, 5, 6].map((k) => run(k).detected)).toEqual([1, 3, 3, 3, 2, 0]);
+    expect(run(1).normal.toFixed(2)).toBe('0.37');
+    expect(run(5).fraud.toFixed(2)).toBe('0.08');
+    expect(run(6).fraud).toBeLessThan(1e-20);
   });
 });

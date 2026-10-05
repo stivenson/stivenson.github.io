@@ -1,4 +1,4 @@
-import type { LabeledPt, Pt, SliderRange } from './ovaMath';
+import type { Grid, LabeledPt, Mlp2, Pt, SliderRange } from './ovaMath';
 
 /**
  * Datos fijos de las OVAs. Viven fuera de los componentes para que
@@ -233,3 +233,123 @@ export const DB_POINTS: Pt[] = xy([
 export const DB_EPS = { min: 0.2, max: 2, step: 0.1 } as const;
 export const DB_MIN_PTS = { min: 2, max: 10, step: 1 } as const;
 export const DB_START = { eps: 1, minPts: 4 } as const;
+
+// ---------- MLP: XOR (20 puntos, 5 alrededor de cada esquina) ----------
+
+const XOR_JITTER: [number, number][] = [[0.05, 0.08], [-0.07, 0.03], [0.09, -0.06], [-0.04, -0.09], [0.02, -0.02]];
+/** Esquinas (0, 0) y (1, 1) → clase 0; (0, 1) y (1, 0) → clase 1: ninguna recta las separa. */
+export const XOR_POINTS: LabeledPt[] = ([[0, 0, 0], [1, 1, 0], [0, 1, 1], [1, 0, 1]] as const).flatMap(([cx, cy, label]) =>
+  XOR_JITTER.map(([dx, dy]) => ({ x: Math.round((cx + dx) * 100) / 100, y: Math.round((cy + dy) * 100) / 100, label })),
+);
+export const MLP_WEIGHT: SliderRange = { min: -20, max: 20, step: 1 };
+export const MLP_BIAS: SliderRange = { min: -30, max: 30, step: 1 };
+/**
+ * Arranque: la neurona oculta 1 traza una recta que separa (0, 0) de las demás
+ * esquinas (un «o» lógico) y la salida solo la copia; la neurona 2 está apagada
+ * (pesos 0, siempre vale 0.5). Acierta 15 de 20: lo máximo con una sola recta.
+ */
+export const MLP_START: Mlp2 = { h1: [10, 10, -5], h2: [0, 0, 0], out: [10, 0, -5] };
+/** Una solución: «o» en la neurona 1, «no-y» en la 2 y «y» de las dos en la salida. */
+export const MLP_SOLUTION: Mlp2 = { h1: [20, 20, -10], h2: [-20, -20, 30], out: [20, 20, -30] };
+
+// ---------- CNN: un «7» de 8×8 y dos filtros de 3×3 ----------
+// Los mismos datos que el ejercicio de Python (cnn.py).
+
+export const CNN_IMAGE: Grid = [
+  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 1, 1, 1, 1, 1, 0],
+  [0, 1, 1, 1, 1, 1, 1, 0],
+  [0, 0, 0, 0, 1, 1, 0, 0],
+  [0, 0, 0, 1, 1, 0, 0, 0],
+  [0, 0, 0, 1, 1, 0, 0, 0],
+  [0, 0, 0, 1, 1, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
+];
+export const CNN_KERNELS = [
+  { id: 'vertical', label: 'Borde vertical', kernel: [[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]] },
+  { id: 'horizontal', label: 'Borde horizontal', kernel: [[-1, -1, -1], [0, 0, 0], [1, 1, 1]] },
+] as const satisfies readonly { id: string; label: string; kernel: Grid }[];
+
+// ---------- RNN: 30 mediciones ----------
+// np.random.default_rng(0).normal(size=30), redondeadas a 2 decimales.
+
+export const RNN_INPUTS = [
+  0.13, -0.13, 0.64, 0.1, -0.54, 0.36, 1.3, 0.95, -0.7, -1.27, -0.62, 0.04, -2.33, -0.22, -1.25,
+  -0.73, -0.54, -0.32, 0.41, 1.04, -0.13, 1.37, -0.67, 0.35, 0.9, 0.09, -0.74, -0.92, -0.46, 0.22,
+];
+/** Peso de la entrada (fijo) y rangos de los sliders. */
+export const RNN_U = 0.5;
+export const RNN_W: SliderRange = { min: 0.1, max: 1, step: 0.1 };
+export const RNN_STEPS: SliderRange = { min: 1, max: 30, step: 1 };
+export const RNN_START = { w: 0.9, steps: 10 } as const;
+
+// ---------- Transformer: embeddings de juguete ----------
+// Los mismos que el ejercicio de Python (transformer.py): [función, cosa, dinero, naturaleza].
+
+export const TF_DIMS = ['función', 'cosa', 'dinero', 'naturaleza'] as const;
+export const TF_EMBEDDINGS: Record<string, number[]> = {
+  el: [1, 0, 0, 0],
+  banco: [0, 1, 1, 1],
+  del: [1, 0, 0, 0],
+  río: [0, 1, 0, 2],
+  cobra: [0, 0.5, 1.5, 0],
+  interés: [0, 1, 2, 0],
+};
+export const TF_SENTENCES = [
+  ['el', 'banco', 'del', 'río'],
+  ['el', 'banco', 'cobra', 'interés'],
+] as const;
+
+// ---------- Autoencoder: 40 compras normales y 3 fraudes, 6 medidas cada una ----------
+// Las normales salen de 2 factores ocultos más ruido; los fraudes no siguen ese
+// patrón. Generadas con np.random.default_rng(16) y redondeadas a 2 decimales.
+
+export const AE_NORMAL: Grid = [
+  [0.7, -0.24, -2.1, -0.94, -0.18, -1.33],
+  [-0.12, -0.03, -0.43, 0.07, 0.94, -0.69],
+  [-0.23, 0.32, 0.48, 0.41, 0.86, -0.02],
+  [1.65, -1.63, -3.27, -2.49, -3.14, -0.12],
+  [1.12, -1.06, -1.78, -1.85, -2.69, 0.51],
+  [-0.01, 0, -0.26, -0.39, -0.43, -0.33],
+  [-0.49, 0.33, 0.78, 0.68, 0.75, 0.14],
+  [-1.54, 0.82, 2.46, 1.73, 1.38, 1.02],
+  [-1.62, 1.08, 3.2, 1.99, 1.12, 1.56],
+  [-1.01, 0.94, 2.06, 1.61, 2.35, -0.17],
+  [0.57, -0.39, -1.77, -0.54, 0.79, -1.82],
+  [1.12, -1.41, -1.71, -1.97, -3.66, 1.2],
+  [0.02, 0.09, -0.53, -0.03, 1.16, -1.08],
+  [-0.54, 0.5, 0.73, 1.03, 2.34, -0.92],
+  [-0.24, 0.32, 0.41, 0.63, 0.62, -0.3],
+  [-0.04, 0.12, -0.07, 0.03, 0.53, 0.05],
+  [-0.79, 0.48, 0.85, 0.95, 1.91, -0.35],
+  [0.6, -0.39, -1.65, -0.61, 1.44, -1.51],
+  [-0.72, 1.22, 1.92, 1.62, 2.24, -0.23],
+  [0.45, -0.24, -1.03, -0.52, -0.22, -0.78],
+  [-0.78, 0.55, 1.93, 0.76, -1.42, 1.91],
+  [0.87, -0.88, -1.8, -1.29, -1.95, -0.09],
+  [-0.1, -0.06, 0.4, 0.28, -0.63, 0.44],
+  [-0.85, 0.99, 2.04, 1.59, 1.16, 0.62],
+  [-1.21, 1.27, 2.36, 2.45, 4.03, -1.04],
+  [1.63, -1.09, -3.04, -1.86, -0.28, -1.81],
+  [0.41, -0.48, -0.58, -0.79, -1.9, 0.76],
+  [-0.8, 0.34, 1.15, 0.64, -0.35, 0.8],
+  [0.48, -0.37, -1.13, -0.95, -0.74, -0.59],
+  [0.05, 0.15, 0.11, 0.17, 0.5, -0.19],
+  [0.37, 0.04, -1.55, -0.22, 1.91, -2.11],
+  [-2.43, 1.69, 4.51, 2.99, 2.73, 1.28],
+  [-0.43, 0.68, 0.58, 0.74, 2.7, -1.29],
+  [-1.02, 0.53, 1.87, 1.07, 0.54, 0.74],
+  [0.11, -0.25, -0.33, -0.23, -1.2, 0.39],
+  [1.38, -1.22, -3.38, -2.66, -2.29, -0.44],
+  [-0.82, 0.63, 0.98, 0.78, 1.71, -0.46],
+  [1.44, -0.91, -2.97, -1.98, -1.53, -1.16],
+  [0.1, 0.01, -0.52, 0.09, 1.35, -1.35],
+  [1.61, -1.13, -4.05, -2.16, -0.64, -2.11],
+];
+export const AE_FRAUD: Grid = [
+  [-4.93, 2.11, -0.81, -1.66, -1.01, -2.53],
+  [-0.31, 1.97, 0.38, -0.6, -0.27, 0.1],
+  [-0.64, -0.94, -0.03, 0.34, -0.88, 0.38],
+];
+export const AE_BOTTLENECK: SliderRange = { min: 1, max: 6, step: 1 };
+export const AE_START_K = 2;
