@@ -99,7 +99,7 @@ describe('render en servidor', () => {
     expect(html).toContain('<span class="token" style="color:#569CD6">import</span>');
     expect(html).toContain('aria-label="Código Python editable"');
     // La salida esperada sigue siendo texto plano.
-    expect(html).toContain('<pre>OUT-PLANO</pre>');
+    expect(html).toContain('<pre tabindex="0">OUT-PLANO</pre>');
   });
 });
 

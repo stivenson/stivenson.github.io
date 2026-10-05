@@ -73,8 +73,8 @@ const decisionTree: AlgorithmModule = {
           </p>
           <Tex block>{'\\begin{aligned} G &= 1 - p_{\\text{paga}}^2 - p_{\\text{impago}}^2 \\\\ &= 1 - 0.5^2 - 0.5^2 = 0.5 \\end{aligned}'}</Tex>
           <p>
-            La pregunta «¿deuda ≤ 0.4?» deja a un lado 4 que pagan y 1 que no (G = 1 − 0.8² − 0.2² = 0.32), y al otro 1
-            que paga y 4 que no (también 0.32). La impureza baja de 0.5 a 0.32. El árbol prueba todas las preguntas
+            Con la deuda en una escala de 0 a 10, como en el simulador, la pregunta «¿deuda ≤ 5?» deja a un lado 4
+            que pagan y 1 que no (G = 1 − 0.8² − 0.2² = 0.32), y al otro 1 que paga y 4 que no (también 0.32). La impureza baja de 0.5 a 0.32. El árbol prueba todas las preguntas
             posibles, se queda con la que más la baja y repite en cada lado: eso es la{' '}
             <b>división binaria recursiva</b>.
           </p>

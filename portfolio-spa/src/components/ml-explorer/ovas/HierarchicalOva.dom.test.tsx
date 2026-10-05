@@ -40,7 +40,9 @@ describe('HierarchicalOva', () => {
     expect(tree.querySelectorAll('g path')).toHaveLength(22);
     expect(tree.querySelectorAll('line')).toHaveLength(1);
     // Hojas en el orden del dendrograma.
-    expect(Array.from(tree.querySelectorAll('text'), (t) => t.textContent).join(' ')).toBe('2 3 1 4 6 7 5 8 12 9 10 11');
+    expect(Array.from(tree.querySelectorAll('text.mlx-hc-leaf'), (t) => t.textContent).join(' ')).toBe('2 3 1 4 6 7 5 8 12 9 10 11');
+    // Eje de alturas con sus marcas.
+    expect(tree.textContent).toContain('altura');
   });
 
   it('el hint (fuera del readout) cita el salto entre 2.2 y 5.2 y la unión del punto 12 a 2.15', () => {

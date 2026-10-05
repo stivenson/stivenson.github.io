@@ -48,21 +48,42 @@ describe('AlgorithmTabs: la página no se mueve', () => {
         scrollLeft = v;
       },
     });
-    const last = screen.getByRole('tab', { name: 'Ejemplo real' });
-    Object.defineProperty(last, 'offsetLeft', { configurable: true, value: 700 });
-    Object.defineProperty(last, 'offsetWidth', { configurable: true, value: 100 });
-    fireEvent.click(last);
-    expect(scrollLeft).toBe(624); // 700 + 100 + 24 - 200: el borde derecho queda a la vista, fuera del difuminado
+    // 8 pestañas de 100 px en una barra de 250 px.
+    Object.defineProperty(list, 'clientWidth', { configurable: true, value: 250 });
+    Object.defineProperty(list, 'scrollWidth', { configurable: true, value: 800 });
+    screen.getAllByRole('tab').forEach((t, i) => {
+      Object.defineProperty(t, 'offsetLeft', { configurable: true, value: i * 100 });
+      Object.defineProperty(t, 'offsetWidth', { configurable: true, value: 100 });
+    });
 
-    const first = screen.getByRole('tab', { name: 'Tipo' });
-    Object.defineProperty(first, 'offsetLeft', { configurable: true, value: 0 });
-    Object.defineProperty(first, 'offsetWidth', { configurable: true, value: 60 });
-    fireEvent.click(first);
+    // A la derecha: la primera pestaña que deja entera a la activa (Supuestos, 300-400 → desde 200).
+    fireEvent.click(screen.getByRole('tab', { name: 'Supuestos' }));
+    expect(scrollLeft).toBe(200);
+    // Al final, el máximo del scroll.
+    fireEvent.click(screen.getByRole('tab', { name: 'Ejemplo real' }));
+    expect(scrollLeft).toBe(550);
+    // A la izquierda: la activa y la anterior enteras (Fórmula 200-300 → desde Mejor caso, 100).
+    fireEvent.click(screen.getByRole('tab', { name: /Fórmula/ }));
+    expect(scrollLeft).toBe(100);
+    // Una pestaña ya visible no mueve la barra.
+    fireEvent.click(screen.getByRole('tab', { name: /Mejor caso/ }));
+    expect(scrollLeft).toBe(100);
+    fireEvent.click(screen.getByRole('tab', { name: 'Tipo' }));
     expect(scrollLeft).toBe(0);
   });
 });
 
 describe('AlgorithmTabs: teclado (roving tabindex)', () => {
+  it('dos flechas seguidas antes de repintar no pierden la segunda', () => {
+    // `tab` no cambia (onTab no hace nada): equivale a que React aún no haya repintado.
+    render(<AlgorithmTabs module={fakeModule('alpha')} meta={getMeta('alpha')} tab="type" onTab={() => {}} onAlg={() => {}} onGoAlg={() => {}} consumeReveal={() => false} />);
+    screen.getByRole('tab', { name: 'Tipo' }).focus();
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' });
+    expect(document.activeElement?.textContent).toBe('Ejemplo real');
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' });
+    expect(document.activeElement?.textContent).toBe('Cuándo no usarlo');
+  });
+
   it('flechas con vuelta, Home y End, con el foco en la pestaña activa', async () => {
     render(<Harness />);
     const press = async (key: string) => {

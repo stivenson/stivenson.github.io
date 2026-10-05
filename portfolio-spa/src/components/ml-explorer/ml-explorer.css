@@ -379,9 +379,8 @@
   overflow-x: auto;
   scrollbar-width: thin;
   scroll-snap-type: x proximity;
-  /* Margen al desplazar a una pestaña: la activa queda entera, sin
-     quedar pegada (ni medio tapada) bajo el difuminado del borde. */
-  scroll-padding-inline: 24px;
+  /* Sin scroll-padding: al deslizar, el borde izquierdo encaja al inicio de
+     una pestaña y no asoma un trozo de la anterior. */
   border-bottom: 1px solid rgba(85, 170, 255, 0.2);
 }
 

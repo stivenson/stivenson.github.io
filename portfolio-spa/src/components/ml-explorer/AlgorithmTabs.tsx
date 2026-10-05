@@ -28,17 +28,31 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg, consum
   // En móvil la barra de pestañas se desplaza: mantener visible la activa.
   // Solo se mueve la barra (scrollLeft); scrollIntoView movería también la
   // ventana y el lector perdería su sitio en el artículo.
+  //
+  // El borde izquierdo siempre cae al inicio de una pestaña: así no asoma un
+  // trozo suelto («o») de la anterior. offsetLeft es relativo a la barra
+  // (.mlx-tablist es position: relative).
   useEffect(() => {
     const list = listRef.current;
-    const active = list?.querySelector<HTMLElement>('[aria-selected="true"]');
-    if (!list || !active) return;
-    const left = active.offsetLeft; // relativo a la barra: .mlx-tablist es position: relative
+    if (!list) return;
+    const tabs = [...list.querySelectorAll<HTMLElement>('[role="tab"]')];
+    const i = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
+    if (i < 0) return;
+    const active = tabs[i];
+    const left = active.offsetLeft;
     const right = left + active.offsetWidth;
-    // Mismo margen que scroll-padding-inline en el CSS: la activa queda
-    // entera y fuera del difuminado del borde.
-    const pad = 24;
-    if (left - pad < list.scrollLeft) list.scrollLeft = Math.max(0, left - pad);
-    else if (right + pad > list.scrollLeft + list.clientWidth) list.scrollLeft = right + pad - list.clientWidth;
+    const width = list.clientWidth;
+    const max = Math.max(0, list.scrollWidth - width);
+    let target: number | null = null;
+    if (left < list.scrollLeft) {
+      // Hacia la izquierda: si cabe, también la anterior entera (se ve que hay más).
+      const prev = tabs[i - 1];
+      target = prev && right - prev.offsetLeft <= width ? prev.offsetLeft : left;
+    } else if (right > list.scrollLeft + width) {
+      // Hacia la derecha: la primera pestaña que deja a la activa entera a la vista.
+      target = tabs.find((t) => t.offsetLeft >= right - width)?.offsetLeft ?? left;
+    }
+    if (target !== null) list.scrollLeft = max > 0 ? Math.min(target, max) : target;
   }, [tab]);
 
   /** Lleva la vista al inicio de las pestañas y enfoca la pestaña indicada. */
@@ -74,7 +88,11 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg, consum
   const nextAlg = available.length > 1 ? available[(at + 1) % available.length] : null;
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-    const i = TAB_IDS.indexOf(tab);
+    // El índice sale de la pestaña que recibió la tecla, no del estado `tab`:
+    // con dos flechas seguidas, la segunda llega antes de que React vuelva a
+    // pintar y `tab` aún sería el de antes (se perdía una pulsación).
+    const fromTarget = TAB_IDS.findIndex((id) => (e.target as HTMLElement).id === `mlx-tab-${id}`);
+    const i = fromTarget >= 0 ? fromTarget : TAB_IDS.indexOf(tab);
     const n = TAB_IDS.length;
     const target: Record<string, number> = { ArrowRight: (i + 1) % n, ArrowLeft: (i + n - 1) % n, Home: 0, End: n - 1 };
     if (!(e.key in target)) return;

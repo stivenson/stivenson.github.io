@@ -5,13 +5,18 @@ import { fitLinearAutoencoder, reconstructionError } from './ovaMath';
 
 const W = 360;
 const H = 220;
-const TOP = 14;
+/** Margen izquierdo: cabe la etiqueta «0.0001» del eje. */
+const LEFT = 44;
+/** Hueco arriba para la etiqueta «la más rara» sobre una barra que llega al tope. */
+const TOP = 24;
 const BOTTOM = 196;
 /** Escala logarítmica: de 0.0001 (abajo) a 10 (arriba). Un error de 0 se dibuja abajo del todo. */
 const [LOG_LO, LOG_HI] = [-4, 1];
 const yOf = (e: number) => BOTTOM - ((Math.min(LOG_HI, Math.max(LOG_LO, Math.log10(e))) - LOG_LO) / (LOG_HI - LOG_LO)) * (BOTTOM - TOP);
 /** Por debajo de esto el error es redondeo de la máquina: cuenta como 0. */
 const ZERO = 1e-9;
+/** Contorno del color del panel: la etiqueta se lee aunque roce una barra o una línea. */
+const HALO = { stroke: '#0a0a2e', strokeWidth: 3, paintOrder: 'stroke' } as const;
 const mean = (v: number[]) => v.reduce((a, b) => a + b, 0) / v.length;
 const fmt = (e: number) => (e < ZERO ? '0' : e < 0.1 ? e.toFixed(3) : e.toFixed(2));
 
@@ -25,7 +30,9 @@ export function AutoencoderOva() {
   const detected = fraud.filter((e) => e > threshold + ZERO).length;
   const errors = [...normal, ...fraud];
   const worst = errors.indexOf(Math.max(...errors));
-  const barW = (W - 40) / errors.length;
+  const barW = (W - LEFT - 2) / errors.length;
+  // «la más rara ▼» va anclada por la derecha: el ▼ queda sobre la barra y el texto nunca sale del svg.
+  const worstX = Math.min(W - 1, LEFT + worst * barW + barW / 2 + 4);
 
   return (
     <OvaFrame
@@ -59,8 +66,8 @@ export function AutoencoderOva() {
           const v = 10 ** (LOG_HI - n);
           return (
             <g key={n}>
-              <line x1={34} x2={W} y1={yOf(v)} y2={yOf(v)} stroke={OVA_COLORS.grid} />
-              <text x={30} y={yOf(v) + 4} textAnchor="end" fontSize={10} fill={OVA_COLORS.axis}>
+              <line x1={LEFT - 2} x2={W} y1={yOf(v)} y2={yOf(v)} stroke={OVA_COLORS.grid} />
+              <text x={LEFT - 6} y={yOf(v) + 4} textAnchor="end" fontSize={10} fill={OVA_COLORS.axis}>
                 {v >= 1 ? v : v.toFixed(n - LOG_HI)}
               </text>
             </g>
@@ -72,7 +79,7 @@ export function AutoencoderOva() {
             <rect
               key={i}
               className={isFraud ? 'mlx-ae-bar is-fraud' : 'mlx-ae-bar'}
-              x={36 + i * barW}
+              x={LEFT + i * barW}
               y={yOf(e)}
               width={barW - 1.5}
               height={BOTTOM - yOf(e)}
@@ -81,15 +88,16 @@ export function AutoencoderOva() {
           );
         })}
         {errors[worst] > ZERO && (
-          <text x={36 + worst * barW + barW / 2} y={Math.max(TOP + 8, yOf(errors[worst]) - 4)} textAnchor="middle" fontSize={11} fill={OVA_COLORS.risk}>
-            ▼ la más rara
+          <text x={worstX} y={yOf(errors[worst]) - 5} textAnchor="end" fontSize={11} fill={OVA_COLORS.risk} {...HALO}>
+            la más rara ▼
           </text>
         )}
-        <line x1={34} x2={W} y1={yOf(threshold)} y2={yOf(threshold)} stroke={OVA_COLORS.accent} strokeWidth={1.5} strokeDasharray="5 4" />
-        <text x={W - 2} y={yOf(threshold) - 4} textAnchor="end" fontSize={10} fill={OVA_COLORS.accent}>
+        <line x1={LEFT - 2} x2={W} y1={yOf(threshold)} y2={yOf(threshold)} stroke={OVA_COLORS.accent} strokeWidth={1.5} strokeDasharray="5 4" />
+        {/* A la izquierda: encima de la línea solo hay barras de fraude, y esas están a la derecha. */}
+        <text x={LEFT + 2} y={yOf(threshold) - 5} fontSize={10} fill={OVA_COLORS.accent} {...HALO}>
           umbral
         </text>
-        <text x={36} y={H - 4} fontSize={10} fill={OVA_COLORS.axis}>
+        <text x={LEFT} y={H - 4} fontSize={10} fill={OVA_COLORS.axis}>
           40 compras normales
         </text>
         <text x={W - 2} y={H - 4} textAnchor="end" fontSize={10} fill={OVA_COLORS.risk}>

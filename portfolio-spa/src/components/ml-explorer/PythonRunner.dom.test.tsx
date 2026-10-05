@@ -31,6 +31,13 @@ describe('PythonRunner: enlace a Colab', () => {
   });
 });
 
+describe('PythonRunner: accesibilidad', () => {
+  it('la salida esperada (con scroll horizontal) se puede enfocar con el teclado', () => {
+    const { container } = render(<PythonRunner exercise={exercise} />);
+    expect(container.querySelector('.mlx-py-expected pre')?.getAttribute('tabindex')).toBe('0');
+  });
+});
+
 describe('PythonRunner: editor coloreado', () => {
   it('escribir en el textarea actualiza el pre coloreado', () => {
     const { ta, pre } = setup();

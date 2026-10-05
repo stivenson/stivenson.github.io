@@ -10,7 +10,7 @@ const logisticRegression: AlgorithmModule = {
   row: {
     type: 'Supervisado',
     bestUse: 'Clasificación binaria',
-    formula: 'P = 1 / (1 + e^−(b₀ + b₁X + …))',
+    formula: 'P = 1 / (1 + e⁻ᶻ), con z = b₀ + b₁X + …',
     assumptions: 'Linealidad del log-odds',
     pros: 'Probabilística, interpretable',
     cons: 'Débil con fronteras no lineales',
@@ -200,7 +200,7 @@ const logisticRegression: AlgorithmModule = {
           <p>
             El ejercicio crea 400 correos de juguete con tres señales: cuántas veces dice «gratis», cuántos enlaces
             trae y si el remitente es conocido. Mira los pesos (¿qué señal aleja del spam?): el 1.84 de «gratis»
-            significa que cada «gratis» extra multiplica los <G k="odds">odds</G> de spam por e^1.84 ≈ 6.3, con las otras señales
+            significa que cada «gratis» extra multiplica los <G k="odds">odds</G> de spam por <Tex>{'e^{1.84}'}</Tex> ≈ 6.3, con las otras señales
             fijas. Revisa también la <G k="matrizConfusion" after=".">matriz de confusión</G>
           </p>
         </>

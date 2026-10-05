@@ -33,7 +33,7 @@ describe('cifras citadas en los textos', () => {
   it('Logistic Regression: «gratis» y enlaces suben el spam, el remitente conocido lo baja; 94 % de spam', () => {
     expect(logisticRegression).toContain('Pesos [gratis, enlaces, conocido]: [ 1.84  0.99 -1.75]');
     expect(logisticRegression).toContain('P(spam) = 94.4%');
-    // El texto dice «e^1.84 ≈ 6.3».
+    // El texto dice «e^{1.84} ≈ 6.3».
     expect(Math.exp(1.84)).toBeCloseTo(6.3, 1);
   });
 

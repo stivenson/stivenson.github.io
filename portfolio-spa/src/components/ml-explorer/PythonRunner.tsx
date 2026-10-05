@@ -167,7 +167,8 @@ function Expected({ text, open }: { text: string; open: boolean }) {
   return (
     <details className="mlx-py-expected" open={open}>
       <summary>Salida esperada</summary>
-      <pre>{text}</pre>
+      {/* tabIndex: una región con scroll horizontal debe poder recorrerse con el teclado (axe). */}
+      <pre tabIndex={0}>{text}</pre>
     </details>
   );
 }
@@ -199,14 +200,16 @@ function RunOutput({
       return (
         <div className="mlx-py-out">
           <h5>Tu salida</h5>
-          {result.stdout && <pre>{result.stdout}</pre>}
+          {result.stdout && <pre tabIndex={0}>{result.stdout}</pre>}
           {!result.stdout && result.images.length === 0 && <p className="mlx-py-status">(sin salida)</p>}
           {result.images.map((png, i) => (
             <img key={i} src={`data:image/png;base64,${png}`} alt={`Gráfica ${i + 1} generada por el código`} />
           ))}
           {result.status === 'error' && (
             <>
-              <pre className="mlx-py-error">{result.error}</pre>
+              <pre className="mlx-py-error" tabIndex={0}>
+                {result.error}
+              </pre>
               {code !== original && <p className="mlx-py-hint">Pulsa ↺ Restaurar para volver al código original.</p>}
             </>
           )}
