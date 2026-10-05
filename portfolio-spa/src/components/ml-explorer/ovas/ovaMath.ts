@@ -987,14 +987,17 @@ export function selfAttention(X: Grid, causal = false): Attention {
  * (rotaciones hasta anular lo que está fuera de la diagonal). Devuelve los
  * autovalores de mayor a menor y, en `vectors[j]`, el autovector del j-ésimo.
  */
-export function symmetricEigen(S: Grid): { values: number[]; vectors: Grid } {
+export function symmetricEigen(S: Grid): { values: number[]; vectors: Grid; sweeps: number } {
   const n = S.length;
   const A = S.map((r) => [...r]);
   const V: Grid = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)));
-  for (let sweep = 0; sweep < 100; sweep++) {
+  // Tolerancia relativa a la escala de la diagonal: así una matriz en 1e10 no agota los barridos.
+  const scale = 1 + S.reduce((s, r, i) => s + r[i] ** 2, 0);
+  let sweeps = 0;
+  for (; sweeps < 100; sweeps++) {
     let off = 0;
     for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += A[p][q] ** 2;
-    if (off < 1e-30) break;
+    if (off < 1e-30 * scale) break;
     for (let p = 0; p < n; p++) {
       for (let q = p + 1; q < n; q++) {
         if (Math.abs(A[p][q]) < 1e-300) continue;
@@ -1024,7 +1027,7 @@ export function symmetricEigen(S: Grid): { values: number[]; vectors: Grid } {
     }
   }
   const order = A.map((_, i) => i).sort((a, b) => A[b][b] - A[a][a]);
-  return { values: order.map((i) => A[i][i]), vectors: order.map((i) => V.map((r) => r[i])) };
+  return { values: order.map((i) => A[i][i]), vectors: order.map((i) => V.map((r) => r[i])), sweeps };
 }
 
 export interface LinearAutoencoder {

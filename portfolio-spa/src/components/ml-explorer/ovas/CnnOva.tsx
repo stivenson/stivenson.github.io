@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CNN_IMAGE as IMAGE, CNN_KERNELS as KERNELS } from './datasets';
 import { OVA_COLORS, OvaFrame } from './OvaFrame';
-import { conv2d, maxPool2, relu, type Grid } from './ovaMath';
+import { conv2d, maxPool2, relu } from './ovaMath';
 import { useInViewport, usePrefersReducedMotion } from './useMotion';
 
 /** Tiempo entre posiciones al reproducir. */
@@ -20,7 +20,7 @@ export function CnnOva() {
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
 
-  const kernel = KERNELS[kernelIndex].kernel as unknown as Grid;
+  const kernel = KERNELS[kernelIndex].kernel;
   const raw = useMemo(() => conv2d(IMAGE, kernel), [kernel]);
   const map = useMemo(() => relu(raw), [raw]);
   const pooled = useMemo(() => maxPool2(map), [map]);

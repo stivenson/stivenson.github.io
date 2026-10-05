@@ -9,6 +9,8 @@ const TOP = 16;
 const BOTTOM = 190;
 /** Escala logarítmica del eje y: de 1e-8 (abajo) a 1 (arriba). */
 const LOG_MIN = -8;
+/** Altura del muñón con que se dibujan las barras que bajan del piso (para que no desaparezcan). */
+const STUB = 4;
 const yOf = (g: number) => TOP + (Math.max(LOG_MIN, Math.log10(g)) / LOG_MIN) * (BOTTOM - TOP);
 
 /** «0.024» si es legible con 3 decimales; si no, notación científica: «6.2e-6». */
@@ -75,21 +77,29 @@ export function RnnOva() {
           <g key={i}>
             <line x1={34} x2={W} y1={yOf(10 ** -i)} y2={yOf(10 ** -i)} stroke={OVA_COLORS.grid} />
             <text x={30} y={yOf(10 ** -i) + 4} textAnchor="end" fontSize={10} fill={OVA_COLORS.axis}>
-              {i === 0 ? '1' : i === -LOG_MIN ? '< 1e-8' : `1e-${i}`}
+              {i === 0 ? '1' : `1e-${i}`}
             </text>
           </g>
         ))}
-        {g.map((v, t) => (
-          <rect
-            key={t}
-            className="mlx-rnn-bar"
-            x={36 + t * barW}
-            y={yOf(v)}
-            width={barW - 2}
-            height={BOTTOM - yOf(v)}
-            fill={t === 0 ? OVA_COLORS.risk : OVA_COLORS.class0}
-          />
-        ))}
+        <text x={30} y={BOTTOM + 14} textAnchor="end" fontSize={10} fill={OVA_COLORS.axis}>
+          {'< 1e-8'}
+        </text>
+        {g.map((v, t) => {
+          // Bajo el piso: un muñón corto y semitransparente que cuelga bajo la línea de 1e-8.
+          const floor = v < 10 ** LOG_MIN;
+          return (
+            <rect
+              key={t}
+              className={floor ? 'mlx-rnn-bar is-floor' : 'mlx-rnn-bar'}
+              x={36 + t * barW}
+              y={floor ? BOTTOM : yOf(v)}
+              width={barW - 2}
+              height={floor ? STUB : BOTTOM - yOf(v)}
+              fill={t === 0 ? OVA_COLORS.risk : OVA_COLORS.class0}
+              opacity={floor ? 0.45 : 1}
+            />
+          );
+        })}
         <text x={36} y={H - 8} fontSize={11} fill={OVA_COLORS.axis}>
           x₁
         </text>

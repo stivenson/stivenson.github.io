@@ -49,6 +49,14 @@ describe('TransformerOva', () => {
     expect(button('el banco del río').getAttribute('aria-pressed')).toBe('true');
   });
 
+  it('el aria-label del svg lee la fila enfocada con sus pesos', () => {
+    const { container } = render(<TransformerOva />);
+    const label = () => container.querySelector('svg')?.getAttribute('aria-label') ?? '';
+    expect(label()).toContain('«banco» atiende a: el 0.09, banco 0.41, del 0.09, río 0.41');
+    fireEvent.click(button('río'));
+    expect(label()).toContain('«río» atiende a:');
+  });
+
   it('el svg es una imagen con 16 casillas; el hint va fuera del readout', () => {
     const { container } = render(<TransformerOva />);
     const svg = container.querySelector('svg');

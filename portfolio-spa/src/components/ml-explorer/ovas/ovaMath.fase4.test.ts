@@ -33,6 +33,12 @@ describe('MLP 2-2-1', () => {
     expect(corners.map((p) => Math.round(mlpForward(net, p).y))).toEqual([0, 1, 1, 0]);
     expect(mlpHits(net, corners)).toBe(4);
   });
+
+  it('mlpHits: una salida de exactamente 0.5 cuenta como clase 1 (≥ 0.5)', () => {
+    const zero: Mlp2 = { h1: [0, 0, 0], h2: [0, 0, 0], out: [0, 0, 0] };
+    expect(mlpHits(zero, [{ x: 1, y: 1, label: 1 }])).toBe(1);
+    expect(mlpHits(zero, [{ x: 1, y: 1, label: 0 }])).toBe(0);
+  });
 });
 
 describe('convolución, ReLU y max pooling', () => {
@@ -146,6 +152,21 @@ describe('autoencoder lineal', () => {
     const e = symmetricEigen(S);
     e.vectors.forEach((v, j) => {
       S.forEach((row, i) => expect(row.reduce((s, a, k) => s + a * v[k], 0)).toBeCloseTo(e.values[j] * v[i], 10));
+    });
+  });
+
+  it('symmetricEigen: la tolerancia es relativa; una matriz a escala 1e10 converge en pocos barridos', () => {
+    const S = [
+      [4, 1, 0.5],
+      [1, 3, 0.2],
+      [0.5, 0.2, 1],
+    ].map((r) => r.map((a) => a * 1e10));
+    const e = symmetricEigen(S);
+    expect(e.sweeps).toBeLessThan(15);
+    e.vectors.forEach((v, j) => {
+      S.forEach((row, i) =>
+        expect(row.reduce((s, a, k) => s + a * v[k], 0) / 1e10).toBeCloseTo((e.values[j] * v[i]) / 1e10, 8),
+      );
     });
   });
 

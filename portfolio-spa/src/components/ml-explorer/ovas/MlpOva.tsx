@@ -11,10 +11,10 @@ const CELL = 1.5 / CELLS;
 
 type Layer = keyof Mlp2;
 
-const LAYERS: { id: Layer; name: string; inputs: [string, string] }[] = [
-  { id: 'h1', name: 'Oculta 1', inputs: ['peso de x', 'peso de y'] },
-  { id: 'h2', name: 'Oculta 2', inputs: ['peso de x', 'peso de y'] },
-  { id: 'out', name: 'Salida', inputs: ['peso de oculta 1', 'peso de oculta 2'] },
+const LAYERS: { id: Layer; name: string; label: string; inputs: [string, string] }[] = [
+  { id: 'h1', name: 'Oculta 1', label: 'Neurona oculta 1', inputs: ['peso de x', 'peso de y'] },
+  { id: 'h2', name: 'Oculta 2', label: 'Neurona oculta 2', inputs: ['peso de x', 'peso de y'] },
+  { id: 'out', name: 'Salida', label: 'Neurona de salida', inputs: ['peso de oculta 1', 'peso de oculta 2'] },
 ];
 
 /** Extremos visibles de la recta w1·x + w2·y + b = 0 (null si la neurona no depende de x ni de y). */
@@ -38,7 +38,7 @@ export function MlpOva() {
       controls={
         <>
           {LAYERS.map((layer) => (
-            <div key={layer.id} role="group" aria-label={layer.id === 'out' ? 'Neurona de salida' : `Neurona ${layer.name.toLowerCase()}`} className="mlx-mlp-neuron">
+            <div key={layer.id} role="group" aria-label={layer.label} className="mlx-mlp-neuron">
               <span>{layer.name}</span>
               {[0, 1, 2].map((i) => (
                 <OvaSlider

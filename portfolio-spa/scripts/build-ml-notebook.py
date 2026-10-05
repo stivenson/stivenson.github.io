@@ -102,7 +102,7 @@ ALGORITHMS: list[tuple[str, str, str]] = [
     (
         "transformer",
         "Transformer (BERT, GPT)",
-        "Self-attention a mano con 4 palabras: cómo «banco» toma su sentido de la frase.",
+        "Self-attention a mano con 4 palabras: cómo «banco» se inclina hacia naturaleza o hacia dinero según la frase.",
     ),
     (
         "autoencoders",

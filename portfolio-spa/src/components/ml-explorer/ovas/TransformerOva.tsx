@@ -55,7 +55,7 @@ export function TransformerOva() {
   return (
     <OvaFrame
       title="Mapa de atención de una frase"
-      hint="Cada fila es una palabra y dice cuánto atiende a cada palabra de la frase (las filas suman 1). «Banco» es ambiguo: con «río» toma su lado de naturaleza y con «interés», el de dinero. Invierte la frase sin codificación posicional: los números solo cambian de lugar y cada palabra sale igual, porque la atención no ve el orden. Con la codificación posicional, sí cambia. La máscara causal (como en GPT) no deja a ninguna palabra mirar las que vienen después. Los embeddings son de juguete, con 4 números escritos a mano."
+      hint="Cada fila es una palabra y dice cuánto atiende a cada palabra de la frase (las filas suman 1). «Banco» es ambiguo: con «río» se inclina hacia naturaleza y con «interés», hacia dinero. Invierte la frase sin codificación posicional: los números solo cambian de lugar y cada palabra sale igual, porque la atención no ve el orden. Con la codificación posicional, sí cambia. La máscara causal (como en GPT) no deja a ninguna palabra mirar las que vienen después. Los embeddings son de juguete, con 4 números escritos a mano."
       controls={
         <>
           <div role="group" aria-label="Frase">
@@ -113,7 +113,7 @@ export function TransformerOva() {
       <svg
         viewBox={`0 0 ${LEFT + words.length * C + 4} ${TOP + words.length * C + 4}`}
         role="img"
-        aria-label={`Mapa de atención de «${words.join(' ')}»: una fila por palabra con el peso que da a cada palabra`}
+        aria-label={`Mapa de atención de «${words.join(' ')}»: una fila por palabra con el peso que da a cada palabra. «${focus}» atiende a: ${words.map((w, j) => `${w} ${weights[i][j].toFixed(2)}`).join(', ')}`}
       >
         {words.map((w, j) => (
           <text key={`c${w}`} x={LEFT + j * C + C / 2} y={TOP - 10} textAnchor="middle" fontSize={12} fill={OVA_COLORS.axis}>

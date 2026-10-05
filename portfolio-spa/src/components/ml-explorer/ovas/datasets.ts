@@ -265,10 +265,10 @@ export const CNN_IMAGE: Grid = [
   [0, 0, 0, 1, 1, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
 ];
-export const CNN_KERNELS = [
+export const CNN_KERNELS: { id: string; label: string; kernel: Grid }[] = [
   { id: 'vertical', label: 'Borde vertical', kernel: [[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]] },
   { id: 'horizontal', label: 'Borde horizontal', kernel: [[-1, -1, -1], [0, 0, 0], [1, 1, 1]] },
-] as const satisfies readonly { id: string; label: string; kernel: Grid }[];
+];
 
 // ---------- RNN: 30 mediciones ----------
 // np.random.default_rng(0).normal(size=30), redondeadas a 2 decimales.

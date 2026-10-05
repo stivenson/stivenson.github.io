@@ -69,6 +69,23 @@ describe('RnnOva', () => {
     expect(container.querySelector('svg')?.textContent).toContain('< 1e-8');
   });
 
+  it('w = 0.1 y 30 pasos: las barras bajo 1e-8 se ven como un muñón en el piso, no desaparecen', () => {
+    const { container } = render(<RnnOva />);
+    fireEvent.change(slider(/^w/), { target: { value: '0.1' } });
+    fireEvent.change(slider(/^Pasos/), { target: { value: '30' } });
+    const bars = [...container.querySelectorAll('.mlx-rnn-bar')];
+    expect(bars).toHaveLength(30);
+    for (const b of bars) expect(Number(b.getAttribute('height'))).toBeGreaterThan(0);
+    const stubs = container.querySelectorAll('.mlx-rnn-bar.is-floor');
+    const notice = [...container.querySelectorAll('[role="status"] span')].find((s) => /barras bajan/.test(s.textContent ?? ''));
+    const below = Number(notice?.textContent?.match(/^(\d+) barras/)?.[1]);
+    expect(stubs.length).toBe(below);
+    expect(below).toBeGreaterThan(0);
+    const labels = [...container.querySelectorAll('svg text')].map((t) => t.textContent);
+    expect(labels).toContain('1e-8');
+    expect(labels).toContain('< 1e-8');
+  });
+
   it('con w = 0.9 y 10 pasos no hay barras bajo el piso ni aviso', () => {
     const { container } = render(<RnnOva />);
     expect(status(container)).not.toContain('bajan de 1e-8');

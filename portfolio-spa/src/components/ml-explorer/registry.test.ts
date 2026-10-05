@@ -37,7 +37,7 @@ describe('registry', () => {
       expect(mod.slug).toBe(slug);
       for (const alt of mod.alternatives) expect(() => getMeta(alt), `${slug} → ${alt}`).not.toThrow();
     }
-  });
+  }, 30_000); // carga los 17 módulos: bajo carga supera los 5 s por defecto
 
   it('getMeta devuelve la fila o lanza si no existe', () => {
     expect(getMeta('knn').name).toBe('KNN');
