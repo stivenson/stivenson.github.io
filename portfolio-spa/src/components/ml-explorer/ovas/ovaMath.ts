@@ -856,3 +856,210 @@ export function dbscan(points: Pt[], eps: number, minPts: number): DbscanResult 
   });
   return { labels, core, clusters: label, noise: labels.filter((l) => l === -1).length };
 }
+
+// ---------- MLP de 2 capas (fase 4) ----------
+
+/** Pesos de una neurona con dos entradas: [peso de x, peso de y, sesgo]. */
+export type Neuron2 = [number, number, number];
+
+/** Red 2-2-1: dos neuronas ocultas y una de salida, todas con sigmoide. */
+export interface Mlp2 {
+  h1: Neuron2;
+  h2: Neuron2;
+  out: Neuron2;
+}
+
+const neuron = ([w1, w2, b]: Neuron2, a: number, c: number) => sigmoid(w1 * a + w2 * c + b);
+
+/** Paso hacia adelante: las salidas de las dos neuronas ocultas y la probabilidad final de la clase 1. */
+export function mlpForward(net: Mlp2, p: Pt): { h: [number, number]; y: number } {
+  const h: [number, number] = [neuron(net.h1, p.x, p.y), neuron(net.h2, p.x, p.y)];
+  return { h, y: neuron(net.out, h[0], h[1]) };
+}
+
+/** Puntos bien clasificados (clase 1 si la probabilidad es ≥ 0.5). */
+export function mlpHits(net: Mlp2, points: LabeledPt[]): number {
+  return points.filter((p) => (mlpForward(net, p).y >= 0.5 ? 1 : 0) === p.label).length;
+}
+
+// ---------- Convolución (CNN) ----------
+
+export type Grid = number[][];
+
+/** Convolución «válida» con paso 1 (como en las CNN: sin voltear el filtro). Salida de (n − k + 1)². */
+export function conv2d(img: Grid, kernel: Grid): Grid {
+  const k = kernel.length;
+  const rows = img.length - k + 1;
+  const cols = img[0].length - k + 1;
+  return Array.from({ length: rows }, (_, i) =>
+    Array.from({ length: cols }, (_, j) => {
+      let s = 0;
+      for (let a = 0; a < k; a++) for (let b = 0; b < k; b++) s += img[i + a][j + b] * kernel[a][b];
+      return s;
+    }),
+  );
+}
+
+/** ReLU: los negativos pasan a 0. */
+export function relu(m: Grid): Grid {
+  return m.map((row) => row.map((v) => Math.max(0, v)));
+}
+
+/** Max pooling de 2×2 con paso 2: el máximo de cada bloque. */
+export function maxPool2(m: Grid): Grid {
+  const rows = Math.floor(m.length / 2);
+  const cols = Math.floor(m[0].length / 2);
+  return Array.from({ length: rows }, (_, i) =>
+    Array.from({ length: cols }, (_, j) => Math.max(m[2 * i][2 * j], m[2 * i][2 * j + 1], m[2 * i + 1][2 * j], m[2 * i + 1][2 * j + 1])),
+  );
+}
+
+// ---------- RNN ----------
+
+/** Estados de una RNN de una neurona: h_0 = 0 y h_t = tanh(w·h_(t−1) + u·x_t). Devuelve h_0…h_T. */
+export function rnnStates(xs: number[], w: number, u: number): number[] {
+  const h = [0];
+  for (const x of xs) h.push(Math.tanh(w * h[h.length - 1] + u * x));
+  return h;
+}
+
+/**
+ * Influencia de cada entrada en la última salida: g_t = ∂h_T/∂x_t
+ * = u·(1 − h_t²) · ∏_(s = t+1…T) w·(1 − h_s²), para t = 1…T (índice 0 = x_1).
+ * Es lo que la retropropagación en el tiempo lleva de vuelta a cada paso.
+ */
+export function rnnInfluence(xs: number[], w: number, u: number): number[] {
+  const h = rnnStates(xs, w, u);
+  const T = xs.length;
+  const g = new Array<number>(T);
+  let carry = 1;
+  for (let t = T; t >= 1; t--) {
+    g[t - 1] = carry * u * (1 - h[t] ** 2);
+    carry *= w * (1 - h[t] ** 2);
+  }
+  return g;
+}
+
+// ---------- Self-attention (Transformer) ----------
+
+export function softmax(xs: number[]): number[] {
+  const m = Math.max(...xs);
+  const e = xs.map((v) => (v === -Infinity ? 0 : Math.exp(v - m)));
+  const s = e.reduce((a, b) => a + b, 0);
+  return e.map((v) => v / s);
+}
+
+/** Codificación posicional sinusoidal: seno en las columnas pares y coseno en las impares. */
+export function positionalEncoding(n: number, d: number): Grid {
+  return Array.from({ length: n }, (_, pos) =>
+    Array.from({ length: d }, (_, i) => {
+      const angle = pos / 10000 ** ((2 * Math.floor(i / 2)) / d);
+      return i % 2 === 0 ? Math.sin(angle) : Math.cos(angle);
+    }),
+  );
+}
+
+export interface Attention {
+  /** weights[i][j]: cuánto atiende la palabra i a la j (cada fila suma 1). */
+  weights: Grid;
+  /** Vector de cada palabra después de la atención: promedio de los vectores ponderado por su fila. */
+  out: Grid;
+}
+
+/**
+ * Self-attention de una cabeza con Q = K = V = X (sin matrices aprendidas):
+ * puntajes = X·Xᵀ / √d, softmax por filas y salida = pesos · X. Con `causal`,
+ * cada palabra solo ve las anteriores y a sí misma (como GPT).
+ */
+export function selfAttention(X: Grid, causal = false): Attention {
+  const d = X[0].length;
+  const weights = X.map((q, i) =>
+    softmax(X.map((k, j) => (causal && j > i ? -Infinity : q.reduce((s, v, c) => s + v * k[c], 0) / Math.sqrt(d)))),
+  );
+  const out = weights.map((row) => X[0].map((_, c) => row.reduce((s, a, j) => s + a * X[j][c], 0)));
+  return { weights, out };
+}
+
+// ---------- Autoencoder lineal (= PCA) ----------
+
+/**
+ * Autovalores y autovectores de una matriz simétrica por el método de Jacobi
+ * (rotaciones hasta anular lo que está fuera de la diagonal). Devuelve los
+ * autovalores de mayor a menor y, en `vectors[j]`, el autovector del j-ésimo.
+ */
+export function symmetricEigen(S: Grid): { values: number[]; vectors: Grid } {
+  const n = S.length;
+  const A = S.map((r) => [...r]);
+  const V: Grid = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)));
+  for (let sweep = 0; sweep < 100; sweep++) {
+    let off = 0;
+    for (let p = 0; p < n; p++) for (let q = p + 1; q < n; q++) off += A[p][q] ** 2;
+    if (off < 1e-30) break;
+    for (let p = 0; p < n; p++) {
+      for (let q = p + 1; q < n; q++) {
+        if (Math.abs(A[p][q]) < 1e-300) continue;
+        const theta = (A[q][q] - A[p][p]) / (2 * A[p][q]);
+        const t = Math.sign(theta || 1) / (Math.abs(theta) + Math.sqrt(theta * theta + 1));
+        const c = 1 / Math.sqrt(t * t + 1);
+        const s = t * c;
+        for (let k = 0; k < n; k++) {
+          const akp = A[k][p];
+          const akq = A[k][q];
+          A[k][p] = c * akp - s * akq;
+          A[k][q] = s * akp + c * akq;
+        }
+        for (let k = 0; k < n; k++) {
+          const apk = A[p][k];
+          const aqk = A[q][k];
+          A[p][k] = c * apk - s * aqk;
+          A[q][k] = s * apk + c * aqk;
+        }
+        for (let k = 0; k < n; k++) {
+          const vkp = V[k][p];
+          const vkq = V[k][q];
+          V[k][p] = c * vkp - s * vkq;
+          V[k][q] = s * vkp + c * vkq;
+        }
+      }
+    }
+  }
+  const order = A.map((_, i) => i).sort((a, b) => A[b][b] - A[a][a]);
+  return { values: order.map((i) => A[i][i]), vectors: order.map((i) => V.map((r) => r[i])) };
+}
+
+export interface LinearAutoencoder {
+  mean: number[];
+  /** Las k direcciones del cuello de botella (filas). */
+  components: Grid;
+}
+
+/**
+ * Autoencoder lineal óptimo con cuello de botella k: con error cuadrático,
+ * reconstruye igual que PCA con k componentes; su código ocupa el mismo
+ * subespacio que los k primeros componentes principales de los datos de
+ * entrenamiento, aunque sus ejes pueden salir girados (Baldi y Hornik, 1989).
+ * Aquí se toman esos componentes como ejes y se calcula exacto, sin descenso
+ * de gradiente.
+ */
+export function fitLinearAutoencoder(X: Grid, k: number): LinearAutoencoder {
+  const n = X.length;
+  const d = X[0].length;
+  const mean = Array.from({ length: d }, (_, c) => X.reduce((s, r) => s + r[c], 0) / n);
+  const S = Array.from({ length: d }, (_, a) =>
+    Array.from({ length: d }, (_, b) => X.reduce((s, r) => s + (r[a] - mean[a]) * (r[b] - mean[b]), 0) / (n - 1)),
+  );
+  return { mean, components: symmetricEigen(S).vectors.slice(0, k) };
+}
+
+/** Reconstrucción de una fila: codificar (k números) y decodificar (d números). */
+export function reconstruct(ae: LinearAutoencoder, x: number[]): number[] {
+  const c = x.map((v, i) => v - ae.mean[i]);
+  const code = ae.components.map((v) => v.reduce((s, vi, i) => s + vi * c[i], 0));
+  return ae.mean.map((m, i) => m + ae.components.reduce((s, v, j) => s + code[j] * v[i], 0));
+}
+
+/** Error de reconstrucción de una fila: el promedio de las diferencias al cuadrado. */
+export function reconstructionError(ae: LinearAutoencoder, x: number[]): number {
+  const r = reconstruct(ae, x);
+  return x.reduce((s, v, i) => s + (v - r[i]) ** 2, 0) / x.length;
+}
