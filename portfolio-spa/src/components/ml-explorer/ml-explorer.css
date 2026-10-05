@@ -483,8 +483,10 @@
   white-space: nowrap;
 }
 
-/* Solo se une la caja con su puntuación: un término largo sigue partiéndose por dentro. */
-.mlx-nowrap > * {
+/* Solo se une el término con su puntuación: un término largo sigue
+   partiéndose por dentro de su botón (caja atómica). No vale `> *`: en un
+   <span> en línea, el white-space del hijo decide el corte de su borde. */
+.mlx-nowrap > .mlx-gl {
   white-space: normal;
 }
 
