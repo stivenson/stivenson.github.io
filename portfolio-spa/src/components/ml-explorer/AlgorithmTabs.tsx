@@ -34,8 +34,11 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg, consum
     if (!list || !active) return;
     const left = active.offsetLeft; // relativo a la barra: .mlx-tablist es position: relative
     const right = left + active.offsetWidth;
-    if (left < list.scrollLeft) list.scrollLeft = left;
-    else if (right > list.scrollLeft + list.clientWidth) list.scrollLeft = right - list.clientWidth;
+    // Mismo margen que scroll-padding-inline en el CSS: la activa queda
+    // entera y fuera del difuminado del borde.
+    const pad = 24;
+    if (left - pad < list.scrollLeft) list.scrollLeft = Math.max(0, left - pad);
+    else if (right + pad > list.scrollLeft + list.clientWidth) list.scrollLeft = right + pad - list.clientWidth;
   }, [tab]);
 
   /** Lleva la vista al inicio de las pestañas y enfoca la pestaña indicada. */

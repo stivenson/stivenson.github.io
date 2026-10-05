@@ -52,7 +52,7 @@ describe('AlgorithmTabs: la página no se mueve', () => {
     Object.defineProperty(last, 'offsetLeft', { configurable: true, value: 700 });
     Object.defineProperty(last, 'offsetWidth', { configurable: true, value: 100 });
     fireEvent.click(last);
-    expect(scrollLeft).toBe(600); // 700 + 100 - 200: el borde derecho queda a la vista
+    expect(scrollLeft).toBe(624); // 700 + 100 + 24 - 200: el borde derecho queda a la vista, fuera del difuminado
 
     const first = screen.getByRole('tab', { name: 'Tipo' });
     Object.defineProperty(first, 'offsetLeft', { configurable: true, value: 0 });

@@ -350,6 +350,10 @@
   gap: 2px;
   overflow-x: auto;
   scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+  /* Margen al desplazar a una pestaña: la activa queda entera, sin
+     quedar pegada (ni medio tapada) bajo el difuminado del borde. */
+  scroll-padding-inline: 24px;
   border-bottom: 1px solid rgba(85, 170, 255, 0.2);
 }
 
@@ -358,6 +362,7 @@
   padding: 8px 12px;
   font-size: 13.5px;
   white-space: nowrap;
+  scroll-snap-align: start;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -426,6 +431,7 @@
 
 .mlx-tex-block {
   overflow-x: auto;
+  overflow-y: hidden;
   padding: 4px 0;
 }
 
@@ -949,6 +955,35 @@ p.mlx-py-error {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* El explorador sale a sangre como las OVAs (.lazy-frame en
+     retro-modern.css): recupera el padding de .page-shell y .rf-layout-main.
+     Pantalla completa queda fuera: ya ocupa toda la ventana. */
+  .markdown-content > .mlx:not(.mlx--full) {
+    margin-inline: calc(-1 * (var(--shell-pad-x, 0px) + var(--space-sm)));
+    width: auto;
+  }
+
+  .markdown-content > .mlx:not(.mlx--full) .mlx-menu,
+  .markdown-content > .mlx:not(.mlx--full) .mlx-panel {
+    border-radius: 0;
+  }
+
+  .mlx-head h3 {
+    overflow-wrap: anywhere;
+  }
+
+  /* Sombras de desplazamiento (truco de background-attachment: local): las
+     capas `local` tapan la sombra cuando el borde ya está a la vista, así que
+     el difuminado solo aparece del lado en que queda contenido oculto. */
+  .mlx-tex-block,
+  .mlx-tablist {
+    background:
+      linear-gradient(to right, #0a0a2e 30%, rgba(10, 10, 46, 0)) left / 28px 100% no-repeat local,
+      linear-gradient(to left, #0a0a2e 30%, rgba(10, 10, 46, 0)) right / 28px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, rgba(85, 170, 255, 0.6), rgba(85, 170, 255, 0)) left / 16px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, rgba(85, 170, 255, 0.6), rgba(85, 170, 255, 0)) right / 16px 100% no-repeat scroll;
+  }
+
   .mlx-ova-body {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -956,6 +991,31 @@ p.mlx-py-error {
   .mlx-typefig {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Fórmulas: un poco más pequeñas para que quepan; si aun así no, el
+     scroll horizontal se anuncia con la sombra del borde. */
+  .mlx-tex-block {
+    font-size: 0.85em;
+  }
+
+  /* Chips compactos: el resumen no debe empujar el contenido fuera de la
+     primera pantalla. */
+  .mlx-chips {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .mlx-chip {
+    padding: 5px 8px;
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+
+  .mlx-chip span {
+    font-size: 9.5px;
   }
 }
 
