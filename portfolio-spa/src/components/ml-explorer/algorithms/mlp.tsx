@@ -162,7 +162,7 @@ const mlp: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          La misma maquinaria (capas, <G k="retropropagacion" after=",">retropropagación</G> descenso por <G k="batch" after=")">lotes</G>
+          La misma maquinaria (capas, <G k="retropropagacion" after=",">retropropagación</G> descenso por <G k="batch" after=")">lotes</G>{' '}
           sirve para imágenes, texto y audio, y corre rápido en una <G k="gpu" after=".">GPU</G> Con 2 neuronas ocultas la red
           del ejercicio solo acierta el 49.8 % en datos nuevos; con 8, el 91.3 %: con un entrenamiento corto, el tamaño
           de la capa importa mucho.

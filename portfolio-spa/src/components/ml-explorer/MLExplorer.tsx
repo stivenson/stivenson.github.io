@@ -19,7 +19,7 @@ export function MLExplorer() {
   const state = useAlgorithm(alg);
   const rootRef = useRef<HTMLElement>(null);
   const fsButtonRef = useRef<HTMLButtonElement>(null);
-  const fullscreen = useFullscreen(rootRef, fsButtonRef);
+  const fullscreen = useFullscreen(rootRef, fsButtonRef, params.get('fullscreen') === '1');
   const fullscreenActiveRef = useRef(false);
   useEffect(() => {
     fullscreenActiveRef.current = fullscreen.active;
@@ -88,6 +88,17 @@ export function MLExplorer() {
     setParams(withExplorerState(params, { alg, tab, ...next }), { preventScrollReset: true });
   };
 
+  const toggleFullscreen = () => {
+    // Al salir de una vista abierta por enlace, evita que una recarga la vuelva
+    // a abrir automáticamente. La URL compartida sigue funcionando hasta salir.
+    if (fullscreen.active && params.get('fullscreen') === '1') {
+      const next = new URLSearchParams(params);
+      next.delete('fullscreen');
+      setParams(next, { preventScrollReset: true });
+    }
+    fullscreen.toggle();
+  };
+
   const classes = [
     'mlx',
     fullscreen.active ? 'mlx--full' : '',
@@ -111,7 +122,7 @@ export function MLExplorer() {
           className="mlx-fs-btn"
           aria-pressed={fullscreen.active}
           title={fullscreen.active ? 'Salir de pantalla completa (Esc)' : 'Ver el explorador a pantalla completa'}
-          onClick={fullscreen.toggle}
+          onClick={toggleFullscreen}
         >
           <FullscreenIcon exit={fullscreen.active} />
           <span>{fullscreen.active ? 'Salir de pantalla completa' : 'Pantalla completa'}</span>

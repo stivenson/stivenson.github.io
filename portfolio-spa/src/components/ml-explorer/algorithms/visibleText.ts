@@ -66,8 +66,13 @@ export function findGlued(text: string): string[] {
   for (let m = re.exec(text); m; m = re.exec(text)) {
     const before = [...text.slice(0, m.index)].pop() ?? '';
     const after = [...text.slice(m.index + m[0].length)][0] ?? '';
-    const gluedBefore = WORDY.test(before) || CLOSING_PUNCT.test(before);
-    const gluedAfter = WORDY.test(after) || OPENING.test(after);
+    // Una puntuación pegada (before/after de <G>/<Tex>) cuenta como pegada si toca una letra sin espacio.
+    const beforeBefore = [...text.slice(0, m.index)].slice(-2)[0] ?? '';
+    const afterAfter = [...text.slice(m.index + m[0].length)][1] ?? '';
+    const gluedBefore =
+      WORDY.test(before) || CLOSING_PUNCT.test(before) || (OPENING.test(before) && WORDY.test(beforeBefore));
+    const gluedAfter =
+      WORDY.test(after) || OPENING.test(after) || (CLOSING_PUNCT.test(after) && WORDY.test(afterAfter));
     if (gluedBefore || gluedAfter) {
       const from = Math.max(0, m.index - 25);
       bad.push(text.slice(from, m.index + m[0].length + 25).replaceAll(OPEN, '[[').replaceAll(CLOSE, ']]'));

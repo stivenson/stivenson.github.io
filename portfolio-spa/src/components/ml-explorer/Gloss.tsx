@@ -38,15 +38,16 @@ export function G({
       else d.setAttribute('open', ''); // navegadores sin <dialog> modal (y jsdom)
     }
     d?.querySelector<HTMLButtonElement>('.mlx-gl-ok')?.focus();
-    // Escape cierra la ficha esté donde esté el foco (el «cancel» nativo del
-    // <dialog> se intercepta abajo para que React lleve el estado).
+    // Respaldo sin showModal(): ahí no hay «cancel» nativo, así que Escape se
+    // escucha en document. Con showModal() lo maneja el <dialog> (onCancel abajo).
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') setOpen(false);
     };
-    document.addEventListener('keydown', onKey);
+    const modal = typeof d?.showModal === 'function';
+    if (!modal) document.addEventListener('keydown', onKey);
     const button = opener.current;
     return () => {
-      document.removeEventListener('keydown', onKey);
+      if (!modal) document.removeEventListener('keydown', onKey);
       button?.focus();
     };
   }, [open]);

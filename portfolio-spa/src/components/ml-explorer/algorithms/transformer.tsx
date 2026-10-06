@@ -65,7 +65,7 @@ const transformer: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Entrenar un <G k="llm">modelo de lenguaje grande</G> cuesta millones de dólares en <G k="gpu" after=".">GPU</G>
+            Entrenar un <G k="llm">modelo de lenguaje grande</G> cuesta millones de dólares en <G k="gpu" after=".">GPU</G>{' '}
             Ajustar uno pequeño de tipo <G k="bertGpt">BERT</G> a una clasificación de textos se hace con unos miles de
             ejemplos y una sola GPU.
           </p>

@@ -18,10 +18,10 @@ import 'katex/dist/katex.min.css';
 // Solo los lenguajes que usan los artículos (el Prism completo pesa ~1 MB).
 // Un bloque con otro lenguaje se ve como texto plano: si un artículo nuevo
 // usa otro, regístralo aquí.
-SyntaxHighlighter.registerLanguage('bash', bash);
-SyntaxHighlighter.registerLanguage('ini', ini);
-SyntaxHighlighter.registerLanguage('python', python);
-SyntaxHighlighter.registerLanguage('sql', sql);
+/** Lenguajes de bloque ``` registrados; un test comprueba que los artículos no usen otros. */
+export const REGISTERED_LANGUAGES = ['bash', 'ini', 'python', 'sql'] as const;
+const LANGUAGE_DEFS = { bash, ini, python, sql };
+for (const lang of REGISTERED_LANGUAGES) SyntaxHighlighter.registerLanguage(lang, LANGUAGE_DEFS[lang]);
 
 // El explorador de ML solo lo usa un artículo: se descarga aparte cuando el
 // markdown lo pide con <ml-explorer></ml-explorer>.

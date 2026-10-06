@@ -74,7 +74,7 @@ const gradientBoosting: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b>Ejemplo:</b> hay que predecir un valor real de 7. El modelo arranca con el promedio, 5: el error
+            <b>Ejemplo:</b> hay que predecir un valor real de 7. El modelo arranca con el promedio, 5: el error{' '}
             <G before="(" k="residuo" after=")">residuo</G> es 7 − 5 = 2. Supón que el primer árbol aprende a predecir ese 2. No se
             suma entero, solo una fracción, la{' '}
             <G k="tasaAprendizaje" after=":">tasa de aprendizaje</G> con 0.3, la predicción pasa a 5 + 0.3 · 2 = 5.6. El

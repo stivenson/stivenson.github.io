@@ -63,7 +63,7 @@ const cnn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          Partir de una red entrenada con millones de fotos <G before="(" k="transferencia" after=")">aprendizaje por transferencia</G>
+          Partir de una red entrenada con millones de fotos <G before="(" k="transferencia" after=")">aprendizaje por transferencia</G>{' '}
           permite buenos resultados con cientos de imágenes por clase. Desde 2020 los Vision{' '}
           <G k="transformer">Transformers</G> compiten con ellas cuando hay muchísimos datos.
         </p>

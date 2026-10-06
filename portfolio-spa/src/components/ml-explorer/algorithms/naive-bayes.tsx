@@ -126,7 +126,7 @@ const naiveBayes: AlgorithmModule = {
       deepDive: (
         <p>
           El supuesto casi nunca se cumple, y aun así el modelo suele clasificar bien: para elegir la clase basta con
-          que el orden de las probabilidades sea correcto, aunque sus valores estén exagerados. Usar pares de palabras
+          que el orden de las probabilidades sea correcto, aunque sus valores estén exagerados. Usar pares de palabras{' '}
           <G before="(" k="ngrama" after=",">bigramas</G> <code>ngram_range=(1, 2)</code>) capta algo del orden, como «no funciona».
         </p>
       ),

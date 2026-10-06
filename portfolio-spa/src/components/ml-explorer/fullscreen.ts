@@ -77,8 +77,14 @@ function inertOutside(root: Element): () => void {
   return () => touched.forEach((el) => el.removeAttribute('inert'));
 }
 
-export function useFullscreen(rootRef: RefObject<HTMLElement | null>, buttonRef: RefObject<HTMLElement | null>) {
-  const [mode, setMode] = useState<FullscreenMode>('none');
+export function useFullscreen(
+  rootRef: RefObject<HTMLElement | null>,
+  buttonRef: RefObject<HTMLElement | null>,
+  startInOverlay = false,
+) {
+  // Una URL no puede activar la Fullscreen API del navegador porque exige un
+  // gesto del usuario. El overlay ofrece la misma vista completa al abrir un enlace.
+  const [mode, setMode] = useState<FullscreenMode>(startInOverlay ? 'overlay' : 'none');
 
   // La API nativa avisa de entradas y salidas (incluida la tecla Esc del
   // navegador) con `fullscreenchange`: el estado se sincroniza desde ahí.

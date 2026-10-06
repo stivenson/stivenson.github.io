@@ -204,7 +204,7 @@ const knn: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En producción hay millones de usuarios y productos: se usan representaciones aprendidas <G before="(" k="embedding" after="),">embeddings</G>
+          En producción hay millones de usuarios y productos: se usan representaciones aprendidas <G before="(" k="embedding" after="),">embeddings</G>{' '}
           entrenadas para que «cerca» signifique «parecido» aunque tengan cientos de dimensiones, y búsqueda
           aproximada de vecinos. Otro reto es el «arranque en frío»: un usuario nuevo no tiene calificaciones con las
           que compararse.

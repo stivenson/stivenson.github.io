@@ -84,7 +84,7 @@ const logisticRegression: AlgorithmModule = {
           <Tex block>{'\\begin{aligned} \\min_b\\ -\\frac{1}{n}\\sum_i \\Big[\\, & y_i \\log p_i \\\\ & + (1-y_i)\\log(1-p_i) \\,\\Big] \\end{aligned}'}</Tex>
           <p>
             No hay solución cerrada: se resuelve con <G k="descensoGradiente">descenso de gradiente</G> o con el método de Newton (scikit-learn
-            usa por defecto L-BFGS, una variante de Newton que aproxima la curvatura, y le suma una penalización <G k="regularizacionL1L2" after=";">L2</G>
+            usa por defecto L-BFGS, una variante de Newton que aproxima la curvatura, y le suma una penalización <G k="regularizacionL1L2" after=";">L2</G>{' '}
             ver Supuestos). El <G k="gradiente">gradiente</G> es simple: <Tex after=".">{'\\frac{1}{n}\\sum_i (p_i - y_i)\\,x_i'}</Tex> El botón
             «Mejor ajuste» del simulador usa Newton, que además aprovecha la curvatura: llega al óptimo en pocas
             iteraciones (unas 8 con estos datos).
@@ -207,7 +207,7 @@ const logisticRegression: AlgorithmModule = {
       ),
       deepDive: (
         <p>
-          En producción el texto se convierte en miles de <G k="feature">features</G> (bolsa de palabras o TF-IDF) con <G k="regularizacionL1L2" after=",">regularización L2</G>
+          En producción el texto se convierte en miles de <G k="feature">features</G> (bolsa de palabras o TF-IDF) con <G k="regularizacionL1L2" after=",">regularización L2</G>{' '}
           y el umbral se elige con la curva de precisión y exhaustividad, no con el 0.5 por defecto.
         </p>
       ),

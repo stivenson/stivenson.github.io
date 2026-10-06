@@ -34,7 +34,7 @@ const kMeans: AlgorithmModule = {
           </p>
           <p>
             <b>¿Cómo se evalúa sin respuestas?</b> No hay «acierto» que medir. Se mira qué tan apretados quedan los
-            grupos (la <G k="inercia" after=")">inercia</G> y qué tan separados están entre sí (la <G k="silueta" after=").">silueta</G>
+            grupos (la <G k="inercia" after=")">inercia</G> y qué tan separados están entre sí (la <G k="silueta" after=").">silueta</G>{' '}
             Ninguna de las dos dice si los grupos sirven para tu negocio: eso lo decide alguien que conozca los datos.
           </p>
         </>
