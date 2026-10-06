@@ -236,6 +236,8 @@ const kMeans: AlgorithmModule = {
     },
   },
   Ova: KMeansOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'k-means' },
   inYourField: [
     { area: 'Eléctrica', example: 'agrupar las curvas de consumo diario de los usuarios para diseñar tarifas por perfil.' },

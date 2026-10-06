@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react';
-import { HC_CUT, HC_POINTS as POINTS, HC_START_CUT } from './datasets';
-import { CLUSTER_COLORS, OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
-import { averageLinkage, cutTree, dendrogramLayout } from './ovaMath';
+import { useMemo, useRef, useState } from 'react';
+import { HC_CUT, HC_POINTS as POINTS } from './datasets';
+import { CLUSTER_COLORS, OVA_COLORS, OvaFrame } from './OvaFrame';
+import { averageLinkage, dendrogramLayout } from './ovaMath';
 import { createPlot } from './plot';
+import { useInViewport, usePrefersReducedMotion } from './useMotion';
+import { useAutoLoop } from './useAutoLoop';
 
 const N = POINTS.length;
 const MERGES = averageLinkage(POINTS);
@@ -26,49 +28,66 @@ const LABEL_AT: [number, number][] = [
 const LEAVES: number[][] = [...POINTS.map((_, i) => [i])];
 MERGES.forEach((m) => LEAVES.push([...LEAVES[m.a], ...LEAVES[m.b]]));
 
-export function HierarchicalOva() {
-  const [cut, setCut] = useState<number>(HC_START_CUT);
-  const labels = useMemo(() => cutTree(MERGES, N, cut), [cut]);
+/** Grupos que existen después de las primeras `steps` uniones del algoritmo. */
+function labelsAfter(steps: number): number[] {
+  const active = new Set(POINTS.map((_, i) => i));
+  MERGES.slice(0, steps).forEach((merge, i) => {
+    active.delete(merge.a);
+    active.delete(merge.b);
+    active.add(N + i);
+  });
+  const roots = [...active].sort((a, b) => Math.min(...LEAVES[a]) - Math.min(...LEAVES[b]));
+  return POINTS.map((_, i) => roots.findIndex((root) => LEAVES[root].includes(i)));
+}
+
+export function HierarchicalOva({ autoPlay = false }: { autoPlay?: boolean }) {
+  const [progress, setProgress] = useState(0);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const visible = useInViewport(stageRef);
+  const reducedMotion = usePrefersReducedMotion();
+  const last = MERGES.length;
+  const shownStep = Math.min(progress, last);
+  const cut = shownStep === 0 ? 0 : MERGES[shownStep - 1].height;
+  const labels = useMemo(() => labelsAfter(shownStep), [shownStep]);
   const groups = Math.max(...labels) + 1;
   const sizes = Array.from({ length: groups }, (_, g) => labels.filter((l) => l === g).length);
-  /** Color de un nodo: el de su grupo si queda bajo el corte; gris si queda por encima. */
-  const color = (node: number) =>
-    node < N || MERGES[node - N].height <= cut ? CLUSTER_COLORS[labels[LEAVES[node][0]] % CLUSTER_COLORS.length] : OVA_COLORS.axis;
+
+  useAutoLoop(progress, last, setProgress, visible, reducedMotion, autoPlay);
+
+  const color = (node: number) => {
+    const mergeIndex = node - N;
+    return mergeIndex < shownStep
+      ? CLUSTER_COLORS[labels[LEAVES[node][0]] % CLUSTER_COLORS.length]
+      : OVA_COLORS.axis;
+  };
 
   return (
     <OvaFrame
-      title="Cortar el árbol de parecidos"
-      hint="A la derecha, el dendrograma: cada unión junta los dos grupos más parecidos, y su altura es la distancia promedio entre ellos. Mueve la línea de corte: todo lo que se unió por debajo queda en el mismo grupo. Entre 2.2 y 5.2 no pasa nada (hay un salto grande): por eso 3 grupos es un corte natural. El punto 12, entre dos grupos, se une al de la derecha a altura 2.15."
-      controls={
-        <OvaSlider
-          label="Altura del corte"
-          value={cut}
-          min={HC_CUT.min}
-          max={HC_CUT.max}
-          step={HC_CUT.step}
-          onChange={setCut}
-          format={(v) => v.toFixed(1)}
-        />
-      }
+      title="Unir los puntos de abajo hacia arriba"
+      hint="Cada paso une los dos grupos más parecidos; su altura es la distancia promedio entre ellos. Los puntos empiezan neutrales y toman el mismo color cuando quedan unidos. En el dendrograma, las uniones recorridas aparecen coloreadas y las que faltan se atenúan. El recorrido se repite automáticamente. Entre 2.2 y 5.2 hay un salto grande; por eso 3 grupos es un corte natural. El punto 12, entre dos grupos, se une al de la derecha a altura 2.15."
+      readoutLive="off"
       readout={
         <>
           <span>
-            Corte en <b>{cut.toFixed(1)}</b>: <b>{groups}</b> {groups === 1 ? 'grupo' : 'grupos'}
+            Uniones: <b>{shownStep}</b> de <b>{last}</b> · <b>{groups}</b> {groups === 1 ? 'grupo' : 'grupos'}
           </span>
-          <span>
-            Tamaños: <b>{sizes.join(', ')}</b>
-          </span>
+          <span>Tamaños: <b>{sizes.join(', ')}</b></span>
+          {shownStep === 0 && <span>Todos los puntos parten separados y neutrales.</span>}
         </>
       }
     >
-      <div className="mlx-hc-stage">
-        <svg viewBox={`0 0 ${SCATTER.width} ${SCATTER.height}`} role="img" aria-label="Doce puntos numerados, coloreados según el grupo que les toca con el corte actual">
+      <div ref={stageRef} className="mlx-hc-stage">
+        <svg
+          viewBox={`0 0 ${SCATTER.width} ${SCATTER.height}`}
+          role="img"
+          aria-label={`Doce puntos numerados${shownStep === 0 ? ', todavía sin uniones y todos neutrales' : `, en ${groups} grupos tras ${shownStep} uniones`}`}
+        >
           {POINTS.map((p, i) => {
-            const fill = CLUSTER_COLORS[labels[i] % CLUSTER_COLORS.length];
+            const fill = shownStep === 0 ? OVA_COLORS.axis : CLUSTER_COLORS[labels[i] % CLUSTER_COLORS.length];
             const [dx, dy] = LABEL_AT[i];
             return (
               <g key={i}>
-                <circle cx={SCATTER.sx(p.x)} cy={SCATTER.sy(p.y)} r={5} fill={fill} stroke="#040320" strokeWidth={1.5} />
+                <circle className="mlx-hc-point" cx={SCATTER.sx(p.x)} cy={SCATTER.sy(p.y)} r={5} fill={fill} stroke="#040320" strokeWidth={1.5} />
                 <text
                   x={SCATTER.sx(p.x) + dx}
                   y={SCATTER.sy(p.y) + dy + 4}
@@ -83,14 +102,20 @@ export function HierarchicalOva() {
             );
           })}
         </svg>
-        <svg viewBox={`0 0 ${TREE.width} ${TREE.height}`} role="img" aria-label={`Dendrograma de los doce puntos con la línea de corte en ${cut.toFixed(1)}`}>
+        <svg
+          viewBox={`0 0 ${TREE.width} ${TREE.height}`}
+          role="img"
+          aria-label={`Dendrograma de los doce puntos: ${shownStep} de ${last} uniones recorridas`}
+        >
           {MERGES.map((m, k) => {
             const node = LAYOUT.nodes[N + k];
             const stroke = color(N + k);
+            const pending = k >= shownStep;
             return (
-              <g key={k} stroke={stroke} strokeWidth={2} fill="none">
+              <g key={k} stroke={stroke} strokeWidth={2} fill="none" opacity={pending ? 0.28 : 1}>
                 {[m.a, m.b].map((child) => (
                   <path
+                    className="mlx-hc-link"
                     key={child}
                     d={`M${TREE.sx(LAYOUT.nodes[child].x)},${TREE.sy(LAYOUT.nodes[child].height)} V${TREE.sy(node.height)} H${TREE.sx(node.x)}`}
                   />
@@ -103,7 +128,6 @@ export function HierarchicalOva() {
               {leaf + 1}
             </text>
           ))}
-          {/* Eje de alturas: la distancia a la que se unieron los grupos. */}
           {[0, 2, 4, 6].map((h) => (
             <text key={h} x={TREE.sx(-0.5) - 4} y={TREE.sy(h) + 4} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
               {h}

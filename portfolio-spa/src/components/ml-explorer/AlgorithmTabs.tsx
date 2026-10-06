@@ -23,6 +23,7 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg, consum
   const listRef = useRef<HTMLDivElement>(null);
   const content = module.tabs[tab];
   const { Ova } = module;
+  const ovaTab = module.ovaTab ?? 'formula';
   const Demo = content.demo;
 
   // En móvil la barra de pestañas se desplaza: mantener visible la activa.
@@ -135,9 +136,9 @@ export function AlgorithmTabs({ module, meta, tab, onTab, onAlg, onGoAlg, consum
           <span>En el cheatsheet</span>
           {module.row[tab]}
         </blockquote>
+        {tab === ovaTab && <Ova autoPlay={module.autoPlayOva} />}
         <div className="mlx-essential">{content.essential}</div>
         {tab === 'type' && <TypeFigure group={meta.group} />}
-        {tab === 'formula' && <Ova />}
         {Demo && <Demo />}
         {tab === 'whenNot' && <Alternatives slugs={module.alternatives} onAlg={onAlg} />}
         {tab === 'realWorld' && (

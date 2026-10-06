@@ -1,58 +1,40 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { KM_MAX_K, KM_POINTS as POINTS, KM_START_K, KM_STARTS } from './datasets';
 import { CLUSTER_COLORS, OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
 import { kmeansRun, mulberry32, randomInit, silhouette } from './ovaMath';
 import { createPlot } from './plot';
 import { useInViewport, usePrefersReducedMotion } from './useMotion';
+import { useAutoLoop } from './useAutoLoop';
 
 const PLOT = createPlot(320, 320, 24, [0, 10], [0, 10]);
-/** Tiempo entre pasos al reproducir. */
 export const KM_STEP_MS = 900;
 
-export function KMeansOva() {
+export function KMeansOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [k, setK] = useState(KM_START_K);
   const [start, setStart] = useState(0);
   const [step, setStep] = useState(0);
-  const [playing, setPlaying] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
 
   const run = useMemo(() => kmeansRun(POINTS, randomInit(POINTS, k, mulberry32(KM_STARTS[start].seed))), [k, start]);
   const last = run.length - 1;
-  const state = run[Math.min(step, last)];
-  const done = step >= last;
+  const shownStep = Math.min(step, last);
+  const state = run[shownStep];
+  const done = shownStep >= last;
 
-  // Avanza un paso cada KM_STEP_MS, solo mientras la OVA está en pantalla.
-  useEffect(() => {
-    if (!playing || !visible) return;
-    if (done) {
-      setPlaying(false);
-      return;
-    }
-    const id = window.setTimeout(() => setStep((s) => s + 1), KM_STEP_MS);
-    return () => window.clearTimeout(id);
-  }, [playing, visible, done, step]);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, KM_STEP_MS, 1100);
 
   const reset = (nextK = k, nextStart = start) => {
     setK(nextK);
     setStart(nextStart);
     setStep(0);
-    setPlaying(false);
-  };
-
-  const togglePlay = () => {
-    if (playing) return setPlaying(false);
-    // Con «reducir movimiento», nada de animación: salta al resultado final.
-    if (reducedMotion) return setStep(last);
-    if (done) setStep(0);
-    setPlaying(true);
   };
 
   return (
     <OvaFrame
       title="Centroides que se mueven solos"
-      hint="Los puntos no traen etiqueta: K-Means los reparte en K grupos. Cada paso hace dos cosas: asigna cada punto al centroide (la cruz) más cercano y mueve cada centroide al promedio de sus puntos. Pulsa «Paso» o «Reproducir» hasta que ningún punto cambie de grupo. Luego prueba el arranque B con K = 3: los centroides empiezan en otros puntos y el algoritmo se atasca en una solución peor (inercia mucho más alta). Por eso conviene repetir el arranque varias veces (n_init en scikit-learn) y quedarse con el de menor inercia."
+      hint="Los puntos empiezan del mismo color porque todavía no tienen grupo. K-Means asigna cada punto al centroide más cercano y luego mueve cada cruz al promedio de sus puntos; las asignaciones y los colores cambian en cada iteración. El recorrido vuelve a empezar automáticamente. Cambia K o el arranque para comparar resultados: con K = 3, el arranque B se atasca en una solución peor, con mucha más inercia."
       controls={
         <>
           <OvaSlider label="K (número de grupos)" value={k} min={1} max={KM_MAX_K} step={1} onChange={(v) => reset(v)} />
@@ -64,24 +46,13 @@ export function KMeansOva() {
               </button>
             ))}
           </div>
-          <div role="group" aria-label="Iteraciones">
-            <button type="button" disabled={done} onClick={() => setStep((s) => s + 1)}>
-              Paso ▸
-            </button>
-            <button type="button" aria-pressed={playing} onClick={togglePlay}>
-              {playing ? '⏸ Pausar' : '▶ Reproducir'}
-            </button>
-            <button type="button" onClick={() => reset(KM_START_K, 0)}>
-              Restablecer
-            </button>
-          </div>
         </>
       }
-      readoutLive={playing ? 'off' : 'polite'}
+      readoutLive="off"
       readout={
         <>
           <span>
-            Paso <b>{Math.min(step, last)}</b> de <b>{last}</b>
+            Iteración <b>{shownStep}</b> de <b>{last}</b>
           </span>
           <span>
             Inercia: <b>{state.inertia.toFixed(2)}</b>
@@ -99,30 +70,32 @@ export function KMeansOva() {
         <svg
           viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
           role="img"
-          aria-label={`24 puntos sin etiqueta repartidos en ${k} ${k === 1 ? 'grupo' : 'grupos'}, coloreados según el centroide más cercano; los centroides van marcados con una cruz`}
+          aria-label={`24 puntos: iteración ${shownStep} de ${last}${shownStep === 0 ? ', todos neutrales antes de asignar grupos' : `, agrupados en ${k} ${k === 1 ? 'grupo' : 'grupos'} según el centroide más cercano`}; los centroides se marcan con una cruz`}
         >
-          {POINTS.map((p, i) => {
-            const c = state.centroids[state.labels[i]];
-            return (
-              <line
-                key={`l${i}-${k}-${start}-${step}`}
-                className="mlx-km-link"
-                x1={PLOT.sx(p.x)}
-                y1={PLOT.sy(p.y)}
-                x2={PLOT.sx(c.x)}
-                y2={PLOT.sy(c.y)}
-                stroke={CLUSTER_COLORS[state.labels[i]]}
-                strokeOpacity={0.3}
-              />
-            );
-          })}
+          {shownStep > 0 &&
+            POINTS.map((p, i) => {
+              const c = state.centroids[state.labels[i]];
+              return (
+                <line
+                  key={`l${i}-${k}-${start}-${shownStep}`}
+                  className="mlx-km-link"
+                  x1={PLOT.sx(p.x)}
+                  y1={PLOT.sy(p.y)}
+                  x2={PLOT.sx(c.x)}
+                  y2={PLOT.sy(c.y)}
+                  stroke={CLUSTER_COLORS[state.labels[i]]}
+                  strokeOpacity={0.3}
+                />
+              );
+            })}
           {POINTS.map((p, i) => (
             <circle
               key={i}
+              className="mlx-km-point"
               cx={PLOT.sx(p.x)}
               cy={PLOT.sy(p.y)}
               r={6}
-              fill={CLUSTER_COLORS[state.labels[i]]}
+              fill={shownStep === 0 ? OVA_COLORS.axis : CLUSTER_COLORS[state.labels[i]]}
               stroke="#040320"
               strokeWidth={1.5}
             />

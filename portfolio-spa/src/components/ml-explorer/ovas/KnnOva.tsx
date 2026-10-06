@@ -1,9 +1,11 @@
-import { useState, type KeyboardEvent } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import { KNN_POINTS as POINTS, KNN_START as START } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
 import { knnVote, type Pt } from './ovaMath';
 import { createPlot } from './plot';
 import { useSvgDrag } from './useSvgDrag';
+import { useInViewport, usePrefersReducedMotion } from './useMotion';
+import { useAutoLoop } from './useAutoLoop';
 
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const UNIT = PLOT.sx(1) - PLOT.sx(0);
@@ -14,9 +16,17 @@ const round2 = (v: number) => Math.round(v * 100) / 100;
 const fmt = (v: number) => String(round2(v));
 const LABELS = ['🔵 no le gustó', '🟠 le gustó'] as const;
 
-export function KnnOva() {
+export function KnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [query, setQuery] = useState<Pt>(START);
-  const [k, setK] = useState(1);
+  const [maxK, setMaxK] = useState(15);
+  const [step, setStep] = useState(0);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const visible = useInViewport(stageRef);
+  const reducedMotion = usePrefersReducedMotion();
+  const last = (maxK + 1) / 2;
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 900, 1200);
+  const k = step === 0 ? 1 : Math.min(maxK, step * 2 - 1);
+  const active = step > 0;
   const result = knnVote(POINTS, query, k);
 
   const { begin, svgProps } = useSvgDrag<'query'>((_, p) => setQuery({ x: clamp(PLOT.ix(p.x)), y: clamp(PLOT.iy(p.y)) }));
@@ -39,45 +49,46 @@ export function KnnOva() {
   return (
     <OvaFrame
       title="Dime con quién andas…"
-      hint="Arrastra la persona nueva (el rombo) o muévela con las flechas del teclado, y cambia k. Con k = 1 decide un solo vecino, y en la posición inicial ese vecino es un dato raro. Sube k a 3 o 5 y el voto se vuelve estable."
+      hint="Los datos empiezan neutrales. El ciclo revela sus clases y amplía el vecindario: los puntos conectados votan la clase de la persona nueva (rombo). El relleno del rombo es la predicción; puedes moverlo con el mouse o las flechas para comparar posiciones. El recorrido vuelve a empezar solo."
       controls={
-        <>
-          <OvaSlider label="k (vecinos que votan)" value={k} min={1} max={15} step={2} onChange={setK} />
-          <button
-            type="button"
-            onClick={() => {
-              setQuery(START);
-              setK(1);
-            }}
-          >
-            Restablecer
-          </button>
-        </>
+        <OvaSlider
+          label="Máximo de vecinos (k)"
+          value={maxK}
+          min={1}
+          max={15}
+          step={2}
+          onChange={(value) => {
+            setMaxK(value);
+            setStep(0);
+          }}
+        />
       }
       readout={
         <>
-          <span>
-            Votos: {LABELS[0]} <b>{result.votes[0]}</b> · {LABELS[1]} <b>{result.votes[1]}</b>
-          </span>
-          <span>
-            Predicción: <b>{LABELS[result.winner]}</b>
-          </span>
+          {active ? (
+            <>
+              <span>k = <b>{k}</b> · votos: {LABELS[0]} <b>{result.votes[0]}</b> · {LABELS[1]} <b>{result.votes[1]}</b></span>
+              <span>Predicción: <b>{LABELS[result.winner]}</b></span>
+            </>
+          ) : <span>Los datos aún no tienen una clasificación visible.</span>}
         </>
       }
     >
-      <svg
-        viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
-        {...svgProps}
-        role="group"
-        aria-label="Puntos de dos clases y la persona nueva con sus k vecinos"
-      >
+      <div ref={stageRef}>
+       <svg
+         viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
+         {...svgProps}
+         role="group"
+         aria-label="Puntos de dos clases y la persona nueva con sus k vecinos"
+       >
         <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
           gusto por la acción →
         </text>
         <text x={8} y={PLOT.sy(10) - 10} fontSize={11} fill={OVA_COLORS.axis}>
           ↑ gusto por la ciencia ficción
         </text>
-        <circle
+        {active && <circle
+          className="mlx-knn-radius"
           cx={PLOT.sx(query.x)}
           cy={PLOT.sy(query.y)}
           r={result.radius * UNIT}
@@ -85,8 +96,8 @@ export function KnnOva() {
           stroke={OVA_COLORS.axis}
           strokeDasharray="4 4"
           pointerEvents="none"
-        />
-        {result.neighbors.map((i) => (
+        />}
+        {active && result.neighbors.map((i) => (
           <line
             key={`n${i}`}
             x1={PLOT.sx(query.x)}
@@ -104,19 +115,20 @@ export function KnnOva() {
             cx={PLOT.sx(p.x)}
             cy={PLOT.sy(p.y)}
             r={6}
-            fill={p.label ? OVA_COLORS.class1 : OVA_COLORS.class0}
-            stroke={result.neighbors.includes(i) ? '#ffffff' : '#040320'}
-            strokeWidth={result.neighbors.includes(i) ? 2 : 1.5}
+            className="mlx-knn-point"
+            fill={!active ? OVA_COLORS.axis : p.label ? OVA_COLORS.class1 : OVA_COLORS.class0}
+            stroke={!active ? '#d9d9e8' : result.neighbors.includes(i) ? '#ffffff' : '#040320'}
+            strokeWidth={active && result.neighbors.includes(i) ? 2 : 1.5}
           />
         ))}
         <rect
-          className="is-draggable"
+          className="is-draggable mlx-knn-query"
           x={PLOT.sx(query.x) - 9}
           y={PLOT.sy(query.y) - 9}
           width={18}
           height={18}
           transform={`rotate(45 ${PLOT.sx(query.x)} ${PLOT.sy(query.y)})`}
-          fill={result.winner ? OVA_COLORS.class1 : OVA_COLORS.class0}
+          fill={!active ? OVA_COLORS.axis : result.winner ? OVA_COLORS.class1 : OVA_COLORS.class0}
           stroke="#ffffff"
           strokeWidth={2}
           tabIndex={0}
@@ -126,7 +138,8 @@ export function KnnOva() {
           onPointerDown={begin('query')}
           onKeyDown={onKeyDown}
         />
-      </svg>
+       </svg>
+      </div>
     </OvaFrame>
   );
 }

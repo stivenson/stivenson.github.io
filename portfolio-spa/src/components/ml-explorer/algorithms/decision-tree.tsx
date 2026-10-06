@@ -208,6 +208,8 @@ const decisionTree: AlgorithmModule = {
     },
   },
   Ova: DecisionTreeOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'decision-tree' },
   inYourField: [
     { area: 'Mecánica', example: 'reglas de falla inminente a partir de vibración, temperatura y horas de uso.' },

@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { CNN_IMAGE as IMAGE, CNN_KERNELS as KERNELS } from './datasets';
 import { OVA_COLORS, OvaFrame } from './OvaFrame';
 import { conv2d, maxPool2, relu } from './ovaMath';
 import { useInViewport, usePrefersReducedMotion } from './useMotion';
+import { useAutoLoop } from './useAutoLoop';
 
 /** Tiempo entre posiciones al reproducir. */
 export const CNN_STEP_MS = 500;
@@ -12,10 +13,10 @@ const LAST = MAP * MAP - 1;
 const MAP_X = 8 * C + 40; // el mapa va a la derecha de la imagen
 const POOL_Y = MAP * C + 40; // y el pooling, debajo del mapa
 
-export function CnnOva() {
+export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [kernelIndex, setKernelIndex] = useState(0);
-  const [pos, setPos] = useState(0);
-  const [playing, setPlaying] = useState(false);
+  // 0 is the neutral input; 1–36 scan the convolution window; 37 shows pooling.
+  const [step, setStep] = useState(0);
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
@@ -24,33 +25,18 @@ export function CnnOva() {
   const raw = useMemo(() => conv2d(IMAGE, kernel), [kernel]);
   const map = useMemo(() => relu(raw), [raw]);
   const pooled = useMemo(() => maxPool2(map), [map]);
+  const last = LAST + 2;
+  const pos = Math.min(Math.max(step - 1, 0), LAST);
   const row = Math.floor(pos / MAP);
   const col = pos % MAP;
-  const done = pos >= LAST;
+  const scanning = step > 0 && step <= LAST + 1;
+  const done = step === last;
 
-  // Avanza una posición cada CNN_STEP_MS, solo mientras la OVA está en pantalla.
-  useEffect(() => {
-    if (!playing || !visible) return;
-    if (done) {
-      setPlaying(false);
-      return;
-    }
-    const id = window.setTimeout(() => setPos((p) => p + 1), CNN_STEP_MS);
-    return () => window.clearTimeout(id);
-  }, [playing, visible, done, pos]);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 1500);
 
-  const reset = (next = kernelIndex) => {
+  const reset = (next: number) => {
     setKernelIndex(next);
-    setPos(0);
-    setPlaying(false);
-  };
-
-  const togglePlay = () => {
-    if (playing) return setPlaying(false);
-    // Con «reducir movimiento», nada de animación: salta al mapa completo.
-    if (reducedMotion) return setPos(LAST);
-    if (done) setPos(0);
-    setPlaying(true);
+    setStep(0);
   };
 
   const active = map.flat().filter((v) => v > 0).length;
@@ -58,7 +44,7 @@ export function CnnOva() {
   return (
     <OvaFrame
       title="Un filtro de 3×3 recorre la imagen"
-      hint="La imagen es un «7» de 8×8 píxeles (1 = tinta). El recuadro verde de borde grueso es el filtro: en cada posición multiplica sus 9 pesos por los 9 píxeles que cubre y suma. Ese número, con los negativos llevados a 0 (ReLU), llena una casilla del mapa de activación de 6×6. Pulsa «Paso» o «Reproducir» y fíjate dónde se enciende el mapa: el filtro vertical responde al borde izquierdo de cada trazo y el horizontal al borde de arriba de la barra. Al final, el max pooling resume cada bloque de 2×2 del mapa con su máximo."
+      hint="El 7 comienza en tono neutro. El filtro recorre la imagen posición por posición y cada suma, tras ReLU, colorea una casilla del mapa de activación: el filtro vertical detecta bordes izquierdos y el horizontal el borde superior de la barra. Al completar la convolución, max pooling resume cada bloque de 2×2. El recorrido vuelve a empezar automáticamente."
       controls={
         <>
           <div role="group" aria-label="Filtro">
@@ -69,28 +55,17 @@ export function CnnOva() {
               </button>
             ))}
           </div>
-          <div role="group" aria-label="Recorrido">
-            <button type="button" disabled={done} onClick={() => setPos((p) => p + 1)}>
-              Paso ▸
-            </button>
-            <button type="button" aria-pressed={playing} onClick={togglePlay}>
-              {playing ? '⏸ Pausar' : '▶ Reproducir'}
-            </button>
-            <button type="button" onClick={() => reset(0)}>
-              Restablecer
-            </button>
-          </div>
         </>
       }
-      readoutLive={playing ? 'off' : 'polite'}
+      readoutLive="off"
       readout={
         <>
           <span>
-            Posición <b>{pos + 1}</b> de <b>{LAST + 1}</b> (fila {row + 1}, columna {col + 1})
+            {step === 0 ? <>Entrada: <b>neutra</b></> : done ? <>Convolución: <b>completa</b></> : <>Posición <b>{pos + 1}</b> de <b>{LAST + 1}</b> (fila {row + 1}, columna {col + 1})</>}
           </span>
-          <span>
-            Suma de productos: <b>{raw[row][col]}</b> → tras ReLU: <b>{map[row][col]}</b>
-          </span>
+          {step > 0 && <span>
+            {done ? 'Última suma de productos' : 'Suma de productos'}: <b>{raw[row][col]}</b> → tras ReLU: <b>{map[row][col]}</b>
+          </span>}
           {done && (
             <span>
               Mapa completo: <b>{active}</b> de 36 casillas se encienden. Tras el pooling queda de 3×3.
@@ -103,7 +78,7 @@ export function CnnOva() {
         <svg
           viewBox={`0 0 ${MAP_X + MAP * C + 4} ${POOL_Y + 3 * C + 24}`}
           role="img"
-          aria-label={`Imagen de 8×8 con el filtro de 3×3 en la fila ${row + 1}, columna ${col + 1}, y el mapa de activación de 6×6 con ${pos + 1} casillas calculadas`}
+          aria-label={`Imagen 8×8${scanning ? ` con el filtro en la fila ${row + 1}, columna ${col + 1}` : ''}; mapa de activación de 6×6 con ${Math.max(0, step - 1)} posiciones calculadas`}
         >
           <text x={0} y={12} fontSize={11} fill={OVA_COLORS.axis}>
             imagen 8×8
@@ -116,11 +91,12 @@ export function CnnOva() {
                 y={20 + i * C}
                 width={C - 1}
                 height={C - 1}
-                fill={v ? '#e8e8f0' : 'rgba(85, 170, 255, 0.12)'}
+                className="mlx-cnn-input"
+                fill={step > 0 ? (v ? '#e8e8f0' : 'rgba(85, 170, 255, 0.12)') : 'rgba(85, 170, 255, 0.12)'}
               />
             )),
           )}
-          <rect
+          {scanning && <rect
             className="mlx-cnn-window"
             style={{ transform: `translate(${col * C - 1}px, ${20 + row * C - 1}px)` }}
             width={3 * C + 1}
@@ -128,14 +104,14 @@ export function CnnOva() {
             fill="none"
             stroke={OVA_COLORS.accent}
             strokeWidth={3}
-          />
+          />}
           <text x={MAP_X} y={12} fontSize={11} fill={OVA_COLORS.axis}>
             mapa de activación 6×6
           </text>
           {map.flatMap((r, i) =>
             r.map((v, j) => {
               const k = i * MAP + j;
-              const shown = k <= pos;
+              const shown = done || (scanning && k < step);
               return (
                 <g key={`m${i}-${j}`} className="mlx-cnn-cell">
                   <rect
@@ -145,7 +121,7 @@ export function CnnOva() {
                     height={C - 1}
                     fill={shown && v > 0 ? OVA_COLORS.class1 : 'rgba(85, 170, 255, 0.12)'}
                     fillOpacity={shown && v > 0 ? 0.3 + v / 4.5 : 1}
-                    stroke={k === pos ? OVA_COLORS.accent : 'none'}
+                    stroke={scanning && k === pos ? OVA_COLORS.accent : 'none'}
                     strokeWidth={2}
                   />
                   {shown && (

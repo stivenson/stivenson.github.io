@@ -214,6 +214,8 @@ const dbscan: AlgorithmModule = {
     },
   },
   Ova: DbscanOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'dbscan' },
   inYourField: [
     { area: 'Civil', example: 'encontrar tramos de vía con muchos accidentes a partir de las coordenadas de cada reporte.' },

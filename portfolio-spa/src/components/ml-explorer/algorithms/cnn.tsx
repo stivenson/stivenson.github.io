@@ -222,6 +222,8 @@ const cnn: AlgorithmModule = {
     },
   },
   Ova: CnnOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'cnn' },
   inYourField: [
     { area: 'Civil', example: 'detectar fisuras y desprendimientos en fotos de puentes tomadas con dron.' },

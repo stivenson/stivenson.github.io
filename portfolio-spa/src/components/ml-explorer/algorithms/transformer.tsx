@@ -238,6 +238,8 @@ const transformer: AlgorithmModule = {
     },
   },
   Ova: TransformerOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'transformer' },
   inYourField: [
     {

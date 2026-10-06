@@ -225,6 +225,8 @@ const rnn: AlgorithmModule = {
     },
   },
   Ova: RnnOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'rnn' },
   inYourField: [
     { area: 'Eléctrica', example: 'pronosticar la carga de un transformador hora a hora con su historia reciente.' },

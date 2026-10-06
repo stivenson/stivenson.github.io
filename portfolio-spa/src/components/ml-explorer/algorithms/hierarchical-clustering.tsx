@@ -222,6 +222,8 @@ const hierarchicalClustering: AlgorithmModule = {
     },
   },
   Ova: HierarchicalOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'hierarchical-clustering' },
   inYourField: [
     { area: 'Biomédica', example: 'agrupar pacientes por sus perfiles de laboratorio para encontrar subtipos de una enfermedad.' },

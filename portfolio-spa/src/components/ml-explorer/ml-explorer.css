@@ -915,6 +915,18 @@ p.mlx-py-error {
   border-left: 1px dashed rgba(85, 170, 255, 0.25);
 }
 
+.mlx-tree-region,
+.mlx-tree-point {
+  transition: fill 350ms ease, fill-opacity 350ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-tree-region,
+  .mlx-tree-point {
+    transition: none;
+  }
+}
+
 /* ---------- Navegación al pie de cada pestaña ---------- */
 
 .mlx-pager {
@@ -1162,6 +1174,114 @@ p.mlx-py-error {
   opacity: 0.6;
 }
 
+.mlx-nb-viz {
+  display: grid;
+  gap: 16px;
+}
+
+.mlx-nb-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 42px;
+  align-content: flex-start;
+}
+
+.mlx-nb-token {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid rgba(232, 232, 240, 0.2);
+  border-radius: 8px;
+  color: var(--rf-text, #e8e8f0);
+  background: rgba(232, 232, 240, 0.08);
+  transition: color 260ms ease, background-color 260ms ease, border-color 260ms ease, opacity 260ms ease;
+}
+
+.mlx-nb-token small {
+  opacity: 0.78;
+  font: 11px 'Space Mono', Consolas, Monaco, monospace;
+}
+
+.mlx-nb-token.is-pos {
+  color: #ffb454;
+  background: rgba(255, 180, 84, 0.12);
+  border-color: rgba(255, 180, 84, 0.5);
+}
+
+.mlx-nb-token.is-neg {
+  color: #55aaff;
+  background: rgba(85, 170, 255, 0.12);
+  border-color: rgba(85, 170, 255, 0.5);
+}
+
+.mlx-nb-token.is-unknown {
+  opacity: 0.58;
+}
+
+.mlx-nb-empty {
+  color: var(--rf-muted, #9898b0);
+}
+
+.mlx-nb-posterior {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mlx-nb-class {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgba(232, 232, 240, 0.16);
+  border-radius: 9px;
+  transition: border-color 260ms ease, background-color 260ms ease;
+}
+
+.mlx-nb-class.is-winner {
+  border-color: rgba(16, 185, 129, 0.7);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.mlx-nb-track {
+  grid-column: 1 / -1;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(232, 232, 240, 0.1);
+}
+
+.mlx-nb-fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 420ms ease, opacity 260ms ease;
+}
+
+.mlx-nb-fill.is-neg {
+  background: #55aaff;
+}
+
+.mlx-nb-fill.is-pos {
+  background: #ffb454;
+}
+
+@media (max-width: 520px) {
+  .mlx-nb-posterior {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-nb-token,
+  .mlx-nb-class,
+  .mlx-nb-fill {
+    transition: none;
+  }
+}
+
 /* ---------- Fase 3: agrupamiento y PCA ---------- */
 
 .mlx-ova-controls button:disabled {
@@ -1172,6 +1292,62 @@ p.mlx-py-error {
 /* K-Means: el centroide se desliza a su nueva posición en cada paso. */
 .mlx-km-centroid {
   transition: transform 0.6s ease-in-out;
+}
+
+.mlx-km-point {
+  transition: fill 350ms ease;
+}
+
+.mlx-rnn-bar {
+  transition: y 420ms ease, height 420ms ease, fill 320ms ease, opacity 320ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-rnn-bar {
+    transition: none;
+  }
+}
+
+.mlx-rf-cell,
+.mlx-rf-point {
+  transition: fill 360ms ease, fill-opacity 360ms ease, stroke-width 360ms ease;
+}
+
+.mlx-logistic-curve {
+  transition: d 500ms ease;
+}
+
+.mlx-logistic-boundary,
+.mlx-logistic-point {
+  transition: cx 350ms ease, fill 350ms ease, stroke-width 350ms ease;
+}
+
+.mlx-linear-fit {
+  transition: y1 650ms ease, y2 650ms ease;
+}
+
+.mlx-linear-point {
+  transition: fill 400ms ease;
+}
+
+.mlx-knn-point,
+.mlx-knn-query,
+.mlx-knn-radius {
+  transition: fill 350ms ease, stroke 350ms ease, stroke-width 350ms ease, r 350ms ease;
+}
+
+.mlx-svm-cell,
+.mlx-svm-point {
+  transition: fill 400ms ease, fill-opacity 400ms ease, stroke-width 350ms ease;
+}
+
+.mlx-gb-point {
+  transition: fill 350ms ease, stroke 350ms ease, stroke-width 350ms ease;
+}
+
+.mlx-gb-residual,
+.mlx-gb-curve {
+  transition: stroke 350ms ease, opacity 350ms ease;
 }
 
 /* Las líneas punto→centroide (x2/y2 no se pueden animar con CSS) se montan de nuevo en cada
@@ -1190,8 +1366,37 @@ p.mlx-py-error {
   .mlx-km-centroid {
     transition: none;
   }
-  .mlx-km-link {
+  .mlx-km-link,
+  .mlx-km-point {
     animation: none;
+    transition: none;
+  }
+  .mlx-rf-cell,
+  .mlx-rf-point {
+    transition: none;
+  }
+  .mlx-logistic-curve,
+  .mlx-logistic-boundary,
+  .mlx-logistic-point {
+    transition: none;
+  }
+  .mlx-linear-fit,
+  .mlx-linear-point {
+    transition: none;
+  }
+  .mlx-knn-point,
+  .mlx-knn-query,
+  .mlx-knn-radius {
+    transition: none;
+  }
+  .mlx-svm-cell,
+  .mlx-svm-point {
+    transition: none;
+  }
+  .mlx-gb-point,
+  .mlx-gb-residual,
+  .mlx-gb-curve {
+    transition: none;
   }
 }
 
@@ -1207,6 +1412,18 @@ p.mlx-py-error {
   min-width: 0;
 }
 
+.mlx-hc-point,
+.mlx-hc-link {
+  transition: fill 350ms ease, stroke 350ms ease, opacity 350ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-hc-point,
+  .mlx-hc-link {
+    transition: none;
+  }
+}
+
 /* ---------- Fase 4: redes neuronales ---------- */
 
 /* MLP: los 3 sliders de cada neurona, juntos y con su nombre. */
@@ -1218,13 +1435,67 @@ p.mlx-py-error {
   border-radius: 6px;
 }
 
+.mlx-mlp-point,
+.mlx-mlp-cell,
+.mlx-mlp-neuron-line {
+  transition: fill 420ms ease, fill-opacity 420ms ease, stroke 420ms ease, opacity 420ms ease;
+}
+
+.mlx-tf-cell {
+  transition: fill 420ms ease, fill-opacity 420ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-tf-cell {
+    transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-mlp-point,
+  .mlx-mlp-cell,
+  .mlx-mlp-neuron-line {
+    transition: none;
+  }
+}
+
 /* CNN: el filtro se desliza a la posición siguiente. */
 .mlx-cnn-window {
   transition: transform 0.3s ease-in-out;
 }
 
+.mlx-cnn-input,
+.mlx-cnn-cell rect,
+.mlx-cnn-pool rect {
+  transition: fill 0.32s ease, fill-opacity 0.32s ease;
+}
+
+/* PCA: los datos pasan de neutros a posiciones a lo largo del componente. */
+.mlx-pca-point,
+.mlx-pca-axis,
+.mlx-pca-proj,
+.mlx-pca-residual {
+  transition: fill 520ms ease, opacity 520ms ease, cx 520ms ease, cy 520ms ease,
+    x1 520ms ease, y1 520ms ease, x2 520ms ease, y2 520ms ease;
+}
+
+/* Autoencoder: revela el patrón normal, el umbral y luego los errores anómalos. */
+.mlx-ae-bar,
+.mlx-ae-threshold {
+  transition: y 0.55s ease, height 0.55s ease, fill 0.45s ease, fill-opacity 0.45s ease, opacity 0.45s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .mlx-cnn-window {
+  .mlx-cnn-window,
+  .mlx-cnn-input,
+  .mlx-cnn-cell rect,
+  .mlx-cnn-pool rect,
+  .mlx-pca-point,
+  .mlx-pca-axis,
+  .mlx-pca-proj,
+  .mlx-pca-residual,
+  .mlx-ae-bar,
+  .mlx-ae-threshold {
     transition: none;
   }
 }

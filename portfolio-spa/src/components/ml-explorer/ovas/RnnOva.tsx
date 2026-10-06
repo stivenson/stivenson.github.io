@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { RNN_INPUTS, RNN_START, RNN_STEPS, RNN_U, RNN_W } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
-import { rnnInfluence } from './ovaMath';
+import { rnnInfluence, rnnStates } from './ovaMath';
+import { useInViewport, usePrefersReducedMotion } from './useMotion';
+import { useAutoLoop } from './useAutoLoop';
 
 const W = 360;
 const H = 220;
@@ -28,41 +30,42 @@ export function oneIn(g: number): string {
   return `1 en ${n.toLocaleString('en-US', { maximumFractionDigits: 0 }).replace(/,/g, ' ')}`;
 }
 
-export function RnnOva() {
+export function RnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [w, setW] = useState<number>(RNN_START.w);
   const [steps, setSteps] = useState<number>(RNN_START.steps);
-  const g = rnnInfluence(RNN_INPUTS.slice(0, steps), w, RNN_U);
+  const [step, setStep] = useState(0);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const visible = useInViewport(stageRef);
+  const reducedMotion = usePrefersReducedMotion();
+  useAutoLoop(step, steps, setStep, visible, reducedMotion, autoPlay, 750, 1300);
+  const observed = RNN_INPUTS.slice(0, step);
+  const g = observed.length ? rnnInfluence(observed, w, RNN_U) : [];
+  const states = observed.length ? rnnStates(observed, w, RNN_U) : [0];
+  const lastInfluence = g.length ? g[g.length - 1] : 0;
   const barW = (W - 40) / RNN_STEPS.max;
   const below = g.filter((v) => v < 10 ** LOG_MIN).length;
+  const setParameter = (setter: (value: number) => void, value: number) => {
+    setter(value);
+    setStep(0);
+  };
 
   return (
     <OvaFrame
       title="La memoria de una RNN se desvanece"
-      hint="La red lee las mediciones una por una (x₁, x₂, …) y actualiza su memoria con h = tanh(w·h + 0.5·x). Cada barra dice cuánto cambiaría la salida final si cambiara esa medición: es el factor por el que se multiplica el gradiente que le llega en el entrenamiento. El eje es logarítmico: cada raya hacia abajo es 10 veces menos, y las barras que bajan de 1e-8 quedan cortadas en el piso. Alarga la secuencia y mira cómo se encoge la barra de x₁; baja w y se encoge más rápido. Aun con w = 1 se encoge, porque tanh′ es menor que 1."
+      hint="La animación lee las mediciones una por una y actualiza la memoria h = tanh(w·h + 0.5·x). Al inicio los datos están neutrales; cada barra aparece cuando llega su medición y luego se acorta al pasar por nuevas actualizaciones. Su altura muestra cuánto influye ese dato en el estado actual: los datos lejanos pierden fuerza porque el gradiente se multiplica paso a paso. El eje es logarítmico y las barras menores que 1e-8 se cortan en el piso. Alarga la secuencia o baja w para ver cómo se olvida más rápido."
       controls={
         <>
-          <OvaSlider label="Pasos de la secuencia" value={steps} {...RNN_STEPS} onChange={setSteps} />
-          <OvaSlider label="w (peso de la memoria)" value={w} {...RNN_W} onChange={(v) => setW(Math.round(v * 10) / 10)} format={(v) => v.toFixed(1)} />
-          <button
-            type="button"
-            onClick={() => {
-              setW(RNN_START.w);
-              setSteps(RNN_START.steps);
-            }}
-          >
-            Restablecer
-          </button>
+          <OvaSlider label="Pasos de la secuencia" value={steps} {...RNN_STEPS} onChange={(v) => setParameter(setSteps, v)} />
+          <OvaSlider label="w (peso de la memoria)" value={w} {...RNN_W} onChange={(v) => setParameter(setW, Math.round(v * 10) / 10)} format={(v) => v.toFixed(1)} />
         </>
       }
       readout={
         <>
           <span>
-            Influencia de x₁ en la salida: <b>{formatInfluence(g[0])}</b> ({oneIn(g[0])})
+            {step === 0 ? 'La secuencia todavía no ha comenzado.' : <>Paso leído: <b>{step}</b> de <b>{steps}</b> · entrada x<sub>{step}</sub> = <b>{observed[step - 1].toFixed(2)}</b></>}
           </span>
-          <span>
-            Influencia de x<sub>{steps}</sub>, la última: <b>{formatInfluence(g[steps - 1])}</b>
-          </span>
-          {below > 0 && (
+          {step > 0 && <span>Estado oculto h<sub>{step}</sub>: <b>{states[step].toFixed(3)}</b> · influencia de x<sub>{step}</sub>: <b>{formatInfluence(lastInfluence)}</b> ({oneIn(lastInfluence)})</span>}
+          {below > 0 && step > 0 && (
             <span>
               {below === 1
                 ? '1 barra baja de 1e-8 y se dibuja cortada en el piso'
@@ -72,7 +75,8 @@ export function RnnOva() {
         </>
       }
     >
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Influencia de cada una de las ${steps} mediciones en la salida final, en escala logarítmica: x₁ influye ${formatInfluence(g[0])}, la última ${formatInfluence(g[steps - 1])}`}>
+      <div ref={stageRef}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={step === 0 ? `Secuencia RNN en espera: ${steps} mediciones neutrales` : `RNN leyó ${step} de ${steps} mediciones. Estado actual ${states[step].toFixed(3)}; la entrada más reciente influye ${formatInfluence(lastInfluence)}`}>
         {Array.from({ length: -LOG_MIN + 1 }, (_, i) => (
           <g key={i}>
             <line x1={34} x2={W} y1={yOf(10 ** -i)} y2={yOf(10 ** -i)} stroke={OVA_COLORS.grid} />
@@ -84,29 +88,33 @@ export function RnnOva() {
         <text x={30} y={BOTTOM + 14} textAnchor="end" fontSize={10} fill={OVA_COLORS.axis}>
           {'< 1e-8'}
         </text>
-        {g.map((v, t) => {
+        {Array.from({ length: steps }, (_, t) => {
+          const v = g[t] ?? 0;
+          const processed = t < step;
           // Bajo el piso: un muñón corto y semitransparente que cuelga bajo la línea de 1e-8.
-          const floor = v < 10 ** LOG_MIN;
+          const floor = processed && v < 10 ** LOG_MIN;
+          const neutralHeight = 7;
           return (
             <rect
               key={t}
               className={floor ? 'mlx-rnn-bar is-floor' : 'mlx-rnn-bar'}
               x={36 + t * barW}
-              y={floor ? BOTTOM : yOf(v)}
+              y={!processed ? BOTTOM - neutralHeight : floor ? BOTTOM : yOf(v)}
               width={barW - 2}
-              height={floor ? STUB : BOTTOM - yOf(v)}
-              fill={t === 0 ? OVA_COLORS.risk : OVA_COLORS.class0}
-              opacity={floor ? 0.45 : 1}
+              height={!processed ? neutralHeight : floor ? STUB : BOTTOM - yOf(v)}
+              fill={!processed ? OVA_COLORS.axis : t === step - 1 ? OVA_COLORS.accent : t === 0 ? OVA_COLORS.risk : OVA_COLORS.class0}
+              opacity={!processed ? 0.28 : floor ? 0.45 : t === step - 1 ? 1 : 0.75}
             />
           );
         })}
         <text x={36} y={H - 8} fontSize={11} fill={OVA_COLORS.axis}>
-          x₁
+          {step > 0 ? 'x₁ (la más antigua)' : 'La secuencia aún no empieza'}
         </text>
         <text x={36 + steps * barW} y={H - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
-          x{steps} (la última) →
+          x{steps} →
         </text>
       </svg>
+      </div>
     </OvaFrame>
   );
 }

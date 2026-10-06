@@ -213,6 +213,8 @@ const knn: AlgorithmModule = {
     },
   },
   Ova: KnnOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'knn' },
   inYourField: [
     { area: 'Química', example: 'estimar una propiedad de una mezcla nueva a partir de las mezclas más parecidas ya medidas.' },

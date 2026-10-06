@@ -238,6 +238,8 @@ const autoencoders: AlgorithmModule = {
     },
   },
   Ova: AutoencoderOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'autoencoders' },
   inYourField: [
     {

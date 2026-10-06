@@ -7,6 +7,8 @@ import expectedOutput from './python/svm.out.txt?raw';
 
 const svm: AlgorithmModule = {
   slug: 'svm',
+  ovaTab: 'type',
+  autoPlayOva: true,
   row: {
     type: 'Supervisado',
     bestUse: 'Datos de muchas dimensiones',

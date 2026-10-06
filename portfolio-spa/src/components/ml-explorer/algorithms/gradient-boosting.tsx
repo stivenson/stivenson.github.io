@@ -235,6 +235,8 @@ const gradientBoosting: AlgorithmModule = {
     },
   },
   Ova: GradientBoostingOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'gradient-boosting' },
   inYourField: [
     {

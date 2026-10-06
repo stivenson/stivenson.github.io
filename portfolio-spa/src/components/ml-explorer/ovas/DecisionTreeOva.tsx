@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { TREE_POINTS as POINTS } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
-import { accuracy, buildTree, countLeaves, treeRegions, type TreeNode } from './ovaMath';
+import { accuracy, buildTree, countLeaves, predictTree, treeRegions, type TreeNode } from './ovaMath';
 import { createPlot } from './plot';
+import { useInViewport, usePrefersReducedMotion } from './useMotion';
+import { useAutoLoop } from './useAutoLoop';
 
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const AXIS_NAMES = { x: 'ingreso', y: 'deuda' } as const;
@@ -28,29 +30,51 @@ function TreeView({ node, prefix }: { node: TreeNode; prefix?: string }) {
   );
 }
 
-export function DecisionTreeOva() {
-  const [depth, setDepth] = useState(1);
-  const tree = useMemo(() => buildTree(POINTS, depth), [depth]);
+export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
+  const [maxDepth, setMaxDepth] = useState(5);
+  const [depth, setDepth] = useState(0);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const visible = useInViewport(stageRef);
+  const reducedMotion = usePrefersReducedMotion();
+  const shownDepth = Math.min(depth, maxDepth);
+  const tree = useMemo(() => buildTree(POINTS, shownDepth), [shownDepth]);
   const regions = treeRegions(tree, { x0: 0, x1: 10, y0: 0, y1: 10 });
   const acc = accuracy(tree, POINTS);
 
+  useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 1200);
+
   return (
     <OvaFrame
-      title="Veinte preguntas para decidir"
-      hint="Sube la profundidad: cada nivel agrega preguntas y parte el plano en más rectángulos."
-      controls={<OvaSlider label="Profundidad máxima" value={depth} min={0} max={5} step={1} onChange={setDepth} />}
+      title="El árbol divide el plano en reglas"
+      hint="Los puntos empiezan neutrales. En cada ciclo, el árbol agrega un nivel de preguntas sobre ingreso o deuda y pinta las regiones según la clase que predice. El relleno de cada punto muestra esa predicción; su borde conserva la clase real para que se vean los errores. El recorrido se repite automáticamente. La profundidad máxima es un parámetro del modelo: al subirla, el árbol puede memorizar el ruido."
+      controls={
+        <OvaSlider
+          label="Profundidad máxima"
+          value={maxDepth}
+          min={1}
+          max={5}
+          step={1}
+          onChange={(value) => {
+            setMaxDepth(value);
+            setDepth(0);
+          }}
+        />
+      }
+      readoutLive="off"
       readout={
         <>
           <span>
-            <b>{countLeaves(tree)}</b> reglas (hojas) · acierta <b>{(acc * 100).toFixed(1)} %</b> de estos clientes
+            Nivel <b>{shownDepth}</b> de <b>{maxDepth}</b> · <b>{countLeaves(tree)}</b> reglas · acierta{' '}
+            <b>{(acc * 100).toFixed(1)} %</b> de estos clientes
           </span>
-          {depth === 2 && (
+          <span>Relleno: predicción del árbol · borde: clase real del cliente.</span>
+          {shownDepth === 2 && (
             <span>
               Hay 4 hojas pero el mismo acierto que con 1 nivel: los cortes nuevos dejan grupos más puros sin cambiar
               ninguna predicción.
             </span>
           )}
-          {depth >= 4 && (
+          {shownDepth >= 4 && (
             <span>
               ⚠️ Desde aquí el árbol empieza a encerrar puntos de ruido en cajitas propias: ya está memorizando el ruido
               (overfitting). Este porcentaje es sobre los mismos datos con los que aprendió.
@@ -59,41 +83,54 @@ export function DecisionTreeOva() {
         </>
       }
     >
-      <svg viewBox={`0 0 ${PLOT.width} ${PLOT.height}`} role="img" aria-label="Plano dividido en rectángulos por el árbol">
-        {regions.map((r, i) => (
-          <rect
-            key={i}
-            x={PLOT.sx(r.x0)}
-            y={PLOT.sy(r.y1)}
-            width={PLOT.sx(r.x1) - PLOT.sx(r.x0)}
-            height={PLOT.sy(r.y0) - PLOT.sy(r.y1)}
-            fill={r.label ? OVA_COLORS.class1 : OVA_COLORS.class0}
-            fillOpacity={0.14}
-            stroke={OVA_COLORS.axis}
-            strokeOpacity={0.5}
-          />
-        ))}
-        <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
-          ingreso →
-        </text>
-        <text x={8} y={PLOT.sy(10) - 10} fontSize={11} fill={OVA_COLORS.axis}>
-          ↑ deuda (escala 0-10)
-        </text>
-        {POINTS.map((p, i) => (
-          <circle
-            key={i}
-            cx={PLOT.sx(p.x)}
-            cy={PLOT.sy(p.y)}
-            r={6}
-            fill={p.label ? OVA_COLORS.class1 : OVA_COLORS.class0}
-            stroke="#040320"
-            strokeWidth={1.5}
-          />
-        ))}
-      </svg>
-      <ul className="mlx-tree">
-        <TreeView node={tree} />
-      </ul>
+      <div ref={stageRef}>
+        <svg
+          viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
+          role="img"
+          aria-label={`Árbol de decisión en el nivel ${shownDepth} de ${maxDepth}: ${regions.length} regiones predichas y ${POINTS.length} clientes; el relleno indica la predicción y el borde su clase real`}
+        >
+          {regions.map((r, i) => (
+            <rect
+              key={i}
+              className="mlx-tree-region"
+              x={PLOT.sx(r.x0)}
+              y={PLOT.sy(r.y1)}
+              width={PLOT.sx(r.x1) - PLOT.sx(r.x0)}
+              height={PLOT.sy(r.y0) - PLOT.sy(r.y1)}
+              fill={shownDepth === 0 ? OVA_COLORS.axis : r.label ? OVA_COLORS.class1 : OVA_COLORS.class0}
+              fillOpacity={shownDepth === 0 ? 0.08 : 0.14}
+              stroke={OVA_COLORS.axis}
+              strokeOpacity={0.5}
+            />
+          ))}
+          <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
+            ingreso →
+          </text>
+          <text x={8} y={PLOT.sy(10) - 10} fontSize={11} fill={OVA_COLORS.axis}>
+            ↑ deuda (escala 0-10)
+          </text>
+          {POINTS.map((p, i) => {
+            const predicted = predictTree(tree, p);
+            const wrong = predicted !== p.label;
+            return (
+              <circle
+                key={i}
+                className="mlx-tree-point"
+                cx={PLOT.sx(p.x)}
+                cy={PLOT.sy(p.y)}
+                r={6}
+                fill={shownDepth === 0 ? OVA_COLORS.axis : predicted ? OVA_COLORS.class1 : OVA_COLORS.class0}
+                stroke={shownDepth === 0 ? '#040320' : p.label ? OVA_COLORS.class1 : OVA_COLORS.class0}
+                strokeWidth={wrong ? 3 : 1.5}
+                strokeDasharray={wrong ? '2 2' : undefined}
+              />
+            );
+          })}
+        </svg>
+        <ul className="mlx-tree">
+          <TreeView node={tree} />
+        </ul>
+      </div>
     </OvaFrame>
   );
 }

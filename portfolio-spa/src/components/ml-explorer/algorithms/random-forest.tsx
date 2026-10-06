@@ -245,6 +245,8 @@ const randomForest: AlgorithmModule = {
     },
   },
   Ova: RandomForestOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'random-forest' },
   inYourField: [
     { area: 'Industrial', example: 'predecir qué máquina fallará en la próxima semana a partir de vibración, temperatura y horas de uso.' },

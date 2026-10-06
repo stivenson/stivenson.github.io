@@ -223,6 +223,8 @@ const naiveBayes: AlgorithmModule = {
     },
   },
   Ova: NaiveBayesOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'naive-bayes' },
   inYourField: [
     { area: 'Sistemas', example: 'clasificar los tickets de soporte por categoría a partir del texto que escribe el usuario.' },

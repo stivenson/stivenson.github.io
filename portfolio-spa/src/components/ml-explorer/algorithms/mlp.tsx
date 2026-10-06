@@ -248,6 +248,8 @@ const mlp: AlgorithmModule = {
       ),
     },
   },
+  ovaTab: 'type',
+  autoPlayOva: true,
   Ova: MlpOva,
   python: { code, expectedOutput, colabNotebook: 'mlp' },
   inYourField: [

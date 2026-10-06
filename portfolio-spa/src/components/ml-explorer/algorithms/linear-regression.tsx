@@ -7,6 +7,8 @@ import expectedOutput from './python/linear-regression.out.txt?raw';
 
 const linearRegression: AlgorithmModule = {
   slug: 'linear-regression',
+  ovaTab: 'type',
+  autoPlayOva: true,
   row: {
     type: 'Supervisado',
     bestUse: 'Predecir valores continuos',

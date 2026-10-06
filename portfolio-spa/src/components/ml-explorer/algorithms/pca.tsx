@@ -235,6 +235,8 @@ const pca: AlgorithmModule = {
       ),
     },
   },
+  ovaTab: 'type',
+  autoPlayOva: true,
   Ova: PcaOva,
   python: { code, expectedOutput, colabNotebook: 'pca' },
   inYourField: [

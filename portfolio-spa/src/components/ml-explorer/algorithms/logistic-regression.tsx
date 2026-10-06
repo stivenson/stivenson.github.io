@@ -214,6 +214,8 @@ const logisticRegression: AlgorithmModule = {
     },
   },
   Ova: LogisticRegressionOva,
+  ovaTab: 'type',
+  autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'logistic-regression' },
   inYourField: [
     { area: 'Industrial', example: '¿saldrá defectuosa esta pieza según la temperatura y la presión del proceso?' },
