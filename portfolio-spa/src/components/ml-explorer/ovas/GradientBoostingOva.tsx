@@ -8,14 +8,17 @@ import { useAutoLoop } from './useAutoLoop';
 
 const PLOT = createPlot(360, 260, 30, [0, 10], [0, 8]);
 const START_RATE = 0.3;
+// Hitos del ensamble: la curva llega al modelo completo sin reproducir los 50 árboles uno a uno.
+const TREE_CHECKPOINTS = [0, 1, 2, 5, 10, 20, 35, GB_MAX_STEPS];
 
 export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }) {
-  const [steps, setSteps] = useState(0);
+  const [stage, setStage] = useState(0);
   const [rate, setRate] = useState<number>(START_RATE);
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(steps, GB_MAX_STEPS, setSteps, visible, reducedMotion, autoPlay, 1100, 1400);
+  useAutoLoop(stage, TREE_CHECKPOINTS.length - 1, setStage, visible, reducedMotion, autoPlay, 600, 900);
+  const steps = TREE_CHECKPOINTS[stage];
   const model = useMemo(() => boost(XS, YS, GB_MAX_STEPS, rate), [rate]);
   const mse = boostMse(model, XS, YS, steps);
   const residuals = XS.map((x, i) => YS[i] - predictBoost(model, x, steps));
@@ -41,7 +44,7 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
               aria-pressed={rate === r}
               onClick={() => {
                 setRate(r);
-                setSteps(0);
+                setStage(0);
               }}
             >
               {r}

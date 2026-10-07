@@ -6,16 +6,18 @@ import { useInViewport, usePrefersReducedMotion } from './useMotion';
 import { useAutoLoop } from './useAutoLoop';
 
 /** Tiempo entre posiciones al reproducir. */
-export const CNN_STEP_MS = 500;
+export const CNN_STEP_MS = 350;
 const C = 22; // lado de cada casilla en px
 const MAP = 6; // el mapa es de 6×6
 const LAST = MAP * MAP - 1;
+// Cada muestra resume varias ventanas recorridas y conserva el cierre de toda la convolución.
+const SCAN_CHECKPOINTS = Array.from({ length: 12 }, (_, i) => i * 3).concat(LAST);
 const MAP_X = 8 * C + 40; // el mapa va a la derecha de la imagen
 const POOL_Y = MAP * C + 40; // y el pooling, debajo del mapa
 
 export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [kernelIndex, setKernelIndex] = useState(0);
-  // 0 is the neutral input; 1–36 scan the convolution window; 37 shows pooling.
+  // 0 is neutral; representative windows reveal the scanned prefix; the last stage shows pooling.
   const [step, setStep] = useState(0);
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
@@ -25,14 +27,13 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const raw = useMemo(() => conv2d(IMAGE, kernel), [kernel]);
   const map = useMemo(() => relu(raw), [raw]);
   const pooled = useMemo(() => maxPool2(map), [map]);
-  const last = LAST + 2;
-  const pos = Math.min(Math.max(step - 1, 0), LAST);
+  const last = SCAN_CHECKPOINTS.length + 1;
+  const done = step === last;
+  const scanning = step > 0 && step <= SCAN_CHECKPOINTS.length;
+  const pos = SCAN_CHECKPOINTS[Math.min(Math.max(step - 1, 0), SCAN_CHECKPOINTS.length - 1)];
   const row = Math.floor(pos / MAP);
   const col = pos % MAP;
-  const scanning = step > 0 && step <= LAST + 1;
-  const done = step === last;
-
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 1500);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 900);
 
   const reset = (next: number) => {
     setKernelIndex(next);
@@ -61,7 +62,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
       readout={
         <>
           <span>
-            {step === 0 ? <>Entrada: <b>neutra</b></> : done ? <>Convolución: <b>completa</b></> : <>Posición <b>{pos + 1}</b> de <b>{LAST + 1}</b> (fila {row + 1}, columna {col + 1})</>}
+            {step === 0 ? <>Entrada: <b>neutra</b></> : done ? <>Convolución: <b>completa</b></> : <>Muestra <b>{step}</b> de <b>{SCAN_CHECKPOINTS.length}</b> · ventana {pos + 1} de {LAST + 1} (fila {row + 1}, columna {col + 1})</>}
           </span>
           {step > 0 && <span>
             {done ? 'Última suma de productos' : 'Suma de productos'}: <b>{raw[row][col]}</b> → tras ReLU: <b>{map[row][col]}</b>
@@ -78,7 +79,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
         <svg
           viewBox={`0 0 ${MAP_X + MAP * C + 4} ${POOL_Y + 3 * C + 24}`}
           role="img"
-          aria-label={`Imagen 8×8${scanning ? ` con el filtro en la fila ${row + 1}, columna ${col + 1}` : ''}; mapa de activación de 6×6 con ${Math.max(0, step - 1)} posiciones calculadas`}
+          aria-label={`Imagen 8×8${scanning ? ` con el filtro en la fila ${row + 1}, columna ${col + 1}` : ''}; mapa de activación de 6×6 con ${done ? LAST + 1 : scanning ? pos + 1 : 0} posiciones recorridas`}
         >
           <text x={0} y={12} fontSize={11} fill={OVA_COLORS.axis}>
             imagen 8×8
@@ -111,7 +112,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
           {map.flatMap((r, i) =>
             r.map((v, j) => {
               const k = i * MAP + j;
-              const shown = done || (scanning && k < step);
+              const shown = done || (scanning && k <= pos);
               return (
                 <g key={`m${i}-${j}`} className="mlx-cnn-cell">
                   <rect

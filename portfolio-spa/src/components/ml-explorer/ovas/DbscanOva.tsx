@@ -84,7 +84,7 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const shownStep = Math.min(step, last);
   const frame = shownStep > 0 ? frames[shownStep - 1] : undefined;
   const cores = result.core.filter(Boolean).length;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 240, 900);
 
   const reset = (nextEps = eps, nextMinPts = minPts) => {
     setEps(nextEps);

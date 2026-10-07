@@ -50,7 +50,7 @@ export function LogisticRegressionOva({ autoPlay = false }: { autoPlay?: boolean
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(iteration, maxIterations, setIteration, visible, reducedMotion, autoPlay, 950, 1250);
+  useAutoLoop(iteration, maxIterations, setIteration, visible, reducedMotion, autoPlay, 450, 1000);
 
   const frames = useMemo(() => newtonTrace(XS, YS, MAX_ITERATIONS), []);
   const { b0, b1 } = frames[Math.min(iteration, frames.length - 1)];
