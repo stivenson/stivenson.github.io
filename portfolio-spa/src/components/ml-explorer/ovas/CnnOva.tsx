@@ -45,7 +45,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <OvaFrame
       title="Un filtro de 3×3 recorre la imagen"
-      hint="El 7 comienza en tono neutro. El filtro recorre la imagen posición por posición y cada suma, tras ReLU, colorea una casilla del mapa de activación: el filtro vertical detecta bordes izquierdos y el horizontal el borde superior de la barra. Al completar la convolución, max pooling resume cada bloque de 2×2. El recorrido vuelve a empezar automáticamente."
+      hint="El filtro recorre la imagen. En cada posición, nueve conexiones llevan los píxeles de la ventana 3×3 a una neurona del mapa de activación; el color de la conexión indica el signo del peso. ReLU colorea la salida y max pooling resume bloques de 2×2 al completar el mapa. El recorrido vuelve a empezar automáticamente."
       controls={
         <>
           <div role="group" aria-label="Filtro">
@@ -161,6 +161,25 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
           <text x={0} y={20 + 8 * C + 16} fontSize={11} fill={OVA_COLORS.axis}>
             filtro: {kernel.map((r) => `[${r.join(' ')}]`).join(' ')}
           </text>
+          {scanning && kernel.flatMap((kernelRow, kernelRowIndex) => kernelRow.map((weight, kernelColIndex) => {
+            const inputRow = row + kernelRowIndex;
+            const inputCol = col + kernelColIndex;
+            return <line
+              key={`connection-${inputRow}-${inputCol}`}
+              className={`mlx-cnn-connection${weight > 0 ? ' is-positive' : weight < 0 ? ' is-negative' : ' is-neutral'}`}
+              x1={inputCol * C + C / 2}
+              y1={20 + inputRow * C + C / 2}
+              x2={MAP_X + col * C + C / 2}
+              y2={20 + row * C + C / 2}
+              opacity={weight === 0 ? 0.25 : 0.72}
+            />;
+          }))}
+          {scanning && <circle
+            className="mlx-cnn-neuron-target"
+            cx={MAP_X + col * C + C / 2}
+            cy={20 + row * C + C / 2}
+            r={9}
+          />}
         </svg>
       </div>
     </OvaFrame>

@@ -1747,6 +1747,175 @@ p.mlx-py-error {
 
 /* ---------- Fase 4: redes neuronales ---------- */
 
+.mlx-network-visual,
+.mlx-rnn-network,
+.mlx-tf-network {
+  margin-bottom: 14px;
+  padding: 10px 10px 4px;
+  border: 1px solid rgba(85, 170, 255, 0.2);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(85, 170, 255, 0.055), rgba(4, 3, 32, 0.2));
+}
+
+.mlx-network-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding: 0 6px 2px;
+}
+
+.mlx-network-caption strong {
+  color: var(--rf-text, #e8e8f0);
+  font-size: 13px;
+}
+
+.mlx-network-caption span {
+  color: var(--rf-muted, #9898b0);
+  font-size: 11px;
+}
+
+.mlx-network-layer-label,
+.mlx-network-weight-legend text,
+.mlx-network-value {
+  fill: var(--rf-muted, #9898b0);
+  font: 10px 'Space Mono', Consolas, Monaco, monospace;
+}
+
+.mlx-network-edge {
+  stroke: var(--mlx-network-color, #a7a8bc);
+  opacity: 0.1;
+  transition: opacity 420ms ease, stroke-width 420ms ease;
+}
+
+.mlx-network-edge.is-active {
+  opacity: 0.78;
+}
+
+.mlx-network-node circle {
+  fill: var(--mlx-network-node-color, #a7a8bc);
+  fill-opacity: var(--mlx-network-node-opacity, 0.15);
+  stroke: rgba(220, 230, 250, 0.48);
+  stroke-width: 1.3;
+  transition: fill-opacity 420ms ease, stroke 420ms ease, filter 420ms ease;
+}
+
+.mlx-network-node.is-active circle {
+  stroke: var(--mlx-network-node-color, #a7a8bc);
+  filter: drop-shadow(0 0 4px var(--mlx-network-node-color, #a7a8bc));
+}
+
+.mlx-network-node text {
+  fill: #f8fafc;
+  font: 9px 'Space Mono', Consolas, Monaco, monospace;
+  pointer-events: none;
+}
+
+.mlx-rnn-axis-label,
+.mlx-rnn-index,
+.mlx-rnn-weight-label,
+.mlx-tf-network-role,
+.mlx-tf-network-token,
+.mlx-tf-network-query-text {
+  fill: var(--rf-muted, #9898b0);
+  font: 10px 'Space Mono', Consolas, Monaco, monospace;
+}
+
+.mlx-rnn-axis-label,
+.mlx-rnn-weight-label {
+  font-family: inherit;
+  font-size: 10px;
+}
+
+.mlx-rnn-input-edge {
+  stroke: rgba(232, 232, 240, 0.2);
+  stroke-width: 1.3;
+}
+
+.mlx-rnn-input-edge.is-active {
+  stroke: #10b981;
+}
+
+.mlx-rnn-recurrent-edge {
+  fill: none;
+  stroke: rgba(192, 132, 252, 0.2);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.mlx-rnn-recurrent-edge.is-active {
+  stroke: #c084fc;
+  stroke-dasharray: none;
+}
+
+.mlx-rnn-input-node {
+  fill: rgba(232, 232, 240, 0.16);
+  stroke: rgba(232, 232, 240, 0.35);
+}
+
+.mlx-rnn-input-node.is-active {
+  fill: rgba(16, 185, 129, 0.8);
+  stroke: #6ee7b7;
+}
+
+.mlx-rnn-state-node {
+  fill: #c084fc;
+  stroke: rgba(232, 232, 240, 0.36);
+  transition: fill-opacity 380ms ease, stroke 380ms ease;
+}
+
+.mlx-rnn-state-node.is-active {
+  stroke: #d8b4fe;
+}
+
+.mlx-rnn-weight-label {
+  fill: #d8b4fe;
+}
+
+.mlx-tf-network-role {
+  font-family: inherit;
+  font-size: 10px;
+}
+
+.mlx-tf-network-edge {
+  fill: none;
+  stroke: #10b981;
+  transition: opacity 350ms ease, stroke-width 350ms ease;
+}
+
+.mlx-tf-network-edge.is-masked {
+  stroke: #a7a8bc;
+  stroke-dasharray: 4 4;
+}
+
+.mlx-tf-network-node {
+  fill: rgba(16, 185, 129, 0.72);
+  stroke: rgba(110, 231, 183, 0.65);
+  transition: opacity 350ms ease;
+}
+
+.mlx-tf-network-node.is-query-match {
+  stroke: #f8fafc;
+  stroke-width: 2.5;
+}
+
+.mlx-tf-network-token {
+  fill: var(--rf-text, #e8e8f0);
+  font-size: 11px;
+}
+
+.mlx-tf-network-query {
+  fill: #c084fc;
+  stroke: #e9d5ff;
+  stroke-width: 2;
+}
+
+.mlx-tf-network-query-text {
+  fill: #fff;
+  font-size: 9px;
+}
+
 /* MLP: los 3 sliders de cada neurona, juntos y con su nombre. */
 .mlx-ova-controls .mlx-mlp-neuron[role='group'] {
   flex-direction: column;
@@ -1791,6 +1960,31 @@ p.mlx-py-error {
   transition: fill 0.32s ease, fill-opacity 0.32s ease;
 }
 
+.mlx-cnn-connection {
+  stroke-width: 1.1;
+  stroke-dasharray: 3 3;
+  animation: mlx-cnn-connection-in 300ms ease-out both;
+}
+
+.mlx-cnn-connection.is-positive { stroke: #10b981; }
+.mlx-cnn-connection.is-negative { stroke: #f43f5e; }
+.mlx-cnn-connection.is-neutral { stroke: #a7a8bc; }
+
+.mlx-cnn-neuron-target {
+  fill: rgba(16, 185, 129, 0.1);
+  stroke: #10b981;
+  stroke-width: 2;
+  animation: mlx-cnn-target-pulse 700ms ease-in-out infinite alternate;
+}
+
+@keyframes mlx-cnn-connection-in {
+  from { opacity: 0; }
+}
+
+@keyframes mlx-cnn-target-pulse {
+  to { r: 12px; stroke-width: 1; }
+}
+
 /* PCA: los datos pasan de neutros a posiciones a lo largo del componente. */
 .mlx-pca-point,
 .mlx-pca-axis,
@@ -1809,6 +2003,8 @@ p.mlx-py-error {
 
 @media (prefers-reduced-motion: reduce) {
   .mlx-cnn-window,
+  .mlx-cnn-connection,
+  .mlx-cnn-neuron-target,
   .mlx-cnn-input,
   .mlx-cnn-cell rect,
   .mlx-cnn-pool rect,
@@ -1819,5 +2015,20 @@ p.mlx-py-error {
   .mlx-ae-bar,
   .mlx-ae-threshold {
     transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mlx-network-edge,
+  .mlx-network-node circle,
+  .mlx-rnn-state-node,
+  .mlx-tf-network-edge,
+  .mlx-tf-network-node {
+    transition: none;
+  }
+
+  .mlx-cnn-connection,
+  .mlx-cnn-neuron-target {
+    animation: none;
   }
 }

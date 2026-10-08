@@ -3,6 +3,7 @@ import { MLP_BIAS, MLP_SOLUTION, MLP_WEIGHT, XOR_POINTS as POINTS } from './data
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
 import { mlpForward, mlpHits, type Mlp2, type Neuron2 } from './ovaMath';
 import { createPlot } from './plot';
+import { NetworkDiagram, type NetworkDiagramConnection, type NetworkDiagramLayer } from './NetworkDiagram';
 import { useAutoLoop } from './useAutoLoop';
 import { useInViewport, usePrefersReducedMotion } from './useMotion';
 
@@ -36,6 +37,46 @@ export function MlpOva({ autoPlay = false }: { autoPlay?: boolean }) {
   useAutoLoop(step, LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1100, 5000);
 
   const hits = mlpHits(net, POINTS);
+  const networkPoint = POINTS[0];
+  const networkTrace = mlpForward(net, networkPoint);
+  const networkLayers: NetworkDiagramLayer[] = [
+    {
+      label: 'Entradas', color: '#55aaff',
+      nodes: [
+        { label: 'x', value: networkPoint.x, valueText: networkPoint.x.toFixed(2), active: step >= 1 },
+        { label: 'y', value: networkPoint.y, valueText: networkPoint.y.toFixed(2), active: step >= 1 },
+      ],
+    },
+    {
+      label: 'Capa oculta', color: '#c084fc',
+      nodes: [
+        { label: 'h₁', value: networkTrace.h[0], valueText: networkTrace.h[0].toFixed(2), active: step >= 1 },
+        { label: 'h₂', value: networkTrace.h[1], valueText: networkTrace.h[1].toFixed(2), active: step >= 2 },
+      ],
+    },
+    {
+      label: 'Salida', color: '#ffb454',
+      nodes: [{ label: 'ŷ', value: networkTrace.y, valueText: networkTrace.y.toFixed(2), active: step >= 3 }],
+    },
+  ];
+  const networkConnections: NetworkDiagramConnection[] = [
+    ...(['h1', 'h2'] as const).flatMap((layer, hiddenIndex) => [0, 1].map((inputIndex) => ({
+      fromLayer: 0,
+      fromNode: inputIndex,
+      toLayer: 1,
+      toNode: hiddenIndex,
+      weight: net[layer][inputIndex],
+      active: step >= hiddenIndex + 1,
+    }))),
+    ...[0, 1].map((hiddenIndex) => ({
+      fromLayer: 1,
+      fromNode: hiddenIndex,
+      toLayer: 2,
+      toNode: 0,
+      weight: net.out[hiddenIndex],
+      active: step >= 3,
+    })),
+  ];
   const set = (layer: Layer, i: number, v: number) => {
     setNet((prev) => ({ ...prev, [layer]: prev[layer].map((w, j) => (j === i ? v : w)) as Neuron2 }));
     setStep(0);
@@ -51,7 +92,7 @@ export function MlpOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <OvaFrame
       title="Dos neuronas ocultas resuelven XOR"
-      hint="Sigue el paso de las entradas por las dos neuronas ocultas hasta la salida. Al final, el relleno muestra la predicción y el borde conserva la clase real; el ciclo vuelve a empezar desde puntos neutrales. Ajusta pesos y sesgos para ver cómo cambia la red."
+      hint="Arriba ves las entradas, las dos neuronas ocultas, la salida y sus conexiones; se activan en el orden en que la señal atraviesa la red. Abajo, el relleno muestra la predicción y el borde conserva la clase real. Ajusta pesos y sesgos para ver cómo cambia el circuito y su frontera."
       controls={LAYERS.map((layer) => (
         <div key={layer.id} role="group" aria-label={layer.label} className="mlx-mlp-neuron">
           <span>{layer.name}</span>
@@ -76,6 +117,12 @@ export function MlpOva({ autoPlay = false }: { autoPlay?: boolean }) {
       }
     >
       <div ref={stageRef}>
+        <NetworkDiagram
+          layers={networkLayers}
+          connections={networkConnections}
+          label={`Red neuronal MLP de entradas x e y, dos neuronas ocultas y una de salida. Entrada x ${networkPoint.x.toFixed(2)}, y ${networkPoint.y.toFixed(2)}. Propagación: ${step} de ${LAST_STEP}.`}
+          showWeightLegend
+        />
         <svg
           viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
           role="img"

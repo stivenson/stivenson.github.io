@@ -43,6 +43,8 @@ export function RnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const states = observed.length ? rnnStates(observed, w, RNN_U) : [0];
   const lastInfluence = g.length ? g[g.length - 1] : 0;
   const barW = (W - 40) / RNN_STEPS.max;
+  const networkWidth = Math.max(W, steps * 22 + 40);
+  const networkX = (t: number) => 20 + (t * (networkWidth - 40)) / steps;
   const below = g.filter((v) => v < 10 ** LOG_MIN).length;
   const setParameter = (setter: (value: number) => void, value: number) => {
     setter(value);
@@ -52,7 +54,7 @@ export function RnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <OvaFrame
       title="La memoria de una RNN se desvanece"
-      hint="La animación lee las mediciones una por una y actualiza la memoria h = tanh(w·h + 0.5·x). Al inicio los datos están neutrales; cada barra aparece cuando llega su medición y luego se acorta al pasar por nuevas actualizaciones. Su altura muestra cuánto influye ese dato en el estado actual: los datos lejanos pierden fuerza porque el gradiente se multiplica paso a paso. El eje es logarítmico y las barras menores que 1e-8 se cortan en el piso. Alarga la secuencia o baja w para ver cómo se olvida más rápido."
+      hint="Arriba, cada entrada xₜ actualiza el estado oculto hₜ, que pasa al siguiente paso mediante la conexión recurrente w. Abajo, las barras muestran cuánto influye cada medición en la memoria actual: las antiguas pierden fuerza porque el gradiente se multiplica paso a paso. El eje es logarítmico; alarga la secuencia o baja w para ver cómo se olvida más rápido."
       controls={
         <>
           <OvaSlider label="Pasos de la secuencia" value={steps} {...RNN_STEPS} onChange={(v) => setParameter(setSteps, v)} />
@@ -76,6 +78,49 @@ export function RnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
       }
     >
       <div ref={stageRef}>
+      <div className="mlx-rnn-network">
+        <div className="mlx-network-caption">
+          <strong>La memoria pasa de un paso al siguiente</strong>
+          <span>Cada entrada xₜ actualiza el estado oculto hₜ</span>
+        </div>
+        <svg
+          viewBox={`0 0 ${networkWidth} 158`}
+          role="img"
+          aria-label={`Red neuronal recurrente: ${step} de ${steps} entradas procesadas, con conexiones recurrentes entre sus estados ocultos.`}
+        >
+          <text className="mlx-rnn-axis-label" x={8} y={31}>Entrada</text>
+          <text className="mlx-rnn-axis-label" x={8} y={112}>Memoria</text>
+          {Array.from({ length: steps + 1 }, (_, t) => {
+            const x = networkX(t);
+            const processed = t > 0 && t <= step;
+            const state = states[t] ?? 0;
+            return <g key={t}>
+              {t > 0 && <>
+                <line className={`mlx-rnn-input-edge${processed ? ' is-active' : ''}`} x1={x} x2={x} y1={48} y2={91} />
+                <circle className={`mlx-rnn-input-node${processed ? ' is-active' : ''}`} cx={x} cy={37} r={8}>
+                  <title>{`Entrada x${t}${processed ? ` = ${RNN_INPUTS[t - 1].toFixed(2)}` : ', pendiente'}`}</title>
+                </circle>
+                <text className="mlx-rnn-index" x={x} y={40} textAnchor="middle">x</text>
+              </>}
+              {t > 0 && <path
+                className={`mlx-rnn-recurrent-edge${processed ? ' is-active' : ''}`}
+                d={`M ${networkX(t - 1) + 9} 104 Q ${(networkX(t - 1) + x) / 2} 72 ${x - 9} 104`}
+              />}
+              <circle
+                className={`mlx-rnn-state-node${processed || (t === 0 && step > 0) ? ' is-active' : ''}`}
+                cx={x}
+                cy={107}
+                r={10}
+                style={{ opacity: processed || (t === 0 && step > 0) ? 0.4 + Math.abs(state) * 0.6 : 0.18 }}
+              >
+                <title>{`Estado oculto h${t}${t <= step ? ` = ${state.toFixed(3)}` : ', pendiente'}`}</title>
+              </circle>
+              {t === 0 || t === step || t === steps ? <text className="mlx-rnn-index" x={x} y={133} textAnchor="middle">h{t}</text> : null}
+            </g>;
+          })}
+          {step > 0 && <text className="mlx-rnn-weight-label" x={(networkX(0) + networkX(Math.min(1, steps))) / 2} y={79} textAnchor="middle">w={w.toFixed(1)}</text>}
+        </svg>
+      </div>
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={step === 0 ? `Secuencia RNN en espera: ${steps} mediciones neutrales` : `RNN leyó ${step} de ${steps} mediciones. Estado actual ${states[step].toFixed(3)}; la entrada más reciente influye ${formatInfluence(lastInfluence)}`}>
         {Array.from({ length: -LOG_MIN + 1 }, (_, i) => (
           <g key={i}>

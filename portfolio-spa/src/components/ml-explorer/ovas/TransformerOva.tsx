@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { TF_DIMS, TF_EMBEDDINGS, TF_SENTENCES } from './datasets';
 import { OVA_COLORS, OvaFrame } from './OvaFrame';
 import { positionalEncoding, selfAttention, type Grid } from './ovaMath';
@@ -26,6 +26,7 @@ function attend(words: readonly string[], { positional, causal }: Options) {
 
 export function TransformerOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [step, setStep] = useState(0);
+  const arrowId = useId().replace(/:/g, '');
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
@@ -54,7 +55,7 @@ export function TransformerOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <OvaFrame
       title="Mapa de atención de una frase"
-      hint="Las entradas empiezan neutrales. Luego se revela una fila por token: muestra cómo reparte su atención entre las palabras, y al final queda el mapa completo. «Banco» cambia de contexto entre río e interés. Invierte la frase para comparar el efecto de la codificación posicional; la máscara causal limita cada fila a su propia posición y las anteriores. Embeddings de juguete con 4 números escritos a mano."
+      hint="Arriba, la palabra elegida conecta con los tokens a los que presta atención; el grosor representa el peso. Abajo, la matriz revela una fila por token y deja el mapa completo al final. «Banco» cambia de contexto entre río e interés. Invierte la frase para comparar la codificación posicional; la máscara causal limita cada fila a su posición y las anteriores. Embeddings de juguete con 4 números escritos a mano."
       controls={
         <>
           <div role="group" aria-label="Frase">
@@ -108,6 +109,43 @@ export function TransformerOva({ autoPlay = false }: { autoPlay?: boolean }) {
       }
     >
       <div ref={stageRef}>
+        <div className="mlx-tf-network">
+          <div className="mlx-network-caption">
+            <strong>Una palabra consulta a las demás</strong>
+            <span>El grosor de cada conexión representa la atención</span>
+          </div>
+          <svg viewBox="0 0 360 154" role="img" aria-label={`Grafo de autoatención: «${focus}» conecta con cada token de la frase. ${step > i ? 'Las conexiones muestran sus pesos de atención.' : 'Las conexiones se revelan cuando se procesa su token.'}`}>
+            <defs>
+              <marker id={arrowId} viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                <path d="M 0 0 L 8 4 L 0 8 z" fill={OVA_COLORS.accent} />
+              </marker>
+            </defs>
+            <text className="mlx-tf-network-role" x={62} y={18} textAnchor="middle">Consulta Q</text>
+            <text className="mlx-tf-network-role" x={292} y={18} textAnchor="middle">Claves y valores K/V</text>
+            {words.map((word, j) => {
+              const y = 36 + j * 30;
+              const weight = weights[i][j];
+              const rowVisible = step > i;
+              return <g key={`${word}-${j}`}>
+                <path
+                  className={`mlx-tf-network-edge${weight === 0 ? ' is-masked' : ''}${rowVisible ? ' is-active' : ''}`}
+                  d={`M 76 82 C 145 82, 215 ${y}, 276 ${y}`}
+                  strokeWidth={rowVisible ? 1 + weight * 5 : 1}
+                  opacity={rowVisible ? weight === 0 ? 0.2 : 0.25 + weight * 0.75 : 0.08}
+                  markerEnd={`url(#${arrowId})`}
+                />
+                <circle className={`mlx-tf-network-node${rowVisible ? ' is-active' : ''}${j === i ? ' is-query-match' : ''}`} cx={292} cy={y} r={11} style={{ opacity: rowVisible ? 0.35 + weight * 0.65 : 0.22 }}>
+                  <title>{`${word}: ${rowVisible ? weight.toFixed(2) : 'pendiente'}${weight === 0 ? ', bloqueada por la máscara causal' : ''}`}</title>
+                </circle>
+                <text className="mlx-tf-network-token" x={312} y={y + 4}>{word}</text>
+              </g>;
+            })}
+            <circle className="mlx-tf-network-query" cx={62} cy={82} r={15}>
+              <title>{`Consulta: ${focus}`}</title>
+            </circle>
+            <text className="mlx-tf-network-query-text" x={62} y={86} textAnchor="middle">{focus}</text>
+          </svg>
+        </div>
         <svg
         viewBox={`0 0 ${LEFT + words.length * C + 4} ${TOP + words.length * C + 4}`}
         role="img"
