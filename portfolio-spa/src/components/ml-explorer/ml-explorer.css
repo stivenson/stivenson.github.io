@@ -1475,8 +1475,9 @@ p.mlx-py-error {
 .mlx-pca-axis,
 .mlx-pca-proj,
 .mlx-pca-residual {
-  transition: fill 520ms ease, opacity 520ms ease, cx 520ms ease, cy 520ms ease,
-    x1 520ms ease, y1 520ms ease, x2 520ms ease, y2 520ms ease;
+  transition: fill 160ms ease, opacity 160ms ease, cx 160ms ease, cy 160ms ease,
+    x1 160ms ease, y1 160ms ease, x2 160ms ease, y2 160ms ease,
+    stroke-dashoffset 140ms ease;
 }
 
 /* Autoencoder: revela el patrón normal, el umbral y luego los errores anómalos. */
