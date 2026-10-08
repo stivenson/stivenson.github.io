@@ -8,6 +8,8 @@ import { useAutoLoop } from './useAutoLoop';
 
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const AXIS_NAMES = { x: 'ingreso', y: 'deuda' } as const;
+const WARNING_PAUSE_MS = 2600;
+const pauseForTreeWarning = (step: number) => step >= 4 ? WARNING_PAUSE_MS : undefined;
 
 function TreeView({ node, prefix }: { node: TreeNode; prefix?: string }) {
   const tag = prefix ? <b>{prefix} </b> : null;
@@ -41,7 +43,7 @@ export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const regions = treeRegions(tree, { x0: 0, x1: 10, y0: 0, y1: 10 });
   const acc = accuracy(tree, POINTS);
 
-  useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 1200);
+  useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 1200, pauseForTreeWarning);
 
   return (
     <OvaFrame
@@ -75,10 +77,13 @@ export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
             </span>
           )}
           {shownDepth >= 4 && (
-            <span>
-              ⚠️ Desde aquí el árbol empieza a encerrar puntos de ruido en cajitas propias: ya está memorizando el ruido
-              (overfitting). Este porcentaje es sobre los mismos datos con los que aprendió.
-            </span>
+            <div className="mlx-tree-overfit">
+              <strong><span aria-hidden="true">⚠️</span> Sobreajuste: el árbol memoriza el ruido</strong>
+              <p>
+                Desde aquí el árbol empieza a encerrar puntos de ruido en cajitas propias: ya está memorizando el ruido
+                (overfitting). Este porcentaje se calcula sobre los mismos datos con los que aprendió.
+              </p>
+            </div>
           )}
         </>
       }

@@ -14,6 +14,7 @@ export function useAutoLoop(
   enabled: boolean,
   intervalMs = 850,
   pauseAtEndMs = 1100,
+  pauseAtStepMs?: (step: number, last: number) => number | undefined,
 ) {
   useEffect(() => {
     if (!enabled) return;
@@ -24,10 +25,11 @@ export function useAutoLoop(
     if (!visible) return;
 
     const atEnd = step >= last;
+    const stepPause = pauseAtStepMs?.(step, last);
     const id = window.setTimeout(
       () => setStep((current) => (current >= last ? 0 : current + 1)),
-      atEnd ? pauseAtEndMs : intervalMs,
+      stepPause ?? (atEnd ? pauseAtEndMs : intervalMs),
     );
     return () => window.clearTimeout(id);
-  }, [step, last, setStep, visible, reducedMotion, enabled, intervalMs, pauseAtEndMs]);
+  }, [step, last, setStep, visible, reducedMotion, enabled, intervalMs, pauseAtEndMs, pauseAtStepMs]);
 }
