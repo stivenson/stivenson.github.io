@@ -43,7 +43,7 @@ export function TransformerOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const i = words.indexOf(focus);
   const otherOut = attend(other, opts).out[other.indexOf(focus)];
   const change = Math.max(...out[i].map((v, c) => Math.abs(v - otherOut[c])));
-  useAutoLoop(step, words.length, setStep, visible, reducedMotion, autoPlay, 1050, 1400);
+  useAutoLoop(step, words.length, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
 
   const pickSentence = (k: number) => {
     setSentence(k);

@@ -23,7 +23,7 @@ export function KMeansOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const state = run[shownStep];
   const done = shownStep >= last;
 
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, KM_STEP_MS, 1100);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, KM_STEP_MS, 5000);
 
   const reset = (nextK = k, nextStart = start) => {
     setK(nextK);

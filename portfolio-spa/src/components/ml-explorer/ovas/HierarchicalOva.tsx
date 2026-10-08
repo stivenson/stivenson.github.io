@@ -40,6 +40,24 @@ function labelsAfter(steps: number): number[] {
   return POINTS.map((_, i) => roots.findIndex((root) => LEAVES[root].includes(i)));
 }
 
+/** Número de uniones tras el que conviene detenerse: justo antes del mayor salto de altura. */
+const NATURAL_CUT_STEP = MERGES.reduce(
+  (largest, merge, index) => {
+    if (index === 0) return largest;
+    const gap = merge.height - MERGES[index - 1].height;
+    return gap > largest.gap ? { step: index, gap } : largest;
+  },
+  { step: 0, gap: Number.NEGATIVE_INFINITY },
+).step;
+
+const pauseAtStepMs = (step: number) => (step === NATURAL_CUT_STEP ? 3000 : undefined);
+
+function describeGroup(node: number): string {
+  const points = LEAVES[node].map((point) => point + 1);
+  if (points.length === 1) return `punto ${points[0]}`;
+  return `grupo con los puntos ${points.join(', ')}`;
+}
+
 export function HierarchicalOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [progress, setProgress] = useState(0);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -51,8 +69,11 @@ export function HierarchicalOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const labels = useMemo(() => labelsAfter(shownStep), [shownStep]);
   const groups = Math.max(...labels) + 1;
   const sizes = Array.from({ length: groups }, (_, g) => labels.filter((l) => l === g).length);
+  const latestMerge = shownStep > 0 ? MERGES[shownStep - 1] : undefined;
+  const nextMerge = shownStep < last ? MERGES[shownStep] : undefined;
+  const atNaturalCut = shownStep === NATURAL_CUT_STEP && groups === 3;
 
-  useAutoLoop(progress, last, setProgress, visible, reducedMotion, autoPlay);
+  useAutoLoop(progress, last, setProgress, visible, reducedMotion, autoPlay, 850, 5000, pauseAtStepMs);
 
   const color = (node: number) => {
     const mergeIndex = node - N;
@@ -73,6 +94,20 @@ export function HierarchicalOva({ autoPlay = false }: { autoPlay?: boolean }) {
           </span>
           <span>Tamaños: <b>{sizes.join(', ')}</b></span>
           {shownStep === 0 && <span>Todos los puntos parten separados y neutrales.</span>}
+          {latestMerge && (
+            <div className="mlx-hc-union-readout" aria-label={`Última unión: ${describeGroup(latestMerge.a)} con ${describeGroup(latestMerge.b)}, distancia ${latestMerge.height.toFixed(2)}`}>
+              <strong>Unión {shownStep}</strong>
+              <span>{describeGroup(latestMerge.a)} se une con {describeGroup(latestMerge.b)}.</span>
+              <span>Distancia promedio: <b>{latestMerge.height.toFixed(2)}</b>.</span>
+            </div>
+          )}
+          {atNaturalCut && nextMerge && (
+            <div className="mlx-hc-natural-cut-callout" aria-label={`Corte natural en tres grupos: el mayor salto de distancia va de ${latestMerge?.height.toFixed(2)} a ${nextMerge.height.toFixed(2)}`}>
+              <strong>Una pausa útil: aquí quedan 3 grupos</strong>
+              <span>La siguiente unión sube de {latestMerge?.height.toFixed(2)} a {nextMerge.height.toFixed(2)}.</span>
+              <span>Ese salto grande sugiere cortar el dendrograma antes de unirlos.</span>
+            </div>
+          )}
         </>
       }
     >

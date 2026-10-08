@@ -33,7 +33,7 @@ export function MlpOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1100, 1400);
+  useAutoLoop(step, LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1100, 5000);
 
   const hits = mlpHits(net, POINTS);
   const set = (layer: Layer, i: number, v: number) => {

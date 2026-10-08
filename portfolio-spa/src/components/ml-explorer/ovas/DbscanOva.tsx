@@ -83,8 +83,13 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const last = frames.length;
   const shownStep = Math.min(step, last);
   const frame = shownStep > 0 ? frames[shownStep - 1] : undefined;
-  const cores = result.core.filter(Boolean).length;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 240, 900);
+  const revealed = frame?.revealed ?? POINTS.map(() => false);
+  const revealedCores = POINTS.filter((_, i) => revealed[i] && result.core[i]).length;
+  const revealedNoise = POINTS.filter((_, i) => revealed[i] && result.labels[i] < 0).length;
+  const revealedBorders = POINTS.filter((_, i) => revealed[i] && result.labels[i] >= 0 && !result.core[i]).length;
+  const visibleClusters = new Set(result.labels.filter((label, i) => revealed[i] && label >= 0)).size;
+  const isComplete = last > 0 && shownStep === last;
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 240, 5000);
 
   const reset = (nextEps = eps, nextMinPts = minPts) => {
     setEps(nextEps);
@@ -121,15 +126,21 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
       readout={
         <>
           <span>
-            Resultado: <b>{result.clusters}</b> {result.clusters === 1 ? 'grupo' : 'grupos'} y <b>{result.noise}</b>{' '}
-            {result.noise === 1 ? 'punto' : 'puntos'} de ruido
+            Identificados hasta ahora: <b>{revealedCores}</b> núcleos · <b>{revealedBorders}</b> puntos de borde ·{' '}
+            <b>{revealedNoise}</b> de ruido
           </span>
           <span>
-            Núcleos: <b>{cores}</b> · borde: <b>{POINTS.length - cores - result.noise}</b>
+            Grupos alcanzados: <b>{visibleClusters}</b> · Paso <b>{shownStep}</b> de <b>{last}</b>
           </span>
           <span>
-            Paso <b>{shownStep}</b> de <b>{last}</b> · {frame?.message ?? 'Todos los puntos están sin clasificar.'}
+            {frame?.message ?? 'La exploración todavía no ha comenzado; los puntos siguen sin clasificar.'}
           </span>
+          {isComplete && (
+            <div className="dbscan-final-summary">
+              <b>Resultado final</b>: {result.clusters} {result.clusters === 1 ? 'grupo' : 'grupos'} y {result.noise}{' '}
+              {result.noise === 1 ? 'punto' : 'puntos'} de ruido.
+            </div>
+          )}
         </>
       }
     >
@@ -137,7 +148,7 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
         <svg
           viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
           role="img"
-          aria-label={`DBSCAN: paso ${shownStep} de ${last}. ${frame?.message ?? 'Los puntos todavía no se han clasificado.'} Resultado final: ${result.clusters} grupos y ${result.noise} puntos de ruido.`}
+          aria-label={`DBSCAN: paso ${shownStep} de ${last}. ${frame?.message ?? 'La exploración todavía no ha comenzado.'} Identificados hasta ahora: ${revealedCores} núcleos, ${revealedBorders} puntos de borde, ${revealedNoise} de ruido y ${visibleClusters} grupos alcanzados.${isComplete ? ` Resultado final: ${result.clusters} grupos y ${result.noise} puntos de ruido.` : ''}`}
         >
           {frame?.active.map((i) => (
             <circle
@@ -152,12 +163,12 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
             />
           ))}
           {POINTS.map((p, i) => {
-            const revealed = frame?.revealed[i] ?? false;
-            const noise = revealed && result.labels[i] < 0;
-            const core = revealed && result.core[i];
+            const pointRevealed = revealed[i];
+            const noise = pointRevealed && result.labels[i] < 0;
+            const core = pointRevealed && result.core[i];
             const color = noise
               ? NOISE_COLOR
-              : revealed
+              : pointRevealed
                 ? CLUSTER_COLORS[result.labels[i] % CLUSTER_COLORS.length]
                 : OVA_COLORS.axis;
             const active = frame?.active.includes(i) ?? false;
@@ -168,8 +179,8 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
                 cx={PLOT.sx(p.x)}
                 cy={PLOT.sy(p.y)}
                 r={active ? 6.5 : core ? 5.5 : 4.5}
-                fill={revealed && core ? color : revealed && noise ? 'none' : revealed ? 'none' : OVA_COLORS.axis}
-                stroke={active ? '#ffffff' : noise ? NOISE_COLOR : revealed ? color : '#040320'}
+                fill={pointRevealed && core ? color : pointRevealed && noise ? 'none' : pointRevealed ? 'none' : OVA_COLORS.axis}
+                stroke={active ? '#ffffff' : noise ? NOISE_COLOR : pointRevealed ? color : '#040320'}
                 strokeWidth={active || core ? 1.5 : 2}
                 strokeDasharray={noise ? '2 2' : undefined}
               />

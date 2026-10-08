@@ -20,12 +20,17 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const shown = Math.min(step, last);
   const partialText = result.words.slice(0, shown).map((word) => word.word).join(' ');
   const partial = explainNaiveBayes(MODEL, partialText);
+  const currentWord = shown > 0 ? result.words[shown - 1] : undefined;
+  const beforeText = result.words.slice(0, Math.max(0, shown - 1)).map((word) => word.word).join(' ');
+  const beforePartial = explainNaiveBayes(MODEL, beforeText);
+  const pBeforeWord = shown === 0 ? 0.5 : beforePartial.pPositive;
   const pPositive = shown === 0 ? 0.5 : partial.pPositive;
+  const factorIsNeutral = currentWord?.known && Math.abs(Math.log(currentWord.factor)) < 0.025;
   const positiveWins = pPositive > 0.5;
   const negativeWins = pPositive < 0.5;
   const odds = partial.pPositive / (1 - partial.pPositive);
 
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 1400);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
 
   const changeText = (next: string) => {
     setText(next);
@@ -63,7 +68,30 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
           <span>
             Predicción: <b>{shown === 0 ? 'aún sin evidencia' : positiveWins ? 'positiva' : negativeWins ? 'negativa' : 'empate'}</b>
           </span>
-          {shown > 0 && <span>Odds positiva/negativa: <b>{odds.toFixed(2)}</b></span>}
+          <div className={`mlx-nb-current-evidence${!currentWord ? '' : !currentWord.known ? ' is-unknown' : factorIsNeutral ? ' is-neutral' : currentWord.factor > 1 ? ' is-positive' : ' is-negative'}`}>
+            <span className="mlx-nb-current-evidence__eyebrow">Palabra recién leída</span>
+            {currentWord ? (
+              <>
+                <strong className="mlx-nb-current-evidence__word">«{currentWord.word}»</strong>
+                <p>
+                  {!currentWord.known
+                    ? 'El modelo no conoce esta palabra; la ignora y no cambia su predicción.'
+                    : factorIsNeutral
+                      ? 'Esta palabra aporta casi la misma evidencia para ambas opciones; la probabilidad prácticamente no cambia.'
+                      : currentWord.factor > 1
+                        ? 'Esta palabra favorece una reseña positiva.'
+                        : 'Esta palabra favorece una reseña negativa.'}
+                </p>
+                {currentWord.known && !factorIsNeutral ? (
+                  <span>P(positiva): <b>{pct(pBeforeWord)}</b> → <b>{pct(pPositive)}</b></span>
+                ) : (
+                  <span>La probabilidad positiva se mantiene en <b>{pct(pPositive)}</b>.</span>
+                )}
+              </>
+            ) : (
+              <p>Lee la reseña palabra por palabra: cada palabra conocida puede cambiar la predicción.</p>
+            )}
+          </div>
         </>
       }
     >
@@ -102,21 +130,24 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
           </div>
         </div>
 
-        <ol className="mlx-nb-words" aria-label="Cómo se actualizan los odds">
-          {shown === 0 ? (
-            <li>Prior inicial: <b>1 a 1</b> · ambas clases parten empatadas.</li>
-          ) : (
-            <>
-              <li>Odds iniciales (prior): <b>{partial.priorOdds.toFixed(2)}</b></li>
-              {partial.words.map((word, i) => (
-                <li key={`${word.word}-${i}`} className={word.known ? (word.factor >= 1 ? 'is-pos' : 'is-neg') : 'is-unknown'}>
-                  «{word.word}»: {word.known ? <b>×{word.factor.toFixed(2)}</b> : <i>no la conoce, se ignora</i>}
-                </li>
-              ))}
-              <li>Odds finales: <b>{odds.toFixed(2)}</b> → probabilidad {pct(partial.pPositive)}</li>
-            </>
-          )}
-        </ol>
+        <details className="mlx-nb-words">
+          <summary>Ver el cálculo de evidencia</summary>
+          <ol aria-label="Detalle del cálculo de Naive Bayes">
+            {shown === 0 ? (
+              <li>Probabilidades iniciales: ambas clases parten empatadas.</li>
+            ) : (
+              <>
+                <li>Odds iniciales: <b>{partial.priorOdds.toFixed(2)}</b></li>
+                {partial.words.map((word, i) => (
+                  <li key={`${word.word}-${i}`} className={word.known ? (word.factor >= 1 ? 'is-pos' : 'is-neg') : 'is-unknown'}>
+                    «{word.word}»: {word.known ? <b>factor ×{word.factor.toFixed(2)}</b> : <i>no está en el vocabulario, se ignora</i>}
+                  </li>
+                ))}
+                <li>Odds finales: <b>{odds.toFixed(2)}</b> · P(positiva): <b>{pct(partial.pPositive)}</b></li>
+              </>
+            )}
+          </ol>
+        </details>
       </div>
     </OvaFrame>
   );

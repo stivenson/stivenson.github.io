@@ -23,7 +23,7 @@ export function SvmOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
   const last = maxCIndex + 1; // step 0 es neutral; los siguientes aplican cada C hasta el máximo.
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 1300);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
   const cIndex = Math.max(0, step - 1);
   const C = SVM_CS[cIndex];
 

@@ -17,10 +17,13 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(stage, TREE_CHECKPOINTS.length - 1, setStage, visible, reducedMotion, autoPlay, 600, 900);
+  useAutoLoop(stage, TREE_CHECKPOINTS.length - 1, setStage, visible, reducedMotion, autoPlay, 600, 5000);
   const steps = TREE_CHECKPOINTS[stage];
+  const previousSteps = stage > 0 ? TREE_CHECKPOINTS[stage - 1] : 0;
   const model = useMemo(() => boost(XS, YS, GB_MAX_STEPS, rate), [rate]);
   const mse = boostMse(model, XS, YS, steps);
+  const previousMse = boostMse(model, XS, YS, previousSteps);
+  const mseChange = mse - previousMse;
   const residuals = XS.map((x, i) => YS[i] - predictBoost(model, x, steps));
   const under = residuals.filter((residual) => residual > 0).length;
   const over = residuals.length - under;
@@ -58,6 +61,20 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
           <span>Árboles sumados: <b>{steps}</b> de <b>{GB_MAX_STEPS}</b> · tasa: <b>{rate}</b></span>
           <span>Error cuadrático medio: <b>{mse.toFixed(2)}</b></span>
           <span>{steps === 0 ? 'Puntos neutrales · predicción base: el promedio' : <>Residuos: <b>{under}</b> predicciones cortas · <b>{over}</b> predicciones de más</>}</span>
+          <div className="mlx-gb-checkpoint-explanation" aria-live="off">
+            {stage === 0 ? (
+              <>
+                <b>Predicción inicial</b>
+                <span>El modelo parte del promedio de los datos. En cada paso, un árbol aprende de los residuos: la diferencia entre el valor real y lo que el modelo predice.</span>
+              </>
+            ) : (
+              <>
+                <b>Este hito: {previousSteps} → {steps} árboles</b>
+                <span>Se incorporaron {steps - previousSteps} árboles. El MSE {mseChange < 0 ? 'bajó' : mseChange > 0 ? 'subió' : 'no cambió'} {Math.abs(mseChange).toFixed(2)} ({previousMse.toFixed(2)} → {mse.toFixed(2)}).</span>
+                <span>Un residuo es valor real − predicción: si es positivo, el modelo se quedó corto; si es negativo, predijo de más. Cada árbol intenta corregir esos residuos.</span>
+              </>
+            )}
+          </div>
         </>
       }
     >

@@ -33,7 +33,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const pos = SCAN_CHECKPOINTS[Math.min(Math.max(step - 1, 0), SCAN_CHECKPOINTS.length - 1)];
   const row = Math.floor(pos / MAP);
   const col = pos % MAP;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 900);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 5000);
 
   const reset = (next: number) => {
     setKernelIndex(next);

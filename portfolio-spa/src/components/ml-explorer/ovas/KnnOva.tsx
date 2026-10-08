@@ -24,7 +24,7 @@ export function KnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
   const last = (maxK + 1) / 2;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 450, 900);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 450, 5000);
   const k = step === 0 ? 1 : Math.min(maxK, step * 2 - 1);
   const active = step > 0;
   const result = knnVote(POINTS, query, k);

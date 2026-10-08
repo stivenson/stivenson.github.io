@@ -19,7 +19,7 @@ export function RandomForestOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const visible = useInViewport(ref);
   const reducedMotion = usePrefersReducedMotion();
   const last = maxSizeIndex + 1;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 1300);
+  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
 
   // Frame 0 deliberately has no trees; later frames add a larger ensemble.
   const n = step === 0 ? 0 : FOREST_SIZES[Math.min(step - 1, maxSizeIndex)];

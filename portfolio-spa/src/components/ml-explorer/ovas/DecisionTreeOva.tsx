@@ -9,7 +9,7 @@ import { useAutoLoop } from './useAutoLoop';
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const AXIS_NAMES = { x: 'ingreso', y: 'deuda' } as const;
 const WARNING_PAUSE_MS = 2600;
-const pauseForTreeWarning = (step: number) => step >= 4 ? WARNING_PAUSE_MS : undefined;
+const pauseForTreeWarning = (step: number, last: number) => step >= 4 && step < last ? WARNING_PAUSE_MS : undefined;
 
 function TreeView({ node, prefix }: { node: TreeNode; prefix?: string }) {
   const tag = prefix ? <b>{prefix} </b> : null;
@@ -43,7 +43,7 @@ export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const regions = treeRegions(tree, { x0: 0, x1: 10, y0: 0, y1: 10 });
   const acc = accuracy(tree, POINTS);
 
-  useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 1200, pauseForTreeWarning);
+  useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 5000, pauseForTreeWarning);
 
   return (
     <OvaFrame

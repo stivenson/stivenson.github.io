@@ -40,7 +40,7 @@ export function LinearRegressionOva({ autoPlay = false }: { autoPlay?: boolean }
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, FIT_STEPS, setStep, visible, reducedMotion, autoPlay, 500, 900);
+  useAutoLoop(step, FIT_STEPS, setStep, visible, reducedMotion, autoPlay, 500, 5000);
   const clipId = useId();
   const full = points.length >= MAX_POINTS;
   const fitted = fitLine(points);

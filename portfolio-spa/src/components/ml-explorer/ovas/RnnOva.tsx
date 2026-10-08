@@ -37,7 +37,7 @@ export function RnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, steps, setStep, visible, reducedMotion, autoPlay, 750, 1300);
+  useAutoLoop(step, steps, setStep, visible, reducedMotion, autoPlay, 750, 5000);
   const observed = RNN_INPUTS.slice(0, step);
   const g = observed.length ? rnnInfluence(observed, w, RNN_U) : [];
   const states = observed.length ? rnnStates(observed, w, RNN_U) : [0];

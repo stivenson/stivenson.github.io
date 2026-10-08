@@ -29,7 +29,7 @@ export function AutoencoderOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, AE_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1050, 1400);
+  useAutoLoop(step, AE_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
   const { normal, fraud, threshold } = useMemo(() => {
     const ae = fitLinearAutoencoder(AE_NORMAL, k);
     const normal = AE_NORMAL.map((r) => reconstructionError(ae, r));

@@ -33,7 +33,7 @@ export function PcaOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, PCA_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 145, 800);
+  useAutoLoop(step, PCA_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 145, 5000);
   // La secuencia recorre desde el eje horizontal hasta el eje elegido. El paso
   // cero deja los datos neutrales para separar la referencia de la proyección.
   const progress = step === 0 ? 0 : Math.min(1, (step - 1) / (PCA_ROTATION_STEPS - 1));

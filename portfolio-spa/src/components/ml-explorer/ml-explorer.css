@@ -1265,6 +1265,46 @@ p.mlx-py-error {
   gap: 14px;
 }
 
+.mlx-nb-current-evidence {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid rgba(232, 232, 240, 0.22);
+  border-left: 4px solid #9898b0;
+  border-radius: 9px;
+  background: rgba(232, 232, 240, 0.06);
+}
+
+.mlx-nb-current-evidence.is-positive {
+  border-color: rgba(255, 180, 84, 0.55);
+  border-left-color: #ffb454;
+  background: rgba(255, 180, 84, 0.09);
+}
+
+.mlx-nb-current-evidence.is-negative {
+  border-color: rgba(85, 170, 255, 0.55);
+  border-left-color: #55aaff;
+  background: rgba(85, 170, 255, 0.09);
+}
+
+.mlx-nb-current-evidence__eyebrow {
+  color: var(--rf-muted, #9898b0);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mlx-nb-current-evidence__word {
+  color: var(--rf-text, #e8e8f0);
+  font-size: 17px;
+}
+
+.mlx-nb-current-evidence p {
+  margin: 0;
+  line-height: 1.5;
+}
+
 .mlx-nb-class {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -1383,6 +1423,58 @@ p.mlx-py-error {
 .mlx-gb-residual,
 .mlx-gb-curve {
   transition: stroke 350ms ease, opacity 350ms ease;
+}
+
+.mlx-hc-union-readout,
+.mlx-hc-natural-cut-callout,
+.dbscan-final-summary,
+.mlx-gb-checkpoint-explanation {
+  display: grid;
+  gap: 6px;
+  padding: 11px 13px;
+  border: 1px solid rgba(85, 170, 255, 0.3);
+  border-left: 4px solid #55aaff;
+  border-radius: 9px;
+  background: rgba(85, 170, 255, 0.07);
+  line-height: 1.5;
+}
+
+.mlx-hc-union-readout strong,
+.mlx-hc-natural-cut-callout strong,
+.dbscan-final-summary b,
+.mlx-gb-checkpoint-explanation > b {
+  color: #9ed0ff;
+  font-size: 14px;
+}
+
+.mlx-hc-natural-cut-callout {
+  border-color: rgba(255, 180, 84, 0.58);
+  border-left-color: #ffb454;
+  background: linear-gradient(135deg, rgba(255, 180, 84, 0.14), rgba(16, 185, 129, 0.08));
+}
+
+.mlx-hc-natural-cut-callout strong {
+  color: #ffd18d;
+}
+
+.dbscan-final-summary {
+  border-color: rgba(16, 185, 129, 0.55);
+  border-left-color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.dbscan-final-summary b {
+  color: #75e5be;
+}
+
+.mlx-gb-checkpoint-explanation {
+  border-color: rgba(255, 180, 84, 0.38);
+  border-left-color: #ffb454;
+  background: rgba(255, 180, 84, 0.08);
+}
+
+.mlx-gb-checkpoint-explanation > b {
+  color: #ffd18d;
 }
 
 /* Las líneas punto→centroide (x2/y2 no se pueden animar con CSS) se montan de nuevo en cada
