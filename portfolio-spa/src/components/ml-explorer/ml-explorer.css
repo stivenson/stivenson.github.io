@@ -849,6 +849,100 @@ p.mlx-py-error {
   padding: 12px;
 }
 
+.mlx-ova-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 0 12px 12px;
+  color: var(--rf-text-muted, #9898b0);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mlx-ova-legend-context {
+  color: var(--rf-text, #e8e8f0);
+  font-size: 12px;
+}
+
+.mlx-ova-legend ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mlx-ova-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mlx-ova-legend-mark {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  color: var(--legend-color);
+}
+
+.mlx-ova-legend-mark.is-dot::before,
+.mlx-ova-legend-mark.is-ring::before,
+.mlx-ova-legend-mark.is-square::before {
+  position: absolute;
+  inset: 2px;
+  border: 1.5px solid var(--legend-color);
+  border-radius: 50%;
+  background: var(--legend-color);
+  content: '';
+}
+
+.mlx-ova-legend-mark.is-ring::before {
+  inset: 1px;
+  background: transparent;
+  border-width: 2px;
+}
+
+.mlx-ova-legend-mark.is-square::before {
+  border-radius: 2px;
+}
+
+.mlx-ova-legend-mark.is-cross::before {
+  inset: -1px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  content: '×';
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 12px;
+  text-align: center;
+}
+
+.mlx-ova-legend-mark.is-gradient::before {
+  position: absolute;
+  inset: 3px 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #55aaff, #9898b0, #ffb454);
+  content: '';
+}
+
+.mlx-ova-legend-mark.is-line::before,
+.mlx-ova-legend-mark.is-dash::before {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  left: 0;
+  border-top: 2px solid var(--legend-color);
+  content: '';
+}
+
+.mlx-ova-legend-mark.is-dash::before {
+  border-top-style: dashed;
+}
+
 .mlx-ova-stage svg {
   display: block;
   width: 100%;
