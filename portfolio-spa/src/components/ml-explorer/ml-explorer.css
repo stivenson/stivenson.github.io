@@ -1259,10 +1259,209 @@ p.mlx-py-error {
   color: var(--rf-muted, #9898b0);
 }
 
-.mlx-nb-posterior {
+.mlx-nb-chart-wrap {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px 12px 8px;
+  border: 1px solid rgba(85, 170, 255, 0.22);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(85, 170, 255, 0.07), rgba(4, 3, 32, 0.28));
+}
+
+.mlx-nb-chart-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-inline: 8px;
+}
+
+.mlx-nb-chart-heading > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.mlx-nb-chart-heading strong {
+  color: var(--rf-text, #e8e8f0);
+  font-size: 14px;
+}
+
+.mlx-nb-chart-heading span {
+  color: var(--rf-muted, #9898b0);
+  font-size: 12px;
+}
+
+.mlx-nb-chart-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(85, 170, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(4, 3, 32, 0.52);
+}
+
+.mlx-nb-chart-toggle button {
+  min-width: 36px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 5px;
+  color: var(--rf-muted, #9898b0);
+  background: transparent;
+  font: 700 11px 'Space Mono', Consolas, Monaco, monospace;
+  cursor: pointer;
+}
+
+.mlx-nb-chart-toggle button[aria-pressed='true'] {
+  color: #e8e8f0;
+  background: rgba(85, 170, 255, 0.22);
+}
+
+.mlx-nb-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mlx-nb-grid {
+  stroke: rgba(180, 190, 220, 0.13);
+  stroke-width: 1;
+}
+
+.mlx-nb-grid.is-neutral {
+  stroke: rgba(232, 232, 240, 0.45);
+  stroke-dasharray: 5 5;
+}
+
+.mlx-nb-grid-depth {
+  stroke: rgba(180, 190, 220, 0.18);
+  stroke-width: 1;
+}
+
+.mlx-nb-3d-floor {
+  fill: rgba(85, 170, 255, 0.035);
+  stroke: rgba(180, 190, 220, 0.22);
+  stroke-width: 1;
+}
+
+.mlx-nb-axis {
+  stroke: rgba(210, 215, 235, 0.52);
+  stroke-width: 1.2;
+}
+
+.mlx-nb-axis-mark {
+  stroke: rgba(210, 215, 235, 0.45);
+  stroke-width: 1;
+}
+
+.mlx-nb-axis-tick,
+.mlx-nb-axis-label {
+  fill: var(--rf-muted, #9898b0);
+  font: 11px 'Space Mono', Consolas, Monaco, monospace;
+}
+
+.mlx-nb-axis-label {
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.mlx-nb-segment {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 600;
+  animation: mlx-nb-draw-segment 420ms ease-out both;
+}
+
+.mlx-nb-segment.is-positive,
+.mlx-nb-chart-point.is-positive {
+  stroke: #ffb454;
+  fill: #ffb454;
+}
+
+.mlx-nb-segment.is-negative,
+.mlx-nb-chart-point.is-negative {
+  stroke: #55aaff;
+  fill: #55aaff;
+}
+
+.mlx-nb-segment.is-unknown,
+.mlx-nb-segment.is-neutral {
+  stroke: #a7a8bc;
+}
+
+.mlx-nb-3d-evidence {
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+  opacity: 0.62;
+}
+
+.mlx-nb-3d-evidence.is-positive { stroke: #ffb454; }
+.mlx-nb-3d-evidence.is-negative { stroke: #55aaff; }
+.mlx-nb-3d-evidence.is-neutral,
+.mlx-nb-3d-evidence.is-unknown { stroke: #a7a8bc; }
+
+.mlx-nb-chart-point.is-unknown,
+.mlx-nb-chart-point.is-neutral {
+  stroke: #a7a8bc;
+  fill: #a7a8bc;
+}
+
+.mlx-nb-chart-point {
+  stroke-width: 2;
+  transition: r 240ms ease, filter 240ms ease;
+}
+
+.mlx-nb-chart-point.is-current {
+  filter: drop-shadow(0 0 5px currentColor);
+  stroke: #f8fafc;
+}
+
+.mlx-nb-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 0 8px 4px;
+  color: var(--rf-muted, #9898b0);
+  font-size: 11px;
+}
+
+.mlx-nb-chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mlx-nb-chart-legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.mlx-nb-chart-legend i.is-positive { background: #ffb454; }
+.mlx-nb-chart-legend i.is-negative { background: #55aaff; }
+.mlx-nb-chart-legend i.is-unknown { background: #a7a8bc; }
+
+@media (max-width: 520px) {
+  .mlx-nb-chart-heading {
+    align-items: flex-start;
+  }
+
+  .mlx-nb-chart-heading span {
+    max-width: 230px;
+  }
+
+  .mlx-nb-chart-toggle button {
+    min-width: 32px;
+    padding-inline: 6px;
+  }
+}
+
+@keyframes mlx-nb-draw-segment {
+  from { opacity: 0.2; stroke-dashoffset: 600; }
+  to { opacity: 1; stroke-dashoffset: 0; }
 }
 
 .mlx-nb-current-evidence {
@@ -1343,18 +1542,13 @@ p.mlx-py-error {
   background: #ffb454;
 }
 
-@media (max-width: 520px) {
-  .mlx-nb-posterior {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .mlx-nb-token,
-  .mlx-nb-class,
-  .mlx-nb-fill {
+  .mlx-nb-chart-point {
     transition: none;
   }
+
+  .mlx-nb-segment { animation: none; }
 }
 
 /* ---------- Fase 3: agrupamiento y PCA ---------- */
