@@ -49,6 +49,11 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const positiveWins = pPositive > 0.5;
   const negativeWins = pPositive < 0.5;
   const odds = partial.pPositive / (1 - partial.pPositive);
+  const probabilityDelta = Math.round((pPositive - pBeforeWord) * 100);
+  const deltaLabel = probabilityDelta > 0 ? `+${probabilityDelta}` : `${probabilityDelta}`;
+  const currentEffect = !currentWord || !currentWord.known || factorIsNeutral
+    ? 'sin cambio'
+    : `${deltaLabel} puntos hacia ${probabilityDelta > 0 ? 'positiva' : 'negativa'}`;
 
   const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
 
@@ -60,9 +65,16 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <OvaFrame
       playback={playback}
-      explanation={!currentWord ? 'Antes de leer, ambas clases parten con la misma probabilidad. Vamos a añadir evidencia palabra por palabra.' : !currentWord.known ? `«${currentWord.word}» no aparece en el entrenamiento: se muestra, pero no cambia la probabilidad.` : `Añadimos la evidencia de «${currentWord.word}». La probabilidad positiva pasa de ${pct(pBeforeWord)} a ${pct(pPositive)}.`}
+      progressLabel={shown === 0 ? 'Antes de leer' : <>Palabra <b>{shown}</b> de <b>{last}</b> · «{currentWord?.word}»</>}
+      explanation={!currentWord
+        ? 'Ambas clases parten empatadas. Avanza para ver cómo cada palabra modifica la probabilidad.'
+        : !currentWord.known
+          ? `«${currentWord.word}» no aparece en el entrenamiento: se muestra, pero no cambia la probabilidad.`
+          : factorIsNeutral
+            ? `«${currentWord.word}» aporta casi la misma evidencia a ambas clases: la probabilidad se mantiene en ${pct(pPositive)}.`
+            : `«${currentWord.word}» aporta evidencia ${probabilityDelta > 0 ? 'positiva' : 'negativa'}: la probabilidad cambia ${deltaLabel} puntos, de ${pct(pBeforeWord)} a ${pct(pPositive)}.`}
       title="Cada palabra aporta evidencia"
-      hint="La frase aparece palabra por palabra. Al principio ambas clases están neutrales; cada palabra conocida inclina la probabilidad hacia positiva o negativa. Las desconocidas se muestran, pero no cambian el cálculo. Puedes pausar o avanzar paso a paso."
+      hint="Cada palabra conocida mueve la probabilidad: naranja favorece una reseña positiva; azul, una negativa; gris indica que no se encontró evidencia. Avanza para ver el efecto de una palabra a la vez."
       controls={
         <>
           <label className="mlx-nb-input">
@@ -88,7 +100,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
             P(positiva) = <b>{pct(pPositive)}</b> · P(negativa) = <b>{pct(1 - pPositive)}</b>
           </span>
           <span>
-            Predicción: <b>{shown === 0 ? 'aún sin evidencia' : positiveWins ? 'positiva' : negativeWins ? 'negativa' : 'empate'}</b>
+            Predicción: <b className={`mlx-nb-prediction${shown === 0 ? '' : positiveWins ? ' is-positive' : negativeWins ? ' is-negative' : ''}`}>{shown === 0 ? 'aún sin evidencia' : positiveWins ? 'positiva' : negativeWins ? 'negativa' : 'empate'}</b>
           </span>
           <div className={`mlx-nb-current-evidence${!currentWord ? '' : !currentWord.known ? ' is-unknown' : factorIsNeutral ? ' is-neutral' : currentWord.factor > 1 ? ' is-positive' : ' is-negative'}`}>
             <span className="mlx-nb-current-evidence__eyebrow">Palabra recién leída</span>
@@ -104,11 +116,11 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
                         ? 'Esta palabra favorece una reseña positiva.'
                         : 'Esta palabra favorece una reseña negativa.'}
                 </p>
-                {currentWord.known && !factorIsNeutral ? (
+                <div className="mlx-nb-current-evidence__numbers">
+                  {currentWord.known && <span>Factor: <b>×{currentWord.factor.toFixed(2)}</b></span>}
+                  <span>Efecto: <b>{currentEffect}</b></span>
                   <span>P(positiva): <b>{pct(pBeforeWord)}</b> → <b>{pct(pPositive)}</b></span>
-                ) : (
-                  <span>La probabilidad positiva se mantiene en <b>{pct(pPositive)}</b>.</span>
-                )}
+                </div>
               </>
             ) : (
               <p>Lee la reseña palabra por palabra: cada palabra conocida puede cambiar la predicción.</p>
@@ -121,11 +133,13 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
         <div className="mlx-nb-evidence" aria-label="Palabras de la reseña y evidencia acumulada">
           {result.words.length ? result.words.map((word, i) => {
             const active = i < shown;
+            const current = i === shown - 1;
             return (
               <span
                 key={`${word.word}-${i}`}
-                className={`mlx-nb-token${active ? (word.known ? (word.factor >= 1 ? ' is-pos' : ' is-neg') : ' is-unknown') : ''}`}
-                aria-label={`${word.word}${active ? word.known ? `, factor ${word.factor.toFixed(2)}` : ', desconocida' : ', pendiente'}`}
+                className={`mlx-nb-token${active ? (word.known ? (word.factor >= 1 ? ' is-pos' : ' is-neg') : ' is-unknown') : ''}${current ? ' is-current' : ''}`}
+                aria-current={current ? 'step' : undefined}
+                aria-label={`${word.word}${current ? ', palabra actual' : ''}${active ? word.known ? `, factor ${word.factor.toFixed(2)}` : ', desconocida' : ', pendiente'}`}
               >
                 {word.word}
                 {active && word.known && <small>×{word.factor.toFixed(2)}</small>}
@@ -158,6 +172,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
                 <text className="mlx-nb-axis-tick" x={plot.sx(0) - 8} y={plot.sy(tick) + 4} textAnchor="end">{pct(tick)}</text>
               </g>
             ))}
+            <text className="mlx-nb-neutral-label" x={plot.sx(Math.max(1, last)) - 4} y={plot.sy(0.5) - 7} textAnchor="end">50 % = empate</text>
             <line className="mlx-nb-axis" x1={plot.sx(0)} x2={plot.sx(Math.max(1, last))} y1={plot.sy(0)} y2={plot.sy(0)} />
             <line className="mlx-nb-axis" x1={plot.sx(0)} x2={plot.sx(0)} y1={plot.sy(0)} y2={plot.sy(1)} />
             {xTicks.map((tick) => (
@@ -176,7 +191,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
               return (
                 <line
                   key={`${word.word}-${index}`}
-                  className={`mlx-nb-segment ${colorClass}`}
+                  className={`mlx-nb-segment ${colorClass}${index === shown - 1 ? ' is-current' : ''}`}
                   x1={plot.sx(index)}
                   y1={plot.sy(visibleProbabilities[index])}
                   x2={plot.sx(index + 1)}
@@ -262,10 +277,11 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
               const positiveEnd = project3d(index + 1, probability, true);
               const negativeStart = project3d(index, 1 - previous, false);
               const negativeEnd = project3d(index + 1, 1 - probability, false);
+              const isCurrent = index === shown - 1;
               return <g key={`${word.word}-${index}`}>
-                <line className="mlx-nb-segment is-positive" x1={positiveStart.x} y1={positiveStart.y} x2={positiveEnd.x} y2={positiveEnd.y} />
-                <line className="mlx-nb-segment is-negative" x1={negativeStart.x} y1={negativeStart.y} x2={negativeEnd.x} y2={negativeEnd.y} />
-                <line className="mlx-nb-3d-evidence" x1={positiveEnd.x} y1={positiveEnd.y} x2={negativeEnd.x} y2={negativeEnd.y} />
+                <line className={`mlx-nb-segment is-positive${isCurrent ? ' is-current' : ''}`} x1={positiveStart.x} y1={positiveStart.y} x2={positiveEnd.x} y2={positiveEnd.y} />
+                <line className={`mlx-nb-segment is-negative${isCurrent ? ' is-current' : ''}`} x1={negativeStart.x} y1={negativeStart.y} x2={negativeEnd.x} y2={negativeEnd.y} />
+                <line className={`mlx-nb-3d-evidence${isCurrent ? ' is-current' : ''}`} x1={positiveEnd.x} y1={positiveEnd.y} x2={negativeEnd.x} y2={negativeEnd.y} />
               </g>;
             })}
             {visibleProbabilities.map((probability, index) => {

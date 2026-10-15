@@ -1689,6 +1689,29 @@ p.mlx-py-error {
   opacity: 0.58;
 }
 
+.mlx-nb-token.is-current {
+  position: relative;
+  border-color: #f8fafc;
+  box-shadow: 0 0 0 2px rgba(248, 250, 252, 0.16), 0 0 16px rgba(85, 170, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+.mlx-nb-token.is-current::after {
+  content: 'actual';
+  position: absolute;
+  top: -9px;
+  right: 5px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: #040320;
+  background: #f8fafc;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
 .mlx-nb-empty {
   color: var(--rf-muted, #9898b0);
 }
@@ -1801,6 +1824,11 @@ p.mlx-py-error {
   font-size: 11px;
 }
 
+.mlx-nb-neutral-label {
+  fill: #c5cada;
+  font: 700 10px 'Space Mono', Consolas, Monaco, monospace;
+}
+
 .mlx-nb-axis-label.is-positive { fill: #ffb454; }
 .mlx-nb-axis-label.is-negative { fill: #55aaff; }
 
@@ -1829,11 +1857,22 @@ p.mlx-py-error {
   stroke: #a7a8bc;
 }
 
+.mlx-nb-segment.is-current {
+  stroke-width: 5;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
 .mlx-nb-3d-evidence {
   stroke: #c5cada;
   stroke-width: 1.5;
   stroke-dasharray: 4 4;
   opacity: 0.78;
+}
+
+.mlx-nb-3d-evidence.is-current {
+  stroke: #f8fafc;
+  stroke-width: 2.5;
+  opacity: 1;
 }
 
 .mlx-nb-chart-point.is-unknown,
@@ -1943,6 +1982,22 @@ p.mlx-py-error {
   line-height: 1.5;
 }
 
+.mlx-nb-current-evidence__numbers {
+  display: grid;
+  gap: 3px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(232, 232, 240, 0.13);
+  font-size: 12px;
+}
+
+.mlx-nb-prediction.is-positive {
+  color: #ffb454;
+}
+
+.mlx-nb-prediction.is-negative {
+  color: #55aaff;
+}
+
 .mlx-nb-class {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -1986,6 +2041,8 @@ p.mlx-py-error {
   .mlx-nb-chart-point {
     transition: none;
   }
+
+  .mlx-nb-token.is-current { transform: none; }
 
   .mlx-nb-segment { animation: none; }
 }
