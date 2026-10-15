@@ -2101,6 +2101,38 @@ p.mlx-py-error {
   transition: fill 400ms ease;
 }
 
+.mlx-linear-outlier-halo {
+  filter: drop-shadow(0 0 4px rgba(244, 63, 94, 0.85));
+  animation: mlx-linear-outlier-in 420ms ease-out both;
+}
+
+.mlx-linear-outlier-label {
+  fill: #ff91a4;
+  stroke: #081330;
+  stroke-width: 3px;
+  paint-order: stroke fill;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.mlx-linear-impact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border-left: 3px solid #f43f5e;
+  border-radius: 5px;
+  background: rgba(244, 63, 94, 0.09);
+}
+
+.mlx-linear-impact strong {
+  color: #ff9aac;
+}
+
+@keyframes mlx-linear-outlier-in {
+  from { opacity: 0; transform: scale(1.45); transform-origin: center; }
+}
+
 .mlx-knn-point,
 .mlx-knn-query,
 .mlx-knn-radius {
@@ -2405,7 +2437,9 @@ p.mlx-py-error {
     transition: none;
   }
   .mlx-linear-fit,
-  .mlx-linear-point {
+  .mlx-linear-point,
+  .mlx-linear-outlier-halo {
+    animation: none;
     transition: none;
   }
   .mlx-knn-point,

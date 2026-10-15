@@ -24,7 +24,23 @@ export const LR_INITIAL: Pt[] = [
   { x: 9, y: 6.8 },
 ];
 
-export const LR_OUTLIER: Pt = { x: 8.5, y: 0.8 };
+/** Casos extremos alternados para comparar cómo su posición inclina la recta. */
+export const LR_OUTLIERS: Pt[] = [
+  { x: 8.5, y: 0.8 },
+  { x: 1.2, y: 7.2 },
+  { x: 9.4, y: 2.1 },
+  { x: 2.1, y: 6.9 },
+  { x: 5.2, y: 0.3 },
+  { x: 7.7, y: 1.1 },
+  { x: 0.8, y: 6.3 },
+  { x: 9.6, y: 7.7 },
+  { x: 3.4, y: 0.2 },
+  { x: 5.8, y: 7.8 },
+  { x: 6.9, y: 0.5 },
+];
+
+/** Conserva el caso original para las comprobaciones numéricas del dataset. */
+export const LR_OUTLIER: Pt = LR_OUTLIERS[0];
 
 // ---------- Regresión logística ----------
 // x = veces que el correo dice «gratis». Las clases se solapan entre 3 y

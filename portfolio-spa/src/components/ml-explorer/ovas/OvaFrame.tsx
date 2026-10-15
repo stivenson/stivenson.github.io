@@ -81,6 +81,7 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
   ] },
   'La recta que menos se equivoca': { context: 'Observaciones sintéticas; x e y son variables numéricas de ejemplo.', items: [
     { label: 'Punto: valor observado', color: '#55AAFF', mark: 'dot' },
+    { label: 'Anillo rosa: último outlier añadido', color: '#f43f5e', mark: 'ring' },
     { label: 'Recta: predicción del modelo', color: '#10b981', mark: 'line' },
     { label: 'Segmento: error (residuo)', color: '#f43f5e', mark: 'dash' },
   ] },
