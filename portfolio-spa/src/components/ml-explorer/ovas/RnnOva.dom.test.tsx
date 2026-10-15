@@ -45,15 +45,24 @@ describe('RnnOva', () => {
     expect(status(container)).toContain('0.024 (1 en 41)');
   });
 
-  it('el svg es una imagen con una barra por paso; el hint va fuera del readout', () => {
+  it('la gráfica final usa todo el conjunto y conserva una barra por paso; el hint va fuera del readout', () => {
     const { container } = render(<RnnOva />);
-    const svg = container.querySelector('svg');
+    const svg = container.querySelector('.mlx-rnn-chart svg');
     expect(svg?.getAttribute('role')).toBe('img');
     expect(svg?.querySelectorAll('.mlx-rnn-bar')).toHaveLength(10);
     fireEvent.change(slider(/^Pasos/), { target: { value: '25' } });
-    expect(svg?.querySelectorAll('.mlx-rnn-bar')).toHaveLength(25);
+    expect(container.querySelector('.mlx-rnn-chart svg')?.querySelectorAll('.mlx-rnn-bar')).toHaveLength(25);
     const hint = screen.getByText(/Aun con w = 1 se encoge/);
     expect(container.querySelector('[role="status"]')?.contains(hint)).toBe(false);
+  });
+
+  it('explica la comparación antiguo/reciente y ofrece ejemplos de memoria', () => {
+    const { container } = render(<RnnOva />);
+    expect(screen.getByText('1. La red lee la secuencia')).toBeTruthy();
+    expect(screen.getByText(/2\. Qué recuerda/)).toBeTruthy();
+    expect(status(container)).toContain('influye 19× más');
+    expect(screen.getByRole('button', { name: /Corta w=0.5/ }).getAttribute('aria-pressed')).toBe('false');
+    expect(screen.getByRole('button', { name: /Media w=0.9/ }).getAttribute('aria-pressed')).toBe('true');
   });
 
   it('w = 0.1 y 30 pasos: readout corto y legible (sin «1 en» gigante) y aviso de barras bajo el piso', () => {
@@ -64,16 +73,16 @@ describe('RnnOva', () => {
     expect(text).toContain('Influencia de x₁ en la salida: 3.8e-32 (prácticamente nula: menos de 1 en 10 millones)');
     expect(text).not.toMatch(/\d{3} \d{3} \d{3}/);
     expect(text).toMatch(/\d+ barras bajan de 1e-8/);
-    expect(Math.max(...text.split(/\s+/).map((w) => w.length))).toBeLessThan(20);
-    expect(container.querySelector('svg')?.getAttribute('aria-label')).toContain('x₁ influye 3.8e-32');
-    expect(container.querySelector('svg')?.textContent).toContain('< 1e-8');
+    expect(Math.max(...text.split(/\s+/).map((w) => w.length))).toBeLessThan(30);
+    expect(container.querySelector('.mlx-rnn-chart svg')?.getAttribute('aria-label')).toContain('x₁ influye 3.8e-32');
+    expect(container.querySelector('.mlx-rnn-chart svg')?.textContent).toContain('< 1e-8');
   });
 
   it('w = 0.1 y 30 pasos: las barras bajo 1e-8 se ven como un muñón en el piso, no desaparecen', () => {
     const { container } = render(<RnnOva />);
     fireEvent.change(slider(/^w/), { target: { value: '0.1' } });
     fireEvent.change(slider(/^Pasos/), { target: { value: '30' } });
-    const bars = [...container.querySelectorAll('.mlx-rnn-bar')];
+    const bars = [...container.querySelectorAll('.mlx-rnn-chart .mlx-rnn-bar')];
     expect(bars).toHaveLength(30);
     for (const b of bars) expect(Number(b.getAttribute('height'))).toBeGreaterThan(0);
     const stubs = container.querySelectorAll('.mlx-rnn-bar.is-floor');

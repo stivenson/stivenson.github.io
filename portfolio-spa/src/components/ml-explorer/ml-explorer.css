@@ -2088,6 +2088,109 @@ p.mlx-py-error {
   transition: y 420ms ease, height 420ms ease, fill 320ms ease, opacity 320ms ease;
 }
 
+.mlx-rnn-viz {
+  display: grid;
+  gap: 12px;
+}
+
+.mlx-rnn-viz .mlx-rnn-network {
+  margin-bottom: 0;
+}
+
+.mlx-rnn-chart {
+  padding: 10px 10px 4px;
+  border: 1px solid rgba(85, 170, 255, 0.2);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(85, 170, 255, 0.055), rgba(4, 3, 32, 0.2));
+}
+
+.mlx-rnn-presets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.mlx-rnn-presets > span {
+  width: 100%;
+  color: var(--rf-muted, #9898b0);
+  font-size: 11px;
+}
+
+.mlx-rnn-presets button {
+  display: grid;
+  min-width: 67px;
+  gap: 1px;
+  padding: 5px 8px;
+}
+
+.mlx-rnn-presets button[aria-pressed='true'] {
+  border-color: #10b981;
+  color: #d1fae5;
+  background: rgba(16, 185, 129, 0.14);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.12);
+}
+
+.mlx-rnn-presets small {
+  color: var(--rf-muted, #9898b0);
+  font-size: 9px;
+}
+
+.mlx-rnn-comparison {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 10px;
+  margin-bottom: 3px;
+  padding: 9px 10px;
+  border: 1px solid rgba(85, 170, 255, 0.22);
+  border-radius: 8px;
+  background: rgba(85, 170, 255, 0.055);
+}
+
+.mlx-rnn-comparison span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--rf-text, #e8e8f0);
+  font-size: 11px;
+}
+
+.mlx-rnn-comparison i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: #f43f5e;
+}
+
+.mlx-rnn-comparison i.is-new {
+  background: #10b981;
+}
+
+.mlx-rnn-comparison > b {
+  color: var(--rf-text, #e8e8f0);
+  font-family: 'Space Mono', Consolas, Monaco, monospace;
+  text-align: right;
+}
+
+.mlx-rnn-comparison > small {
+  grid-column: 1 / -1;
+  margin: -1px 0 4px 14px;
+  color: var(--rf-muted, #9898b0);
+  font-size: 9px;
+}
+
+.mlx-rnn-a11y-summary {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mlx-rnn-bar {
     transition: none;

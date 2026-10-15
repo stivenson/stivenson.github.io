@@ -113,9 +113,11 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Grosor / intensidad: peso de atención', color: '#FFB454', mark: 'dash' },
   ] },
   'La memoria de una RNN se desvanece': { context: 'Secuencia de mediciones simuladas para explicar memoria temporal.', items: [
-    { label: 'Punto / barra: medición de entrada', color: '#55AAFF', mark: 'dot' },
-    { label: 'Línea: estado oculto en el tiempo', color: '#10b981', mark: 'line' },
-    { label: 'Intensidad: influencia del gradiente', color: '#FFB454', mark: 'square' },
+    { label: 'Nodos verdes: entradas ya leídas', color: '#10b981', mark: 'dot' },
+    { label: 'Arcos violetas: memoria que pasa entre estados', color: '#c084fc', mark: 'line' },
+    { label: 'Barra rosa: dato más antiguo', color: '#f43f5e', mark: 'square' },
+    { label: 'Barra verde: dato más reciente', color: '#10b981', mark: 'square' },
+    { label: 'Barras azules: datos intermedios', color: '#55AAFF', mark: 'square' },
   ] },
   'Muchos árboles votan': { context: 'Clientes simulados según ingreso y deuda; el bosque predice si pagan.', items: [
     { label: 'Azul: paga', color: '#55AAFF', mark: 'dot' },
