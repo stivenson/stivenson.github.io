@@ -1235,6 +1235,7 @@ p.mlx-py-error {
 }
 
 .mlx-tree {
+  margin: 0;
   font-family: 'Space Mono', Consolas, Monaco, monospace;
   font-size: 12px;
   line-height: 1.5;
@@ -1243,13 +1244,113 @@ p.mlx-py-error {
 }
 
 .mlx-tree .mlx-tree {
+  margin-top: 3px;
   padding-left: 14px;
   border-left: 1px dashed rgba(85, 170, 255, 0.25);
+}
+
+.mlx-tree-panel {
+  margin-top: 10px;
+  border: 1px solid rgba(85, 170, 255, 0.24);
+  border-radius: 8px;
+  background: rgba(4, 3, 32, 0.4);
+  overflow: hidden;
+}
+
+.mlx-tree-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  border-bottom: 1px solid rgba(85, 170, 255, 0.18);
+  font-size: 12px;
+}
+
+.mlx-tree-panel-head span {
+  color: #5ee9bd;
+  font-size: 11px;
+}
+
+.mlx-tree-scroll {
+  max-height: clamp(150px, 24vh, 250px);
+  padding: 9px 10px;
+  overflow: auto;
+  scrollbar-color: rgba(85, 170, 255, 0.45) transparent;
+}
+
+.mlx-tree-rule {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px 6px;
+  margin: 1px 0;
+  padding: 2px 5px;
+  border-radius: 5px;
+  color: rgba(232, 232, 240, 0.72);
+}
+
+.mlx-tree-rule.is-active {
+  background: rgba(16, 185, 129, 0.16);
+  box-shadow: inset 3px 0 #10b981;
+  color: #f4fffb;
+}
+
+.mlx-tree-rule-level {
+  color: rgba(85, 170, 255, 0.85);
+  font-family: inherit;
+  font-size: 10px;
+}
+
+.mlx-tree-rule.is-active .mlx-tree-rule-level {
+  color: #5ee9bd;
+  font-weight: 700;
+}
+
+.mlx-tree-rule small {
+  color: #a9f4dc;
+}
+
+.mlx-tree-leaf {
+  color: rgba(232, 232, 240, 0.62);
+}
+
+.mlx-tree-leaf.is-new {
+  color: #e8e8f0;
 }
 
 .mlx-tree-region,
 .mlx-tree-point {
   transition: fill 350ms ease, fill-opacity 350ms ease;
+}
+
+.mlx-tree-split {
+  stroke: rgba(174, 184, 204, 0.58);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 350ms ease, stroke-width 350ms ease, filter 350ms ease;
+}
+
+.mlx-tree-split.is-new {
+  stroke: #10b981;
+  stroke-width: 3;
+  filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.9));
+}
+
+.mlx-tree-split-label {
+  fill: #65f2c4;
+  stroke: #081330;
+  stroke-width: 3px;
+  paint-order: stroke fill;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.mlx-tree-new-summary {
+  padding: 7px 8px;
+  border-left: 3px solid #10b981;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.1);
 }
 
 .mlx-tree-overfit {
@@ -1289,7 +1390,8 @@ p.mlx-py-error {
 
 @media (prefers-reduced-motion: reduce) {
   .mlx-tree-region,
-  .mlx-tree-point {
+  .mlx-tree-point,
+  .mlx-tree-split {
     transition: none;
   }
 }

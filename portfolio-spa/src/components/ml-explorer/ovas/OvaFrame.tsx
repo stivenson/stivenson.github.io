@@ -53,6 +53,7 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
     { label: 'Relleno: predicción; borde: clase real', color: '#FFB454', mark: 'ring' },
     { label: 'Región: regla de predicción', color: '#9898b0', mark: 'square' },
+    { label: 'Línea verde: regla nueva de este paso', color: '#10b981', mark: 'line' },
     { label: 'Borde discontinuo: error', color: '#f43f5e', mark: 'dash' },
   ] },
   'Cada palabra aporta evidencia': { context: 'Frases de ejemplo para ilustrar clasificación de sentimiento.', items: [
