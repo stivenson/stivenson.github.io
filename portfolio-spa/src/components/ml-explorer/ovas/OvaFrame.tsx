@@ -16,7 +16,7 @@ interface OvaFrameProps {
   explanation?: ReactNode;
 }
 
-type LegendMark = 'dot' | 'ring' | 'line' | 'dash' | 'square' | 'cross' | 'gradient';
+type LegendMark = 'dot' | 'ring' | 'line' | 'dash' | 'square' | 'cross' | 'gradient' | 'diamond' | 'selected-dot' | 'bicolor-line' | 'dash-ring';
 interface LegendItem {
   label: string;
   color: string;
@@ -88,9 +88,12 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Segmento: error (residuo)', color: '#f43f5e', mark: 'dash' },
   ] },
   'Dime con quién andas…': { context: 'Ejemplo de gustos de películas: acción y ciencia ficción; preferencias simuladas.', items: [
-    { label: 'Clase: género preferido', color: '#55AAFF', mark: 'dot' },
-    { label: 'Punto resaltado: nuevo caso', color: '#FFB454', mark: 'ring' },
-    { label: 'Línea: vecinos más cercanos', color: '#10b981', mark: 'line' },
+    { label: 'Azul: no le gustó', color: '#55AAFF', mark: 'dot' },
+    { label: 'Naranja: le gustó', color: '#FFB454', mark: 'dot' },
+    { label: 'Rombo: persona nueva; su color es la predicción', color: '#FFB454', mark: 'diamond' },
+    { label: 'Borde blanco: vecino que participa en la votación', color: '#55AAFF', mark: 'selected-dot' },
+    { label: 'Línea azul o naranja: voto de ese vecino', color: '#55AAFF', mark: 'bicolor-line' },
+    { label: 'Círculo discontinuo: alcance de los k vecinos', color: '#aeb8cc', mark: 'dash-ring' },
   ] },
   'Centroides que se mueven solos': { context: 'Coordenadas sintéticas; K-means asigna cada observación al centro más próximo.', items: [
     { label: 'Color: grupo asignado', color: '#55AAFF', mark: 'dot' },

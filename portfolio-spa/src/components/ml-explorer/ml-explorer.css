@@ -943,6 +943,42 @@ p.mlx-py-error {
   border-top-style: dashed;
 }
 
+.mlx-ova-legend-mark.is-diamond::before {
+  position: absolute;
+  inset: 2px;
+  border: 1.5px solid #fff;
+  background: var(--legend-color);
+  content: '';
+  transform: rotate(45deg);
+}
+
+.mlx-ova-legend-mark.is-selected-dot::before {
+  position: absolute;
+  inset: 1px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--legend-color);
+  content: '';
+}
+
+.mlx-ova-legend-mark.is-bicolor-line::before {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #55aaff 0 48%, #ffb454 52% 100%);
+  content: '';
+}
+
+.mlx-ova-legend-mark.is-dash-ring::before {
+  position: absolute;
+  inset: 0;
+  border: 1.5px dashed var(--legend-color);
+  border-radius: 50%;
+  content: '';
+}
+
 .mlx-ova-stage svg {
   display: block;
   width: 100%;
@@ -1890,6 +1926,17 @@ p.mlx-py-error {
 .mlx-knn-query,
 .mlx-knn-radius {
   transition: fill 350ms ease, stroke 350ms ease, stroke-width 350ms ease, r 350ms ease;
+}
+
+.mlx-knn-stage {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+}
+
+.mlx-ova:not(.mlx-ova--expanded) .mlx-knn-stage svg {
+  width: min(100%, 520px);
+  max-height: clamp(300px, 50vh, 500px);
 }
 
 .mlx-svm-cell,

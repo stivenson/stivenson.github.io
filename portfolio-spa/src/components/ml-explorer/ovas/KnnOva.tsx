@@ -9,6 +9,7 @@ import { useAutoLoop } from './useAutoLoop';
 
 const PLOT = createPlot(320, 320, 30, [0, 10], [0, 10]);
 const UNIT = PLOT.sx(1) - PLOT.sx(0);
+const LABEL_COLOR = '#cbd5e1';
 
 const clamp = (v: number) => Math.min(10, Math.max(0, v));
 // Redondeo a centésimas para que 0.1 + 0.2 no se vea como 0.30000000000000004.
@@ -49,9 +50,9 @@ export function KnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <OvaFrame
       playback={playback}
-      explanation={!active ? 'El rombo representa a la persona nueva. Vamos a buscar ejemplos cercanos para predecir si le gustó la película.' : `Ahora votan los ${k} vecinos más cercanos. Las líneas muestran quiénes participan; mueve el rombo para comprobar cómo cambia la mayoría.`}
+      explanation={!active ? 'El rombo representa a la persona nueva. Vamos a buscar ejemplos cercanos para predecir si le gustó la película.' : `Ahora votan los ${k} vecinos más cercanos. El borde blanco identifica a quienes participan y el círculo llega hasta el vecino seleccionado más lejano. Mueve el rombo para comprobar cómo cambia la mayoría.`}
       title="Dime con quién andas…"
-      hint="Los datos empiezan neutrales. El ciclo revela sus clases y amplía el vecindario: los puntos conectados votan la clase de la persona nueva (rombo). El relleno del rombo es la predicción; puedes moverlo con el mouse o las flechas para comparar posiciones. Puedes pausar o avanzar paso a paso."
+      hint="Los datos empiezan neutrales. El ciclo revela si a cada persona le gustó la película y amplía el vecindario: los puntos con borde blanco y conectados por una línea votan por la persona nueva (rombo). El color del rombo es la predicción y el círculo discontinuo llega hasta el vecino seleccionado más lejano. Puedes mover el rombo con el mouse o las flechas, pausar o avanzar paso a paso."
       controls={
         <OvaSlider
           label="Máximo de vecinos (k)"
@@ -76,17 +77,17 @@ export function KnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
         </>
       }
     >
-      <div ref={stageRef}>
+      <div ref={stageRef} className="mlx-knn-stage">
        <svg
-         viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
+         viewBox={`-18 -18 ${PLOT.width + 36} ${PLOT.height + 36}`}
          {...svgProps}
          role="group"
          aria-label="Puntos de dos clases y la persona nueva con sus k vecinos"
        >
-        <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
+        <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={13} fontWeight={600} fill={LABEL_COLOR}>
           gusto por la acción →
         </text>
-        <text x={8} y={PLOT.sy(10) - 10} fontSize={11} fill={OVA_COLORS.axis}>
+        <text x={8} y={PLOT.sy(10) - 10} fontSize={13} fontWeight={600} fill={LABEL_COLOR}>
           ↑ gusto por la ciencia ficción
         </text>
         {active && <circle
@@ -95,7 +96,8 @@ export function KnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
           cy={PLOT.sy(query.y)}
           r={result.radius * UNIT}
           fill="none"
-          stroke={OVA_COLORS.axis}
+          stroke="#aeb8cc"
+          strokeWidth={1.25}
           strokeDasharray="4 4"
           pointerEvents="none"
         />}
