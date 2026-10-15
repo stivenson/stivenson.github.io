@@ -124,8 +124,8 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
   'La calle más ancha posible': { context: 'Puntos sintéticos con dos clases para visualizar el margen máximo.', items: [
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
     { label: 'Relleno: predicción; borde: clase real', color: '#FFB454', mark: 'ring' },
-    { label: 'Línea central: frontera de decisión', color: '#10b981', mark: 'line' },
-    { label: 'Líneas paralelas: margen', color: '#FFB454', mark: 'dash' },
+    { label: 'Centro verde: frontera de decisión', color: '#10b981', mark: 'line' },
+    { label: 'Franja tenue: margen de separación', color: '#9898b0', mark: 'square' },
     { label: 'Anillo blanco: vector soporte', color: '#ffffff', mark: 'ring' },
   ] },
 };

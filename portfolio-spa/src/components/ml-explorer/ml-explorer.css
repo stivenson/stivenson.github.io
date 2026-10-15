@@ -2155,6 +2155,23 @@ p.mlx-py-error {
   transition: fill 400ms ease, fill-opacity 400ms ease, stroke-width 350ms ease;
 }
 
+.mlx-svm-cell.is-boundary {
+  filter: drop-shadow(0 0 2px rgba(16, 185, 129, 0.75));
+}
+
+.mlx-svm-kernel-help {
+  display: block;
+  margin-top: 6px;
+  color: var(--rf-muted, #9898b0);
+}
+
+.mlx-svm-reading {
+  padding: 7px 8px;
+  border-left: 3px solid #10b981;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.1);
+}
+
 .mlx-gb-point {
   transition: fill 350ms ease, stroke 350ms ease, stroke-width 350ms ease;
 }

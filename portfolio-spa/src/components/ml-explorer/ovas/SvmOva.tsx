@@ -49,9 +49,14 @@ export function SvmOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <OvaFrame
       playback={playback}
-      explanation={step === 0 ? 'Vamos a buscar una frontera que separe las clases dejando un margen amplio.' : `Comparamos un modelo con C = ${C}. C controla el castigo por errores; los anillos blancos identifican los puntos que sostienen la frontera.`}
+      progressLabel={step === 0 ? 'Sin ajustar' : <>Prueba {step} de {last} · C = {C}</>}
+      explanation={step === 0
+        ? 'Buscamos una frontera que separe las clases y deje la franja más ancha posible entre ellas.'
+        : kernelId === 'linear'
+          ? `Con C = ${C}, la línea verde separa las clases y la franja oscura muestra el margen. Los anillos blancos son los puntos que fijan su posición.`
+          : `Con C = ${C}, el kernel RBF curva la frontera verde para adaptarse a los datos. Los anillos blancos son los puntos que determinan esa forma.`}
       title="La calle más ancha posible"
-      hint="Los puntos empiezan neutrales. La animación ajusta la frontera para C = 0.01, 0.1, 1 y hasta el máximo elegido: al subir C, el modelo castiga más los errores y estrecha el margen. El relleno de cada punto muestra la predicción y su borde conserva la clase real; los anillos blancos marcan los vectores de soporte que definen la frontera. También puedes comparar el kernel lineal con el RBF (γ = 0.3)."
+      hint="La franja oscura es el margen y su centro verde es la frontera. Los anillos blancos marcan los puntos que la sostienen. Cambia C o el kernel y observa cómo se transforma."
       controls={
         <>
           <div role="group" aria-label="Kernel">
@@ -69,6 +74,9 @@ export function SvmOva({ autoPlay = false }: { autoPlay?: boolean }) {
                 {k.label}
               </button>
             ))}
+            <small className="mlx-svm-kernel-help">
+              {kernelId === 'linear' ? 'Lineal: busca una separación recta.' : `RBF: permite curvas; γ = ${SVM_GAMMA}.`}
+            </small>
           </div>
           <OvaSlider
             label="C máximo (castigo por error)"
@@ -105,6 +113,20 @@ export function SvmOva({ autoPlay = false }: { autoPlay?: boolean }) {
               Ancho del margen: <b>{marginWidth(model).toFixed(2)}</b>
             </span>
           )}
+          {step > 0 && (
+            <span className="mlx-svm-reading">
+              <b>Lectura:</b>{' '}
+              {kernelId === 'rbf'
+                ? C >= 10
+                  ? 'C alto permite seguir curvas y casos aislados con más detalle.'
+                  : 'La frontera curva conserva tolerancia ante puntos difíciles.'
+                : C < 1
+                  ? 'C bajo tolera más errores para conservar un margen ancho.'
+                  : C > 1
+                    ? 'C alto castiga más los errores y estrecha el margen.'
+                    : 'C = 1 equilibra el ancho del margen y el castigo por errores.'}
+            </span>
+          )}
         </>
       }
     >
@@ -114,18 +136,21 @@ export function SvmOva({ autoPlay = false }: { autoPlay?: boolean }) {
           role="img"
           aria-label={`Plano de SVM con kernel ${kernelId === 'linear' ? 'lineal' : 'RBF'}, etapa ${step} de ${last}`}
         >
-          {cells.map((c, i) => (
-            <rect
-              key={i}
-              className="mlx-svm-cell"
-              x={PLOT.sx(c.x)}
-              y={PLOT.sy(c.y + CELL)}
-              width={PLOT.sx(CELL) - PLOT.sx(0)}
-              height={PLOT.sy(0) - PLOT.sy(CELL)}
-              fill={step === 0 ? OVA_COLORS.axis : c.f > 0 ? OVA_COLORS.class1 : OVA_COLORS.class0}
-              fillOpacity={step === 0 ? 0.08 : Math.abs(c.f) < 1 ? 0.06 : 0.22}
-            />
-          ))}
+          {cells.map((c, i) => {
+            const boundary = step > 0 && Math.abs(c.f) < 0.12;
+            return (
+              <rect
+                key={i}
+                className={`mlx-svm-cell${boundary ? ' is-boundary' : ''}`}
+                x={PLOT.sx(c.x)}
+                y={PLOT.sy(c.y + CELL)}
+                width={PLOT.sx(CELL) - PLOT.sx(0)}
+                height={PLOT.sy(0) - PLOT.sy(CELL)}
+                fill={step === 0 ? OVA_COLORS.axis : boundary ? OVA_COLORS.accent : c.f > 0 ? OVA_COLORS.class1 : OVA_COLORS.class0}
+                fillOpacity={step === 0 ? 0.08 : boundary ? 0.78 : Math.abs(c.f) < 1 ? 0.06 : 0.22}
+              />
+            );
+          })}
           {POINTS.map((p, i) => {
             const predicted = svmDecision(model, p) > 0 ? 1 : 0;
             const wrong = step > 0 && predicted !== p.label;
