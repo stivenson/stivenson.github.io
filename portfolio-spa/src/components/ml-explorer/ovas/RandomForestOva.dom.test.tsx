@@ -9,29 +9,36 @@ afterEach(() => {
 });
 
 const status = (c: HTMLElement) => c.querySelector('[role="status"]')?.textContent ?? '';
-const setIndex = (v: number) => fireEvent.change(screen.getByRole('slider'), { target: { value: String(v) } });
+const next = () => fireEvent.click(screen.getByRole('button', { name: 'Siguiente paso' }));
 
 describe('RandomForestOva', () => {
   it('con 1 árbol acierta 24 de 28 y 35 de 40 nuevos; con 100, 28 de 28 y 39 de 40', () => {
     const error = vi.spyOn(console, 'error');
     const { container } = render(<RandomForestOva />);
-    expect(status(container)).toContain('Clientes de entrenamiento: acierta 24 de 28');
-    expect(status(container)).toContain('Clientes nuevos: acierta 35 de 40');
-    expect(screen.getByRole('slider').getAttribute('aria-valuetext')).toBe('1');
-
-    setIndex(2);
-    expect(screen.getByRole('slider').getAttribute('aria-valuetext')).toBe('10');
-    expect(status(container)).toContain('acierta 27 de 28');
-    expect(status(container)).toContain('acierta 38 de 40');
-
-    setIndex(3);
-    expect(screen.getByRole('slider').getAttribute('aria-valuetext')).toBe('30');
-    expect(status(container)).toContain('acierta 28 de 28');
-
-    setIndex(4);
+    expect(status(container)).toContain('Reproduce la animación');
+    expect(container.querySelector('.mlx-ova-progress')?.textContent).toBe('Sin árboles · etapa 0 de 5');
     expect(screen.getByRole('slider').getAttribute('aria-valuetext')).toBe('100');
-    expect(status(container)).toContain('acierta 28 de 28');
-    expect(status(container)).toContain('acierta 39 de 40');
+
+    next();
+    expect(status(container)).toContain('24 de 28');
+    expect(status(container)).toContain('85,7 % de acierto');
+    expect(status(container)).toContain('35 de 40');
+    expect(status(container)).toContain('87,5 % de acierto');
+    expect(container.querySelector('.mlx-ova-progress')?.textContent).toBe('Bosque de 1 árbol · etapa 1 de 5');
+
+    next();
+    next();
+    expect(status(container)).toContain('27 de 28');
+    expect(status(container)).toContain('96,4 % de acierto');
+    expect(status(container)).toContain('38 de 40');
+    expect(status(container)).toContain('95 % de acierto');
+
+    next();
+    expect(status(container)).toContain('28 de 28');
+
+    next();
+    expect(status(container)).toContain('28 de 28');
+    expect(status(container)).toContain('39 de 40');
     expect(error).not.toHaveBeenCalled();
   });
 
@@ -39,6 +46,7 @@ describe('RandomForestOva', () => {
     const { container } = render(<RandomForestOva />);
     const svg = container.querySelector('svg');
     expect(svg?.getAttribute('role')).toBe('img');
+    expect(svg?.classList.contains('mlx-rf-plot')).toBe(true);
     expect(svg?.querySelectorAll('circle')).toHaveLength(28);
     expect(svg?.querySelectorAll('rect')).toHaveLength(625);
     expect(svg?.querySelector('[tabindex]')).toBeNull();
@@ -48,9 +56,11 @@ describe('RandomForestOva', () => {
 
   it('la explicación va en el hint, fuera del readout', () => {
     const { container } = render(<RandomForestOva />);
-    const hint = screen.getByText(/Compara los aciertos en clientes nuevos/);
+    const hint = screen.getByText(/El ciclo empieza con los clientes neutrales/);
     expect(container.querySelector('[role="status"]')?.contains(hint)).toBe(false);
-    expect(hint.textContent).toContain('Los dos clientes con anillo son ruido');
-    expect(hint.textContent).toContain('(35 → 39 de 40)');
+    expect(hint.textContent).toContain('anillo blanco son casos contradictorios');
+    expect(hint.textContent).toContain('comprobar si el bosque generaliza');
+    expect(screen.getByText('Azul: paga')).toBeTruthy();
+    expect(screen.getByText('Naranja: no paga')).toBeTruthy();
   });
 });

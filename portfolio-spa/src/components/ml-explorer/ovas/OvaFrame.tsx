@@ -13,6 +13,8 @@ interface OvaFrameProps {
   controls?: ReactNode;
   controlsCollapsed?: boolean;
   playback?: OvaPlayback;
+  /** Nombre significativo de la etapa actual, cuando «Paso x de y» no basta. */
+  progressLabel?: ReactNode;
   explanation?: ReactNode;
 }
 
@@ -116,11 +118,12 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Línea: estado oculto en el tiempo', color: '#10b981', mark: 'line' },
     { label: 'Intensidad: influencia del gradiente', color: '#FFB454', mark: 'square' },
   ] },
-  'Muchos árboles votan': { context: 'Clientes simulados; cada árbol emite un voto de clase.', items: [
-    { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
-    { label: 'Relleno / región: clase predicha por mayoría', color: '#FFB454', mark: 'square' },
-    { label: 'Borde del punto: clase real', color: '#FFB454', mark: 'ring' },
-    { label: 'Anillo: ejemplo de ruido del entrenamiento', color: '#e8e8f0', mark: 'ring' },
+  'Muchos árboles votan': { context: 'Clientes simulados según ingreso y deuda; el bosque predice si pagan.', items: [
+    { label: 'Azul: paga', color: '#55AAFF', mark: 'dot' },
+    { label: 'Naranja: no paga', color: '#FFB454', mark: 'dot' },
+    { label: 'Relleno del punto: predicción; borde: respuesta real', color: '#FFB454', mark: 'ring' },
+    { label: 'Fondo más intenso: mayor acuerdo entre árboles', color: '#55AAFF', mark: 'square' },
+    { label: 'Anillo blanco: caso contradictorio (ruido)', color: '#e8e8f0', mark: 'ring' },
   ] },
   'La calle más ancha posible': { context: 'Puntos sintéticos con dos clases para visualizar el margen máximo.', items: [
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
@@ -148,7 +151,7 @@ function OvaLegend({ spec }: { spec: OvaLegendSpec }) {
 }
 
 /** Marco común de todas las OVAs del explorador. */
-export function OvaFrame({ title, hint, children, readout, controls, controlsCollapsed = false, playback, explanation, readoutLive = 'polite' }: OvaFrameProps) {
+export function OvaFrame({ title, hint, children, readout, controls, controlsCollapsed = false, playback, progressLabel, explanation, readoutLive = 'polite' }: OvaFrameProps) {
   const titleId = useId();
   const [expanded, setExpanded] = useState(false);
   return (
@@ -162,7 +165,7 @@ export function OvaFrame({ title, hint, children, readout, controls, controlsCol
           <span>{hint}</span>
         </details>
       </figcaption>
-      {playback && <OvaPlaybackControls playback={playback} />}
+      {playback && <OvaPlaybackControls playback={playback} progressLabel={progressLabel} />}
       <button type="button" className="mlx-ova-size" aria-pressed={expanded} onClick={() => setExpanded((value) => !value)}>
         {expanded ? 'Vista compacta' : 'Ampliar gráfico'}
       </button>
@@ -193,7 +196,7 @@ export function OvaFrame({ title, hint, children, readout, controls, controlsCol
   );
 }
 
-function OvaPlaybackControls({ playback: p }: { playback: OvaPlayback }) {
+function OvaPlaybackControls({ playback: p, progressLabel }: { playback: OvaPlayback; progressLabel?: ReactNode }) {
   return (
     <div className="mlx-ova-playback" role="group" aria-label="Reproducción de la animación">
       <div className="mlx-ova-playback-buttons">
@@ -205,7 +208,9 @@ function OvaPlaybackControls({ playback: p }: { playback: OvaPlayback }) {
         <button type="button" onClick={p.next} disabled={p.step >= p.last}>Siguiente paso</button>
         <button type="button" onClick={p.restart} disabled={p.step === 0 && !p.playing}>Reiniciar</button>
       </div>
-      <span className="mlx-ova-progress">Paso {p.step} de {p.last}</span>
+      <span className="mlx-ova-progress" data-step={p.step} data-last={p.last}>
+        {progressLabel ?? <>Paso {p.step} de {p.last}</>}
+      </span>
       <label>Velocidad{' '}
         <select value={p.speed} onChange={(e) => p.setSpeed(Number(e.target.value))} disabled={p.reducedMotion}>
           <option value={0.5}>Lenta (0,5×)</option>

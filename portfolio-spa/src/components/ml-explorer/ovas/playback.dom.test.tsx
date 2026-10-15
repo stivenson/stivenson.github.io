@@ -14,7 +14,10 @@ afterEach(() => {
 
 const click = (name: string) => fireEvent.click(screen.getByRole('button', { name }));
 const advance = (ms: number) => act(() => { vi.advanceTimersByTime(ms); });
-const progress = (container: HTMLElement) => container.querySelector('.mlx-ova-progress')?.textContent;
+const progress = (container: HTMLElement) => {
+  const element = container.querySelector<HTMLElement>('.mlx-ova-progress');
+  return element ? `Paso ${element.dataset.step} de ${element.dataset.last}` : undefined;
+};
 
 describe('reproducción de las animaciones', () => {
   it.each(AVAILABLE_SLUGS)('%s: pausa, navega en ambos sentidos y mantiene el paso elegido', async (slug) => {
@@ -128,7 +131,7 @@ describe('reproducción de las animaciones', () => {
     expect(container.querySelector('.mlx-ova--expanded')).toBeTruthy();
     expect(progress(container)).toBe('Paso 1 de 5');
     expect(container.querySelector('.mlx-ova-side .mlx-ova-legend')).toBeTruthy();
-    expect(screen.getByText('Anillo: ejemplo de ruido del entrenamiento')).toBeTruthy();
+    expect(screen.getByText('Anillo blanco: caso contradictorio (ruido)')).toBeTruthy();
     click('Vista compacta');
     expect(container.querySelector('.mlx-ova--expanded')).toBeNull();
   });

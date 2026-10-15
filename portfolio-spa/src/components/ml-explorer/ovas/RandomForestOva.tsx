@@ -12,6 +12,12 @@ const CELL = 10 / CELLS;
 const RING_R = 10;
 const MAX_TREES = FOREST_SIZES[FOREST_SIZES.length - 1];
 
+function formatAccuracy(hits: number, total: number) {
+  const percentage = (hits / total) * 100;
+  const decimals = Number.isInteger(percentage) ? 0 : 1;
+  return `${percentage.toFixed(decimals).replace('.', ',')} %`;
+}
+
 export function RandomForestOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [maxSizeIndex, setMaxSizeIndex] = useState(FOREST_SIZES.length - 1);
   const [step, setStep] = useState(0);
@@ -40,17 +46,23 @@ export function RandomForestOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   const train = n === 0 ? null : Math.round(forestAccuracy(trees, POINTS) * POINTS.length);
   const test = n === 0 ? null : Math.round(forestAccuracy(trees, FOREST_TEST) * FOREST_TEST.length);
+  const progressLabel = n === 0
+    ? `Sin árboles · etapa 0 de ${last}`
+    : `Bosque de ${n} ${n === 1 ? 'árbol' : 'árboles'} · etapa ${step} de ${last}`;
 
   return (
     <div ref={ref}>
       <OvaFrame
-      playback={playback}
-      explanation={n === 0 ? 'Todavía no hay árboles. Cada punto representa un cliente con su respuesta conocida.' : `Ahora votan ${n} árboles. El relleno muestra la decisión de la mayoría y el borde conserva la respuesta real. Compara los aciertos en clientes nuevos; más árboles no garantizan mejorar en cualquier conjunto.`}
+        playback={playback}
+        progressLabel={progressLabel}
+        explanation={n === 0
+          ? 'Aún no hay bosque: solo ves las respuestas reales. Azul significa «paga» y naranja «no paga».'
+          : `Votan ${n} ${n === 1 ? 'árbol' : 'árboles'}. El fondo muestra la decisión de la mayoría: cuanto más intenso es el color, más árboles coinciden. El relleno del punto es la predicción y el borde conserva la respuesta real.`}
         title="Muchos árboles votan"
-        hint="El ciclo empieza con los clientes neutrales y va sumando árboles. El relleno de cada punto es la predicción del bosque; su borde conserva la clase real. Las regiones se intensifican cuando los árboles coinciden. Los dos clientes con anillo son ruido: uno no pagó pese a su deuda baja y otro pagó pese a su deuda alta. Compara el resultado en clientes nuevos para ver si el bosque generaliza."
+        hint="El ciclo empieza con los clientes neutrales y va sumando árboles. Azul significa «paga» y naranja «no paga». El relleno de cada punto es la predicción del bosque; su borde conserva la respuesta real. El fondo se intensifica cuando más árboles coinciden. Los dos puntos con anillo blanco son casos contradictorios: uno no pagó aun con deuda baja y otro pagó aun con deuda alta. Compara entrenamiento con clientes nuevos para comprobar si el bosque generaliza."
         controls={
           <OvaSlider
-            label="Máximo de árboles"
+            label="Tamaño máximo del bosque"
             value={maxSizeIndex}
             min={0}
             max={FOREST_SIZES.length - 1}
@@ -63,23 +75,31 @@ export function RandomForestOva({ autoPlay = false }: { autoPlay?: boolean }) {
           />
         }
         readout={
-          <>
-            <span>Bosque actual: <b>{n} {n === 1 ? 'árbol' : 'árboles'}</b></span>
-            {train === null || test === null ? (
-              <span>Los puntos aún no tienen predicción.</span>
-            ) : (
-              <>
-                <span>Entrenamiento: acierta <b>{train} de {POINTS.length}</b></span>
-                <span>Clientes nuevos: acierta <b>{test} de {FOREST_TEST.length}</b></span>
-              </>
-            )}
-          </>
+          train === null || test === null ? (
+            <span className="mlx-rf-empty">Reproduce la animación para que los árboles empiecen a votar.</span>
+          ) : (
+            <div className="mlx-rf-metrics" aria-label="Exactitud del bosque">
+              <div className="mlx-rf-metric">
+                <span>Entrenamiento</span>
+                <strong>{train} de {POINTS.length}</strong>
+                <small>{formatAccuracy(train, POINTS.length)} de acierto</small>
+              </div>
+              <div className="mlx-rf-metric">
+                <span>Clientes nuevos</span>
+                <strong>{test} de {FOREST_TEST.length}</strong>
+                <small>{formatAccuracy(test, FOREST_TEST.length)} de acierto</small>
+              </div>
+            </div>
+          )
         }
       >
         <svg
+          className="mlx-rf-plot"
           viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
           role="img"
-          aria-label={`Voto de ${n} árboles sobre los clientes de entrenamiento`}
+          aria-label={n === 0
+            ? 'Clientes de entrenamiento antes de que vote el bosque'
+            : `Predicciones y acuerdo de un bosque de ${n} ${n === 1 ? 'árbol' : 'árboles'}`}
         >
           {cells.map((c, i) => (
             <rect
@@ -90,13 +110,13 @@ export function RandomForestOva({ autoPlay = false }: { autoPlay?: boolean }) {
               width={PLOT.sx(CELL) - PLOT.sx(0)}
               height={PLOT.sy(0) - PLOT.sy(CELL)}
               fill={n === 0 ? OVA_COLORS.axis : c.vote > 0.5 ? OVA_COLORS.class1 : OVA_COLORS.class0}
-              fillOpacity={n === 0 ? 0.13 : 0.06 + 0.5 * Math.abs(c.vote - 0.5)}
+              fillOpacity={n === 0 ? 0.13 : 0.08 + 0.84 * Math.abs(c.vote - 0.5)}
             />
           ))}
-          <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
+          <text className="mlx-rf-axis-label" x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end">
             ingreso →
           </text>
-          <text x={8} y={PLOT.sy(10) - 10} fontSize={11} fill={OVA_COLORS.axis}>
+          <text className="mlx-rf-axis-label" x={8} y={PLOT.sy(10) - 10}>
             ↑ deuda (escala 0-10)
           </text>
           {POINTS.map((p, i) => {

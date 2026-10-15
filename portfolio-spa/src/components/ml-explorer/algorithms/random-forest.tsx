@@ -22,7 +22,7 @@ const randomForest: AlgorithmModule = {
       essential: (
         <>
           <p>
-            <b><G k="supervisado" after=":">Supervisado</G></b> aprende de ejemplos que ya traen la respuesta (compras marcadas como fraude o no).
+            <b><G k="supervisado" after=":">Supervisado</G></b> aprende de ejemplos que ya traen la respuesta (clientes marcados como «pagó» o «no pagó»).
           </p>
           <p>
             Es un <G k="ensamble" after=":">ensamble</G> <b>entrena muchos árboles de decisión distintos y los pone a votar</b>.
