@@ -998,6 +998,12 @@ p.mlx-py-error {
     max-height: clamp(360px, 50vh, 480px);
     margin-inline: auto;
   }
+
+  .mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage .mlx-gb-plot {
+    width: min(100%, 520px);
+    max-height: clamp(340px, 52vh, 460px);
+    margin-inline: auto;
+  }
 }
 
 .mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage:has(svg ~ svg) svg,
@@ -2019,9 +2025,196 @@ p.mlx-py-error {
   transition: fill 350ms ease, stroke 350ms ease, stroke-width 350ms ease;
 }
 
-.mlx-gb-residual,
+.mlx-gb-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mlx-gb-inline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 15px;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.mlx-gb-inline-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mlx-gb-inline-legend i {
+  display: inline-block;
+  flex: 0 0 13px;
+  width: 13px;
+  height: 8px;
+  border-top: 3px solid currentColor;
+}
+
+.mlx-gb-inline-legend .is-orange { color: #ffb454; }
+.mlx-gb-inline-legend .is-blue { color: #55aaff; }
+.mlx-gb-inline-legend .is-dashed {
+  color: #cbd5e1;
+  border-top-style: dashed;
+}
+.mlx-gb-inline-legend .is-green { color: #10b981; }
+
+.mlx-gb-grid line {
+  stroke: rgba(174, 184, 204, 0.16);
+  stroke-width: 1;
+}
+
+.mlx-gb-grid text {
+  fill: #94a3b8;
+  font-size: 11px;
+}
+
+.mlx-gb-axis-label {
+  fill: #cbd5e1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .mlx-gb-curve {
-  transition: stroke 350ms ease, opacity 350ms ease;
+  stroke-width: 3;
+}
+
+.mlx-gb-curve-previous {
+  stroke: #cbd5e1;
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+  opacity: 0.78;
+}
+
+.mlx-gb-residual {
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.82;
+}
+
+.mlx-gb-residual.is-focus {
+  stroke-width: 3.5;
+  opacity: 1;
+}
+
+.mlx-gb-focus-before {
+  stroke: #ffffff;
+  stroke-width: 2;
+  stroke-dasharray: 3 3;
+  opacity: 0.85;
+}
+
+.mlx-gb-focus-ring {
+  stroke: #ffffff;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.65));
+  animation: mlx-gb-focus-in 380ms ease-out both;
+}
+
+.mlx-gb-residual,
+.mlx-gb-curve,
+.mlx-gb-curve-previous {
+  transition: d 500ms ease, stroke 350ms ease, opacity 350ms ease;
+}
+
+@keyframes mlx-gb-focus-in {
+  from { opacity: 0; transform: scale(0.7); }
+}
+
+.mlx-gb-rate-control {
+  align-items: stretch !important;
+}
+
+.mlx-gb-rate-control > span {
+  color: #e8e8f0;
+  font-weight: 650;
+}
+
+.mlx-gb-rate-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+}
+
+.mlx-gb-rate-options button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 7px 8px;
+}
+
+.mlx-gb-rate-options button strong {
+  font-size: 14px;
+}
+
+.mlx-gb-rate-options button small {
+  color: #aeb8cc;
+  font-size: 11px;
+}
+
+.mlx-gb-rate-options button[aria-pressed='true'] small {
+  color: #a7f3d0;
+}
+
+.mlx-gb-score {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.mlx-gb-score > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid rgba(85, 170, 255, 0.25);
+  border-radius: 7px;
+  background: rgba(21, 26, 64, 0.72);
+}
+
+.mlx-gb-score > div > span {
+  color: #aeb8cc;
+  font-size: 11px;
+}
+
+.mlx-gb-score > div > strong {
+  color: #f8fafc;
+  font-size: 16px;
+}
+
+.mlx-gb-score .is-current {
+  border-color: rgba(16, 185, 129, 0.45);
+}
+
+.mlx-gb-score .is-improvement > strong { color: #86efac; }
+.mlx-gb-score .is-worse > strong { color: #fda4af; }
+
+.mlx-gb-residual-summary {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.mlx-gb-overfit-note {
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  border: 1px solid rgba(244, 63, 94, 0.45);
+  border-left: 4px solid #f43f5e;
+  border-radius: 8px;
+  background: rgba(244, 63, 94, 0.08);
+  line-height: 1.45;
+}
+
+.mlx-gb-overfit-note b {
+  color: #fda4af;
 }
 
 .mlx-hc-union-readout,
@@ -2124,7 +2317,10 @@ p.mlx-py-error {
   }
   .mlx-gb-point,
   .mlx-gb-residual,
-  .mlx-gb-curve {
+  .mlx-gb-curve,
+  .mlx-gb-curve-previous,
+  .mlx-gb-focus-ring {
+    animation: none;
     transition: none;
   }
 }

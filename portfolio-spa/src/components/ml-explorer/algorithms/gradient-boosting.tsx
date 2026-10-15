@@ -29,8 +29,8 @@ const gradientBoosting: AlgorithmModule = {
             se entrena para corregir los errores que dejaron los anteriores.
           </p>
           <p>
-            Sirve para predecir números y para clasificar. El simulador predice un número (es más fácil ver el
-            error); el ejercicio clasifica.
+            Sirve para predecir números y para clasificar. El simulador predice el consumo eléctrico a lo largo
+            del día (así es fácil ver cómo disminuye el error); el ejercicio clasifica.
           </p>
         </>
       ),

@@ -31,12 +31,6 @@ interface OvaLegendSpec {
 }
 
 const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
-  'Cada árbol corrige al anterior': { context: 'Puntos sintéticos: x es una variable de entrada e y su valor observado.', items: [
-    { label: 'Observación: real − predicción > 0', color: '#FFB454', mark: 'dot' },
-    { label: 'Observación: real − predicción < 0', color: '#55AAFF', mark: 'dot' },
-    { label: 'Predicción del ensamble', color: '#10b981', mark: 'line' },
-    { label: 'Residuo (real a predicho)', color: '#9898b0', mark: 'dash' },
-  ] },
   'Un cuello de botella que delata el fraude': { context: 'Compras simuladas; las variables y los errores ilustran el método.', items: [
     { label: 'Compra normal', color: '#55AAFF', mark: 'dot' },
     { label: 'Fraude conocido', color: '#FFB454', mark: 'dot' },
