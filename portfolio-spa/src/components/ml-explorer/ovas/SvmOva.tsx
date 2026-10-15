@@ -23,7 +23,7 @@ export function SvmOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
   const last = maxCIndex + 1; // step 0 es neutral; los siguientes aplican cada C hasta el máximo.
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
   const cIndex = Math.max(0, step - 1);
   const C = SVM_CS[cIndex];
 
@@ -48,6 +48,8 @@ export function SvmOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={step === 0 ? 'Vamos a buscar una frontera que separe las clases dejando un margen amplio.' : `Comparamos un modelo con C = ${C}. C controla el castigo por errores; los anillos blancos identifican los puntos que sostienen la frontera.`}
       title="La calle más ancha posible"
       hint="Los puntos empiezan neutrales. La animación ajusta la frontera para C = 0.01, 0.1, 1 y hasta el máximo elegido: al subir C, el modelo castiga más los errores y estrecha el margen. El relleno de cada punto muestra la predicción y su borde conserva la clase real; los anillos blancos marcan los vectores de soporte que definen la frontera. También puedes comparar el kernel lineal con el RBF (γ = 0.3)."
       controls={

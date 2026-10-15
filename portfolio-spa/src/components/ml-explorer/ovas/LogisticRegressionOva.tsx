@@ -50,7 +50,7 @@ export function LogisticRegressionOva({ autoPlay = false }: { autoPlay?: boolean
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(iteration, maxIterations, setIteration, visible, reducedMotion, autoPlay, 450, 5000);
+  const playback = useAutoLoop(iteration, maxIterations, setIteration, visible, reducedMotion, autoPlay, 450, 5000);
 
   const frames = useMemo(() => newtonTrace(XS, YS, MAX_ITERATIONS), []);
   const { b0, b1 } = frames[Math.min(iteration, frames.length - 1)];
@@ -65,8 +65,10 @@ export function LogisticRegressionOva({ autoPlay = false }: { autoPlay?: boolean
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={iteration === 0 ? 'Vamos a convertir la cantidad de menciones de «gratis» en una probabilidad de spam.' : `La curva se ajusta en la iteración ${iteration}. El umbral ${threshold.toFixed(2)} convierte la probabilidad en una clase: compara el relleno con el borde real.`}
       title="La curva aprende y separa clases"
-      hint="Cada paso aplica una actualización del método de Newton: la curva transforma el número de veces que aparece «gratis» en una probabilidad de spam. Al cruzar el umbral, cada correo recibe una clase. El relleno muestra la predicción y el borde la clase real; los bordes rosas señalan errores por el solapamiento entre correos normales y spam. El ajuste se reinicia y vuelve a aprender en bucle."
+      hint="Cada paso aplica una actualización del método de Newton: la curva transforma el número de veces que aparece «gratis» en una probabilidad de spam. Al cruzar el umbral, cada correo recibe una clase. El relleno muestra la predicción y el borde la clase real; los bordes rosas señalan errores por el solapamiento entre correos normales y spam. Puedes pausar el ajuste y examinar cada actualización."
       controls={
         <>
           <OvaSlider

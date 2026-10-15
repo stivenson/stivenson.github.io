@@ -33,7 +33,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const pos = SCAN_CHECKPOINTS[Math.min(Math.max(step - 1, 0), SCAN_CHECKPOINTS.length - 1)];
   const row = Math.floor(pos / MAP);
   const col = pos % MAP;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 5000);
 
   const reset = (next: number) => {
     setKernelIndex(next);
@@ -44,8 +44,10 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={step === 0 ? 'Vamos a recorrer la imagen con un filtro de nueve pesos.' : done ? 'El mapa está completo. Max pooling conserva el mayor valor de cada bloque 2×2 y reduce el mapa a 3×3.' : `En la ventana ${pos + 1}, multiplicamos los nueve píxeles por sus pesos y sumamos: ${raw[row][col]}. ReLU reemplaza los valores negativos por cero: la salida es ${map[row][col]}.`}
       title="Un filtro de 3×3 recorre la imagen"
-      hint="El filtro recorre la imagen. En cada posición, nueve conexiones llevan los píxeles de la ventana 3×3 a una neurona del mapa de activación; el color de la conexión indica el signo del peso. ReLU colorea la salida y max pooling resume bloques de 2×2 al completar el mapa. El recorrido vuelve a empezar automáticamente."
+      hint="El filtro recorre la imagen. En cada posición, nueve conexiones llevan los píxeles de la ventana 3×3 a una neurona del mapa de activación; el color de la conexión indica el signo del peso. ReLU colorea la salida y max pooling resume bloques de 2×2 al completar el mapa. Activa «Repetir» si quieres volver a recorrer los pasos."
       controls={
         <>
           <div role="group" aria-label="Filtro">

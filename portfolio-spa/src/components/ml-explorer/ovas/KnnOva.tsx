@@ -24,7 +24,7 @@ export function KnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
   const last = (maxK + 1) / 2;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 450, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 450, 5000);
   const k = step === 0 ? 1 : Math.min(maxK, step * 2 - 1);
   const active = step > 0;
   const result = knnVote(POINTS, query, k);
@@ -48,8 +48,10 @@ export function KnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={!active ? 'El rombo representa a la persona nueva. Vamos a buscar ejemplos cercanos para predecir si le gustó la película.' : `Ahora votan los ${k} vecinos más cercanos. Las líneas muestran quiénes participan; mueve el rombo para comprobar cómo cambia la mayoría.`}
       title="Dime con quién andas…"
-      hint="Los datos empiezan neutrales. El ciclo revela sus clases y amplía el vecindario: los puntos conectados votan la clase de la persona nueva (rombo). El relleno del rombo es la predicción; puedes moverlo con el mouse o las flechas para comparar posiciones. El recorrido vuelve a empezar solo."
+      hint="Los datos empiezan neutrales. El ciclo revela sus clases y amplía el vecindario: los puntos conectados votan la clase de la persona nueva (rombo). El relleno del rombo es la predicción; puedes moverlo con el mouse o las flechas para comparar posiciones. Puedes pausar o avanzar paso a paso."
       controls={
         <OvaSlider
           label="Máximo de vecinos (k)"

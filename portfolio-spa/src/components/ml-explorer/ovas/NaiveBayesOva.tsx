@@ -50,7 +50,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const negativeWins = pPositive < 0.5;
   const odds = partial.pPositive / (1 - partial.pPositive);
 
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
 
   const changeText = (next: string) => {
     setText(next);
@@ -59,8 +59,10 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={!currentWord ? 'Antes de leer, ambas clases parten con la misma probabilidad. Vamos a añadir evidencia palabra por palabra.' : !currentWord.known ? `«${currentWord.word}» no aparece en el entrenamiento: se muestra, pero no cambia la probabilidad.` : `Añadimos la evidencia de «${currentWord.word}». La probabilidad positiva pasa de ${pct(pBeforeWord)} a ${pct(pPositive)}.`}
       title="Cada palabra aporta evidencia"
-      hint="La frase aparece palabra por palabra. Al principio ambas clases están neutrales; cada palabra conocida inclina la probabilidad hacia positiva o negativa. Las desconocidas se muestran, pero no cambian el cálculo. El recorrido se repite automáticamente."
+      hint="La frase aparece palabra por palabra. Al principio ambas clases están neutrales; cada palabra conocida inclina la probabilidad hacia positiva o negativa. Las desconocidas se muestran, pero no cambian el cálculo. Puedes pausar o avanzar paso a paso."
       controls={
         <>
           <label className="mlx-nb-input">
@@ -137,7 +139,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
           <div className="mlx-nb-chart-heading">
             <div>
               <strong>La evidencia mueve la probabilidad</strong>
-              <span>{chartView === '2d' ? 'La curva muestra P(positiva) al leer cada palabra' : 'Cada línea muestra la probabilidad de una clase a medida que se leen palabras'}</span>
+              <span>{chartView === '2d' ? 'La curva muestra P(positiva) al leer cada palabra' : 'Dos recorridos paralelos: probabilidad por clase; cada unión marca una palabra'}</span>
             </div>
             <div className="mlx-nb-chart-toggle" role="group" aria-label="Dimensión del gráfico">
               <button type="button" aria-pressed={chartView === '2d'} onClick={() => setChartView('2d')}>2D</button>
@@ -238,8 +240,8 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
                 <line className="mlx-nb-axis" x1={frontBottom.x} x2={frontEnd.x} y1={frontBottom.y} y2={frontEnd.y} />
                 <line className="mlx-nb-axis" x1={backBottom.x} x2={backEnd.x} y1={backBottom.y} y2={backEnd.y} />
                 <line className="mlx-nb-axis" x1={frontBottom.x} x2={backBottom.x} y1={frontBottom.y} y2={backBottom.y} />
-                <text className="mlx-nb-axis-label" x={frontTop.x + 4} y={frontTop.y - 8}>Positiva</text>
-                <text className="mlx-nb-axis-label" x={backTop.x + 4} y={backTop.y - 8}>Negativa</text>
+                <text className="mlx-nb-axis-label is-positive" x={frontTop.x + 4} y={frontTop.y - 8}>P(positiva)</text>
+                <text className="mlx-nb-axis-label is-negative" x={backTop.x + 4} y={backTop.y - 8}>P(negativa)</text>
                 <text className="mlx-nb-axis-label" x={(frontBottom.x + frontEnd.x) / 2} y={CHART_HEIGHT - 3} textAnchor="middle">Palabras leídas</text>
                 <text className="mlx-nb-axis-label" transform={`translate(12 ${(frontTop.y + frontBottom.y) / 2}) rotate(-90)`} textAnchor="middle">Probabilidad</text>
               </>;
@@ -260,11 +262,10 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
               const positiveEnd = project3d(index + 1, probability, true);
               const negativeStart = project3d(index, 1 - previous, false);
               const negativeEnd = project3d(index + 1, 1 - probability, false);
-              const evidence = !word.known ? 'is-unknown' : word.factor > 1 ? 'is-positive' : word.factor < 1 ? 'is-negative' : 'is-neutral';
               return <g key={`${word.word}-${index}`}>
                 <line className="mlx-nb-segment is-positive" x1={positiveStart.x} y1={positiveStart.y} x2={positiveEnd.x} y2={positiveEnd.y} />
                 <line className="mlx-nb-segment is-negative" x1={negativeStart.x} y1={negativeStart.y} x2={negativeEnd.x} y2={negativeEnd.y} />
-                <line className={`mlx-nb-3d-evidence ${evidence}`} x1={positiveEnd.x} y1={positiveEnd.y} x2={negativeEnd.x} y2={negativeEnd.y} />
+                <line className="mlx-nb-3d-evidence" x1={positiveEnd.x} y1={positiveEnd.y} x2={negativeEnd.x} y2={negativeEnd.y} />
               </g>;
             })}
             {visibleProbabilities.map((probability, index) => {
@@ -285,7 +286,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
             </> : <>
               <span><i className="is-positive" /> P(positiva)</span>
               <span><i className="is-negative" /> P(negativa)</span>
-              <span><i className="is-unknown" /> Evidencia de cada palabra</span>
+              <span><i className="is-evidence" /> Avance de cada palabra</span>
             </>}
           </div>
         </div>

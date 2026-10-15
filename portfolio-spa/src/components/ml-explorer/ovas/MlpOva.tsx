@@ -34,7 +34,7 @@ export function MlpOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1100, 5000);
+  const playback = useAutoLoop(step, LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1100, 5000);
 
   const hits = mlpHits(net, POINTS);
   const networkPoint = POINTS[0];
@@ -91,6 +91,9 @@ export function MlpOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      controlsCollapsed
+      explanation={phaseCopy}
       title="Dos neuronas ocultas resuelven XOR"
       hint="Arriba ves las entradas, las dos neuronas ocultas, la salida y sus conexiones; se activan en el orden en que la señal atraviesa la red. Abajo, el relleno muestra la predicción y el borde conserva la clase real. Ajusta pesos y sesgos para ver cómo cambia el circuito y su frontera."
       controls={LAYERS.map((layer) => (
@@ -111,7 +114,6 @@ export function MlpOva({ autoPlay = false }: { autoPlay?: boolean }) {
       readout={
         <>
           <span>Propagación: <b>{step} de {LAST_STEP}</b></span>
-          <span>{phaseCopy}</span>
           {step === LAST_STEP && <span>Aciertos: <b>{hits} de {POINTS.length}</b></span>}
         </>
       }

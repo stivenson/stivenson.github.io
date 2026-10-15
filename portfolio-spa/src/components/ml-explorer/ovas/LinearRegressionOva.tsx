@@ -40,7 +40,7 @@ export function LinearRegressionOva({ autoPlay = false }: { autoPlay?: boolean }
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, FIT_STEPS, setStep, visible, reducedMotion, autoPlay, 500, 5000);
+  const playback = useAutoLoop(step, FIT_STEPS, setStep, visible, reducedMotion, autoPlay, 500, 5000);
   const clipId = useId();
   const full = points.length >= MAX_POINTS;
   const fitted = fitLine(points);
@@ -79,9 +79,11 @@ export function LinearRegressionOva({ autoPlay = false }: { autoPlay?: boolean }
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={step === 0 ? 'Partimos de una recta horizontal que predice el precio promedio.' : step === FIT_STEPS ? 'Esta es la solución de mínimos cuadrados: minimiza el promedio de los errores al cuadrado. Añade un valor atípico para ver cuánto cambia.' : 'La recta se acerca visualmente a la solución calculada. Cada segmento une un precio observado con el que predice la recta; su longitud es el error.'}
       title="La recta que menos se equivoca"
       hint={
-        'La regresión lineal calcula la solución exacta de mínimos cuadrados; no aprende mediante iteraciones. La animación revela cómo la recta horizontal de referencia se transforma en esa solución y cómo quedan los residuos. Al terminar vuelve al inicio. Los puntos sobre la recta se colorean según el signo de su residuo, no son clases.'
+        'En este simulador calculamos directamente la solución de mínimos cuadrados. La animación revela cómo la recta horizontal de referencia se transforma en esa solución y cómo quedan los residuos. Al terminar puedes revisar el resultado o reproducirlo de nuevo. Los puntos sobre la recta se colorean según el signo de su residuo, no son clases.'
       }
       controls={
         <>

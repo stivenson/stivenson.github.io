@@ -19,7 +19,7 @@ export function RandomForestOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const visible = useInViewport(ref);
   const reducedMotion = usePrefersReducedMotion();
   const last = maxSizeIndex + 1;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
 
   // Frame 0 deliberately has no trees; later frames add a larger ensemble.
   const n = step === 0 ? 0 : FOREST_SIZES[Math.min(step - 1, maxSizeIndex)];
@@ -44,6 +44,8 @@ export function RandomForestOva({ autoPlay = false }: { autoPlay?: boolean }) {
   return (
     <div ref={ref}>
       <OvaFrame
+      playback={playback}
+      explanation={n === 0 ? 'Todavía no hay árboles. Cada punto representa un cliente con su respuesta conocida.' : `Ahora votan ${n} árboles. El relleno muestra la decisión de la mayoría y el borde conserva la respuesta real. Compara los aciertos en clientes nuevos; más árboles no garantizan mejorar en cualquier conjunto.`}
         title="Muchos árboles votan"
         hint="El ciclo empieza con los clientes neutrales y va sumando árboles. El relleno de cada punto es la predicción del bosque; su borde conserva la clase real. Las regiones se intensifican cuando los árboles coinciden. Los dos clientes con anillo son ruido: uno no pagó pese a su deuda baja y otro pagó pese a su deuda alta. Compara el resultado en clientes nuevos para ver si el bosque generaliza."
         controls={

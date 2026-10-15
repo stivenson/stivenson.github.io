@@ -950,6 +950,194 @@ p.mlx-py-error {
   user-select: none;
 }
 
+/* Compacta: el gráfico comparte espacio con su explicación y su leyenda.
+   SVG conserva la proporción y el mapeo de coordenadas al arrastrar puntos. */
+.mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage svg {
+  max-height: clamp(240px, 42vh, 420px);
+}
+
+.mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage:has(svg ~ svg) svg,
+.mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage:has(.mlx-network-visual, .mlx-rnn-network, .mlx-tf-network) svg {
+  max-height: clamp(140px, 18vh, 180px);
+}
+
+.mlx-ova-playback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+  font-size: 13px;
+}
+
+.mlx-ova-playback-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.mlx-ova-playback button,
+.mlx-ova-playback select,
+.mlx-ova-size {
+  padding: 6px 10px;
+  border: 1px solid rgba(85, 170, 255, 0.4);
+  border-radius: 6px;
+  background: #151a40;
+  color: var(--rf-text, #e8e8f0);
+  font: inherit;
+  cursor: pointer;
+}
+
+.mlx-ova-playback button.mlx-ova-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 8px 16px;
+  border-color: #6ee7b7;
+  background: linear-gradient(135deg, #6ee7b7, #34d399);
+  color: #07251e;
+  font-size: 14px;
+  font-weight: 750;
+  box-shadow: 0 3px 14px rgba(52, 211, 153, 0.24);
+  transition: background 150ms, box-shadow 150ms;
+}
+
+.mlx-ova-playback button.mlx-ova-toggle:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+  box-shadow: 0 3px 20px rgba(52, 211, 153, 0.38);
+}
+
+.mlx-ova-playback button.mlx-ova-toggle:active:not(:disabled) {
+  background: #34d399;
+  box-shadow: 0 1px 5px rgba(52, 211, 153, 0.2);
+}
+
+.mlx-ova-playback button.mlx-ova-toggle:disabled {
+  box-shadow: none;
+}
+
+.mlx-ova-toggle-icon {
+  position: relative;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.mlx-ova-toggle-icon::before,
+.mlx-ova-toggle-icon.is-pause::after {
+  position: absolute;
+  content: '';
+  background: currentColor;
+}
+
+.mlx-ova-toggle-icon.is-play::before {
+  inset: 2px 1px 2px 4px;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+.mlx-ova-toggle-icon.is-pause::before,
+.mlx-ova-toggle-icon.is-pause::after {
+  top: 2px;
+  bottom: 2px;
+  width: 5px;
+  border-radius: 1px;
+}
+
+.mlx-ova-toggle-icon.is-pause::before {
+  left: 3px;
+}
+
+.mlx-ova-toggle-icon.is-pause::after {
+  right: 3px;
+}
+
+.mlx-ova-playback button:disabled,
+.mlx-ova-playback select:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mlx-ova-playback :focus-visible,
+.mlx-ova-size:focus-visible,
+.mlx-ova-help summary:focus-visible {
+  outline: 2px solid #55aaff;
+  outline-offset: 3px;
+}
+
+.mlx-ova-playback label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mlx-ova-progress {
+  font-variant-numeric: tabular-nums;
+}
+
+.mlx-ova-size {
+  display: block;
+  margin: 8px 12px 0 auto;
+  font-size: 12px;
+}
+
+.mlx-ova-help {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.mlx-ova-help summary {
+  cursor: pointer;
+  color: #b8c7e6;
+}
+
+.mlx-ova-parameters summary {
+  padding: 8px 10px;
+  border: 1px solid rgba(85, 170, 255, 0.3);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.mlx-ova-parameters[open] .mlx-ova-controls {
+  padding-top: 10px;
+}
+
+.mlx-ova-help[open] span {
+  display: block;
+  padding-top: 6px;
+}
+
+.mlx-ova-explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 12px;
+  border-left: 3px solid #10b981;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.08);
+  line-height: 1.5;
+}
+
+.mlx-ova-side .mlx-ova-legend {
+  padding: 0;
+}
+
+.mlx-ova-side .mlx-ova-legend ul {
+  flex-direction: column;
+}
+
+@media (max-width: 700px) {
+  .mlx-ova-playback-buttons {
+    width: 100%;
+  }
+  .mlx-ova-playback-buttons button {
+    flex: 1 1 calc(50% - 6px);
+  }
+}
+
 .mlx-ova-stage .is-draggable {
   cursor: grab;
   touch-action: none;
@@ -1461,6 +1649,9 @@ p.mlx-py-error {
   font-size: 11px;
 }
 
+.mlx-nb-axis-label.is-positive { fill: #ffb454; }
+.mlx-nb-axis-label.is-negative { fill: #55aaff; }
+
 .mlx-nb-segment {
   fill: none;
   stroke-width: 3;
@@ -1487,15 +1678,11 @@ p.mlx-py-error {
 }
 
 .mlx-nb-3d-evidence {
+  stroke: #c5cada;
   stroke-width: 1.5;
-  stroke-dasharray: 3 3;
-  opacity: 0.62;
+  stroke-dasharray: 4 4;
+  opacity: 0.78;
 }
-
-.mlx-nb-3d-evidence.is-positive { stroke: #ffb454; }
-.mlx-nb-3d-evidence.is-negative { stroke: #55aaff; }
-.mlx-nb-3d-evidence.is-neutral,
-.mlx-nb-3d-evidence.is-unknown { stroke: #a7a8bc; }
 
 .mlx-nb-chart-point.is-unknown,
 .mlx-nb-chart-point.is-neutral {
@@ -1537,6 +1724,12 @@ p.mlx-py-error {
 .mlx-nb-chart-legend i.is-positive { background: #ffb454; }
 .mlx-nb-chart-legend i.is-negative { background: #55aaff; }
 .mlx-nb-chart-legend i.is-unknown { background: #a7a8bc; }
+.mlx-nb-chart-legend i.is-evidence {
+  width: 14px;
+  height: 0;
+  border-top: 2px dashed #c5cada;
+  border-radius: 0;
+}
 
 @media (max-width: 520px) {
   .mlx-nb-chart-heading {

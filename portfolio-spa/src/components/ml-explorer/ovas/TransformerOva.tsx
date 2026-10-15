@@ -44,7 +44,7 @@ export function TransformerOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const i = words.indexOf(focus);
   const otherOut = attend(other, opts).out[other.indexOf(focus)];
   const change = Math.max(...out[i].map((v, c) => Math.abs(v - otherOut[c])));
-  useAutoLoop(step, words.length, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
+  const playback = useAutoLoop(step, words.length, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
 
   const pickSentence = (k: number) => {
     setSentence(k);
@@ -54,6 +54,8 @@ export function TransformerOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={step === 0 ? 'Cada palabra se representa con cuatro números de ejemplo. Vamos a revelar cómo combina información de la frase.' : step <= i ? `Ya se muestran ${step} filas. La fila de «${focus}» aparecerá cuando llegue su turno.` : `La fila de «${focus}» reparte pesos que suman 1. ${causal ? 'La máscara deja en cero las posiciones futuras.' : 'Cada conexión muestra cuánto aporta otra palabra.'} Estos valores son didácticos, no provienen de un modelo de lenguaje entrenado.`}
       title="Mapa de atención de una frase"
       hint="Arriba, la palabra elegida conecta con los tokens a los que presta atención; el grosor representa el peso. Abajo, la matriz revela una fila por token y deja el mapa completo al final. «Banco» cambia de contexto entre río e interés. Invierte la frase para comparar la codificación posicional; la máscara causal limita cada fila a su posición y las anteriores. Embeddings de juguete con 4 números escritos a mano."
       controls={

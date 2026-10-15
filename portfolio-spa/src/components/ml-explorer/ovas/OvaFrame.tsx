@@ -1,4 +1,5 @@
-import { useId, type CSSProperties, type ReactNode } from 'react';
+import { useId, useState, type CSSProperties, type ReactNode } from 'react';
+import type { OvaPlayback } from './useAutoLoop';
 
 interface OvaFrameProps {
   title: string;
@@ -10,6 +11,9 @@ interface OvaFrameProps {
   /** «off» silencia el readout (p. ej. mientras una animación lo cambia cada segundo). */
   readoutLive?: 'polite' | 'off';
   controls?: ReactNode;
+  controlsCollapsed?: boolean;
+  playback?: OvaPlayback;
+  explanation?: ReactNode;
 }
 
 type LegendMark = 'dot' | 'ring' | 'line' | 'dash' | 'square' | 'cross' | 'gradient';
@@ -113,7 +117,7 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
     { label: 'Relleno / región: clase predicha por mayoría', color: '#FFB454', mark: 'square' },
     { label: 'Borde del punto: clase real', color: '#FFB454', mark: 'ring' },
-    { label: 'Anillo: caso de prueba', color: '#10b981', mark: 'ring' },
+    { label: 'Anillo: ejemplo de ruido del entrenamiento', color: '#e8e8f0', mark: 'ring' },
   ] },
   'La calle más ancha posible': { context: 'Puntos sintéticos con dos clases para visualizar el margen máximo.', items: [
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
@@ -141,31 +145,74 @@ function OvaLegend({ spec }: { spec: OvaLegendSpec }) {
 }
 
 /** Marco común de todas las OVAs del explorador. */
-export function OvaFrame({ title, hint, children, readout, controls, readoutLive = 'polite' }: OvaFrameProps) {
+export function OvaFrame({ title, hint, children, readout, controls, controlsCollapsed = false, playback, explanation, readoutLive = 'polite' }: OvaFrameProps) {
   const titleId = useId();
+  const [expanded, setExpanded] = useState(false);
   return (
-    <figure className="mlx-ova" aria-labelledby={titleId}>
+    <figure className={`mlx-ova${expanded ? ' mlx-ova--expanded' : ''}`} aria-labelledby={titleId}>
       <figcaption className="mlx-ova-head">
         <strong id={titleId}>
           <span aria-hidden="true">🎮</span> {title}
         </strong>
-        <span>{hint}</span>
+        <details className="mlx-ova-help">
+          <summary>Cómo leer esta animación</summary>
+          <span>{hint}</span>
+        </details>
       </figcaption>
+      {playback && <OvaPlaybackControls playback={playback} />}
+      <button type="button" className="mlx-ova-size" aria-pressed={expanded} onClick={() => setExpanded((value) => !value)}>
+        {expanded ? 'Vista compacta' : 'Ampliar gráfico'}
+      </button>
       <div className="mlx-ova-body">
         <div className="mlx-ova-stage">{children}</div>
-        {(controls || readout) && (
+        {(controls || readout || explanation || OVA_LEGENDS[title]) && (
           <div className="mlx-ova-side">
-            {controls && <div className="mlx-ova-controls">{controls}</div>}
+            {explanation && <div className="mlx-ova-explanation" aria-live={playback?.playing ? 'off' : 'polite'} aria-atomic="true">
+              <strong>Qué está pasando</strong>
+              <span>{explanation}</span>
+            </div>}
+            {controls && (controlsCollapsed ? (
+              <details className="mlx-ova-parameters">
+                <summary>Ajustar pesos y sesgos</summary>
+                <div className="mlx-ova-controls">{controls}</div>
+              </details>
+            ) : <div className="mlx-ova-controls">{controls}</div>)}
             {readout && (
-              <div className="mlx-ova-readout" role="status" aria-live={readoutLive} aria-atomic="true">
+              <div className="mlx-ova-readout" role="status" aria-live={playback ? playback.playing ? 'off' : 'polite' : readoutLive} aria-atomic="true">
                 {readout}
               </div>
             )}
+            {OVA_LEGENDS[title] && <OvaLegend spec={OVA_LEGENDS[title]} />}
           </div>
         )}
       </div>
-      {OVA_LEGENDS[title] && <OvaLegend spec={OVA_LEGENDS[title]} />}
     </figure>
+  );
+}
+
+function OvaPlaybackControls({ playback: p }: { playback: OvaPlayback }) {
+  return (
+    <div className="mlx-ova-playback" role="group" aria-label="Reproducción de la animación">
+      <div className="mlx-ova-playback-buttons">
+        <button className="mlx-ova-toggle" type="button" onClick={p.toggle} disabled={p.reducedMotion || p.last === 0}>
+          <span className={`mlx-ova-toggle-icon ${p.playing ? 'is-pause' : 'is-play'}`} aria-hidden="true" />
+          <span>{p.playing ? 'Pausar' : p.step === p.last && p.last > 0 ? 'Reproducir de nuevo' : 'Reproducir'}</span>
+        </button>
+        <button type="button" onClick={p.previous} disabled={p.step === 0}>Paso anterior</button>
+        <button type="button" onClick={p.next} disabled={p.step >= p.last}>Siguiente paso</button>
+        <button type="button" onClick={p.restart} disabled={p.step === 0 && !p.playing}>Reiniciar</button>
+      </div>
+      <span className="mlx-ova-progress">Paso {p.step} de {p.last}</span>
+      <label>Velocidad{' '}
+        <select value={p.speed} onChange={(e) => p.setSpeed(Number(e.target.value))} disabled={p.reducedMotion}>
+          <option value={0.5}>Lenta (0,5×)</option>
+          <option value={1}>Normal (1×)</option>
+          <option value={2}>Rápida (2×)</option>
+        </select>
+      </label>
+      <label><input type="checkbox" checked={p.repeat} onChange={(e) => p.setRepeat(e.target.checked)} /> Repetir</label>
+      {p.reducedMotion && <small>Movimiento reducido: recorre la animación con los botones de paso.</small>}
+    </div>
   );
 }
 

@@ -33,7 +33,7 @@ export function PcaOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, PCA_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 145, 5000);
+  const playback = useAutoLoop(step, PCA_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 145, 5000);
   // La secuencia recorre desde el eje horizontal hasta el eje elegido. El paso
   // cero deja los datos neutrales para separar la referencia de la proyección.
   const progress = step === 0 ? 0 : Math.min(1, (step - 1) / (PCA_ROTATION_STEPS - 1));
@@ -55,6 +55,8 @@ export function PcaOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={step === 0 ? 'Vamos a representar los datos con una sola coordenada sobre el eje elegido.' : step < PCA_ROTATION_STEPS ? 'El eje gira hacia el ángulo elegido. La varianza capturada mide cuánta variación conserva esa dirección.' : 'Cada punto se proyecta perpendicularmente sobre el eje. Las distancias muestran lo que se pierde; los colores indican posiciones sobre la línea, no grupos.'}
       title="Gira el eje y mira cuánto captura"
       hint="PCA reduce dimensiones; no crea grupos ni clases. Los datos originales permanecen grises y el color de cada proyección indica su posición continua sobre el componente principal: azul hacia el extremo negativo, claro cerca de la media y naranja hacia el positivo. El ciclo gira el eje y luego dibuja una a una las distancias perpendiculares que se pierden al proyectar."
       controls={

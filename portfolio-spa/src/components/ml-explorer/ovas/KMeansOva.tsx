@@ -23,7 +23,7 @@ export function KMeansOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const state = run[shownStep];
   const done = shownStep >= last;
 
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, KM_STEP_MS, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, KM_STEP_MS, 5000);
 
   const reset = (nextK = k, nextStart = start) => {
     setK(nextK);
@@ -33,8 +33,10 @@ export function KMeansOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={shownStep === 0 ? 'Las cruces son los centros iniciales. Los puntos aún se muestran sin grupo.' : done ? 'Los grupos ya no cambian. La inercia mide la dispersión dentro de los grupos; compara otro arranque con el mismo K.' : 'Cada punto se asigna al centro más cercano y cada centro se mueve al promedio de su grupo. Mira qué puntos cambian de color.'}
       title="Centroides que se mueven solos"
-      hint="Los puntos empiezan del mismo color porque todavía no tienen grupo. K-Means asigna cada punto al centroide más cercano y luego mueve cada cruz al promedio de sus puntos; las asignaciones y los colores cambian en cada iteración. El recorrido vuelve a empezar automáticamente. Cambia K o el arranque para comparar resultados: con K = 3, el arranque B se atasca en una solución peor, con mucha más inercia."
+      hint="Los puntos empiezan del mismo color porque todavía no tienen grupo. K-Means asigna cada punto al centroide más cercano y luego mueve cada cruz al promedio de sus puntos; las asignaciones y los colores cambian en cada iteración. Activa «Repetir» si quieres volver a recorrer los pasos. Cambia K o el arranque para comparar resultados: con K = 3, el arranque B se atasca en una solución peor, con mucha más inercia."
       controls={
         <>
           <OvaSlider label="K (número de grupos)" value={k} min={1} max={KM_MAX_K} step={1} onChange={(v) => reset(v)} />

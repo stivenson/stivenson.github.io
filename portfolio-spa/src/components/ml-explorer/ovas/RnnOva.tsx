@@ -37,7 +37,7 @@ export function RnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, steps, setStep, visible, reducedMotion, autoPlay, 750, 5000);
+  const playback = useAutoLoop(step, steps, setStep, visible, reducedMotion, autoPlay, 750, 5000);
   const observed = RNN_INPUTS.slice(0, step);
   const g = observed.length ? rnnInfluence(observed, w, RNN_U) : [];
   const states = observed.length ? rnnStates(observed, w, RNN_U) : [0];
@@ -53,6 +53,8 @@ export function RnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={step === 0 ? 'Vamos a leer las mediciones en orden. Cada nueva entrada actualiza una memoria que pasa al siguiente paso.' : `La red ha leído ${step} mediciones. Las barras muestran cuánto influye cada entrada en la memoria actual: compara las más antiguas con la más reciente.`}
       title="La memoria de una RNN se desvanece"
       hint="Arriba, cada entrada xₜ actualiza el estado oculto hₜ, que pasa al siguiente paso mediante la conexión recurrente w. Abajo, las barras muestran cuánto influye cada medición en la memoria actual: las antiguas pierden fuerza porque el gradiente se multiplica paso a paso. El eje es logarítmico; alarga la secuencia o baja w para ver cómo se olvida más rápido."
       controls={

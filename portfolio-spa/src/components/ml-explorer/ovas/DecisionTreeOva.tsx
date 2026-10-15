@@ -43,12 +43,14 @@ export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const regions = treeRegions(tree, { x0: 0, x1: 10, y0: 0, y1: 10 });
   const acc = accuracy(tree, POINTS);
 
-  useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 5000, pauseForTreeWarning);
+  const playback = useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 5000, pauseForTreeWarning);
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={shownDepth === 0 ? 'El árbol todavía no divide los clientes: todos reciben la misma predicción inicial.' : shownDepth >= 4 ? 'El árbol crea regiones pequeñas para acertar incluso en los ejemplos de ruido. Acertar en el entrenamiento no garantiza acertar con clientes nuevos.' : `Con ${shownDepth} niveles de preguntas, el árbol divide el plano en regiones. Compara el relleno predicho con el borde real para encontrar errores.`}
       title="El árbol divide el plano en reglas"
-      hint="Los puntos empiezan neutrales. En cada ciclo, el árbol agrega un nivel de preguntas sobre ingreso o deuda y pinta las regiones según la clase que predice. El relleno de cada punto muestra esa predicción; su borde conserva la clase real para que se vean los errores. El recorrido se repite automáticamente. La profundidad máxima es un parámetro del modelo: al subirla, el árbol puede memorizar el ruido."
+      hint="Los puntos empiezan neutrales. En cada ciclo, el árbol agrega un nivel de preguntas sobre ingreso o deuda y pinta las regiones según la clase que predice. El relleno de cada punto muestra esa predicción; su borde conserva la clase real para que se vean los errores. Puedes pausar o avanzar paso a paso. La profundidad máxima es un parámetro del modelo: al subirla, el árbol puede memorizar el ruido."
       controls={
         <OvaSlider
           label="Profundidad máxima"

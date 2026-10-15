@@ -30,7 +30,7 @@ export function AutoencoderOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(step, AE_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
+  const playback = useAutoLoop(step, AE_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
   const { normal, fraud, threshold, model } = useMemo(() => {
     const model = fitLinearAutoencoder(AE_NORMAL, k);
     const normal = AE_NORMAL.map((r) => reconstructionError(model, r));
@@ -70,6 +70,8 @@ export function AutoencoderOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={['Las seis medidas entran en un modelo entrenado con compras normales.', `El codificador comprime las seis medidas en ${k} valores.`, 'El decodificador reconstruye la entrada. El umbral se calcula con los errores de compras normales.', 'Comparamos compras normales y fraudes de ejemplo. Superar el umbral indica una anomalía; por sí solo no demuestra fraude.'][step]}
       title="Un cuello de botella que delata el fraude"
       hint="Arriba, seis medidas se comprimen en k neuronas y el decodificador intenta reconstruirlas. Abajo, cada barra es una compra y su altura mide el error de reconstrucción; el modelo fija el umbral con compras normales y revela las raras que reconstruye peor. Ajusta k para ver cómo un cuello demasiado ancho también copia el fraude."
       controls={

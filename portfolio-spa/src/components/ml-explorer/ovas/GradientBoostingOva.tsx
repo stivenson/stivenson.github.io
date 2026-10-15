@@ -17,7 +17,7 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  useAutoLoop(stage, TREE_CHECKPOINTS.length - 1, setStage, visible, reducedMotion, autoPlay, 600, 5000);
+  const playback = useAutoLoop(stage, TREE_CHECKPOINTS.length - 1, setStage, visible, reducedMotion, autoPlay, 600, 5000);
   const steps = TREE_CHECKPOINTS[stage];
   const previousSteps = stage > 0 ? TREE_CHECKPOINTS[stage - 1] : 0;
   const model = useMemo(() => boost(XS, YS, GB_MAX_STEPS, rate), [rate]);
@@ -35,6 +35,8 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={steps === 0 ? 'La primera predicción es el promedio de los valores observados.' : `Se sumaron ${steps - previousSteps} árboles que corrigen parte del error anterior. Las líneas unen cada valor real con su predicción; cuanto más cortas, menor error.`}
       title="Cada árbol corrige al anterior"
       hint="El modelo empieza prediciendo el promedio. Cada árbol pequeño aprende de los residuos y corrige una fracción del error anterior. Al colorearse, naranja indica que el modelo se quedó corto y azul que predijo de más; al reiniciar, los puntos vuelven a neutralizarse."
       controls={

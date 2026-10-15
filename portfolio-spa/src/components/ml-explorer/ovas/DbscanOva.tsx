@@ -89,7 +89,7 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const revealedBorders = POINTS.filter((_, i) => revealed[i] && result.labels[i] >= 0 && !result.core[i]).length;
   const visibleClusters = new Set(result.labels.filter((label, i) => revealed[i] && label >= 0)).size;
   const isComplete = last > 0 && shownStep === last;
-  useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 240, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 240, 5000);
 
   const reset = (nextEps = eps, nextMinPts = minPts) => {
     setEps(nextEps);
@@ -99,6 +99,8 @@ export function DbscanOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={step === 0 ? 'Buscamos puntos con suficientes vecinos dentro del radio ε. El mínimo cuenta también al propio punto.' : isComplete ? 'Los grupos están completos. El gris indica puntos que no pertenecen a ningún grupo; cambia el radio para comparar el resultado.' : frame?.message}
       title="Grupos por densidad: ε y minPts"
       hint="Todos los puntos empiezan iguales. DBSCAN explora los núcleos (minPts vecinos dentro de ε), expande cada grupo por los núcleos conectados, suma los puntos de borde y deja en gris lo que no alcanza ningún núcleo. El círculo muestra ε alrededor de la frontera activa. El recorrido se repite automáticamente; cambia ε o minPts para ver cómo cambia el resultado. Con ε pequeño casi todo es ruido y con ε grande las dos lunas se funden."
       controls={

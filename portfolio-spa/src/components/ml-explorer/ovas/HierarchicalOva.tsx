@@ -73,7 +73,7 @@ export function HierarchicalOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const nextMerge = shownStep < last ? MERGES[shownStep] : undefined;
   const atNaturalCut = shownStep === NATURAL_CUT_STEP && groups === 3;
 
-  useAutoLoop(progress, last, setProgress, visible, reducedMotion, autoPlay, 850, 5000, pauseAtStepMs);
+  const playback = useAutoLoop(progress, last, setProgress, visible, reducedMotion, autoPlay, 850, 5000, pauseAtStepMs);
 
   const color = (node: number) => {
     const mergeIndex = node - N;
@@ -84,8 +84,10 @@ export function HierarchicalOva({ autoPlay = false }: { autoPlay?: boolean }) {
 
   return (
     <OvaFrame
+      playback={playback}
+      explanation={shownStep === 0 ? 'Al inicio, cada punto forma su propio grupo.' : `Se han realizado ${shownStep} uniones y quedan ${groups} grupos. La altura de la última unión indica su distancia; un salto grande ayuda a decidir dónde cortar.`}
       title="Unir los puntos de abajo hacia arriba"
-      hint="Cada paso une los dos grupos más parecidos; su altura es la distancia promedio entre ellos. Los puntos empiezan neutrales y toman el mismo color cuando quedan unidos. En el dendrograma, las uniones recorridas aparecen coloreadas y las que faltan se atenúan. El recorrido se repite automáticamente. Entre 2.2 y 5.2 hay un salto grande; por eso 3 grupos es un corte natural. El punto 12, entre dos grupos, se une al de la derecha a altura 2.15."
+      hint="Cada paso une los dos grupos más parecidos; su altura es la distancia promedio entre ellos. Los puntos empiezan neutrales y toman el mismo color cuando quedan unidos. En el dendrograma, las uniones recorridas aparecen coloreadas y las que faltan se atenúan. Puedes pausar o avanzar paso a paso. Entre 2.2 y 5.2 hay un salto grande; por eso 3 grupos es un corte natural. El punto 12, entre dos grupos, se une al de la derecha a altura 2.15."
       readoutLive="off"
       readout={
         <>

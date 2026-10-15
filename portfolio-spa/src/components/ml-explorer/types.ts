@@ -82,8 +82,8 @@ export interface AlgorithmModule {
   /** Pestaña donde se monta la OVA; permite excepciones didácticas como DBSCAN en «Tipo». */
   ovaTab?: TabId;
   /**
-   * Activa autoplay continuo al entrar a la pestaña: sin botones de reproducción,
-   * en bucle mientras se ve y quieto en el resultado final con movimiento reducido.
+   * Reproduce al entrar a la pestaña. El lector puede pausar, recorrer pasos,
+   * elegir velocidad y activar la repetición; respeta el movimiento reducido.
    */
   autoPlayOva?: boolean;
   python: PythonExercise;
