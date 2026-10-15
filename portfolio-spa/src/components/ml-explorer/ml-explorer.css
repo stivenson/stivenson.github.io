@@ -1909,6 +1909,21 @@ p.mlx-py-error {
   transition: d 500ms ease;
 }
 
+.mlx-logistic-curve-previous {
+  opacity: 0.7;
+}
+
+.mlx-logistic-converged {
+  animation: mlx-logistic-converged-in 420ms ease-out both;
+}
+
+@keyframes mlx-logistic-converged-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
 .mlx-logistic-boundary,
 .mlx-logistic-point {
   transition: cx 350ms ease, fill 350ms ease, stroke-width 350ms ease;
@@ -2031,8 +2046,11 @@ p.mlx-py-error {
     transition: none;
   }
   .mlx-logistic-curve,
+  .mlx-logistic-curve-previous,
+  .mlx-logistic-converged,
   .mlx-logistic-boundary,
   .mlx-logistic-point {
+    animation: none;
     transition: none;
   }
   .mlx-linear-fit,
