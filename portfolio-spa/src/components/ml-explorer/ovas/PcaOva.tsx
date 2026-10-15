@@ -15,7 +15,9 @@ const pct = (v: number) => `${(v * 100).toFixed(1)} %`;
 // Primero gira el eje; después cada residuo se dibuja en su propio paso.
 const PCA_ROTATION_STEPS = 16;
 const PCA_LAST_STEP = PCA_ROTATION_STEPS + POINTS.length;
+export const PCA_ROTATION_STEP_MS = 145;
 const PCA_MID_COLOR = '#d9d9e8';
+const pauseDuringRotation = (step: number) => step < PCA_ROTATION_STEPS ? PCA_ROTATION_STEP_MS : undefined;
 
 function mixHex(start: string, end: string, amount: number) {
   const ratio = Math.max(0, Math.min(1, amount));
@@ -28,15 +30,15 @@ function mixHex(start: string, end: string, amount: number) {
 }
 
 export function PcaOva({ autoPlay = false }: { autoPlay?: boolean }) {
-  const [angle, setAngle] = useState(0);
+  const [angle, setAngle] = useState(PCA_BEST_ANGLE);
   const [step, setStep] = useState(0);
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  const playback = useAutoLoop(step, PCA_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 145, 5000);
+  const playback = useAutoLoop(step, PCA_LAST_STEP, setStep, visible, reducedMotion, autoPlay, 800, 5000, pauseDuringRotation);
   // La secuencia recorre desde el eje horizontal hasta el eje elegido. El paso
   // cero deja los datos neutrales para separar la referencia de la proyección.
-  const progress = step === 0 ? 0 : Math.min(1, (step - 1) / (PCA_ROTATION_STEPS - 1));
+  const progress = Math.min(1, step / PCA_ROTATION_STEPS);
   const currentAngle = angle * progress;
   const drawnCount = Math.max(0, Math.min(POINTS.length, step - PCA_ROTATION_STEPS));
   const share = capturedShare(COV, currentAngle);
