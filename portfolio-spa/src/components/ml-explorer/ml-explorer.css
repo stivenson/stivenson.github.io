@@ -2067,6 +2067,20 @@ p.mlx-py-error {
   min-width: 0;
 }
 
+/* En escritorio hay espacio para leer ambos gráficos sin reducirlos al límite
+   compacto de las visualizaciones dobles. Se mantienen lado a lado y crecen
+   juntos; en móvil continúa aplicando el tamaño compacto y el ajuste en filas. */
+@media (min-width: 769px) {
+  .mlx-hc-stage {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage .mlx-hc-stage svg {
+    max-height: clamp(260px, 36vh, 340px);
+  }
+}
+
 .mlx-hc-point,
 .mlx-hc-link {
   transition: fill 350ms ease, stroke 350ms ease, opacity 350ms ease;
