@@ -18,7 +18,7 @@ interface OvaFrameProps {
   explanation?: ReactNode;
 }
 
-type LegendMark = 'dot' | 'ring' | 'line' | 'dash' | 'square' | 'cross' | 'gradient' | 'diamond' | 'selected-dot' | 'bicolor-line' | 'dash-ring';
+type LegendMark = 'dot' | 'ring' | 'line' | 'dash' | 'square' | 'cross' | 'gradient' | 'diamond' | 'selected-dot' | 'bicolor-line' | 'green-violet-line' | 'dash-ring';
 interface LegendItem {
   label: string;
   color: string;
@@ -65,6 +65,8 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
   'Dos neuronas ocultas resuelven XOR': { context: 'Puntos sintéticos XOR; cada punto es una observación con dos entradas.', items: [
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
     { label: 'Al final: relleno predicho; borde real', color: '#FFB454', mark: 'ring' },
+    { label: 'Anillo blanco discontinuo: caso seguido', color: '#ffffff', mark: 'dash-ring' },
+    { label: 'Verde / violeta en el plano: cortes de h₁ / h₂', color: '#10b981', mark: 'green-violet-line' },
     { label: 'Nodos: neuronas', color: '#10b981', mark: 'dot' },
     { label: 'Líneas: pesos entre neuronas', color: '#9898b0', mark: 'line' },
   ] },
