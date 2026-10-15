@@ -18,7 +18,7 @@ interface OvaFrameProps {
   explanation?: ReactNode;
 }
 
-type LegendMark = 'dot' | 'ring' | 'line' | 'dash' | 'square' | 'cross' | 'gradient' | 'diamond' | 'selected-dot' | 'bicolor-line' | 'green-violet-line' | 'dash-ring';
+type LegendMark = 'dot' | 'ring' | 'line' | 'dash' | 'square' | 'cross' | 'gradient' | 'diamond' | 'selected-dot' | 'bicolor-line' | 'green-violet-line' | 'green-red-line' | 'dash-ring';
 interface LegendItem {
   label: string;
   color: string;
@@ -43,11 +43,12 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Anillo: vecindario ε', color: '#10b981', mark: 'ring' },
     { label: 'Relleno: núcleo; punto hueco: borde', color: '#FFB454', mark: 'ring' },
   ] },
-  'Un filtro de 3×3 recorre la imagen': { context: 'Imagen didáctica de un dígito; los valores de píxel son ilustrativos.', items: [
+  'Un filtro de 3×3 recorre la imagen': { context: 'Dígito manuscrito real de 8×8 de scikit-learn; intensidades de píxel entre 0 y 16.', items: [
     { label: 'Brillo: intensidad del píxel', color: '#9898b0', mark: 'square' },
-    { label: 'Ventana: filtro 3×3', color: '#FFB454', mark: 'ring' },
+    { label: 'Marco verde: ventana actual 3×3', color: '#10b981', mark: 'ring' },
     { label: 'Activación: respuesta del filtro', color: '#10b981', mark: 'square' },
-    { label: 'Conexiones: flujo entre capas', color: '#55AAFF', mark: 'line' },
+    { label: 'Línea verde / roja: peso positivo / negativo', color: '#10b981', mark: 'green-red-line' },
+    { label: 'Marcos discontinuos: bloques 2×2 del pooling', color: '#e8e8f0', mark: 'dash' },
   ] },
   'El árbol divide el plano en reglas': { context: 'Clientes y etiquetas de ejemplo; coordenadas de ingreso y deuda simuladas.', items: [
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },

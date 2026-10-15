@@ -15,6 +15,21 @@ const SCAN_CHECKPOINTS = Array.from({ length: 12 }, (_, i) => i * 3).concat(LAST
 const MAP_X = 8 * C + 40; // el mapa va a la derecha de la imagen
 const POOL_Y = MAP * C + 40; // y el pooling, debajo del mapa
 
+function Matrix3({ label, values, kind }: { label: string; values: number[]; kind: 'pixels' | 'weights' | 'products' }) {
+  return (
+    <div className={`mlx-cnn-matrix is-${kind}`}>
+      <span>{label}</span>
+      <div>
+        {values.map((value, index) => <b
+          key={index}
+          className={value > 0 ? 'is-positive' : value < 0 ? 'is-negative' : ''}
+          style={kind === 'pixels' && value > 0 ? { background: `rgba(232, 232, 240, ${0.12 + 0.88 * value / 16})`, color: value >= 8 ? '#040320' : '#e8e8f0' } : undefined}
+        >{value}</b>)}
+      </div>
+    </div>
+  );
+}
+
 export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [kernelIndex, setKernelIndex] = useState(0);
   // 0 is neutral; representative windows reveal the scanned prefix; the last stage shows pooling.
@@ -33,6 +48,9 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const pos = SCAN_CHECKPOINTS[Math.min(Math.max(step - 1, 0), SCAN_CHECKPOINTS.length - 1)];
   const row = Math.floor(pos / MAP);
   const col = pos % MAP;
+  const windowPixels = kernel.flatMap((kernelRow, kernelRowIndex) => kernelRow.map((_, kernelColIndex) => IMAGE[row + kernelRowIndex][col + kernelColIndex]));
+  const kernelWeights = kernel.flat();
+  const products = windowPixels.map((pixel, index) => pixel * kernelWeights[index]);
   const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, CNN_STEP_MS, 5000);
 
   const reset = (next: number) => {
@@ -41,13 +59,24 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
   };
 
   const active = map.flat().filter((v) => v > 0).length;
+  const maxPixel = Math.max(...IMAGE.flat(), 1);
+  const maxActivation = Math.max(...map.flat(), 1);
+  const filterMeaning = kernelIndex === 0
+    ? 'Compara la columna derecha con la izquierda; responde cuando el brillo cambia de lado.'
+    : 'Compara la fila inferior con la superior; responde cuando el brillo cambia de arriba abajo.';
+  const progressLabel = step === 0
+    ? 'Imagen original'
+    : done
+      ? 'Max pooling · 6×6 → 3×3'
+      : <>Ventana <b>{pos + 1}</b> de <b>{LAST + 1}</b> · salida ({row + 1}, {col + 1})</>;
 
   return (
     <OvaFrame
       playback={playback}
-      explanation={step === 0 ? 'Vamos a recorrer la imagen con un filtro de nueve pesos.' : done ? 'El mapa está completo. Max pooling conserva el mayor valor de cada bloque 2×2 y reduce el mapa a 3×3.' : `En la ventana ${pos + 1}, multiplicamos los nueve píxeles por sus pesos y sumamos: ${raw[row][col]}. ReLU reemplaza los valores negativos por cero: la salida es ${map[row][col]}.`}
+      progressLabel={progressLabel}
+      explanation={step === 0 ? 'La imagen tiene 8×8 píxeles. Un filtro de 3×3 producirá una salida de 6×6 porque solo se coloca donde caben sus nueve pesos.' : done ? 'El mapa está completo. Cada marco reúne un bloque 2×2; max pooling conserva su valor mayor y reduce 6×6 a 3×3.' : `Esta ventana produce la casilla (${row + 1}, ${col + 1}) del mapa. La suma es ${raw[row][col]} y ReLU aplica max(0, ${raw[row][col]}), por eso la salida es ${map[row][col]}.`}
       title="Un filtro de 3×3 recorre la imagen"
-      hint="El filtro recorre la imagen. En cada posición, nueve conexiones llevan los píxeles de la ventana 3×3 a una neurona del mapa de activación; el color de la conexión indica el signo del peso. ReLU colorea la salida y max pooling resume bloques de 2×2 al completar el mapa. Activa «Repetir» si quieres volver a recorrer los pasos."
+      hint="Lee de izquierda a derecha: la ventana toma nueve píxeles, los multiplica por los nueve pesos del filtro y guarda una suma en la casilla señalada del mapa. ReLU convierte las sumas negativas en cero. Al final, max pooling conserva el máximo de cada bloque 2×2."
       controls={
         <>
           <div role="group" aria-label="Filtro">
@@ -58,6 +87,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
               </button>
             ))}
           </div>
+          <p className="mlx-cnn-filter-help"><b>{KERNELS[kernelIndex].label}:</b> {filterMeaning}</p>
         </>
       }
       readoutLive="off"
@@ -69,6 +99,19 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
           {step > 0 && <span>
             {done ? 'Última suma de productos' : 'Suma de productos'}: <b>{raw[row][col]}</b> → tras ReLU: <b>{map[row][col]}</b>
           </span>}
+          {scanning && (
+            <div className="mlx-cnn-equation" aria-label={`Cálculo de la salida ${row + 1}, ${col + 1}: suma ${raw[row][col]}, tras ReLU ${map[row][col]}`}>
+              <strong>Por qué esta casilla vale {map[row][col]}</strong>
+              <div className="mlx-cnn-equation-row">
+                <Matrix3 label="Píxeles" values={windowPixels} kind="pixels" />
+                <span aria-hidden="true">×</span>
+                <Matrix3 label="Pesos" values={kernelWeights} kind="weights" />
+                <span aria-hidden="true">=</span>
+                <Matrix3 label="Productos" values={products} kind="products" />
+              </div>
+              <span className="mlx-cnn-equation-result">Σ productos = <b>{raw[row][col]}</b> · ReLU = max(0, {raw[row][col]}) = <b>{map[row][col]}</b></span>
+            </div>
+          )}
           {done && (
             <span>
               Mapa completo: <b>{active}</b> de 36 casillas se encienden. Tras el pooling queda de 3×3.
@@ -84,7 +127,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
           aria-label={`Imagen 8×8${scanning ? ` con el filtro en la fila ${row + 1}, columna ${col + 1}` : ''}; mapa de activación de 6×6 con ${done ? LAST + 1 : scanning ? pos + 1 : 0} posiciones recorridas`}
         >
           <text x={0} y={12} fontSize={11} fill={OVA_COLORS.axis}>
-            imagen 8×8
+            dígito manuscrito 8×8
           </text>
           {IMAGE.flatMap((r, i) =>
             r.map((v, j) => (
@@ -95,7 +138,8 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
                 width={C - 1}
                 height={C - 1}
                 className="mlx-cnn-input"
-                fill={step > 0 ? (v ? '#e8e8f0' : 'rgba(85, 170, 255, 0.12)') : 'rgba(85, 170, 255, 0.12)'}
+                fill={v > 0 ? '#e8e8f0' : 'rgba(85, 170, 255, 0.12)'}
+                fillOpacity={v > 0 ? 0.12 + 0.88 * v / maxPixel : 1}
               />
             )),
           )}
@@ -123,7 +167,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
                     width={C - 1}
                     height={C - 1}
                     fill={shown && v > 0 ? OVA_COLORS.class1 : 'rgba(85, 170, 255, 0.12)'}
-                    fillOpacity={shown && v > 0 ? 0.3 + v / 4.5 : 1}
+                    fillOpacity={shown && v > 0 ? 0.22 + 0.78 * v / maxActivation : 1}
                     stroke={scanning && k === pos ? OVA_COLORS.accent : 'none'}
                     strokeWidth={2}
                   />
@@ -136,6 +180,19 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
               );
             }),
           )}
+          {done && Array.from({ length: 9 }, (_, index) => {
+            const poolRow = Math.floor(index / 3);
+            const poolCol = index % 3;
+            return <rect
+              key={`pool-block-${index}`}
+              className="mlx-cnn-pool-block"
+              x={MAP_X + poolCol * 2 * C - 1}
+              y={20 + poolRow * 2 * C - 1}
+              width={2 * C}
+              height={2 * C}
+              fill="none"
+            />;
+          })}
           {done && (
             <>
               <text x={MAP_X} y={POOL_Y + 8} fontSize={11} fill={OVA_COLORS.axis}>
@@ -150,7 +207,7 @@ export function CnnOva({ autoPlay = false }: { autoPlay?: boolean }) {
                       width={C - 1}
                       height={C - 1}
                       fill={v > 0 ? OVA_COLORS.class1 : 'rgba(85, 170, 255, 0.12)'}
-                      fillOpacity={v > 0 ? 0.3 + v / 4.5 : 1}
+                      fillOpacity={v > 0 ? 0.22 + 0.78 * v / maxActivation : 1}
                     />
                     <text x={MAP_X + j * C + C / 2} y={POOL_Y + 14 + i * C + C / 2 + 4} textAnchor="middle" fontSize={11} fill="#e8e8f0">
                       {v}

@@ -1,126 +1,74 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { CNN_STEP_MS, CnnOva } from './CnnOva';
-
-/** IntersectionObserver falso: `setVisible` simula que la OVA entra o sale de la pantalla. */
-let observerCallback: ((entries: { isIntersecting: boolean }[]) => void) | null = null;
-const setVisible = (isIntersecting: boolean) => act(() => observerCallback?.([{ isIntersecting }]));
-
-function mockReducedMotion(matches: boolean) {
-  window.matchMedia = vi.fn((query: string) => ({
-    matches: query.includes('reduce') && matches,
-    media: query,
-    addEventListener: () => {},
-    removeEventListener: () => {},
-  })) as unknown as typeof window.matchMedia;
-}
-
-beforeEach(() => {
-  observerCallback = null;
-  vi.stubGlobal(
-    'IntersectionObserver',
-    class {
-      constructor(cb: (entries: { isIntersecting: boolean }[]) => void) {
-        observerCallback = cb;
-      }
-      observe() {}
-      disconnect() {}
-    },
-  );
-  mockReducedMotion(false);
-});
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { CnnOva } from './CnnOva';
 
 afterEach(() => {
   cleanup();
-  vi.useRealTimers();
-  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
 const status = (c: HTMLElement) => c.querySelector('[role="status"]')?.textContent ?? '';
-const button = (name: string | RegExp) => screen.getByRole('button', { name });
+const next = () => fireEvent.click(screen.getByRole('button', { name: 'Siguiente paso' }));
+const advance = (steps: number) => Array.from({ length: steps }, next);
+const progress = (c: HTMLElement) => c.querySelector('.mlx-ova-progress');
 
 describe('CnnOva', () => {
-  it('empieza en la posición 1 de 36 con suma 2; paso a paso llega al mapa completo (13 casillas)', () => {
+  it('conecta ventana, multiplicaciones, suma y ReLU con la casilla de salida', () => {
     const error = vi.spyOn(console, 'error');
     const { container } = render(<CnnOva />);
-    expect(status(container)).toContain('Posición 1 de 36 (fila 1, columna 1)');
-    expect(status(container)).toContain('Suma de productos: 2 → tras ReLU: 2');
-    for (let i = 0; i < 28; i++) fireEvent.click(button('Paso ▸'));
-    expect(status(container)).toContain('Posición 29 de 36 (fila 5, columna 5)');
+
+    expect(progress(container)?.textContent).toBe('Imagen original');
+    expect(container.querySelector('.mlx-cnn-equation')).toBeNull();
+
+    next();
+    expect(progress(container)?.textContent).toContain('Ventana 1 de 36 · salida (1, 1)');
+    expect(status(container)).toContain('Muestra 1 de 13 · ventana 1 de 36');
+    expect(status(container)).toContain('Suma de productos: 33 → tras ReLU: 33');
+    expect(container.querySelector('.mlx-cnn-equation')?.getAttribute('aria-label')).toContain('suma 33, tras ReLU 33');
+    expect(container.querySelectorAll('.mlx-cnn-matrix')).toHaveLength(3);
+    expect(container.querySelectorAll('.mlx-cnn-matrix b')).toHaveLength(27);
+
+    next();
+    expect(progress(container)?.textContent).toContain('Ventana 4 de 36 · salida (1, 4)');
     expect(status(container)).toContain('Suma de productos: -3 → tras ReLU: 0');
-    for (let i = 0; i < 7; i++) fireEvent.click(button('Paso ▸'));
-    expect(status(container)).toContain('Mapa completo: 13 de 36 casillas se encienden');
-    expect((button('Paso ▸') as HTMLButtonElement).disabled).toBe(true);
-    expect(container.querySelectorAll('.mlx-cnn-pool')).toHaveLength(9);
+    expect(status(container)).toContain('ReLU = max(0, -3) = 0');
     expect(error).not.toHaveBeenCalled();
   });
 
-  it('el filtro horizontal reinicia el recorrido y enciende 8 casillas', () => {
+  it('termina con el mapa completo y hace visibles los nueve bloques de pooling', () => {
     const { container } = render(<CnnOva />);
-    fireEvent.click(button('Paso ▸'));
-    fireEvent.click(button('Borde horizontal'));
-    expect(button('Borde horizontal').getAttribute('aria-pressed')).toBe('true');
-    expect(status(container)).toContain('Posición 1 de 36');
-    for (let i = 0; i < 35; i++) fireEvent.click(button('Paso ▸'));
-    expect(status(container)).toContain('Mapa completo: 8 de 36');
-    const pooled = Array.from(container.querySelectorAll('.mlx-cnn-pool text'), (t) => t.textContent);
-    expect(pooled).toEqual(['3', '3', '3', '1', '1', '0', '0', '0', '0']);
+    advance(14);
+
+    expect(progress(container)?.textContent).toContain('Max pooling · 6×6 → 3×3');
+    expect(status(container)).toContain('Mapa completo: 18 de 36 casillas se encienden');
+    expect(container.querySelectorAll('.mlx-cnn-pool-block')).toHaveLength(9);
+    expect(container.querySelectorAll('.mlx-cnn-pool')).toHaveLength(9);
+    expect((screen.getByRole('button', { name: 'Siguiente paso' }) as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it('Reproducir avanza una posición cada CNN_STEP_MS y se detiene al final', () => {
-    vi.useFakeTimers();
+  it('explica el propósito del filtro horizontal y recalcula el pooling', () => {
     const { container } = render(<CnnOva />);
-    fireEvent.click(button('▶ Reproducir'));
-    expect(button('⏸ Pausar').getAttribute('aria-pressed')).toBe('true');
-    act(() => vi.advanceTimersByTime(CNN_STEP_MS));
-    expect(status(container)).toContain('Posición 2 de 36');
-    for (let i = 0; i < 40; i++) act(() => vi.advanceTimersByTime(CNN_STEP_MS));
-    expect(status(container)).toContain('Posición 36 de 36');
-    expect(button('▶ Reproducir').getAttribute('aria-pressed')).toBe('false');
+    next();
+    fireEvent.click(screen.getByRole('button', { name: 'Borde horizontal' }));
+
+    expect(screen.getByRole('button', { name: 'Borde horizontal' }).getAttribute('aria-pressed')).toBe('true');
+    expect(progress(container)?.textContent).toBe('Imagen original');
+    expect(screen.getByText(/Compara la fila inferior con la superior/)).toBeTruthy();
+
+    advance(14);
+    expect(status(container)).toContain('Mapa completo: 16 de 36');
+    const pooled = Array.from(container.querySelectorAll('.mlx-cnn-pool text'), (text) => text.textContent);
+    expect(pooled).toEqual(['13', '0', '18', '0', '5', '4', '8', '21', '5']);
   });
 
-  it('fuera de la pantalla la animación se pausa y sigue al volver', () => {
-    vi.useFakeTimers();
-    const { container } = render(<CnnOva />);
-    fireEvent.click(button('▶ Reproducir'));
-    setVisible(false);
-    act(() => vi.advanceTimersByTime(CNN_STEP_MS * 3));
-    expect(status(container)).toContain('Posición 1 de 36');
-    setVisible(true);
-    act(() => vi.advanceTimersByTime(CNN_STEP_MS));
-    expect(status(container)).toContain('Posición 2 de 36');
-  });
-
-  it('con «reducir movimiento», Reproducir salta al mapa completo sin animar', () => {
-    mockReducedMotion(true);
-    vi.useFakeTimers();
-    const { container } = render(<CnnOva />);
-    fireEvent.click(button('▶ Reproducir'));
-    expect(status(container)).toContain('Posición 36 de 36');
-    expect(vi.getTimerCount()).toBe(0);
-  });
-
-  it('mientras reproduce, el readout no se anuncia; al desmontar no quedan timers', () => {
-    vi.useFakeTimers();
-    const { container, unmount } = render(<CnnOva />);
-    const live = () => container.querySelector('[role="status"]')?.getAttribute('aria-live');
-    expect(live()).toBe('polite');
-    fireEvent.click(button('▶ Reproducir'));
-    expect(live()).toBe('off');
-    expect(vi.getTimerCount()).toBe(1);
-    unmount();
-    expect(vi.getTimerCount()).toBe(0);
-  });
-
-  it('el svg es una imagen con 64 píxeles y 36 casillas; el hint va fuera del readout', () => {
+  it('presenta el recorrido como imagen y mantiene la guía fuera del estado dinámico', () => {
     const { container } = render(<CnnOva />);
     const svg = container.querySelector('svg');
     expect(svg?.getAttribute('role')).toBe('img');
     expect(svg?.querySelectorAll('.mlx-cnn-cell')).toHaveLength(36);
-    expect(svg?.querySelectorAll('rect').length).toBeGreaterThanOrEqual(64 + 1 + 36);
-    const hint = screen.getByText(/el horizontal al borde de arriba de la barra/);
+    expect(svg?.querySelectorAll('rect').length).toBeGreaterThanOrEqual(64 + 36);
+    const hint = screen.getByText(/Lee de izquierda a derecha/);
     expect(container.querySelector('[role="status"]')?.contains(hint)).toBe(false);
   });
 });

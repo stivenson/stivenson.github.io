@@ -563,38 +563,38 @@ describe('OVA de la CNN', () => {
     expect(maxPool2(maps[0])).toHaveLength(3);
   });
 
-  it('filtro vertical: los mismos números que el ejercicio de Python; 13 de 36 casillas activas, máximo 3', () => {
+  it('filtro vertical sobre el dígito manuscrito: 18 de 36 casillas activas, máximo 40', () => {
     expect(maps[0]).toEqual([
-      [2, 0, 0, 0, 0, 0],
-      [2, 0, 1, 1, 0, 0],
-      [1, 1, 2, 0, 0, 0],
-      [0, 2, 3, 0, 0, 0],
-      [0, 3, 3, 0, 0, 0],
-      [0, 2, 2, 0, 0, 0],
+      [33, 27, 0, 0, 0, 0],
+      [40, 10, 0, 17, 11, 0],
+      [35, 0, 0, 26, 24, 0],
+      [31, 0, 0, 29, 22, 0],
+      [33, 0, 0, 28, 4, 0],
+      [31, 12, 0, 6, 0, 0],
     ]);
-    expect(maps[0].flat().filter((v) => v > 0)).toHaveLength(13);
+    expect(maps[0].flat().filter((v) => v > 0)).toHaveLength(18);
     expect(maxPool2(maps[0])).toEqual([
-      [2, 1, 0],
-      [2, 3, 0],
-      [3, 3, 0],
+      [40, 17, 11],
+      [35, 29, 24],
+      [33, 28, 4],
     ]);
   });
 
-  it('filtro horizontal: se enciende en el borde de arriba de la barra (fila 1: 2 3 3 3 3 2); 8 casillas activas', () => {
-    expect(maps[1][0]).toEqual([2, 3, 3, 3, 3, 2]);
-    expect(maps[1].flat().filter((v) => v > 0)).toHaveLength(8);
+  it('filtro horizontal: responde a los cambios de brillo de arriba abajo; 16 casillas activas', () => {
+    expect(maps[1][0]).toEqual([13, 2, 0, 0, 9, 18]);
+    expect(maps[1].flat().filter((v) => v > 0)).toHaveLength(16);
     expect(maxPool2(maps[1])).toEqual([
-      [3, 3, 3],
-      [1, 1, 0],
-      [0, 0, 0],
+      [13, 0, 18],
+      [0, 5, 4],
+      [8, 21, 5],
     ]);
   });
 
-  it('Fórmula: en la primera posición el filtro vertical da 2; la casilla (fila 5, columna 4) suma −3 y ReLU la deja en 0', () => {
+  it('Fórmula: en la primera posición el filtro vertical da 33; la casilla (fila 1, columna 4) suma −3 y ReLU la deja en 0', () => {
     const raw = conv2d(CNN_IMAGE, CNN_KERNELS[0].kernel as unknown as number[][]);
-    expect(raw[0][0]).toBe(2);
-    expect(raw[4][3]).toBe(-3);
-    expect(maps[0][4][3]).toBe(0);
+    expect(raw[0][0]).toBe(33);
+    expect(raw[0][3]).toBe(-3);
+    expect(maps[0][0][3]).toBe(0);
   });
 });
 

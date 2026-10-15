@@ -981,6 +981,17 @@ p.mlx-py-error {
   content: '';
 }
 
+.mlx-ova-legend-mark.is-green-red-line::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+  background: linear-gradient(90deg, #10b981 0 45%, transparent 45% 55%, #f43f5e 55%);
+}
+
 .mlx-ova-legend-mark.is-dash-ring::before {
   position: absolute;
   inset: 0;
@@ -2907,6 +2918,97 @@ p.mlx-py-error {
 }
 
 /* CNN: el filtro se desliza a la posición siguiente. */
+.mlx-cnn-filter-help {
+  margin: 2px 0 0;
+  color: var(--rf-muted, #9898b0);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.mlx-cnn-equation {
+  display: grid;
+  gap: 8px;
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 9px;
+  background: rgba(16, 185, 129, 0.055);
+}
+
+.mlx-cnn-equation > strong {
+  color: var(--rf-text, #e8e8f0);
+  font-size: 12px;
+}
+
+.mlx-cnn-equation-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.mlx-cnn-equation-row > span {
+  color: var(--rf-muted, #9898b0);
+  font-weight: 800;
+}
+
+.mlx-cnn-matrix {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.mlx-cnn-matrix > span {
+  color: var(--rf-muted, #9898b0);
+  font-size: 9px;
+  text-align: center;
+}
+
+.mlx-cnn-matrix > div {
+  display: grid;
+  grid-template-columns: repeat(3, 20px);
+  gap: 2px;
+}
+
+.mlx-cnn-matrix b {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 1px solid rgba(232, 232, 240, 0.13);
+  border-radius: 3px;
+  color: var(--rf-muted, #9898b0);
+  background: rgba(4, 3, 32, 0.45);
+  font: 10px 'Space Mono', Consolas, Monaco, monospace;
+}
+
+.mlx-cnn-matrix.is-pixels b.is-positive {
+  color: #040320;
+  background: #e8e8f0;
+}
+
+.mlx-cnn-matrix.is-weights b.is-positive,
+.mlx-cnn-matrix.is-products b.is-positive {
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.mlx-cnn-matrix.is-weights b.is-negative,
+.mlx-cnn-matrix.is-products b.is-negative {
+  color: #fb7185;
+  border-color: rgba(244, 63, 94, 0.4);
+}
+
+.mlx-cnn-equation-result {
+  color: var(--rf-muted, #9898b0);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.mlx-cnn-equation-result b {
+  color: var(--rf-text, #e8e8f0);
+}
+
 .mlx-cnn-window {
   transition: transform 0.3s ease-in-out;
 }
@@ -2932,6 +3034,24 @@ p.mlx-py-error {
   stroke: #10b981;
   stroke-width: 2;
   animation: mlx-cnn-target-pulse 700ms ease-in-out infinite alternate;
+}
+
+.mlx-cnn-pool-block {
+  stroke: rgba(232, 232, 240, 0.52);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+@media (max-width: 520px) {
+  .mlx-cnn-matrix > div {
+    grid-template-columns: repeat(3, 17px);
+  }
+
+  .mlx-cnn-matrix b {
+    width: 17px;
+    height: 17px;
+    font-size: 9px;
+  }
 }
 
 @keyframes mlx-cnn-connection-in {

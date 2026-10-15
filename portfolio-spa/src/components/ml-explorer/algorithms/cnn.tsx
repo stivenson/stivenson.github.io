@@ -205,10 +205,9 @@ const cnn: AlgorithmModule = {
             sospechosas en una radiografía son tareas de <G k="redConvolucional" after=".">redes convolucionales</G>
           </p>
           <p>
-            El ejercicio hace a mano lo que hace la primera capa: pasa dos filtros de 3×3 sobre un «7» de 8×8 píxeles.
-            El vertical se enciende en el borde izquierdo de cada trazo, con un máximo de 3 en el palo del 7; el
-            horizontal, en el borde de arriba de la barra (2 3 3 3 3 2). El <G k="pooling">max pooling</G> deja cada
-            mapa en 3×3.
+            El ejercicio hace a mano lo que hace la primera capa: pasa dos filtros de 3×3 sobre un «0» manuscrito
+            real de 8×8 píxeles. Las intensidades van de 0 a 16, así que los filtros responden con más fuerza donde
+            el trazo cambia bruscamente de claro a oscuro. El <G k="pooling">max pooling</G> deja cada mapa en 3×3.
           </p>
         </>
       ),

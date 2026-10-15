@@ -165,10 +165,10 @@ describe('cifras citadas en los textos', () => {
     expect(mlp).toContain('Primera imagen nueva (es un 1): 1 con 88%, 8 con 11%');
   });
 
-  it('CNN: el vertical se enciende en el borde izquierdo (máximo 3); el horizontal, arriba de la barra (2 3 3 3 3 2); 9 pesos contra 2304', () => {
-    expect(cnn).toContain('[[2 0 0 0 0 0]\n [2 0 1 1 0 0]\n [1 1 2 0 0 0]\n [0 2 3 0 0 0]\n [0 3 3 0 0 0]\n [0 2 2 0 0 0]]');
-    expect(cnn).toContain('[[2 3 3 3 3 2]');
-    expect(cnn).toContain('[[3 3 3]\n [1 1 0]\n [0 0 0]]');
+  it('CNN: usa un dígito manuscrito real; los filtros producen mapas 6×6 y pooling 3×3; 9 pesos contra 2304', () => {
+    expect(cnn).toContain('[[33 27  0  0  0  0]\n [40 10  0 17 11  0]\n [35  0  0 26 24  0]\n [31  0  0 29 22  0]\n [33  0  0 28  4  0]\n [31 12  0  6  0  0]]');
+    expect(cnn).toContain('[[13  2  0  0  9 18]');
+    expect(cnn).toContain('[[13  0 18]\n [ 0  5  4]\n [ 8 21  5]]');
     expect(cnn.match(/Tras max pooling 2×2 \(3×3\)/g)).toHaveLength(2);
     expect(cnn).toContain('Pesos de un filtro de 3×3: 9, los mismos en las 36 posiciones');
     expect(cnn).toContain('Una capa densa de 64 píxeles a 36 salidas necesitaría 2304 pesos');

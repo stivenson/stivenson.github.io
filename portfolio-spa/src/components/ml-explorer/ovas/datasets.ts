@@ -268,18 +268,18 @@ export const MLP_START: Mlp2 = { h1: [10, 10, -5], h2: [0, 0, 0], out: [10, 0, -
 /** Una solución: «o» en la neurona 1, «no-y» en la 2 y «y» de las dos en la salida. */
 export const MLP_SOLUTION: Mlp2 = { h1: [20, 20, -10], h2: [-20, -20, 30], out: [20, 20, -30] };
 
-// ---------- CNN: un «7» de 8×8 y dos filtros de 3×3 ----------
-// Los mismos datos que el ejercicio de Python (cnn.py).
+// ---------- CNN: dígito manuscrito real de 8×8 y dos filtros de 3×3 ----------
+// Primera muestra de `sklearn.datasets.load_digits`: un «0», intensidades de 0 a 16.
 
 export const CNN_IMAGE: Grid = [
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 1, 1, 1, 1, 1, 1, 0],
-  [0, 1, 1, 1, 1, 1, 1, 0],
-  [0, 0, 0, 0, 1, 1, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 5, 13, 9, 1, 0, 0],
+  [0, 0, 13, 15, 10, 15, 5, 0],
+  [0, 3, 15, 2, 0, 11, 8, 0],
+  [0, 4, 12, 0, 0, 8, 8, 0],
+  [0, 5, 8, 0, 0, 9, 8, 0],
+  [0, 4, 11, 0, 1, 12, 7, 0],
+  [0, 2, 14, 5, 10, 12, 0, 0],
+  [0, 0, 6, 13, 10, 0, 0, 0],
 ];
 export const CNN_KERNELS: { id: string; label: string; kernel: Grid }[] = [
   { id: 'vertical', label: 'Borde vertical', kernel: [[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]] },

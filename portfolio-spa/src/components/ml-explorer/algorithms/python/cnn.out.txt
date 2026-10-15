@@ -1,26 +1,26 @@
 Filtro vertical: mapa de activación 6×6 (tras ReLU)
-[[2 0 0 0 0 0]
- [2 0 1 1 0 0]
- [1 1 2 0 0 0]
- [0 2 3 0 0 0]
- [0 3 3 0 0 0]
- [0 2 2 0 0 0]]
+[[33 27  0  0  0  0]
+ [40 10  0 17 11  0]
+ [35  0  0 26 24  0]
+ [31  0  0 29 22  0]
+ [33  0  0 28  4  0]
+ [31 12  0  6  0  0]]
 Tras max pooling 2×2 (3×3):
-[[2 1 0]
- [2 3 0]
- [3 3 0]]
+[[40 17 11]
+ [35 29 24]
+ [33 28  4]]
 
 Filtro horizontal: mapa de activación 6×6 (tras ReLU)
-[[2 3 3 3 3 2]
- [0 0 0 0 0 0]
- [0 0 0 0 0 0]
- [0 1 1 0 0 0]
- [0 0 0 0 0 0]
- [0 0 0 0 0 0]]
+[[13  2  0  0  9 18]
+ [ 3  0  0  0  0  0]
+ [ 0  0  0  0  0  0]
+ [ 0  0  0  5  4  3]
+ [ 3  8 21 18  5  0]
+ [ 0  4 17 10  0  0]]
 Tras max pooling 2×2 (3×3):
-[[3 3 3]
- [1 1 0]
- [0 0 0]]
+[[13  0 18]
+ [ 0  5  4]
+ [ 8 21  5]]
 
 Pesos de un filtro de 3×3: 9, los mismos en las 36 posiciones
 Una capa densa de 64 píxeles a 36 salidas necesitaría 2304 pesos
