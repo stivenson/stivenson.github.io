@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 // Import directo (no el barril ./components): el barril arrastraría al chunk de
@@ -12,6 +12,8 @@ import './styles/typography.css';
 import './styles/animations.css';
 import './styles/richfaces.css';
 import './styles/retro-modern.css';
+import './styles/design-refresh.css';
+import './styles/design-motion.css';
 
 // Route-based code splitting: each page (and its heavy deps — markdown,
 // syntax-highlighter, etc.) loads only when its route is visited.
@@ -21,11 +23,6 @@ const Portfolio = lazy(() => import('./pages/Portfolio').then((m) => ({ default:
 const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About })));
 const Articles = lazy(() => import('./pages/Articles').then((m) => ({ default: m.Articles })));
 const ArticleDetail = lazy(() => import('./pages/ArticleDetail').then((m) => ({ default: m.ArticleDetail })));
-
-// tsparticles is a decorative background — load it off the critical path.
-const ParticlesBackground = lazy(() =>
-  import('./components/ParticlesBackground').then((m) => ({ default: m.ParticlesBackground }))
-);
 
 function RouteFallback() {
   return (
@@ -37,6 +34,7 @@ function RouteFallback() {
 
 function AppRoutes() {
   const location = useLocation();
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [location.pathname]);
   return (
     <Suspense fallback={<RouteFallback />}>
       <AnimatePresence mode="wait">
@@ -64,9 +62,6 @@ function App() {
         <div className="cosmic-planet cosmic-planet--cyan" aria-hidden="true" />
         <div className="cosmic-moon" aria-hidden="true" />
         <div className="bg-grid" />
-        <Suspense fallback={null}>
-          <ParticlesBackground />
-        </Suspense>
       </div>
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Header />

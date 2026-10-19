@@ -1,94 +1,61 @@
-import { motion } from 'framer-motion';
-import { AIOrbitScene, TagList, GlowCard, TerminalHero } from '../components';
-import type { TermLine } from '../components';
-import { PageShell, Section } from '../components';
+import { Link } from 'react-router-dom';
+import { PageShell } from '../components/layout/PageShell';
+import { FeaturedProjects } from '../components/FeaturedProjects';
+import { TerminalOrbit } from '../components/TerminalOrbit';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
-import { staggerContainer, staggerItem } from '../components/motion/variants';
-import profileData from '../data/profile.json';
+import profile from '../data/profile.json';
+
+const specialties = [
+  { number: '01', title: 'IA y agentes', text: 'Modelos de lenguaje integrados a productos y flujos útiles.', tags: ['Python', 'LLMs', 'LangChain', 'FastMCP'] },
+  { number: '02', title: 'Producto web', text: 'Experiencias completas, desde la interfaz hasta la API.', tags: ['React', 'TypeScript', 'Node.js', 'FastAPI'] },
+  { number: '03', title: 'Cloud y operación', text: 'Infraestructura para desplegar, observar y evolucionar.', tags: ['AWS', 'GCP', 'Docker', 'CI/CD'] },
+];
 
 export function Dashboard() {
-  const { personal, skills, achievements, experience } = profileData;
-
-  const allTechnologies = [
-    ...skills.languages,
-    ...skills.frontend,
-    ...(skills.ai || []),
-    ...skills.cloud.slice(0, 5),
-    ...skills.devops.slice(0, 3),
-  ];
-
-  const currentRole = experience[0];
-
-  // Terminal transcript — grounded entirely in profile.json.
-  const heroLines: TermLine[] = [
-    { kind: 'cmd', text: 'whoami' },
-    { kind: 'out', content: <span className="accent">{personal.name}</span> },
-    { kind: 'out', content: personal.title },
-    { kind: 'gap' },
-    { kind: 'cmd', text: 'cat mision.txt' },
-    { kind: 'out', content: `"${personal.motto}"` },
-    { kind: 'gap' },
-    { kind: 'cmd', text: './perfil --resumen' },
-    { kind: 'kv', k: 'exp', v: `12 años · ${experience.length} empresas` },
-    { kind: 'kv', k: 'foco', v: 'IA · agentes · full stack' },
-    { kind: 'kv', k: 'actual', v: currentRole.company },
-    { kind: 'kv', k: 'grado', v: 'MSc en IA · en curso' },
-    { kind: 'kv', k: 'registro', v: 'CvLAC · Minciencias' },
-    { kind: 'kv', k: 'base', v: personal.location },
-  ];
-
   return (
-    <PageShell>
-      {/* Hero — signature terminal + professional AI orbit */}
-      <Section className="portfolio-hero-section">
-        <div className="portfolio-hero-grid">
-          <TerminalHero
-            path="stivenson@cucuta:~/perfil"
-            shell="zsh"
-            lines={heroLines}
-          />
-          <AIOrbitScene />
+    <PageShell className="design-home">
+      <section className="design-hero" aria-labelledby="home-title">
+        <div className="design-hero-copy">
+          <p className="design-kicker"><span className="design-status-dot" /> INGENIERÍA DE SOFTWARE · IA APLICADA</p>
+          <h1 id="home-title">De una idea a un producto <em>que puedes probar.</em></h1>
+          <p className="design-lead">Soy Stivenson Rincón. Desde mi empresa, <a href="https://contenido-ia.app/" target="_blank" rel="noopener noreferrer">Contenido IA</a>, construyo aplicaciones web y soluciones con inteligencia artificial. Cuento con experiencia en banca, educación y desarrollo full stack.</p>
+          <div className="design-actions">
+            <button type="button" className="design-button design-button-primary" onClick={() => { document.getElementById('proyectos')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }); }}>Probar mis proyectos <span aria-hidden="true">↗</span></button>
+            <a className="design-button design-button-secondary" href="mailto:contact@contenido-ia.app">Hablemos de tu idea <span aria-hidden="true">→</span></a>
+          </div>
+          <p className="design-location">Cúcuta, Colombia <span aria-hidden="true">/</span> Trabajo remoto</p>
         </div>
-      </Section>
-
-      {/* Tech stack */}
-      <ScrollReveal delay={0.05}>
-        <Section title="Stack Tecnológico">
-          <GlowCard>
-            <TagList tags={allTechnologies} electric />
-          </GlowCard>
-        </Section>
+        <aside className="profile-terminal" aria-label="Perfil profesional de Stivenson">
+          <div className="profile-terminal-bar"><span className="terminal-window-dots" aria-hidden="true">● ● ●</span><span>stivenson / perfil</span><span aria-hidden="true">_</span></div>
+          <TerminalOrbit />
+          <div className="profile-terminal-body">
+            <p className="terminal-command"><span>$</span> whoami</p>
+            <p className="terminal-person">Stivenson Rincón<span className="terminal-person-role">Systems Engineer · Full Stack Developer</span></p>
+            <p className="terminal-command"><span>$</span> cat enfoque.txt</p>
+            <ul className="terminal-focus"><li>Productos web de principio a fin</li><li>IA conectada a problemas reales</li><li>Cloud, integraciones y despliegue</li></ul>
+            <div className="terminal-bottom"><span className="design-status-dot" /> Construir. Probar. Evolucionar.<span className="terminal-idle-cursor" aria-hidden="true">▍</span></div>
+          </div>
+        </aside>
+      </section>
+      <ScrollReveal>
+      <section className="experience-ribbon" aria-label="Experiencia y formación">
+        <p>Experiencia en<br /><strong>sistemas que importan.</strong></p>
+        <span><strong>Mo Technologies</strong><small>Productos bancarios</small></span>
+        <span><strong>DXC · Davivienda</strong><small>Microservicios y cloud</small></span>
+        <span><strong>U. de los Andes</strong><small>Maestría en IA · en curso</small></span>
+      </section>
       </ScrollReveal>
-
-      {/* Achievements */}
-      <ScrollReveal delay={0.05}>
-        <Section title="Logros Destacados">
-          <motion.div
-            className="rf-cards-grid"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-60px' }}
-          >
-            {achievements.map((achievement) => (
-              <motion.div
-                key={achievement.title}
-                variants={staggerItem}
-                className="glow-card"
-                style={{ padding: 'var(--space-lg)' }}
-                whileHover={{ y: -4 }}
-              >
-                <p style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, marginBottom: '6px', color: 'var(--electric-cyan)' }}>
-                  {achievement.title}
-                </p>
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--rf-text-muted)', lineHeight: 1.55 }}>
-                  {achievement.description}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </Section>
+      <div id="proyectos" className="project-anchor"><FeaturedProjects /></div>
+      <ScrollReveal>
+      <section className="design-specialties" aria-labelledby="specialties-title">
+        <div className="design-section-heading"><div><p className="design-kicker">CÓMO LO CONSTRUYO</p><h2 id="specialties-title">Del modelo al producto.</h2><p>Tres áreas que conecto en cada proyecto.</p></div><Link className="design-text-link" to="/resume">Ver experiencia ↗</Link></div>
+        <div className="specialties-grid">{specialties.map((item) => <article key={item.number}><span className="specialty-number">{item.number} /</span><h3>{item.title}</h3><p>{item.text}</p><ul className="product-stack">{item.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></article>)}</div>
+      </section>
       </ScrollReveal>
+      <ScrollReveal>
+      <section className="design-contact" aria-labelledby="contact-title"><div><p className="design-kicker">EL SIGUIENTE PASO</p><h2 id="contact-title">¿Qué quieres construir?</h2><p>Conversemos sobre tu idea y la primera versión que vale la pena probar.</p></div><a className="design-button design-button-primary" href="mailto:contact@contenido-ia.app">Hablemos <span aria-hidden="true">↗</span></a></section>
+      </ScrollReveal>
+      <section className="design-footnote" aria-label="Distinción académica"><span aria-hidden="true">✦</span><p><strong>{profile.achievements[0].title}</strong> · {profile.achievements[0].description}</p></section>
     </PageShell>
   );
 }

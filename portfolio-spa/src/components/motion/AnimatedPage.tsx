@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { pageVariants } from './variants';
 
 interface AnimatedPageProps {
@@ -7,12 +7,13 @@ interface AnimatedPageProps {
 }
 
 export function AnimatedPage({ children, className }: AnimatedPageProps) {
+  const reducedMotion = useReducedMotion();
   return (
     <motion.div
       variants={pageVariants}
-      initial="initial"
-      animate="enter"
-      exit="exit"
+      initial={reducedMotion ? false : "initial"}
+      exit={reducedMotion ? { opacity: 1, y: 0 } : "exit"}
+      animate={reducedMotion ? { opacity: 1, y: 0 } : "enter"}
       className={className}
       style={{ width: '100%' }}
     >

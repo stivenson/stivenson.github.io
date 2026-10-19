@@ -1,0 +1,38 @@
+/* Motion language: short entrances, responsive interactions, one slow orbit. */
+@keyframes portfolio-arrive {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes terminal-orbit-turn { to { transform: rotate(360deg); } }
+@keyframes terminal-cursor-rest { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .2; } }
+.design-hero-copy > * { animation: portfolio-arrive .52s cubic-bezier(.22,1,.36,1) both; }
+.design-hero-copy > :nth-child(2) { animation-delay: .04s; }
+.design-hero-copy > :nth-child(3) { animation-delay: .08s; }
+.design-hero-copy > :nth-child(4) { animation-delay: .12s; }
+.design-hero-copy > :nth-child(5) { animation-delay: .16s; }
+.profile-terminal { position: relative; animation: portfolio-arrive .6s .12s cubic-bezier(.22,1,.36,1) both; }
+.profile-terminal-bar, .profile-terminal-body { position: relative; z-index: 1; }
+.terminal-orbit { position: absolute; top: 48px; right: -41px; width: 155px; height: 155px; opacity: .38; pointer-events: none; }
+.terminal-orbit-ring { position: absolute; border: 1px solid #71aaff66; border-radius: 50%; }
+.terminal-orbit-ring--outer { inset: 0; }
+.terminal-orbit-ring--inner { inset: 23px; border-color: #7592ce4d; }
+.terminal-orbit-track { position: absolute; inset: 0; border-radius: 50%; animation: terminal-orbit-turn 28s linear infinite; animation-play-state: paused; }
+.terminal-orbit-track > span { position: absolute; top: 50%; left: -2px; width: 4px; height: 4px; border-radius: 50%; background: #94c9ff; box-shadow: 0 0 8px #73adff88; }
+.terminal-orbit-core { position: absolute; inset: 65px; border-radius: 50%; background: radial-gradient(circle,#7abaff77,transparent 75%); }
+.terminal-orbit.is-moving .terminal-orbit-track { animation-play-state: running; }
+.terminal-idle-cursor { animation: terminal-cursor-rest 1.6s step-end 3; }
+.product-card { transition: border-color .22s ease, box-shadow .22s ease; }
+.product-card:focus-within { border-color: #739bc9; box-shadow: 0 0 0 1px #739bc940; }
+.design-button { transition: background .2s, border-color .2s, box-shadow .2s, transform .2s; }
+.design-button-primary:hover { box-shadow: 0 4px 22px #629cff25; }
+.design-button:active { transform: translateY(1px); }
+.design-button > span, .product-open > span, .design-text-link > span { display: inline-block; transition: transform .2s cubic-bezier(.22,1,.36,1); }
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover { border-color: #526e9b; box-shadow: 0 12px 30px #0003; }
+  .design-button:hover > span, .product-open:hover > span, .design-text-link:hover > span { transform: translate(2px,-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .design-hero-copy > *, .profile-terminal, .terminal-orbit-track, .terminal-idle-cursor { animation: none; }
+  .design-button, .design-button > span, .product-open > span, .design-text-link > span, .product-card { transition: none; }
+  .design-button:active, .design-button:hover > span, .product-open:hover > span, .design-text-link:hover > span { transform: none; }
+}

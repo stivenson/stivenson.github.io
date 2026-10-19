@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
-import { RichPanel, RichTable, TagList, PageShell, CommandLine, Icon } from '../components';
+import { RichPanel, RichTable, TagList, PageShell, Icon } from '../components';
 import type { IconName } from '../components';
+import { FeaturedProjects } from '../components/FeaturedProjects';
 import profileData from '../data/profile.json';
 
 interface Repo {
@@ -84,13 +85,13 @@ export function Portfolio() {
 
   return (
     <PageShell>
-      <CommandLine command="ls ~/proyectos --all">
-        Repositorios públicos y proyectos de código abierto de{' '}
-        <a href={github.profileUrl} target="_blank" rel="noopener noreferrer">
-          @{github.username}
-        </a>{' '}
-        — Systems Engineer, Full Stack Developer, open source enthusiast.
-      </CommandLine>
+      <header className="design-portfolio-intro">
+        <p className="design-kicker">TRABAJO QUE PUEDES EXPLORAR</p>
+        <h1>Productos, investigación y código.</h1>
+        <p>Aplicaciones propias y proyectos académicos. Explora las demos o visita <a href={github.profileUrl} target="_blank" rel="noopener noreferrer">mi perfil de GitHub ↗</a>.</p>
+      </header>
+
+      <FeaturedProjects showAllLink={false} />
 
       {/* BrainWeb SBD Panel */}
       <RichPanel title="BrainWeb SBD — Análisis de Imágenes Médicas con IA" icon={<Icon name="activity" size={16} />} electric>

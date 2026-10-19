@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { RetroIcon } from './RetroIcon';
 import { staggerContainer, staggerItem } from './motion/variants';
 import { useMediaQuery } from '../hooks/useMediaQuery';
@@ -12,7 +12,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { path: '/', label: 'Dashboard', icon: '🏠' },
+  { path: '/', label: 'Inicio', icon: '🏠' },
   { path: '/resume', label: 'Experiencia', icon: '💼' },
   { path: '/portfolio', label: 'Portafolio', icon: '📁' },
   { path: '/articles', label: 'Artículos', icon: '📝' },
@@ -37,12 +37,8 @@ const externalSites: ExternalSite[] = [
   { href: 'https://stivenson.github.io/llm-directory.html', icon: '🤖', label: 'Directorio LLMs', badge: 'app web' },
 ];
 
-/** Rutas donde el sidebar se repliega en un panel al entrar desde movil. */
-function isReadingRoute(pathname: string): boolean {
-  return pathname === '/articles' || pathname.startsWith('/articles/');
-}
-
 export function Sidebar() {
+  const reducedMotion = useReducedMotion();
   const { pathname } = useLocation();
   const isNarrow = useMediaQuery('(max-width: 768px)');
   const [open, setOpen] = useState(false);
@@ -51,7 +47,7 @@ export function Sidebar() {
 
   // En las rutas de lectura el menu estorba: quien llega quiere el texto, no
   // la navegacion. Solo en pantallas estrechas — en escritorio sobra sitio.
-  const isDrawer = isNarrow && isReadingRoute(pathname);
+  const isDrawer = isNarrow;
 
   // Al navegar (o al ensanchar la ventana) el panel debe cerrarse: si no,
   // queda abierto sobre la pagina nueva o convertido otra vez en columna fija.
@@ -64,6 +60,16 @@ export function Sidebar() {
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false);
+      if (event.key !== 'Tab') return;
+      const controls = asideRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (!controls?.length) return;
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === asideRef.current)) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault(); first.focus();
+      }
     };
     document.addEventListener('keydown', onKeyDown);
 
@@ -125,6 +131,7 @@ export function Sidebar() {
         inert={isDrawer && !open}
         tabIndex={isDrawer ? -1 : undefined}
       >
+      {isDrawer && <button type="button" className="design-drawer-close" onClick={() => setOpen(false)}>Cerrar navegación <span aria-hidden="true">×</span></button>}
       <div className="rf-sidebar">
         <div className="rf-sidebar-header electric">
           <span className="sidebar-header-mark" aria-hidden="true">✦</span>
@@ -135,7 +142,7 @@ export function Sidebar() {
           className="sidebar-nav"
           style={{ marginTop: '8px' }}
           variants={staggerContainer}
-          initial="hidden"
+          initial={reducedMotion ? false : "hidden"}
           animate="visible"
         >
           {navItems.map((item) => (
@@ -158,7 +165,7 @@ export function Sidebar() {
                           background: 'rgba(76, 89, 211, 0.15)',
                           boxShadow: 'inset 3px 0 0 var(--electric-blue)',
                         }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                        transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 35 }}
                       />
                     )}
                     <span className="rf-tree-icon" style={{ position: 'relative', zIndex: 1 }}>
@@ -174,9 +181,9 @@ export function Sidebar() {
 
         <motion.div
           className="sidebar-sites"
-          initial={{ opacity: 0, y: 10 }}
+          initial={reducedMotion ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
+          transition={{ delay: reducedMotion ? 0 : 0.15, duration: reducedMotion ? 0 : 0.3 }}
         >
           <motion.div
             className="sidebar-sites-glow"
@@ -186,8 +193,7 @@ export function Sidebar() {
               background: 'linear-gradient(135deg, rgba(76,89,211,0.18) 0%, rgba(85,170,255,0.12) 100%)',
               pointerEvents: 'none',
             }}
-            animate={{ opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+
           />
           <div style={{ position: 'relative', zIndex: 1 }}>
             <div className="sidebar-sites-heading">
@@ -210,8 +216,7 @@ export function Sidebar() {
                 {site.badge && (
                   <motion.span
                     className="sidebar-site-badge"
-                    animate={{ opacity: [1, 0.45, 1] }}
-                    transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+
                   >
                     {site.badge}
                   </motion.span>
