@@ -28,6 +28,9 @@ interface ExternalSite {
 
 const externalSites: ExternalSite[] = [
   { href: 'https://github.com/stivenson', icon: '🔗', label: 'GitHub Profile' },
+  { href: 'https://contenido-ia.app/app', icon: '✨', label: 'Contenido IA', badge: 'app web' },
+  { href: 'https://contenido-ia.app/gestion-monitorias/app', icon: '🎓', label: 'Gestión de Monitorías', badge: 'app web' },
+  { href: 'https://bistro-web-production.up.railway.app/', icon: '🍽️', label: 'Bistro Suite', badge: 'demo' },
   { href: 'https://stivenson.github.io/toc_support.html', icon: '🧠', label: 'Soporte TOC', badge: 'app web' },
   { href: 'https://github.com/stivenson/job_search_agents', icon: '🔍', label: 'Job Search Agents' },
   { href: 'https://project-mri-production.up.railway.app/', icon: '🔬', label: 'Project MRI', badge: 'app web' },

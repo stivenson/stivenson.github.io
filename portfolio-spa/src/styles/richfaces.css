@@ -284,6 +284,10 @@ body {
 }
 
 .sidebar-site-link {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: 6px;
+  row-gap: 3px;
   position: relative;
   min-height: 39px;
   padding: 6px 7px;
@@ -298,14 +302,15 @@ body {
 .sidebar-site-label {
   min-width: 0;
   flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: normal;
+  line-height: 1.4;
 }
 
 .sidebar-site-badge {
-  flex: 0 0 auto;
-  margin-left: auto;
+  grid-column: 2;
+  justify-self: start;
+  margin-left: 0;
   padding: 2px 5px;
   border: 1px solid rgba(255, 180, 84, 0.4);
   border-radius: 5px;
