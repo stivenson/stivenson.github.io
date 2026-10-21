@@ -98,13 +98,14 @@ it('Decision Tree real (?alg=decision-tree): recorre las 8 pestañas sin errores
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
+    if (id === 'type') {
       const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
       expect(svg).not.toBeNull();
       expect(svg!.querySelectorAll('circle')).toHaveLength(28);
-      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toMatch(/^2 reglas/);
+      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('clientes de entrenamiento');
       expect(container.querySelector('.mlx-tabpanel ul.mlx-tree')).not.toBeNull();
-      expect(container.querySelector('.katex')).not.toBeNull();
+      expect(screen.getByRole('slider', { name: /min_samples_leaf/ })).toBeTruthy();
+      expect(container.querySelector('.mlx-essential')?.textContent).toContain('ccp_alpha');
     }
   }
 

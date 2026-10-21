@@ -163,15 +163,16 @@ export function gini([a, b]: [number, number]): number {
 
 /**
  * El mejor corte sobre un eje: punto medio entre valores consecutivos con la
- * menor impureza de Gini ponderada. null si todos los valores son iguales.
+ * menor impureza de Gini ponderada. null si no hay un corte válido.
  */
-export function bestSplitOnAxis(points: LabeledPt[], axis: 'x' | 'y'): { threshold: number; score: number } | null {
+export function bestSplitOnAxis(points: LabeledPt[], axis: 'x' | 'y', minSamplesLeaf = 1): { threshold: number; score: number } | null {
   const values = [...new Set(points.map((p) => p[axis]))].sort((a, b) => a - b);
   let best: { threshold: number; score: number } | null = null;
   for (let i = 0; i < values.length - 1; i++) {
     const threshold = (values[i] + values[i + 1]) / 2;
     const left = points.filter((p) => p[axis] <= threshold);
     const right = points.filter((p) => p[axis] > threshold);
+    if (left.length < minSamplesLeaf || right.length < minSamplesLeaf) continue;
     const score = (left.length * gini(countLabels(left)) + right.length * gini(countLabels(right))) / points.length;
     if (best === null || score < best.score - 1e-12) best = { threshold, score };
   }
@@ -181,16 +182,17 @@ export function bestSplitOnAxis(points: LabeledPt[], axis: 'x' | 'y'): { thresho
 /**
  * Árbol CART con impureza de Gini, cortes en el punto medio entre valores
  * consecutivos. Se detiene si llega a la profundidad, si el grupo es puro o
- * si ningún corte mejora la impureza.
+ * si ningún corte válido mejora la impureza. Cada hijo debe respetar minSamplesLeaf.
  */
-export function buildTree(points: LabeledPt[], maxDepth: number): TreeNode {
+export function buildTree(points: LabeledPt[], maxDepth: number, minSamplesLeaf = 1): TreeNode {
+  if (!Number.isInteger(minSamplesLeaf) || minSamplesLeaf < 1) throw new RangeError("min_samples_leaf debe ser un entero positivo");
   const count = countLabels(points);
   const leaf: TreeNode = { kind: 'leaf', label: count[1] > count[0] ? 1 : 0, count };
-  if (maxDepth <= 0 || points.length < 2 || count[0] === 0 || count[1] === 0) return leaf;
+  if (maxDepth <= 0 || points.length < 2 * minSamplesLeaf || count[0] === 0 || count[1] === 0) return leaf;
 
   let best: { axis: 'x' | 'y'; threshold: number; score: number } | null = null;
   for (const axis of ['x', 'y'] as const) {
-    const split = bestSplitOnAxis(points, axis);
+    const split = bestSplitOnAxis(points, axis, minSamplesLeaf);
     if (split !== null && (best === null || split.score < best.score - 1e-12)) best = { axis, ...split };
   }
   if (best === null || best.score >= gini(count) - 1e-12) return leaf;
@@ -201,8 +203,8 @@ export function buildTree(points: LabeledPt[], maxDepth: number): TreeNode {
     axis,
     threshold,
     count,
-    left: buildTree(points.filter((p) => p[axis] <= threshold), maxDepth - 1),
-    right: buildTree(points.filter((p) => p[axis] > threshold), maxDepth - 1),
+    left: buildTree(points.filter((p) => p[axis] <= threshold), maxDepth - 1, minSamplesLeaf),
+    right: buildTree(points.filter((p) => p[axis] > threshold), maxDepth - 1, minSamplesLeaf),
   };
 }
 

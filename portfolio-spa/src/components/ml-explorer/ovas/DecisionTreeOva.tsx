@@ -1,3 +1,5 @@
+import { G } from '../Gloss';
+import './DecisionTreeOva.css';
 import { useMemo, useRef, useState } from 'react';
 import { TREE_POINTS as POINTS } from './datasets';
 import { OVA_COLORS, OvaFrame, OvaSlider } from './OvaFrame';
@@ -53,7 +55,7 @@ function TreeView({ node, prefix, depth, activeDepth }: { node: TreeNode; prefix
     return (
       <li className={depth === activeDepth + 1 ? 'mlx-tree-leaf is-new' : 'mlx-tree-leaf'}>
         {tag}
-        {node.label ? '🟠 impago' : '🔵 paga'} <small>({node.count[0] + node.count[1]} clientes)</small>
+        {node.label ? '🟠 impago' : '🔵 paga'} <small>({node.count[0] + node.count[1]} {node.count[0] + node.count[1] === 1 ? 'cliente' : 'clientes'})</small>
       </li>
     );
   }
@@ -80,44 +82,62 @@ function TreeView({ node, prefix, depth, activeDepth }: { node: TreeNode; prefix
 export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [maxDepth, setMaxDepth] = useState(5);
   const [depth, setDepth] = useState(0);
+  const [minSamplesLeaf, setMinSamplesLeaf] = useState(1);
+  const [showFinal, setShowFinal] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  const shownDepth = Math.min(depth, maxDepth);
-  const tree = useMemo(() => buildTree(POINTS, shownDepth), [shownDepth]);
+  const shownDepth = showFinal ? maxDepth : Math.min(depth, maxDepth);
+  const tree = useMemo(() => buildTree(POINTS, shownDepth, minSamplesLeaf), [shownDepth, minSamplesLeaf]);
   const regions = treeRegions(tree, { x0: 0, x1: 10, y0: 0, y1: 10 });
   const splits = collectTreeSplits(tree, { x0: 0, x1: 10, y0: 0, y1: 10 });
   const activeDepth = shownDepth - 1;
   const activeSplits = splits.filter((split) => split.depth === activeDepth);
   const acc = accuracy(tree, POINTS);
+  const leaves = countLeaves(tree);
+  const treeDepth = (node: TreeNode): number => node.kind === 'leaf' ? 0 : 1 + Math.max(treeDepth(node.left), treeDepth(node.right));
+  const reachedDepth = treeDepth(tree);
+  const clientWord = (count: number) => count === 1 ? 'cliente' : 'clientes';
+  const leafSizes = (node: TreeNode): number[] => node.kind === 'leaf'
+    ? [node.count[0] + node.count[1]] : [...leafSizes(node.left), ...leafSizes(node.right)];
+  const smallestLeaf = Math.min(...leafSizes(tree));
+  const previous = shownDepth > 0 ? buildTree(POINTS, shownDepth - 1, minSamplesLeaf) : null;
+  const samePredictions = previous && POINTS.every((p) => predictTree(previous, p) === predictTree(tree, p));
+  const resetDepth = () => setDepth(reducedMotion ? maxDepth : 0);
 
-  const playback = useAutoLoop(depth, maxDepth, setDepth, visible, reducedMotion, autoPlay, 1000, 5000, pauseForTreeWarning);
+  const playback = useAutoLoop(depth, maxDepth, setDepth, visible && !showFinal, reducedMotion, autoPlay && !showFinal, 1000, 5000, pauseForTreeWarning);
 
   return (
     <OvaFrame
-      playback={playback}
-      explanation={shownDepth === 0 ? 'El árbol todavía no divide los clientes: todos reciben la misma predicción inicial.' : shownDepth >= 4 ? 'Las líneas verdes son las reglas nuevas. En estos niveles el árbol crea regiones pequeñas para acertar incluso en el ruido: memorizar el entrenamiento no garantiza acertar con clientes nuevos.' : activeSplits.length === 1 ? 'La línea verde es la regla nueva de este nivel. La pregunta separa un grupo de clientes en dos regiones.' : `Las líneas verdes son las ${activeSplits.length} reglas nuevas de este nivel. Cada pregunta separa un grupo de clientes en dos regiones.`}
+      playback={showFinal ? undefined : playback}
+      progressLabel={<>Nivel mostrado {shownDepth} de {maxDepth}</>}
+      explanation={showFinal ? `Árbol final: alcanza profundidad ${reachedDepth}, dentro del límite ${maxDepth}. Cambia un ajuste a la vez y compara las hojas y el acierto de entrenamiento; después evalúa con datos nuevos.` : shownDepth === 0 ? 'Sin cortes todavía: todos reciben la clase mayoritaria. Avanza para revelar los niveles.' : activeSplits.length === 0 ? 'Este nivel no añade cortes: las hojas ya son puras o ningún corte permitido mejora Gini. El límite de profundidad es un máximo, no una obligación.' : `${activeSplits.length === 1 ? 'La regla verde es la pregunta nueva' : `Las ${activeSplits.length} reglas verdes son las preguntas nuevas`} de este nivel. Cada corte respeta el mínimo de ${minSamplesLeaf} ${clientWord(minSamplesLeaf)} por hoja.`}
       title="El árbol divide el plano en reglas"
-      hint="Los puntos empiezan neutrales. En cada ciclo, el árbol agrega un nivel de preguntas sobre ingreso o deuda y pinta las regiones según la clase que predice. El relleno de cada punto muestra esa predicción; su borde conserva la clase real para que se vean los errores. Puedes pausar o avanzar paso a paso. La profundidad máxima es un parámetro del modelo: al subirla, el árbol puede memorizar el ruido."
+      hint="El árbol aprende preguntas sobre ingreso y deuda con 28 clientes simulados. Cambiar max_depth o min_samples_leaf vuelve a calcularlo. El recorrido revela niveles; no es un hiperparámetro. El relleno indica la predicción, el borde la clase real y las líneas verdes los cortes nuevos. El acierto se mide sobre los mismos clientes usados para entrenar."
       controls={
-        <OvaSlider
-          label="Profundidad máxima"
-          value={maxDepth}
-          min={1}
-          max={5}
-          step={1}
-          onChange={(value) => {
-            setMaxDepth(value);
-            setDepth(0);
-          }}
-        />
+        <>
+          <div className="mlx-tree-settings" role="group" aria-label="Hiperparámetros del árbol">
+            <strong>Ajustes de entrenamiento</strong>
+            <OvaSlider label="Profundidad máxima (max_depth)" value={maxDepth} min={1} max={5} step={1}
+              onChange={(value) => { setMaxDepth(value); setDepth(reducedMotion ? value : 0); }} />
+            <p>Máximo de preguntas en un recorrido desde la <G k="estructuraArbol">raíz hasta una hoja</G>. El árbol puede detenerse antes.</p>
+            <OvaSlider label="Mínimo de clientes por hoja (min_samples_leaf)" value={minSamplesLeaf} min={1} max={7} step={1}
+              onChange={(value) => { setMinSamplesLeaf(value); resetDepth(); }} />
+            <p>Cada corte debe dejar al menos este número de clientes en <b>ambos lados</b>. Compara 1 y 4 con el resultado final: observa las regiones y el tamaño de las <G k="minimoHoja">hojas</G>.</p>
+            <output>Árbol mostrado: {leaves} hojas · hoja más pequeña: {smallestLeaf} {clientWord(smallestLeaf)} · acierto en entrenamiento: {(acc * 100).toFixed(1)} %.</output>
+          </div>
+          <label className="mlx-tree-final"><input type="checkbox" checked={showFinal} onChange={(e) => { setShowFinal(e.target.checked); resetDepth(); }} /> Mostrar árbol final</label>
+          <p>El avance y la velocidad son <G k="controlDidactico">controles de visualización</G>. Al fijar el árbol final puedes comparar ajustes sin esperar la animación.</p>
+          <p>Fijos: <code>criterion='gini'</code>, <code>min_samples_split=2</code>, sin poda posterior ni pesos de clase. La OVA usa dos variables y desempata cortes en orden fijo; scikit-learn puede resolver empates de otra manera.</p>
+          <button type="button" onClick={() => { setMaxDepth(5); setMinSamplesLeaf(1); setDepth(reducedMotion ? 5 : 0); }}>Restablecer ajustes</button>
+        </>
       }
       readoutLive="off"
       readout={
         <>
           <span>
-            Nivel <b>{shownDepth}</b> de <b>{maxDepth}</b> · <b>{countLeaves(tree)}</b> reglas · acierta{' '}
-            <b>{(acc * 100).toFixed(1)} %</b> de estos clientes
+            Nivel <b>{shownDepth}</b> de <b>{maxDepth}</b> · <b>{leaves}</b> hojas · acierta{' '}
+            <b>{(acc * 100).toFixed(1)} %</b> de los 28 clientes de entrenamiento
           </span>
           <span>Relleno: predicción del árbol · borde: clase real del cliente.</span>
           {activeSplits.length > 0 && (
@@ -128,25 +148,25 @@ export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
                 : `${activeSplits.length} grupos reciben una pregunta nueva. Las líneas y reglas verdes muestran exactamente cuáles son.`}
             </span>
           )}
-          {shownDepth === 2 && (
+          {samePredictions && activeSplits.length > 0 && (
             <span>
-              Hay 4 hojas pero el mismo acierto que con 1 nivel: los cortes nuevos dejan grupos más puros sin cambiar
-              ninguna predicción.
+              Las preguntas nuevas reducen la mezcla de clases, pero no cambian las predicciones frente al nivel anterior.
             </span>
           )}
-          {shownDepth >= 4 && (
+          {shownDepth > 0 && smallestLeaf <= 2 && (
             <div className="mlx-tree-overfit">
-              <strong><span aria-hidden="true">⚠️</span> Sobreajuste: el árbol memoriza el ruido</strong>
+              <strong><span aria-hidden="true">⚠️</span> Hojas pequeñas: revisa el riesgo de sobreajuste</strong>
               <p>
-                Desde aquí el árbol empieza a encerrar puntos de ruido en cajitas propias: ya está memorizando el ruido
-                (overfitting). Este porcentaje se calcula sobre los mismos datos con los que aprendió.
+                Hay hojas con solo {smallestLeaf} {clientWord(smallestLeaf)}. Pueden capturar excepciones o ruido. El acierto de entrenamiento
+                no demuestra sobreajuste por sí solo: comprueba si el modelo pierde rendimiento con datos nuevos.
               </p>
             </div>
           )}
         </>
       }
     >
-      <div ref={stageRef}>
+      <div className="mlx-tree-viz" ref={stageRef}>
+        <div className="mlx-tree-summary"><strong>max_depth = {maxDepth} · min_samples_leaf = {minSamplesLeaf}</strong><span>Profundidad alcanzada {reachedDepth} · {leaves} hojas · mínimo observado {smallestLeaf} {clientWord(smallestLeaf)}</span><span>Acierto en entrenamiento: {(acc * 100).toFixed(1)} %. Falta evaluar con datos nuevos.</span></div>
         <svg
           viewBox={`0 0 ${PLOT.width} ${PLOT.height}`}
           role="img"

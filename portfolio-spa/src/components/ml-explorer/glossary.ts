@@ -112,9 +112,24 @@ export const GLOSSARY = {
     what: 'Tabla que cuenta aciertos y errores por clase: lo real en las filas, lo predicho en las columnas.',
     why: 'Muestra qué tipo de error comete el modelo, no solo cuántos.',
   },
+  estructuraArbol: {
+    term: 'Nodos, hojas y profundidad',
+    what: 'Un nodo agrupa ejemplos. Un nodo de decisión hace una pregunta y tiene dos ramas; una hoja termina el recorrido y devuelve una predicción. La raíz tiene profundidad 0.',
+    why: 'max_depth limita cuántas preguntas puede atravesar un caso. El árbol puede detenerse antes; las hojas no son iteraciones de entrenamiento.',
+  },
+  minimoHoja: {
+    term: 'Mínimo de ejemplos por hoja',
+    what: 'min_samples_leaf exige que un corte deje al menos esa cantidad de ejemplos de entrenamiento en cada una de sus dos ramas. En esta OVA se elige un número entero.',
+    why: 'Impide crear grupos demasiado pequeños. No equivale a min_samples_split, que solo exige un mínimo en el grupo antes de dividirlo; más restricciones pueden simplificar demasiado el árbol.',
+  },
+  corteArbol: {
+    term: 'Corte aprendido del árbol',
+    what: 'Una pregunta como «deuda ≤ 5,75». El entrenamiento elige la columna y el valor del corte buscando separar mejor las respuestas conocidas.',
+    why: 'Ese valor se aprende de los datos. Es distinto del umbral de probabilidad de un clasificador y de los hiperparámetros que limitan el crecimiento del árbol.',
+  },
   gini: {
     term: 'Impureza de Gini',
-    what: 'Mide qué tan mezcladas están las clases en un grupo: 0 si todos son de la misma clase, 0.5 si están mitad y mitad.',
+    what: 'Mide qué tan mezcladas están las clases en un grupo: 0 si todos son de la misma clase. Con dos clases llega a 0,5 cuando están mitad y mitad.',
     why: 'El árbol elige en cada paso la pregunta que más baja la impureza.',
   },
   ruido: {
@@ -454,8 +469,8 @@ export const GLOSSARY = {
   },
   poda: {
     term: 'Poda (de un árbol)',
-    what: 'Recortar las ramas de un árbol de decisión que aportan poco, o impedir que crezca más allá de cierta profundidad.',
-    why: 'Un árbol sin podar memoriza los datos; podarlo es la forma básica de evitar el sobreajuste.',
+    what: 'Recortar ramas de un árbol ya construido para reducir su complejidad. En scikit-learn, ccp_alpha controla la poda por costo-complejidad; un valor mayor favorece árboles más pequeños.',
+    why: 'La poda puede reducir el sobreajuste, pero también quitar patrones útiles. Se elige con validación. Limitar la profundidad o el mínimo por hoja restringe el crecimiento desde antes.',
   },
   entropia: {
     term: 'Entropía',

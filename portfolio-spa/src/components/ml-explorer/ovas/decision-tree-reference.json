@@ -1,0 +1,315 @@
+{
+  "source": "scikit-learn 1.6.1 DecisionTreeClassifier, criterion=gini, random_state=0",
+  "points": [
+    {
+      "x": 0.2,
+      "y": 0,
+      "label": 0
+    },
+    {
+      "x": 0.7,
+      "y": 0,
+      "label": 0
+    },
+    {
+      "x": 1.1,
+      "y": 0,
+      "label": 1
+    },
+    {
+      "x": 1.9,
+      "y": 0,
+      "label": 0
+    },
+    {
+      "x": 2.6,
+      "y": 0,
+      "label": 0
+    },
+    {
+      "x": 3.4,
+      "y": 0,
+      "label": 1
+    },
+    {
+      "x": 4.2,
+      "y": 0,
+      "label": 1
+    },
+    {
+      "x": 5.1,
+      "y": 0,
+      "label": 0
+    },
+    {
+      "x": 6.3,
+      "y": 0,
+      "label": 1
+    },
+    {
+      "x": 7.7,
+      "y": 0,
+      "label": 1
+    },
+    {
+      "x": 8.4,
+      "y": 0,
+      "label": 1
+    },
+    {
+      "x": 9.6,
+      "y": 0,
+      "label": 1
+    }
+  ],
+  "queries": [
+    {
+      "x": 0,
+      "y": 0
+    },
+    {
+      "x": 0.9,
+      "y": 0
+    },
+    {
+      "x": 1.5,
+      "y": 0
+    },
+    {
+      "x": 2.2,
+      "y": 0
+    },
+    {
+      "x": 3,
+      "y": 0
+    },
+    {
+      "x": 4.7,
+      "y": 0
+    },
+    {
+      "x": 5.8,
+      "y": 0
+    },
+    {
+      "x": 7,
+      "y": 0
+    },
+    {
+      "x": 10,
+      "y": 0
+    }
+  ],
+  "cases": [
+    {
+      "maxDepth": 1,
+      "minSamplesLeaf": 1,
+      "leaves": 2,
+      "predictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "trainingPredictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "maxDepth": 3,
+      "minSamplesLeaf": 1,
+      "leaves": 6,
+      "predictions": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "trainingPredictions": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "maxDepth": 5,
+      "minSamplesLeaf": 1,
+      "leaves": 6,
+      "predictions": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "trainingPredictions": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "maxDepth": 3,
+      "minSamplesLeaf": 2,
+      "leaves": 4,
+      "predictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "trainingPredictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "maxDepth": 5,
+      "minSamplesLeaf": 3,
+      "leaves": 3,
+      "predictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "trainingPredictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "maxDepth": 5,
+      "minSamplesLeaf": 4,
+      "leaves": 2,
+      "predictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ],
+      "trainingPredictions": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "maxDepth": 5,
+      "minSamplesLeaf": 7,
+      "leaves": 1,
+      "predictions": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "trainingPredictions": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

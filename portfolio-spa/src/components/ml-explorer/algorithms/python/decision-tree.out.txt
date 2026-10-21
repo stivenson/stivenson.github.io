@@ -1,25 +1,42 @@
-|--- deuda <= 0.38
-|   |--- atrasos <= 2.50
-|   |   |--- ingreso <= 2.50
+Ejemplos: entrenamiento=300, validación=100, prueba=100
+Profundidad | mínimo hoja | hojas | acierto entrenamiento | acierto validación
+          1 |           1 |     2 |                 69.7% |              62.0%
+          1 |           4 |     2 |                 69.7% |              62.0%
+          1 |          10 |     2 |                 69.7% |              62.0%
+          3 |           1 |     8 |                 79.7% |              73.0%
+          3 |           4 |     8 |                 79.3% |              72.0%
+          3 |          10 |     8 |                 79.0% |              73.0%
+          5 |           1 |    27 |                 85.7% |              64.0%
+          5 |           4 |    24 |                 83.0% |              67.0%
+          5 |          10 |    16 |                 80.7% |              72.0%
+         15 |           1 |    87 |                 99.7% |              65.0%
+         15 |           4 |    46 |                 84.3% |              68.0%
+         15 |          10 |    22 |                 80.7% |              72.0%
+
+Elegido con validación: max_depth=3, min_samples_leaf=1
+Profundidad alcanzada=3, hojas=8
+|--- ingreso <= 4.65
+|   |--- deuda <= 0.25
+|   |   |--- atrasos <= 2.50
 |   |   |   |--- class: paga
-|   |   |--- ingreso >  2.50
-|   |   |   |--- class: paga
-|   |--- atrasos >  2.50
-|   |   |--- class: impago
-|--- deuda >  0.38
-|   |--- atrasos <= 1.50
-|   |   |--- ingreso <= 4.95
+|   |   |--- atrasos >  2.50
 |   |   |   |--- class: impago
-|   |   |--- ingreso >  4.95
+|   |--- deuda >  0.25
+|   |   |--- deuda <= 0.61
+|   |   |   |--- class: impago
+|   |   |--- deuda >  0.61
+|   |   |   |--- class: impago
+|--- ingreso >  4.65
+|   |--- atrasos <= 1.50
+|   |   |--- atrasos <= 0.50
+|   |   |   |--- class: paga
+|   |   |--- atrasos >  0.50
 |   |   |   |--- class: paga
 |   |--- atrasos >  1.50
-|   |   |--- deuda <= 0.88
-|   |   |   |--- class: impago
-|   |   |--- deuda >  0.88
+|   |   |--- deuda <= 0.41
 |   |   |   |--- class: paga
+|   |   |--- deuda >  0.41
+|   |   |   |--- class: impago
 
-Profundidad | exactitud entrenamiento | exactitud datos nuevos
-          1 |                   64.3% |                  62.0%
-          3 |                   78.0% |                  73.3%
-          5 |                   81.1% |                  69.3%
-         15 |                   99.7% |                  70.0%
+Prueba final (una configuración): 70.0%
+Una partición simulada ilustra el método; no garantiza rendimiento en una aplicación real.

@@ -47,7 +47,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: regresión lineal, árbol de decisión, Random Forest, Gradient Boosting, SVM, KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: regresión lineal, Random Forest, Gradient Boosting, SVM, KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -69,3 +69,14 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Newton en la OVA contrastado con scikit-learn 1.6.1 en cinco valores de C. Python conserva la configuración inicial y muestra comparaciones con validación antes de una prueba separada. Notebooks sincronizados.
 - Prueba de integración actualizada a la ubicación Tipo; recorre las ocho pestañas y comprueba que el umbral no modifica la curva. Las expectativas antiguas de los demás algoritmos se revisarán al trabajar cada uno.
 - Capturas de escritorio y móvil: controles y curvas, cambio de umbral, regularización fuerte y ficha de C en pantalla completa. Sin publicación.
+
+### Árbol de decisión — revisión individual del 20 de octubre de 2026
+
+- Revisadas las ocho pestañas. max_depth, min_samples_split, min_samples_leaf, criterion y ccp_alpha visibles en Tipo; cortes y hojas aprendidos separados de los límites elegidos.
+- OVA: profundidad y mínimo por hoja modifican el cálculo. Los cortes deben dejar el mínimo en ambos hijos. Conservados los controles de reproducción, las reglas y fronteras resaltadas; añadido árbol final fijo para comparar y profundidad realmente alcanzada.
+- La advertencia se basa en hojas pequeñas, sin declarar sobreajuste por un nivel fijo ni por el acierto en entrenamiento. Se distingue el corte aprendido del umbral de probabilidad.
+- Fichas compartidas de nodos/hojas/profundidad, mínimo por hoja y corte aprendido; poda corregida y enlazada desde Tipo. Referencias oficiales de scikit-learn.
+- Cálculo contrastado con scikit-learn 1.6.1 en siete casos con un eje variable; evita comparar empates entre ejes resueltos de otra manera. Pruebas sobre las 28 observaciones verifican el mínimo de cada hoja y preservan los resultados anteriores con mínimo 1.
+- Python: 300 ejemplos para entrenar, 100 para validación y 100 para prueba final. Comparación de 12 combinaciones; una sola configuración evaluada al final. Código, salida esperada y notebooks individual/conjunto sincronizados.
+- Capturas de escritorio (1280 × 900) con mínimos 1 y 4, controles y fichas en móvil (390 × 844), pantalla completa, teclado, restauración, recorrido y movimiento reducido comprobados.
+- Revisión local sobre el commit publicado 31aa800; no incluye despliegue. Las mejoras anteriores de guía, Naive Bayes y regresión logística sí se publicaron en ese commit.
