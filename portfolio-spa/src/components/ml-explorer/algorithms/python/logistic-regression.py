@@ -2,7 +2,13 @@
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, log_loss
+
+# Configuración de entrenamiento; el umbral se aplica después de predict_proba.
+C_VALUE = 1.0
+CLASS_WEIGHT = None
+MAX_ITER = 200
+THRESHOLD = 0.5
 
 rng = np.random.default_rng(7)
 n = 400
@@ -15,8 +21,30 @@ X = np.column_stack([gratis, enlaces, conocido])
 y = es_spam.astype(int)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0, stratify=y)
 
-modelo = LogisticRegression().fit(X_train, y_train)
-pred = modelo.predict(X_test)
+# Comparaciones con validación: la prueba X_test no participa en estas tablas.
+X_fit, X_val, y_fit, y_val = train_test_split(
+    X_train, y_train, test_size=0.2, random_state=1, stratify=y_train
+)
+print("Comparación de C en validación (menor pérdida logarítmica es mejor):")
+for valor_C in [0.1, 1.0, 10.0]:
+    candidato = LogisticRegression(C=valor_C, class_weight=CLASS_WEIGHT, max_iter=MAX_ITER).fit(X_fit, y_fit)
+    p_val = candidato.predict_proba(X_val)[:, 1]
+    print(f"  C={valor_C:g}: pérdida={log_loss(y_val, p_val):.4f}; norma de coeficientes={np.linalg.norm(candidato.coef_):.2f}")
+
+# Un solo ajuste; cambiar el umbral reutiliza las mismas probabilidades.
+ajuste_val = LogisticRegression(C=C_VALUE, class_weight=CLASS_WEIGHT, max_iter=MAX_ITER).fit(X_fit, y_fit)
+p_val = ajuste_val.predict_proba(X_val)[:, 1]
+print("Umbral en validación: falsas alarmas / spam que se escapan")
+for umbral in [0.3, 0.5, 0.7]:
+    decisiones = (p_val >= umbral).astype(int)
+    tn, fp, fn, tp = confusion_matrix(y_val, decisiones, labels=[0, 1]).ravel()
+    print(f"  umbral={umbral:.1f}: {fp} / {fn}")
+print("Esta demostración conserva C_VALUE y THRESHOLD fijados arriba; no los elige con la prueba.")
+
+# Ajuste final con entrenamiento completo y evaluación en prueba separada.
+modelo = LogisticRegression(C=C_VALUE, class_weight=CLASS_WEIGHT, max_iter=MAX_ITER).fit(X_train, y_train)
+pred = (modelo.predict_proba(X_test)[:, 1] >= THRESHOLD).astype(int)
+print("\nEvaluación final con la configuración fijada:")
 
 print("Pesos [gratis, enlaces, conocido]:", np.round(modelo.coef_[0], 2))
 print(f"Intercepto b0: {modelo.intercept_[0]:.2f}")

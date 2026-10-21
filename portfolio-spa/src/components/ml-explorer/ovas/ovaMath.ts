@@ -525,12 +525,17 @@ export interface NaiveBayesModel {
   vocabulary: string[];
   /** log P(clase), [negativa, positiva]. */
   logPrior: [number, number];
-  /** log P(palabra | clase) por palabra, con suavizado de Laplace. */
+  /** log P(palabra | clase) por palabra, con suavizado aditivo. */
   logLikelihood: Map<string, [number, number]>;
 }
 
 /** MultinomialNB con suavizado alpha (1 = Laplace), igual que scikit-learn. */
-export function trainNaiveBayes(docs: { text: string; label: 0 | 1 }[], alpha = 1): NaiveBayesModel {
+export function trainNaiveBayes(docs: { text: string; label: 0 | 1 }[], alpha = 1, positivePrior?: number): NaiveBayesModel {
+  // La OVA usa suavizado positivo para evitar divisiones por cero y evidencia infinita.
+  if (!Number.isFinite(alpha) || alpha <= 0) throw new RangeError('alpha debe ser positivo y finito');
+  if (positivePrior !== undefined && (!Number.isFinite(positivePrior) || positivePrior <= 0 || positivePrior >= 1)) {
+    throw new RangeError('El prior positivo debe estar entre 0 y 1, sin incluir los extremos');
+  }
   const counts = new Map<string, [number, number]>();
   const docsPerClass: [number, number] = [0, 0];
   const wordsPerClass: [number, number] = [0, 0];
@@ -555,7 +560,9 @@ export function trainNaiveBayes(docs: { text: string; label: 0 | 1 }[], alpha = 
   }
   const n = docs.length;
   // Sin documentos no hay prior que estimar: se asume empate (evita log(0 / 0) = NaN).
-  const prior = (c: 0 | 1) => (n === 0 ? Math.log(0.5) : Math.log(docsPerClass[c] / n));
+  const prior = (c: 0 | 1) => positivePrior !== undefined
+    ? Math.log(c === 1 ? positivePrior : 1 - positivePrior)
+    : (n === 0 ? Math.log(0.5) : Math.log(docsPerClass[c] / n));
   return { vocabulary, logPrior: [prior(0), prior(1)], logLikelihood };
 }
 

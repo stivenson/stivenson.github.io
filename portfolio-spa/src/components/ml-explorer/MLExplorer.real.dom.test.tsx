@@ -68,13 +68,16 @@ it('Logistic Regression real (?alg=logistic-regression): recorre las 8 pestañas
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
-      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
-      expect(svg).not.toBeNull();
-      expect(svg!.querySelectorAll('circle')).toHaveLength(18);
-      expect(screen.getByText(/^Aciertos:/).textContent).toContain('15 de 18');
-      expect(container.querySelector('.katex')).not.toBeNull();
+    if (id === 'type') {
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Mostrar ajuste final' }));
+      expect(container.querySelectorAll('.mlx-logistic-point')).toHaveLength(18);
+      expect(screen.getByRole('combobox', { name: /Regularización inversa/ })).toBeTruthy();
+      const curve = container.querySelector('.mlx-logistic-curve')?.getAttribute('d');
+      fireEvent.change(screen.getByRole('slider', { name: 'Umbral de spam' }), { target: { value: '0.8' } });
+      expect(container.querySelector('.mlx-logistic-curve')?.getAttribute('d')).toBe(curve);
+      expect(container.querySelector('[role="status"]')?.textContent).toContain('spam que se escapan: 3');
     }
+    if (id === 'formula') expect(container.querySelector('.katex')).not.toBeNull();
   }
 
   expect(error).not.toHaveBeenCalled();
@@ -241,11 +244,15 @@ it('Naive Bayes real (?alg=naive-bayes): recorre las 8 pestañas sin errores', a
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
+    if (id === 'type') {
       expect(container.querySelector('.mlx-tabpanel input[type="text"]')).not.toBeNull();
+      fireEvent.click(screen.getByRole('checkbox', { name: 'Mostrar resultado completo' }));
       expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('P(positiva) = 93 %');
-      expect(container.querySelector('.katex')).not.toBeNull();
+      expect(screen.getByRole('slider', { name: /Suavizado/ })).toBeTruthy();
+      fireEvent.click(screen.getByRole('button', { name: '3D' }));
+      expect(container.querySelectorAll('.mlx-nb-3d-evidence')).toHaveLength(4);
     }
+    if (id === 'formula') expect(container.querySelector('.katex')).not.toBeNull();
   }
 
   expect(error).not.toHaveBeenCalled();

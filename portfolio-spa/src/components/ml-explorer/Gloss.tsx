@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 
 import { createPortal } from 'react-dom';
 import { portalTarget } from './fullscreen';
 import { GLOSSARY, type GlossaryKey } from './glossary';
+import './Gloss.css';
 
 /**
  * Término con ficha 💡. La ficha se monta en document.body porque las

@@ -31,6 +31,7 @@ export const REQUIRED_TERMS: readonly RequiredTerm[] = [
   { re: 'ensambles?', key: 'ensamble' },
   { re: 'batch(es)?|mini-?lotes?', key: 'batch' },
   { re: 'hiperparámetros?', key: 'hiperparametro' },
+  { re: 'suavizado aditivo', key: 'suavizadoAditivo' },
   { re: 'validación cruzada', key: 'validacionCruzada' },
   { re: '(?<!log-)odds', key: 'odds' },
   { re: 'log-odds', key: 'logOdds' },

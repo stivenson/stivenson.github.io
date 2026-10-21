@@ -1,0 +1,37 @@
+/* Solo la tabla de elección de algoritmos del artículo de ML. */
+@media (max-width: 600px) {
+  .ml-selection-guide table,
+  .ml-selection-guide tbody {
+    display: block;
+  }
+
+  .ml-selection-guide thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .ml-selection-guide tr {
+    display: block;
+    margin-bottom: 16px;
+    background: rgba(10, 10, 46, 0.94);
+  }
+
+  .ml-selection-guide td {
+    display: block;
+    overflow-wrap: anywhere;
+  }
+
+  .ml-selection-guide td::before {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--electric-cyan);
+    font-weight: 600;
+  }
+
+  .ml-selection-guide td:nth-child(1)::before { content: "Tu objetivo"; }
+  .ml-selection-guide td:nth-child(2)::before { content: "Por dónde empezar"; }
+  .ml-selection-guide td:nth-child(3)::before { content: "Qué comprobar"; }
+}

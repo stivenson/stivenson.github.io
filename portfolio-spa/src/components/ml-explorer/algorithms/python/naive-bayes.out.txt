@@ -12,3 +12,13 @@ Palabras que más empujan a negativa: mala, no, pésimo
 «batería» multiplica los odds de positiva por 1.05
 «la» multiplica los odds de positiva por 0.53
 «nueva» no estaba en el entrenamiento: se ignora
+
+Efecto de alpha (prior estimado):
+  alpha=0.1: P(positiva) = 99.8%
+  alpha=1.0: P(positiva) = 92.5%
+  alpha=5.0: P(positiva) = 69.9%
+Efecto del prior (alpha=1.0):
+  prior positivo=20%: P(positiva) = 75.5%
+  prior positivo=50%: P(positiva) = 92.5%
+  prior positivo=80%: P(positiva) = 98.0%
+Estos resultados ilustran probabilidades, no miden aciertos con datos independientes.

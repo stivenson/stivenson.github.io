@@ -43,7 +43,7 @@ export const LR_OUTLIERS: Pt[] = [
 export const LR_OUTLIER: Pt = LR_OUTLIERS[0];
 
 // ---------- Regresión logística ----------
-// x = veces que el correo dice «gratis». Las clases se solapan entre 3 y
+// x = menciones de «gratis» por 100 palabras. Las clases se solapan entre 3 y
 // 4.5: ningún umbral acierta todo, como en los datos reales.
 
 const LOGISTIC_NORMAL = [0, 0.5, 1, 1, 1.5, 2, 2.5, 3, 4];

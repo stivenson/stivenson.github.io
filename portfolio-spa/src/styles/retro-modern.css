@@ -214,7 +214,7 @@
 
    Rejilla de 3 columnas — el contenido normal cae en la del medio,
    y lo que necesita aire (OVAs, codigo, formulas) pide la completa. */
-   Escala de tres tramos en vez de un salto directo texto -> completo:
+/* Escala de tres tramos en vez de un salto directo texto -> completo:
    texto (~578px) / ancho (900px, 1.55x) / completo (1152px). Reservar
    el tramo extremo mantiene la jerarquia legible — si todo desborda al
    maximo, ese maximo deja de significar nada. */

@@ -11,9 +11,11 @@ import python from 'react-syntax-highlighter/dist/esm/languages/prism/python';
 import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import type { Components } from 'react-markdown';
+import { MarkdownGloss } from './MarkdownGloss';
 import { InteractiveSVG } from './InteractiveSVG';
 import { LazyIframe } from './LazyIframe';
 import 'katex/dist/katex.min.css';
+import '../styles/ml-selection-guide.css';
 
 // Solo los lenguajes que usan los artículos (el Prism completo pesa ~1 MB).
 // Un bloque con otro lenguaje se ve como texto plano: si un artículo nuevo
@@ -44,6 +46,7 @@ interface MarkdownRendererProps {
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   const components: Components = {
+    span: ({ node, ...props }) => <MarkdownGloss {...props} />,
     // Encabezados con estilos eléctricos
     h1: ({ node, ...props }) => (
       <h1 

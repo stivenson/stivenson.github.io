@@ -60,7 +60,7 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
   'Cada palabra aporta evidencia': { context: 'Frases de ejemplo para ilustrar clasificación de sentimiento.', items: [
     { label: 'Naranja: favorece positivo / P(positivo) en 3D', color: '#FFB454', mark: 'line' },
     { label: 'Azul: favorece negativo / P(negativo) en 3D', color: '#55AAFF', mark: 'line' },
-    { label: 'Segmento punteado en 3D: evidencia de la palabra', color: '#10b981', mark: 'dash' },
+    { label: 'Unión en 3D: mismo paso, dos probabilidades', color: '#10b981', mark: 'dash' },
     { label: 'Gris: evidencia neutral o desconocida', color: '#9898b0', mark: 'dot' },
   ] },
   'Dos neuronas ocultas resuelven XOR': { context: 'Puntos sintéticos XOR; cada punto es una observación con dos entradas.', items: [
@@ -71,7 +71,7 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Nodos: neuronas', color: '#10b981', mark: 'dot' },
     { label: 'Líneas: pesos entre neuronas', color: '#9898b0', mark: 'line' },
   ] },
-  'La curva aprende y separa clases': { context: 'Correos de ejemplo; x cuenta menciones de «gratis» y la etiqueta indica spam.', items: [
+  'La curva aprende y separa clases': { context: 'Correos de ejemplo; x es la frecuencia de «gratis» por 100 palabras y la etiqueta indica spam.', items: [
     { label: 'Correo normal', color: '#55AAFF', mark: 'dot' },
     { label: 'Correo spam', color: '#FFB454', mark: 'dot' },
     { label: 'Curva: probabilidad estimada', color: '#10b981', mark: 'line' },

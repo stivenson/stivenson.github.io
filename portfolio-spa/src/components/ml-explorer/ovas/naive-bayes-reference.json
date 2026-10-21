@@ -1,0 +1,41 @@
+{
+  "source": "scikit-learn 1.6.1",
+  "cases": [
+    {
+      "alpha": 0.1,
+      "positivePrior": 0.5,
+      "text": "excelente calidad llegó rápido",
+      "pPositive": 0.998490603680461
+    },
+    {
+      "alpha": 1,
+      "positivePrior": 0.5,
+      "text": "excelente calidad llegó rápido",
+      "pPositive": 0.9250592526858095
+    },
+    {
+      "alpha": 5,
+      "positivePrior": 0.5,
+      "text": "excelente calidad llegó rápido",
+      "pPositive": 0.6985253338346981
+    },
+    {
+      "alpha": 1,
+      "positivePrior": 0.2,
+      "text": "excelente calidad llegó rápido",
+      "pPositive": 0.7552600050915645
+    },
+    {
+      "alpha": 1,
+      "positivePrior": 0.8,
+      "text": "desconocidísima",
+      "pPositive": 0.8
+    },
+    {
+      "alpha": 5,
+      "positivePrior": 0.2,
+      "text": "no funciona mala compra",
+      "pPositive": 0.07644276716717856
+    }
+  ]
+}

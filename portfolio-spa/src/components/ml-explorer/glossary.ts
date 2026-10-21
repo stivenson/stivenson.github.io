@@ -64,8 +64,33 @@ export const GLOSSARY = {
   },
   hiperparametro: {
     term: 'Hiperparámetro',
-    what: 'Un ajuste que eliges tú antes de entrenar (k en KNN, la profundidad de un árbol); el modelo no lo aprende.',
-    why: 'Elegirlo bien suele decidir entre un modelo útil y uno que memoriza o que no aprende nada.',
+    what: 'Un ajuste que fijas antes de entrenar, como el número de vecinos en KNN o la profundidad máxima de un árbol. Puedes elegirlo a mano o con una búsqueda automática.',
+    why: 'Se compara con datos de validación. Es distinto de los parámetros aprendidos, como la pendiente de una recta, y de los controles de una animación.',
+  },
+  parametroAprendido: {
+    term: 'Parámetro aprendido',
+    what: 'Un valor que el modelo calcula al entrenar con los datos, como la pendiente y el intercepto de una recta o los pesos de una red neuronal.',
+    why: 'Cambiar los ejemplos puede cambiar estos valores. Se distinguen de los hiperparámetros, que configuran cómo se aprende.',
+  },
+  controlDidactico: {
+    term: 'Control didáctico',
+    what: 'Una opción para explorar una explicación: mover un punto, girar un eje o cambiar la velocidad de una animación.',
+    why: 'No todo control de una OVA es un hiperparámetro. Girar el eje de PCA ilustra su lógica; el algoritmo calcula la orientación a partir de los datos.',
+  },
+  datosValidacion: {
+    term: 'Datos de validación',
+    what: 'Ejemplos que no se usan para ajustar los parámetros en un entrenamiento y sirven para comparar modelos o elegir hiperparámetros.',
+    why: 'Como participan en la elección, se necesita una prueba final aparte para estimar el resultado del modelo elegido.',
+  },
+  fugaInformacion: {
+    term: 'Fuga de información',
+    what: 'Ocurre cuando el entrenamiento o la elección del modelo aprovechan información que no estaría disponible al predecir casos nuevos.',
+    why: 'Puede inflar el resultado de la evaluación. Por ejemplo, calcula el escalado solo con entrenamiento y aplica esa transformación a los demás datos.',
+  },
+  validacionTemporal: {
+    term: 'Validación temporal',
+    what: 'Evaluar un pronóstico entrenando con periodos anteriores y midiendo con periodos posteriores, respetando el orden del tiempo.',
+    why: 'Mezclar pasado y futuro al azar puede dar una impresión engañosa de lo que el modelo podrá predecir.',
   },
   frontera: {
     term: 'Frontera de decisión',
@@ -157,6 +182,11 @@ export const GLOSSARY = {
     what: 'El prior es la probabilidad de cada clase antes de leer el dato (qué fracción de reseñas es positiva). La verosimilitud es qué tan probable es ver una palabra dentro de cada clase.',
     why: 'El teorema de Bayes combina ambas: probabilidad final ∝ prior × verosimilitud de cada palabra.',
   },
+  suavizadoAditivo: {
+    term: 'Suavizado aditivo (alpha)',
+    what: 'Sumar una cantidad alpha a los conteos de todas las palabras de cada clase antes de calcular sus probabilidades. Con alpha = 1 se llama suavizado de Laplace.',
+    why: 'Evita que un conteo cero anule la evidencia. Un alpha mayor aproxima la distribución de palabras de cada clase a una distribución uniforme; se elige con validación, no por la seguridad aparente de la predicción.',
+  },
   suavizadoLaplace: {
     term: 'Suavizado de Laplace',
     what: 'Sumar 1 a todos los conteos de palabras antes de calcular probabilidades.',
@@ -219,8 +249,8 @@ export const GLOSSARY = {
   },
   validacionCruzada: {
     term: 'Validación cruzada',
-    what: 'Dividir los datos de entrenamiento en k partes y entrenar k veces, midiendo cada vez en la parte que quedó fuera.',
-    why: 'Permite elegir hiperparámetros sin gastar los datos de prueba, que se reservan para la medición final.',
+    what: 'Repetir el entrenamiento y la evaluación con distintas particiones de los datos disponibles para elegir el modelo. En la variante de k partes, cada parte sirve una vez para evaluar.',
+    why: 'Permite comparar hiperparámetros sin usar la prueba final. Las particiones deben respetar el tiempo o los grupos de personas y máquinas cuando el problema lo exige.',
   },
   shap: {
     term: 'Valores SHAP',
@@ -304,8 +334,8 @@ export const GLOSSARY = {
   },
   calibracion: {
     term: 'Calibración de probabilidades',
-    what: 'Ajustar las probabilidades para que «80 %» signifique que acierta 8 de cada 10 veces. El escalado de Platt ajusta una curva logística sobre las salidas del modelo.',
-    why: 'SVM y Naive Bayes clasifican bien pero sus probabilidades no son confiables sin calibrar.',
+    what: 'Comprobar o ajustar que, entre los casos a los que el modelo asigna 80 % de probabilidad positiva, cerca de 8 de cada 10 sean realmente positivos.',
+    why: 'Clasificar bien no garantiza estimar bien las probabilidades. Evalúalo con datos separados; si hace falta, aplica una calibración y vuelve a medir.',
   },
   redConvolucional: {
     term: 'Red convolucional',
@@ -347,6 +377,11 @@ export const GLOSSARY = {
     what: 'Actualizar el modelo con datos nuevos sin volver a entrenar desde cero.',
     why: 'Útil cuando los textos llegan en flujo continuo (partial_fit en scikit-learn).',
   },
+  tfidf: {
+    term: 'TF-IDF (conteos de palabras ponderados)',
+    what: 'Representar un texto con pesos que combinan cuántas veces aparece una palabra en él y qué tan común es en la colección de textos.',
+    why: 'Reduce el peso de palabras muy comunes y destaca las más específicas. El vocabulario y sus pesos se aprenden solo con entrenamiento.',
+  },
   vocabulario: {
     term: 'Vocabulario (bolsa de palabras)',
     what: 'La lista de palabras distintas vistas al entrenar; cada texto se convierte en el conteo de cada una, sin importar el orden.',
@@ -361,6 +396,16 @@ export const GLOSSARY = {
     term: 'Correlación',
     what: 'Qué tanto dos variables suben o bajan juntas: de −1 a 1.',
     why: 'Features muy correlacionadas cuentan casi la misma información; algunos modelos la cuentan doble.',
+  },
+  convergencia: {
+    term: 'Convergencia del entrenamiento',
+    what: 'El método llega a un ajuste en el que las actualizaciones ya son suficientemente pequeñas según su criterio de parada.',
+    why: 'Converger no significa acertar todos los casos ni funcionar bien con datos nuevos. Si el límite de iteraciones se agota antes, el ajuste puede quedar incompleto.',
+  },
+  fuerzaRegularizacion: {
+    term: 'C (inverso de la fuerza de regularización)',
+    what: 'En regresión logística, un C pequeño penaliza más los coeficientes grandes; un C mayor permite ajustarse más a los datos de entrenamiento.',
+    why: 'C cambia cómo se aprende y puede cambiar las probabilidades. Se elige con validación; es distinto del umbral, que convierte esas probabilidades en decisiones.',
   },
   regularizacionL1L2: {
     term: 'Regularización L1 (Lasso) y L2 (Ridge)',

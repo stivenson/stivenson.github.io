@@ -8,7 +8,7 @@ tags: ["Machine Learning", "Python", "Algoritmos", "OVA", "Ciencia de datos"]
 
 > **En corto:** no existe «el mejor algoritmo». Cada uno funciona bien bajo ciertas condiciones y falla en otras. Este explorador recorre los 17 algoritmos del cheatsheet (hoja resumen) clásico de machine learning (aprendizaje automático: programas que aprenden patrones a partir de datos) y responde lo mismo para cada uno: qué problema resuelve, cómo funciona, qué supone, cuándo brilla, cuándo no usarlo y un ejemplo real que puedes ejecutar.
 
-Está escrito para estudiantes de Datos y Sistemas y para profesionales de cualquier ingeniería que necesiten decidir si un modelo sirve para su problema. No hace falta saber machine learning: cada término técnico tiene una ficha 💡, y la matemática está plegada en «Para profundizar».
+Está escrito para estudiantes de Datos y Sistemas y para profesionales de cualquier ingeniería que necesiten decidir si un modelo sirve para su problema. No hace falta saber machine learning: las fichas 💡 explican los conceptos técnicos de la guía y del explorador. Puedes abrirlas cuando lo necesites; la matemática está plegada en «Para profundizar».
 
 ## Cómo usar el explorador
 
@@ -20,24 +20,64 @@ Está escrito para estudiantes de Datos y Sistemas y para profesionales de cualq
 
 ## ¿Qué algoritmo necesito?
 
-Responde de arriba abajo:
+**Primero define qué quieres obtener; después elige candidatos según tus datos.** Esta guía propone puntos de partida. La comparación con datos nuevos decide cuál te sirve.
 
-1. **Antes de todo: ¿tus datos son imágenes, texto, audio o series largas?** Entonces mira las redes neuronales (modelos de muchas capas que aprenden por sí solos qué mirar en los datos): [CNN](#/articles/algoritmos-ml-explorador?alg=cnn&tab=type) (red convolucional, para imágenes), [RNN](#/articles/algoritmos-ml-explorador?alg=rnn&tab=type) (red recurrente, para secuencias) o [Transformer](#/articles/algoritmos-ml-explorador?alg=transformer&tab=type) (la red de ChatGPT, para texto). Si no, sigue con la pregunta 2.
-2. **¿Tus datos traen la respuesta que quieres predecir?** (el precio, «spam / no spam», «paga / no paga»)
-   - **Sí → aprendizaje supervisado** (el modelo aprende de ejemplos que ya traen la respuesta). Sigue con la pregunta 3.
-   - **No → aprendizaje no supervisado** (el modelo busca grupos o patrones sin respuesta). ¿Buscas grupos? Si esperas grupos compactos y tienes una idea de cuántos, [K-Means](#/articles/algoritmos-ml-explorador?alg=k-means&tab=type); si quieres ver grupos dentro de grupos y tienes pocos miles de datos, [Hierarchical Clustering](#/articles/algoritmos-ml-explorador?alg=hierarchical-clustering&tab=type); si los grupos tienen formas irregulares o hay puntos sueltos, [DBSCAN](#/articles/algoritmos-ml-explorador?alg=dbscan&tab=type). ¿Quieres resumir muchas columnas en pocas? [PCA](#/articles/algoritmos-ml-explorador?alg=pca&tab=type) (análisis de componentes principales). ¿Quieres detectar casos raros, como fraudes o fallas, sin ejemplos etiquetados? [Autoencoders](#/articles/algoritmos-ml-explorador?alg=autoencoders&tab=type).
-3. **¿Predices un número o una categoría?**
-   - **Un número** (precio, consumo, tiempo): empieza por [Linear Regression](#/articles/algoritmos-ml-explorador?alg=linear-regression&tab=type).
-   - **Una categoría** (sí/no, tipo A/B/C): empieza por [Logistic Regression](#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=type). Para texto corto, como detectar spam, [Naive Bayes](#/articles/algoritmos-ml-explorador?alg=naive-bayes&tab=type) es una alternativa clásica.
-4. **¿Tienes que explicar cada decisión a otra persona?**
-   - **Sí:** un [Decision Tree](#/articles/algoritmos-ml-explorador?alg=decision-tree&tab=type) poco profundo, o los modelos lineales de la pregunta 3.
-   - **No, lo que importa es acertar:** [Random Forest](#/articles/algoritmos-ml-explorador?alg=random-forest&tab=type), [Gradient Boosting](#/articles/algoritmos-ml-explorador?alg=gradient-boosting&tab=type) o [SVM](#/articles/algoritmos-ml-explorador?alg=svm&tab=type). Con muchos datos y relaciones muy enredadas, también una red neuronal [MLP](#/articles/algoritmos-ml-explorador?alg=mlp&tab=type) (perceptrón multicapa).
-5. **¿Conjunto pequeño o mediano, con pocas columnas, y la idea de «se parece a…» es natural en tu problema?** Prueba [KNN](#/articles/algoritmos-ml-explorador?alg=knn&tab=type) (escala antes las columnas).
+### 1. ¿Qué quieres obtener?
 
-> **Regla práctica:** empieza por el modelo más simple que pueda funcionar y úsalo como línea base (el punto de comparación mínimo). Pasa a uno más complejo solo si mejora claramente con datos que el modelo no vio.
+<section class="ml-selection-guide" aria-label="Puntos de partida según tu objetivo">
+
+| Tu objetivo | Por dónde empezar | Qué comprobar |
+| --- | --- | --- |
+| Predecir un número: precio, consumo o tiempo. | [Linear Regression](#/articles/algoritmos-ml-explorador?alg=linear-regression&tab=bestUse). | Si la relación se aproxima bien con una recta y cuánto se equivoca en las unidades del problema. |
+| Predecir una categoría: spam, abandono o tipo de falla. | [Logistic Regression](#/articles/algoritmos-ml-explorador?alg=logistic-regression&tab=bestUse). | Qué errores cuesta más cometer: falsas alarmas o casos que se escapan. También admite más de dos categorías. |
+| Encontrar grupos sin categorías conocidas. | [K-Means](#/articles/algoritmos-ml-explorador?alg=k-means&tab=bestUse) para grupos compactos y un número de grupos propuesto; [Hierarchical Clustering](#/articles/algoritmos-ml-explorador?alg=hierarchical-clustering&tab=bestUse) para explorar grupos dentro de grupos; [DBSCAN](#/articles/algoritmos-ml-explorador?alg=dbscan&tab=bestUse) para formas irregulares y puntos sueltos. | Si la distancia elegida representa bien el parecido. DBSCAN puede tener dificultades si las densidades de los grupos son muy distintas. |
+| Resumir muchas columnas en pocas. | [PCA](#/articles/algoritmos-ml-explorador?alg=pca&tab=bestUse) (<span data-glossary="pca">análisis de componentes principales</span>). | Cuánta variación conserva y si la reducción ayuda a la tarea posterior. Conservar mucha variación no garantiza predecir mejor. |
+| Detectar casos raros sin ejemplos suficientes de las anomalías. | Empieza por límites sencillos sobre las medidas conocidas; compara con [Autoencoders](#/articles/algoritmos-ml-explorador?alg=autoencoders&tab=bestUse) si necesitas aprender patrones más complejos. | Que los datos normales representen la operación real. Un <span data-glossary="reconstruccion">error de reconstrucción</span> alto es una señal para investigar, no una confirmación de fraude o falla. |
+
+</section>
+
+Si los ejemplos ya incluyen la respuesta, hablamos de **<span data-glossary="supervisado">aprendizaje supervisado</span>** (aprender con respuestas conocidas). Si buscas estructura sin esa respuesta, de **<span data-glossary="noSupervisado">aprendizaje no supervisado</span>** (encontrar patrones sin etiquetas).
+
+### 2. ¿Cómo son tus datos?
+
+- **Tablas de filas y columnas:** compara el modelo inicial con [Random Forest](#/articles/algoritmos-ml-explorador?alg=random-forest&tab=bestUse) y [Gradient Boosting](#/articles/algoritmos-ml-explorador?alg=gradient-boosting&tab=bestUse) si hay relaciones que una recta no recoge bien. Una red neuronal [MLP](#/articles/algoritmos-ml-explorador?alg=mlp&tab=bestUse) (perceptrón multicapa) es otro candidato; no es el siguiente paso obligatorio.
+- **Texto para clasificar:** convierte primero las palabras en números, por ejemplo contando palabras y ponderando las más informativas. Compara [Naive Bayes](#/articles/algoritmos-ml-explorador?alg=naive-bayes&tab=bestUse), regresión logística y [SVM](#/articles/algoritmos-ml-explorador?alg=svm&tab=bestUse) (máquina de vectores de soporte) lineal. Para tareas que necesitan más contexto, como responder preguntas o resumir, considera un [Transformer](#/articles/algoritmos-ml-explorador?alg=transformer&tab=bestUse) (arquitectura que relaciona partes de una secuencia) ya entrenado.
+- **Imágenes:** si ya tienes medidas útiles, como área, color o textura, puedes probar modelos sobre esas columnas. Para aprender directamente de los píxeles, considera <span data-glossary="redNeuronal">redes neuronales</span> (modelos de capas que aprenden representaciones de los datos), como una [CNN](#/articles/algoritmos-ml-explorador?alg=cnn&tab=bestUse) (red convolucional) ya entrenada y adaptada a tu tarea.
+- **Series de tiempo o audio:** para pronosticar una serie, compara primero con una referencia sencilla, como repetir el último valor o el de la misma hora de la semana pasada. Puedes usar árboles con valores anteriores como columnas, o medidas calculadas sobre ventanas de audio. Una [RNN](#/articles/algoritmos-ml-explorador?alg=rnn&tab=bestUse) (red recurrente, para secuencias), una CNN o un Transformer son candidatos cuando necesitas modelar la secuencia con más detalle. Evalúa siempre respetando el orden temporal.
+
+### 3. ¿Qué restricciones tienes?
+
+- **Necesitas explicar las decisiones:** compara modelos lineales y un [Decision Tree](#/articles/algoritmos-ml-explorador?alg=decision-tree&tab=bestUse) poco profundo. Que un modelo sea legible no convierte sus relaciones en causas.
+- **Tienes pocos ejemplos y el parecido entre casos tiene sentido:** prueba [KNN](#/articles/algoritmos-ml-explorador?alg=knn&tab=bestUse) (vecinos más cercanos). Ajusta las <span data-glossary="escalado">escalas de las columnas</span> y comprueba el tiempo que tarda en responder a cada consulta.
+- **Tienes muchas columnas de texto:** incluye una SVM lineal o regresión logística entre los candidatos. La representación y la cantidad de datos importan más que una regla fija de tamaño.
+- **Tienes poco tiempo o memoria:** empieza con una referencia sencilla. Mide cuánto tarda el candidato en entrenar y responder; un pequeño aumento del acierto puede no compensar su costo.
+
+### 4. ¿Cómo decides entre los candidatos?
+
+Usa el modelo sencillo como **<span data-glossary="lineaBase">línea base</span>** (el punto de comparación mínimo). Compara los candidatos con las mismas particiones y una medida que responda a tu objetivo: error en pesos o kilovatios para números; falsas alarmas y casos detectados para categorías. En grupos, revisa además si los segmentos tienen sentido para su uso.
+
+Separa datos para entrenar, para elegir ajustes y para una prueba final. Los **<span data-glossary="hiperparametro">hiperparámetros</span>** (ajustes que eliges antes de entrenar, como la profundidad de un árbol) se seleccionan con los <span data-glossary="datosValidacion">datos de validación</span> o mediante <span data-glossary="validacionCruzada">validación cruzada</span> (repetir la evaluación con distintas particiones del entrenamiento). Reserva la prueba final hasta terminar de elegir.
+
+Para evitar la <span data-glossary="fugaInformacion">fuga de información</span> (usar información que no estaría disponible al predecir), calcula el escalado y la reducción de columnas solo con entrenamiento. Aplica después esas mismas transformaciones a validación y prueba.
+
+Si predices el futuro, usa <span data-glossary="validacionTemporal">validación temporal</span>: entrena con el pasado y valida con periodos posteriores. Si tienes varias filas de una misma persona o máquina, evita repartirlas entre entrenamiento y evaluación cuando quieras medir el comportamiento con personas o máquinas nuevas.
+
+> **Regla práctica:** elige el modelo más sencillo que cumpla tu objetivo con datos nuevos, dentro del tiempo y los recursos disponibles. Cambia a uno más complejo cuando la mejora justifique su costo.
+
+Esta guía adapta criterios del [mapa de selección de scikit-learn](https://scikit-learn.org/stable/machine_learning_map.html), sus guías de [agrupamiento](https://scikit-learn.org/stable/modules/clustering.html), [validación](https://scikit-learn.org/stable/modules/cross_validation.html) y [prevención de fugas de información](https://scikit-learn.org/stable/common_pitfalls.html), y la guía de [aprendizaje por transferencia de Keras](https://keras.io/guides/transfer_learning/). Son referencias para elegir candidatos y evaluarlos; no una clasificación universal de algoritmos.
 
 <ml-explorer>
 </ml-explorer>
+
+## Qué cambias en el modelo y qué cambias en la OVA
+
+Una OVA (actividad interactiva para aprender) permite experimentar con una explicación. Sus controles no siempre son ajustes del algoritmo. Distingue estos tres casos:
+
+- **<span data-glossary="hiperparametro">Hiperparámetro</span>:** lo eliges antes de entrenar. Por ejemplo, si KNN consulta a 3 o a 9 vecinos. Cambiarlo puede modificar las predicciones.
+- **<span data-glossary="parametroAprendido">Parámetro aprendido</span>:** el modelo lo calcula usando los ejemplos. En regresión lineal, la pendiente y el intercepto (donde la recta corta el eje vertical) se aprenden de los datos.
+- **<span data-glossary="controlDidactico">Control didáctico</span>:** cambia cómo exploras la explicación. Girar el eje en la OVA de PCA deja ver cuánta variación conserva cada dirección; en el modelo real, PCA calcula esa dirección. La velocidad de reproducción tampoco configura el entrenamiento.
+
+> **Regla práctica:** antes de mover un control, identifica si cambia los datos, un ajuste del modelo o solo la visualización. Observa el efecto y comprueba si también ocurre con datos nuevos; una animación no sustituye esa evaluación.
 
 ## Cómo seguir
 

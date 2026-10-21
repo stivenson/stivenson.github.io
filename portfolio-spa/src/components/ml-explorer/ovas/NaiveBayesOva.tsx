@@ -1,12 +1,13 @@
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { NB_REVIEWS, NB_START } from './datasets';
-import { OvaFrame } from './OvaFrame';
+import { G } from '../Gloss';
+import './NaiveBayesOva.css';
+import { OvaFrame, OvaSlider } from './OvaFrame';
 import { explainNaiveBayes, trainNaiveBayes } from './ovaMath';
 import { createPlot } from './plot';
 import { useInViewport, usePrefersReducedMotion } from './useMotion';
 import { useAutoLoop } from './useAutoLoop';
 
-const MODEL = trainNaiveBayes(NB_REVIEWS);
 const EXAMPLES = [NB_START, 'no funciona mala compra', 'llegó la batería nueva'];
 const CHART_WIDTH = 480;
 const CHART_HEIGHT = 270;
@@ -15,23 +16,28 @@ const pct = (p: number) => `${(p * 100).toFixed(0)} %`;
 
 export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [text, setText] = useState(NB_START);
+  const [alpha, setAlpha] = useState(1);
+  const [positivePrior, setPositivePrior] = useState(0.5);
+  const [showResult, setShowResult] = useState(!autoPlay);
+  const model = useMemo(() => trainNaiveBayes(NB_REVIEWS, alpha, positivePrior), [alpha, positivePrior]);
+  const initialPositive = Math.exp(model.logPrior[1]);
   const [step, setStep] = useState(0);
   const [chartView, setChartView] = useState<'2d' | '3d'>('2d');
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  const result = explainNaiveBayes(MODEL, text);
+  const result = explainNaiveBayes(model, text);
   const last = result.words.length;
-  const shown = Math.min(step, last);
+  const shown = showResult ? last : Math.min(step, last);
   const partialText = result.words.slice(0, shown).map((word) => word.word).join(' ');
-  const partial = explainNaiveBayes(MODEL, partialText);
+  const partial = explainNaiveBayes(model, partialText);
   const currentWord = shown > 0 ? result.words[shown - 1] : undefined;
   const beforeText = result.words.slice(0, Math.max(0, shown - 1)).map((word) => word.word).join(' ');
-  const beforePartial = explainNaiveBayes(MODEL, beforeText);
-  const pBeforeWord = shown === 0 ? 0.5 : beforePartial.pPositive;
-  const pPositive = shown === 0 ? 0.5 : partial.pPositive;
+  const beforePartial = explainNaiveBayes(model, beforeText);
+  const pBeforeWord = shown === 0 ? initialPositive : beforePartial.pPositive;
+  const pPositive = shown === 0 ? initialPositive : partial.pPositive;
   const plot = createPlot(CHART_WIDTH, CHART_HEIGHT, CHART_PAD, [0, Math.max(1, last)], [0, 1]);
-  let cumulativeLogOdds = MODEL.logPrior[1] - MODEL.logPrior[0];
+  let cumulativeLogOdds = model.logPrior[1] - model.logPrior[0];
   const probabilityPath = [1 / (1 + Math.exp(-cumulativeLogOdds))];
   result.words.forEach((word) => {
     if (word.known) cumulativeLogOdds += Math.log(word.factor);
@@ -55,28 +61,45 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
     ? 'sin cambio'
     : `${deltaLabel} puntos hacia ${probabilityDelta > 0 ? 'positiva' : 'negativa'}`;
 
-  const playback = useAutoLoop(step, last, setStep, visible, reducedMotion, autoPlay, 1050, 5000);
+  const playback = useAutoLoop(step, last, setStep, visible && !showResult, reducedMotion, autoPlay && !showResult, 1050, 5000);
 
   const changeText = (next: string) => {
     setText(next);
-    setStep(0);
+    setStep(reducedMotion ? last : 0);
   };
 
   return (
     <OvaFrame
-      playback={playback}
+      playback={showResult ? undefined : playback}
       progressLabel={shown === 0 ? 'Antes de leer' : <>Palabra <b>{shown}</b> de <b>{last}</b> · «{currentWord?.word}»</>}
       explanation={!currentWord
-        ? 'Ambas clases parten empatadas. Avanza para ver cómo cada palabra modifica la probabilidad.'
+        ? 'Las clases parten del prior elegido. Avanza para ver cómo cada palabra modifica la probabilidad.'
         : !currentWord.known
           ? `«${currentWord.word}» no aparece en el entrenamiento: se muestra, pero no cambia la probabilidad.`
           : factorIsNeutral
             ? `«${currentWord.word}» aporta casi la misma evidencia a ambas clases: la probabilidad se mantiene en ${pct(pPositive)}.`
             : `«${currentWord.word}» aporta evidencia ${probabilityDelta > 0 ? 'positiva' : 'negativa'}: la probabilidad cambia ${deltaLabel} puntos, de ${pct(pBeforeWord)} a ${pct(pPositive)}.`}
       title="Cada palabra aporta evidencia"
-      hint="Cada palabra conocida mueve la probabilidad: naranja favorece una reseña positiva; azul, una negativa; gris indica que no se encontró evidencia. Avanza para ver el efecto de una palabra a la vez."
+      hint="El modelo aprende de 16 reseñas de ejemplo. Alpha y prior recalculan el modelo con esas mismas reseñas. La animación lee una frase nueva: cada palabra conocida mueve la probabilidad. Naranja favorece positiva; azul, negativa; gris indica evidencia neutral o desconocida. 2D y 3D muestran el mismo cálculo."
       controls={
         <>
+          <div className="mlx-nb-settings" role="group" aria-label="Ajustes del modelo">
+            <strong>Ajustes del modelo</strong>
+            <OvaSlider label="Suavizado (alpha)" value={alpha} min={0.1} max={5} step={0.1}
+              onChange={(value) => { setAlpha(value); setStep(reducedMotion ? last : 0); }} format={(value) => value.toFixed(1)} />
+            <p>Un <G k="suavizadoAditivo">alpha mayor</G> acerca las probabilidades de las palabras entre sí. Compara sus factores; no garantiza acertar más.</p>
+            <OvaSlider label="Probabilidad inicial de positiva (class_prior)" value={positivePrior} min={0.1} max={0.9} step={0.1}
+              onChange={(value) => { setPositivePrior(value); setStep(reducedMotion ? last : 0); }} format={pct} />
+            <p>El <G k="priorVerosimilitud">prior</G> mueve el punto de partida. Aquí fijas <code>class_prior=[{(1 - positivePrior).toFixed(1)}, {positivePrior.toFixed(1)}]</code>: negativa y positiva. Los conteos no cambian.</p>
+            <output className="mlx-nb-setting-result" aria-label="Probabilidad positiva de la frase completa">Frase completa: <b>{pct(result.pPositive)} positiva</b></output>
+            <p>Probabilidad estimada para esta frase; no es el porcentaje de aciertos del modelo.</p>
+            <button type="button" onClick={() => { setAlpha(1); setPositivePrior(0.5); setStep(reducedMotion ? last : 0); }}>Restablecer alpha y prior</button>
+          </div>
+          <label className="mlx-nb-static">
+            <input type="checkbox" checked={showResult} onChange={(e) => { setShowResult(e.target.checked); setStep(reducedMotion ? last : 0); }} />
+            Mostrar resultado completo
+          </label>
+          <p className="mlx-nb-control-note">La reseña es el caso a predecir; 2D/3D y el recorrido son <G k="controlDidactico">controles de visualización</G>. Se mantienen las 16 reseñas de entrenamiento y las palabras individuales.</p>
           <label className="mlx-nb-input">
             <span>Reseña</span>
             <input type="text" value={text} maxLength={120} onChange={(e) => changeText(e.target.value)} />
@@ -94,13 +117,16 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
       readout={
         <>
           <span>
+            Ajustes: alpha = <b>{alpha.toFixed(1)}</b> · prior positivo = <b>{pct(initialPositive)}</b>
+          </span>
+          <span>
             Palabras leídas: <b>{shown}</b> de <b>{last}</b>
           </span>
           <span>
             P(positiva) = <b>{pct(pPositive)}</b> · P(negativa) = <b>{pct(1 - pPositive)}</b>
           </span>
           <span>
-            Predicción: <b className={`mlx-nb-prediction${shown === 0 ? '' : positiveWins ? ' is-positive' : negativeWins ? ' is-negative' : ''}`}>{shown === 0 ? 'aún sin evidencia' : positiveWins ? 'positiva' : negativeWins ? 'negativa' : 'empate'}</b>
+            Predicción: <b className={`mlx-nb-prediction${shown === 0 ? '' : positiveWins ? ' is-positive' : negativeWins ? ' is-negative' : ''}`}>{shown === 0 ? 'solo probabilidad inicial' : positiveWins ? 'positiva' : negativeWins ? 'negativa' : 'empate'}</b>
           </span>
           <div className={`mlx-nb-current-evidence${!currentWord ? '' : !currentWord.known ? ' is-unknown' : factorIsNeutral ? ' is-neutral' : currentWord.factor > 1 ? ' is-positive' : ' is-negative'}`}>
             <span className="mlx-nb-current-evidence__eyebrow">Palabra recién leída</span>
@@ -130,6 +156,10 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
       }
     >
       <div className="mlx-nb-viz" ref={stageRef}>
+        <div className="mlx-nb-summary" aria-label="Resultado de la frase completa">
+          <strong>Frase completa: {pct(result.pPositive)} positiva</strong>
+          <span>Con alpha {alpha.toFixed(1)} y prior positivo {pct(initialPositive)}. La curva inferior muestra el recorrido palabra a palabra.</span>
+        </div>
         <div className="mlx-nb-evidence" aria-label="Palabras de la reseña y evidencia acumulada">
           {result.words.length ? result.words.map((word, i) => {
             const active = i < shown;
@@ -164,7 +194,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
             className="mlx-nb-chart"
             viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
             role="img"
-            aria-label={`Plano cartesiano: al leer ${shown} de ${last} palabras, la probabilidad positiva llegó a ${pct(pPositive)}. La línea parte de un empate en 50 por ciento.`}
+            aria-label={`Plano cartesiano: al leer ${shown} de ${last} palabras, la probabilidad positiva llegó a ${pct(pPositive)}. La línea parte de una probabilidad inicial de ${pct(initialPositive)}.`}
           >
             {[0, 0.25, 0.5, 0.75, 1].map((tick) => (
               <g key={tick}>
@@ -271,14 +301,13 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
               );
             })}
             {visibleProbabilities.slice(1).map((probability, index) => {
-              const word = result.words[index];
               const previous = visibleProbabilities[index];
               const positiveStart = project3d(index, previous, true);
               const positiveEnd = project3d(index + 1, probability, true);
               const negativeStart = project3d(index, 1 - previous, false);
               const negativeEnd = project3d(index + 1, 1 - probability, false);
               const isCurrent = index === shown - 1;
-              return <g key={`${word.word}-${index}`}>
+              return <g key={index}>
                 <line className={`mlx-nb-segment is-positive${isCurrent ? ' is-current' : ''}`} x1={positiveStart.x} y1={positiveStart.y} x2={positiveEnd.x} y2={positiveEnd.y} />
                 <line className={`mlx-nb-segment is-negative${isCurrent ? ' is-current' : ''}`} x1={negativeStart.x} y1={negativeStart.y} x2={negativeEnd.x} y2={negativeEnd.y} />
                 <line className={`mlx-nb-3d-evidence${isCurrent ? ' is-current' : ''}`} x1={positiveEnd.x} y1={positiveEnd.y} x2={negativeEnd.x} y2={negativeEnd.y} />
@@ -311,7 +340,7 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
           <summary>Ver el cálculo de evidencia</summary>
           <ol aria-label="Detalle del cálculo de Naive Bayes">
             {shown === 0 ? (
-              <li>Probabilidades iniciales: ambas clases parten empatadas.</li>
+              <li>Probabilidades iniciales: positiva {pct(initialPositive)}, negativa {pct(1 - initialPositive)}.</li>
             ) : (
               <>
                 <li>Odds iniciales: <b>{partial.priorOdds.toFixed(2)}</b></li>

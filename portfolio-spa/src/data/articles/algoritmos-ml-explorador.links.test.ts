@@ -31,7 +31,7 @@ describe('artículo del explorador: enlaces y description al día', () => {
   });
 });
 
-/** Términos técnicos que el artículo explica entre paréntesis la primera vez (el .md no usa fichas 💡). */
+/** Términos técnicos que el artículo explica entre paréntesis la primera vez (el .md también ofrece fichas 💡). */
 const ARTICLE_TERMS = [
   'cheatsheet',
   'machine learning',
@@ -51,6 +51,7 @@ const ARTICLE_TERMS = [
 
 /** El término va seguido (tras un cierre de negrita o de enlace) por una explicación entre paréntesis. */
 export function explainedOnFirstUse(body: string, term: string): boolean {
+  body = body.replace(/<\/?span\b[^>]*>/g, '');
   const at = body.search(new RegExp(`(?<![\\p{L}-])${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}])`, 'u'));
   if (at < 0) return true;
   return /^(\*+|\]\([^)]*\))?\s*\((?!próximamente)[^)]{8,}\)/u.test(body.slice(at + term.length));

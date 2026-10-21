@@ -1,3 +1,14 @@
+Comparación de C en validación (menor pérdida logarítmica es mejor):
+  C=0.1: pérdida=0.1529; norma de coeficientes=1.53
+  C=1: pérdida=0.1360; norma de coeficientes=2.78
+  C=10: pérdida=0.1462; norma de coeficientes=3.63
+Umbral en validación: falsas alarmas / spam que se escapan
+  umbral=0.3: 3 / 1
+  umbral=0.5: 2 / 1
+  umbral=0.7: 1 / 2
+Esta demostración conserva C_VALUE y THRESHOLD fijados arriba; no los elige con la prueba.
+
+Evaluación final con la configuración fijada:
 Pesos [gratis, enlaces, conocido]: [ 1.84  0.99 -1.75]
 Intercepto b0: -4.83
 Exactitud con correos nuevos: 97.0%
