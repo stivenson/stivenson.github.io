@@ -58,41 +58,43 @@ export function LogisticRegressionOva({ autoPlay = false }: { autoPlay?: boolean
       controls={
         <>
           <label className="mlx-logistic-static"><input type="checkbox" checked={showResult} onChange={(e) => { setShowResult(e.target.checked); setIteration(0); }} /> Mostrar ajuste final</label>
-          <div className="mlx-logistic-settings" role="group" aria-label="Ajustes de entrenamiento">
+          <div className="mlx-logistic-settings mlx-parameter-set" role="group" aria-label="Ajustes de entrenamiento">
             <strong>1. Entrenamiento</strong>
-            <label className="mlx-logistic-select">Regularización inversa (C)
-              <select value={C} onChange={(e) => { setC(Number(e.target.value)); setIteration(0); }}>
-                {[0.01, 0.1, 1, 10, 100].map((value) => <option key={value} value={value}>C = {value}</option>)}
-              </select>
-            </label>
-            <p><G k="fuerzaRegularizacion">C pequeño</G> penaliza más los coeficientes grandes. Observa cómo cambia la curva; no garantiza más aciertos.</p>
-          <OvaSlider
-            label="Límite de entrenamiento (max_iter)"
-            value={maxIterations}
-            min={1}
-            max={MAX_ITERATIONS}
-            step={1}
-            onChange={(value) => {
-              setMaxIterations(value);
-              setIteration(0);
-            }}
-          />
-            <p>El límite permite detener el entrenamiento antes de <G k="convergencia" after=".">converger</G> Subirlo después de la convergencia no obliga a cambiar la curva.</p>
+            <div className="mlx-parameter-fields">
+              <div className="mlx-parameter-field"><label className="mlx-logistic-select">Regularización inversa (C)
+                <select value={C} onChange={(e) => { setC(Number(e.target.value)); setIteration(0); }}>
+                  {[0.01, 0.1, 1, 10, 100].map((value) => <option key={value} value={value}>C = {value}</option>)}
+                </select>
+              </label>
+                <p><G k="fuerzaRegularizacion">C pequeño</G> penaliza más los coeficientes grandes. Observa cómo cambia la curva; no garantiza más aciertos.</p></div>
+              <div className="mlx-parameter-field"><OvaSlider
+                label="Límite de entrenamiento (max_iter)"
+                value={maxIterations}
+                min={1}
+                max={MAX_ITERATIONS}
+                step={1}
+                onChange={(value) => {
+                  setMaxIterations(value);
+                  setIteration(0);
+                }}
+              />
+                <p>El límite permite detener el entrenamiento antes de <G k="convergencia" after=".">converger</G> Subirlo después de la convergencia no obliga a cambiar la curva.</p></div>
+            </div>
             <output>Coeficientes aprendidos: b₀ = {b0.toFixed(2)} · b₁ = {b1.toFixed(2)}. Para x = 4: {(prob(4) * 100).toFixed(1)} % de spam.</output>
           </div>
-          <div className="mlx-logistic-settings" role="group" aria-label="Regla de decisión">
+          <div className="mlx-logistic-settings mlx-parameter-set" role="group" aria-label="Regla de decisión">
             <strong>2. Decisión sin reentrenar</strong>
-          <OvaSlider
-            label="Umbral de spam"
-            value={threshold}
-            min={0.2}
-            max={0.8}
-            step={0.05}
-            onChange={setThreshold}
-            format={(value) => value.toFixed(2)}
-          />
-            <p>El <G k="umbral">umbral</G> decide qué probabilidades se marcan como spam. Activa «Mostrar ajuste final» para comparar con la curva quieta. Los coeficientes no cambian al mover el umbral; aquí se marca spam si P ≥ umbral.</p>
-            <output>Falsas alarmas: {fp} · spam que se escapan: {fn}. Sobre los 18 ejemplos de entrenamiento.</output>
+            <div className="mlx-parameter-fields"><div className="mlx-parameter-field"><OvaSlider
+              label="Umbral de spam"
+              value={threshold}
+              min={0.2}
+              max={0.8}
+              step={0.05}
+              onChange={setThreshold}
+              format={(value) => value.toFixed(2)}
+            />
+              <p>El <G k="umbral">umbral</G> decide qué probabilidades se marcan como spam. Activa «Mostrar ajuste final» para comparar con la curva quieta. Los coeficientes no cambian al mover el umbral; aquí se marca spam si P ≥ umbral.</p>
+            </div></div><output>Falsas alarmas: {fp} · spam que se escapan: {fn}. Sobre los 18 ejemplos de entrenamiento.</output>
           </div>
 
           <p className="mlx-logistic-note">Fijos: penalización L2, intercepto libre y <code>class_weight=None</code>. El recorrido es un <G k="controlDidactico">control didáctico</G>; no es una tasa de aprendizaje.</p>

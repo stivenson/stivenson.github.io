@@ -116,19 +116,25 @@ export function DecisionTreeOva({ autoPlay = false }: { autoPlay?: boolean }) {
       hint="El árbol aprende preguntas sobre ingreso y deuda con 28 clientes simulados. Cambiar max_depth o min_samples_leaf vuelve a calcularlo. El recorrido revela niveles; no es un hiperparámetro. El relleno indica la predicción, el borde la clase real y las líneas verdes los cortes nuevos. El acierto se mide sobre los mismos clientes usados para entrenar."
       controls={
         <>
-          <div className="mlx-tree-settings" role="group" aria-label="Hiperparámetros del árbol">
+          <div className="mlx-tree-settings mlx-parameter-set" role="group" aria-label="Hiperparámetros del árbol">
             <strong>Ajustes de entrenamiento</strong>
-            <OvaSlider label="Profundidad máxima (max_depth)" value={maxDepth} min={1} max={5} step={1}
-              onChange={(value) => { setMaxDepth(value); setDepth(reducedMotion ? value : 0); }} />
-            <p>Máximo de preguntas en un recorrido desde la <G k="estructuraArbol">raíz hasta una hoja</G>. El árbol puede detenerse antes.</p>
-            <OvaSlider label="Mínimo de clientes por hoja (min_samples_leaf)" value={minSamplesLeaf} min={1} max={7} step={1}
-              onChange={(value) => { setMinSamplesLeaf(value); resetDepth(); }} />
-            <p>Cada corte debe dejar al menos este número de clientes en <b>ambos lados</b>. Compara 1 y 4 con el resultado final: observa las regiones y el tamaño de las <G k="minimoHoja">hojas</G>.</p>
+            <div className="mlx-parameter-fields">
+              <div className="mlx-parameter-field">
+                <OvaSlider label="Profundidad máxima (max_depth)" value={maxDepth} min={1} max={5} step={1}
+                  onChange={(value) => { setMaxDepth(value); setDepth(reducedMotion ? value : 0); }} />
+                <p>Máximo de preguntas en un recorrido desde la <G k="estructuraArbol">raíz hasta una hoja</G>. El árbol puede detenerse antes.</p>
+              </div>
+              <div className="mlx-parameter-field">
+                <OvaSlider label="Mínimo de clientes por hoja (min_samples_leaf)" value={minSamplesLeaf} min={1} max={7} step={1}
+                  onChange={(value) => { setMinSamplesLeaf(value); resetDepth(); }} />
+                <p>Cada corte debe dejar al menos este número de clientes en <b>ambos lados</b>. Compara 1 y 4 con el resultado final: observa las regiones y el tamaño de las <G k="minimoHoja">hojas</G>.</p>
+              </div>
+            </div>
             <output>Árbol mostrado: {leaves} hojas · hoja más pequeña: {smallestLeaf} {clientWord(smallestLeaf)} · acierto en entrenamiento: {(acc * 100).toFixed(1)} %.</output>
           </div>
           <label className="mlx-tree-final"><input type="checkbox" checked={showFinal} onChange={(e) => { setShowFinal(e.target.checked); resetDepth(); }} /> Mostrar árbol final</label>
           <p>El avance y la velocidad son <G k="controlDidactico">controles de visualización</G>. Al fijar el árbol final puedes comparar ajustes sin esperar la animación.</p>
-          <p>Fijos: <code>criterion='gini'</code>, <code>min_samples_split=2</code>, sin poda posterior ni pesos de clase. La OVA usa dos variables y desempata cortes en orden fijo; scikit-learn puede resolver empates de otra manera.</p>
+          <details className="mlx-parameter-notes"><summary>Alcance y ajustes fijos de esta simulación</summary><p>Fijos: <code>criterion='gini'</code>, <code>min_samples_split=2</code>, sin poda posterior ni pesos de clase. La OVA usa dos variables y desempata cortes en orden fijo; scikit-learn puede resolver empates de otra manera.</p></details>
           <button type="button" onClick={() => { setMaxDepth(5); setMinSamplesLeaf(1); setDepth(reducedMotion ? 5 : 0); }}>Restablecer ajustes</button>
         </>
       }

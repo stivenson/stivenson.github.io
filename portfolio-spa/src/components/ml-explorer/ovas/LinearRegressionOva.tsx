@@ -106,22 +106,27 @@ export function LinearRegressionOva({ autoPlay = false }: { autoPlay?: boolean }
         'En este simulador calculamos directamente la solución de mínimos cuadrados. La animación revela cómo la recta horizontal de referencia se transforma en esa solución y cómo quedan los residuos. Al terminar puedes revisar el resultado o reproducirlo de nuevo. Los puntos sobre la recta se colorean según el signo de su residuo, no son clases.'
       }
       controls={
-        <>
-          <label>
-            <input type="checkbox" checked={showSquares} onChange={(e) => setShowSquares(e.target.checked)} /> Mostrar
-            los errores al cuadrado
-          </label>
-          <button
-            type="button"
-            onClick={addOutlier}
-            disabled={full}
-          >
-            {outlierCount === 0 ? 'Añadir un outlier' : 'Añadir otro outlier'}
-          </button>
-          {points.length > INITIAL.length && (
-            <button type="button" onClick={resetPoints}>Restablecer puntos</button>
-          )}
-        </>
+        <div className="mlx-parameter-set" role="group" aria-label="Datos y visualización">
+          <strong>Datos y visualización</strong>
+          <div className="mlx-parameter-fields"><div className="mlx-parameter-field">
+            <label>
+              <input type="checkbox" checked={showSquares} onChange={(e) => setShowSquares(e.target.checked)} /> Mostrar
+              los errores al cuadrado
+            </label>
+            <p>Los cuadrados solo cambian la visualización de los errores.</p></div><div className="mlx-parameter-field">
+              <button
+                type="button"
+                onClick={addOutlier}
+                disabled={full}
+              >
+                {outlierCount === 0 ? 'Añadir un outlier' : 'Añadir otro outlier'}
+              </button>
+              <p>El valor atípico cambia los datos y la recta calculada.</p>
+              {points.length > INITIAL.length && (
+                <button type="button" onClick={resetPoints}>Restablecer puntos</button>
+              )}
+            </div></div>
+        </div>
       }
       readout={
         <>
@@ -164,111 +169,111 @@ export function LinearRegressionOva({ autoPlay = false }: { autoPlay?: boolean }
       }
     >
       <div ref={stageRef}>
-      <svg viewBox={`0 0 ${PLOT.width} ${PLOT.height}`} {...svgProps} role="group" aria-label="Puntos y recta de mínimos cuadrados">
-        <defs>
-          <clipPath id={clipId}>
-            <rect {...inner} />
-          </clipPath>
-        </defs>
-        <rect {...inner} fill="transparent" onClick={addPoint} />
-        <g pointerEvents="none">
-          {Array.from({ length: 11 }, (_, x) => (
-            <line key={`gx${x}`} x1={PLOT.sx(x)} x2={PLOT.sx(x)} y1={PLOT.sy(0)} y2={PLOT.sy(8)} stroke={OVA_COLORS.grid} />
-          ))}
-          {Array.from({ length: 9 }, (_, y) => (
-            <line key={`gy${y}`} x1={PLOT.sx(0)} x2={PLOT.sx(10)} y1={PLOT.sy(y)} y2={PLOT.sy(y)} stroke={OVA_COLORS.grid} />
-          ))}
-          <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
-            área →
-          </text>
-          <text x={8} y={PLOT.sy(8) - 10} fontSize={11} fill={OVA_COLORS.axis}>
-            ↑ precio
-          </text>
-          <g clipPath={`url(#${clipId})`}>
-            {showSquares && step > 0 &&
-              points.map((p, i) => {
-                const r = Math.abs(p.y - predict(p.x));
-                const side = r * (PLOT.sx(1) - PLOT.sx(0));
-                return (
-                  <rect
-                    key={`sq${i}`}
-                    x={PLOT.sx(p.x)}
-                    y={PLOT.sy(Math.max(p.y, predict(p.x)))}
-                    width={side}
-                    height={side}
-                    fill={OVA_COLORS.class1}
-                    fillOpacity={i === lastOutlierIndex ? 0.22 : 0.1}
-                    stroke={OVA_COLORS.class1}
-                    strokeOpacity={i === lastOutlierIndex ? 0.75 : 0.32}
-                  />
-                );
-              })}
-            {step > 0 && points.map((p, i) => (
-              <line
-                key={`res${i}`}
-                x1={PLOT.sx(p.x)}
-                x2={PLOT.sx(p.x)}
-                y1={PLOT.sy(p.y)}
-                y2={PLOT.sy(predict(p.x))}
-                stroke={OVA_COLORS.risk}
-                strokeDasharray="3 3"
-              />
+        <svg viewBox={`0 0 ${PLOT.width} ${PLOT.height}`} {...svgProps} role="group" aria-label="Puntos y recta de mínimos cuadrados">
+          <defs>
+            <clipPath id={clipId}>
+              <rect {...inner} />
+            </clipPath>
+          </defs>
+          <rect {...inner} fill="transparent" onClick={addPoint} />
+          <g pointerEvents="none">
+            {Array.from({ length: 11 }, (_, x) => (
+              <line key={`gx${x}`} x1={PLOT.sx(x)} x2={PLOT.sx(x)} y1={PLOT.sy(0)} y2={PLOT.sy(8)} stroke={OVA_COLORS.grid} />
             ))}
-            <line
-              className="mlx-linear-fit"
-              x1={PLOT.sx(0)}
-              y1={PLOT.sy(predict(0))}
-              x2={PLOT.sx(10)}
-              y2={PLOT.sy(predict(10))}
-              stroke={OVA_COLORS.accent}
-              strokeWidth={2.5}
-              opacity={step === 0 ? 0 : 1}
-            />
-          </g>
-        </g>
-        {points.map((p, i) => (
-          <g key={`pt${i}`}>
-            {i === lastOutlierIndex && (
-              <>
-                <circle
-                  className="mlx-linear-outlier-halo"
-                  cx={PLOT.sx(p.x)}
-                  cy={PLOT.sy(p.y)}
-                  r={11}
-                  fill="none"
+            {Array.from({ length: 9 }, (_, y) => (
+              <line key={`gy${y}`} x1={PLOT.sx(0)} x2={PLOT.sx(10)} y1={PLOT.sy(y)} y2={PLOT.sy(y)} stroke={OVA_COLORS.grid} />
+            ))}
+            <text x={PLOT.sx(10)} y={PLOT.height - 8} textAnchor="end" fontSize={11} fill={OVA_COLORS.axis}>
+              área →
+            </text>
+            <text x={8} y={PLOT.sy(8) - 10} fontSize={11} fill={OVA_COLORS.axis}>
+              ↑ precio
+            </text>
+            <g clipPath={`url(#${clipId})`}>
+              {showSquares && step > 0 &&
+                points.map((p, i) => {
+                  const r = Math.abs(p.y - predict(p.x));
+                  const side = r * (PLOT.sx(1) - PLOT.sx(0));
+                  return (
+                    <rect
+                      key={`sq${i}`}
+                      x={PLOT.sx(p.x)}
+                      y={PLOT.sy(Math.max(p.y, predict(p.x)))}
+                      width={side}
+                      height={side}
+                      fill={OVA_COLORS.class1}
+                      fillOpacity={i === lastOutlierIndex ? 0.22 : 0.1}
+                      stroke={OVA_COLORS.class1}
+                      strokeOpacity={i === lastOutlierIndex ? 0.75 : 0.32}
+                    />
+                  );
+                })}
+              {step > 0 && points.map((p, i) => (
+                <line
+                  key={`res${i}`}
+                  x1={PLOT.sx(p.x)}
+                  x2={PLOT.sx(p.x)}
+                  y1={PLOT.sy(p.y)}
+                  y2={PLOT.sy(predict(p.x))}
                   stroke={OVA_COLORS.risk}
-                  strokeWidth={2}
-                  pointerEvents="none"
+                  strokeDasharray="3 3"
                 />
-                <text
-                  className="mlx-linear-outlier-label"
-                  x={PLOT.sx(p.x)}
-                  y={PLOT.sy(p.y) - 14}
-                  textAnchor="middle"
-                  pointerEvents="none"
-                >
-                  nuevo outlier
-                </text>
-              </>
-            )}
-            <circle
-              className="mlx-linear-point is-draggable"
-              cx={PLOT.sx(p.x)}
-              cy={PLOT.sy(p.y)}
-              r={7}
-              fill={step === 0 ? OVA_COLORS.axis : p.y >= predict(p.x) ? OVA_COLORS.class1 : OVA_COLORS.class0}
-              stroke={step === 0 ? '#d9d9e8' : OVA_COLORS.axis}
-              strokeWidth={1.5}
-              tabIndex={0}
-              role="button"
-              aria-roledescription="punto movible"
-              aria-label={`Punto ${i + 1}: ${fmt(p.x)}, ${fmt(p.y)}`}
-              onPointerDown={begin(i)}
-              onKeyDown={(e) => onPointKey(i, e)}
-            />
+              ))}
+              <line
+                className="mlx-linear-fit"
+                x1={PLOT.sx(0)}
+                y1={PLOT.sy(predict(0))}
+                x2={PLOT.sx(10)}
+                y2={PLOT.sy(predict(10))}
+                stroke={OVA_COLORS.accent}
+                strokeWidth={2.5}
+                opacity={step === 0 ? 0 : 1}
+              />
+            </g>
           </g>
-        ))}
-      </svg>
+          {points.map((p, i) => (
+            <g key={`pt${i}`}>
+              {i === lastOutlierIndex && (
+                <>
+                  <circle
+                    className="mlx-linear-outlier-halo"
+                    cx={PLOT.sx(p.x)}
+                    cy={PLOT.sy(p.y)}
+                    r={11}
+                    fill="none"
+                    stroke={OVA_COLORS.risk}
+                    strokeWidth={2}
+                    pointerEvents="none"
+                  />
+                  <text
+                    className="mlx-linear-outlier-label"
+                    x={PLOT.sx(p.x)}
+                    y={PLOT.sy(p.y) - 14}
+                    textAnchor="middle"
+                    pointerEvents="none"
+                  >
+                    nuevo outlier
+                  </text>
+                </>
+              )}
+              <circle
+                className="mlx-linear-point is-draggable"
+                cx={PLOT.sx(p.x)}
+                cy={PLOT.sy(p.y)}
+                r={7}
+                fill={step === 0 ? OVA_COLORS.axis : p.y >= predict(p.x) ? OVA_COLORS.class1 : OVA_COLORS.class0}
+                stroke={step === 0 ? '#d9d9e8' : OVA_COLORS.axis}
+                strokeWidth={1.5}
+                tabIndex={0}
+                role="button"
+                aria-roledescription="punto movible"
+                aria-label={`Punto ${i + 1}: ${fmt(p.x)}, ${fmt(p.y)}`}
+                onPointerDown={begin(i)}
+                onKeyDown={(e) => onPointKey(i, e)}
+              />
+            </g>
+          ))}
+        </svg>
       </div>
     </OvaFrame>
   );

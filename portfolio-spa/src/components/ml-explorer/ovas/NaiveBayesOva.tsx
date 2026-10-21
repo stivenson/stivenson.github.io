@@ -83,14 +83,20 @@ export function NaiveBayesOva({ autoPlay = false }: { autoPlay?: boolean }) {
       hint="El modelo aprende de 16 reseñas de ejemplo. Alpha y prior recalculan el modelo con esas mismas reseñas. La animación lee una frase nueva: cada palabra conocida mueve la probabilidad. Naranja favorece positiva; azul, negativa; gris indica evidencia neutral o desconocida. 2D y 3D muestran el mismo cálculo."
       controls={
         <>
-          <div className="mlx-nb-settings" role="group" aria-label="Ajustes del modelo">
+          <div className="mlx-nb-settings mlx-parameter-set" role="group" aria-label="Ajustes del modelo">
             <strong>Ajustes del modelo</strong>
-            <OvaSlider label="Suavizado (alpha)" value={alpha} min={0.1} max={5} step={0.1}
-              onChange={(value) => { setAlpha(value); setStep(reducedMotion ? last : 0); }} format={(value) => value.toFixed(1)} />
-            <p>Un <G k="suavizadoAditivo">alpha mayor</G> acerca las probabilidades de las palabras entre sí. Compara sus factores; no garantiza acertar más.</p>
-            <OvaSlider label="Probabilidad inicial de positiva (class_prior)" value={positivePrior} min={0.1} max={0.9} step={0.1}
-              onChange={(value) => { setPositivePrior(value); setStep(reducedMotion ? last : 0); }} format={pct} />
-            <p>El <G k="priorVerosimilitud">prior</G> mueve el punto de partida. Aquí fijas <code>class_prior=[{(1 - positivePrior).toFixed(1)}, {positivePrior.toFixed(1)}]</code>: negativa y positiva. Los conteos no cambian.</p>
+            <div className="mlx-parameter-fields">
+              <div className="mlx-parameter-field">
+                <OvaSlider label="Suavizado (alpha)" value={alpha} min={0.1} max={5} step={0.1}
+                  onChange={(value) => { setAlpha(value); setStep(reducedMotion ? last : 0); }} format={(value) => value.toFixed(1)} />
+                <p>Un <G k="suavizadoAditivo">alpha mayor</G> acerca las probabilidades de las palabras entre sí. Compara sus factores; no garantiza acertar más.</p>
+              </div>
+              <div className="mlx-parameter-field">
+                <OvaSlider label="Probabilidad inicial de positiva (class_prior)" value={positivePrior} min={0.1} max={0.9} step={0.1}
+                  onChange={(value) => { setPositivePrior(value); setStep(reducedMotion ? last : 0); }} format={pct} />
+                <p>El <G k="priorVerosimilitud">prior</G> mueve el punto de partida. Aquí fijas <code>class_prior=[{(1 - positivePrior).toFixed(1)}, {positivePrior.toFixed(1)}]</code>: negativa y positiva. Los conteos no cambian.</p>
+              </div>
+            </div>
             <output className="mlx-nb-setting-result" aria-label="Probabilidad positiva de la frase completa">Frase completa: <b>{pct(result.pPositive)} positiva</b></output>
             <p>Probabilidad estimada para esta frase; no es el porcentaje de aciertos del modelo.</p>
             <button type="button" onClick={() => { setAlpha(1); setPositivePrior(0.5); setStep(reducedMotion ? last : 0); }}>Restablecer alpha y prior</button>

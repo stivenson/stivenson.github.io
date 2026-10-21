@@ -42,12 +42,13 @@ it('Linear Regression real: carga su chunk y recorre las 8 pestañas sin errores
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
+    if (id === 'type') {
       const svg = container.querySelector('.mlx-tabpanel svg[role="group"]');
       expect(svg).not.toBeNull();
       expect(svg!.querySelectorAll('circle.is-draggable')).toHaveLength(9);
-      expect(container.querySelector('.katex')).not.toBeNull();
+      expect(screen.getByRole('group', { name: 'Datos y visualización' })).toBeTruthy();
     }
+    if (id === 'formula') expect(container.querySelector('.katex')).not.toBeNull();
   }
 
   expect(error).not.toHaveBeenCalled();
@@ -164,12 +165,13 @@ it('Random Forest real (?alg=random-forest): recorre las 8 pestañas sin errores
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
+    if (id === 'type') {
       const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
       expect(svg).not.toBeNull();
       expect(svg!.querySelectorAll('circle')).toHaveLength(28);
-      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('acierta 35 de 40');
-      expect(container.querySelector('.katex')).not.toBeNull();
+      expect(screen.getByRole('slider', { name: /n_estimators/ })).toBeTruthy();
+      expect(screen.getByRole('combobox', { name: /max_features/ })).toBeTruthy();
+      expect(container.querySelector('.mlx-essential')?.textContent).toContain('bootstrap');
     }
   }
 

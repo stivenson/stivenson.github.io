@@ -165,14 +165,14 @@ export function gini([a, b]: [number, number]): number {
  * El mejor corte sobre un eje: punto medio entre valores consecutivos con la
  * menor impureza de Gini ponderada. null si no hay un corte válido.
  */
-export function bestSplitOnAxis(points: LabeledPt[], axis: 'x' | 'y', minSamplesLeaf = 1): { threshold: number; score: number } | null {
+export function bestSplitOnAxis(points: LabeledPt[], axis: 'x' | 'y', minSamplesLeaf = 1, uniqueSamples = false): { threshold: number; score: number } | null {
   const values = [...new Set(points.map((p) => p[axis]))].sort((a, b) => a - b);
   let best: { threshold: number; score: number } | null = null;
   for (let i = 0; i < values.length - 1; i++) {
     const threshold = (values[i] + values[i + 1]) / 2;
     const left = points.filter((p) => p[axis] <= threshold);
     const right = points.filter((p) => p[axis] > threshold);
-    if (left.length < minSamplesLeaf || right.length < minSamplesLeaf) continue;
+    if ((uniqueSamples ? new Set(left).size : left.length) < minSamplesLeaf || (uniqueSamples ? new Set(right).size : right.length) < minSamplesLeaf) continue;
     const score = (left.length * gini(countLabels(left)) + right.length * gini(countLabels(right))) / points.length;
     if (best === null || score < best.score - 1e-12) best = { threshold, score };
   }
@@ -262,38 +262,48 @@ export function mulberry32(seed: number): () => number {
  * elegido al azar (max_features = 1 con dos features) y solo si ese eje no
  * mejora la impureza prueba el otro. Así los árboles se parecen menos entre sí.
  */
-export function buildRandomTree(points: LabeledPt[], maxDepth: number, rng: () => number): TreeNode {
-  const count = countLabels(points);
-  const leaf: TreeNode = { kind: 'leaf', label: count[1] > count[0] ? 1 : 0, count };
-  if (maxDepth <= 0 || points.length < 2 || count[0] === 0 || count[1] === 0) return leaf;
-  const axes: ('x' | 'y')[] = rng() < 0.5 ? ['x', 'y'] : ['y', 'x'];
-  for (const axis of axes) {
-    const split = bestSplitOnAxis(points, axis);
-    if (split === null || split.score >= gini(count) - 1e-12) continue;
-    const { threshold } = split;
-    return {
-      kind: 'split',
-      axis,
-      threshold,
-      count,
-      left: buildRandomTree(points.filter((p) => p[axis] <= threshold), maxDepth - 1, rng),
-      right: buildRandomTree(points.filter((p) => p[axis] > threshold), maxDepth - 1, rng),
-    };
-  }
-  return leaf;
+export interface ForestSettings {
+  minSamplesLeaf?: number;
+  maxFeatures?: 1 | 2;
+  bootstrap?: boolean;
 }
 
-/**
- * Bosque de `nTrees` árboles. Cada uno aprende de una muestra bootstrap
- * (n puntos sacados con reposición) y con ejes al azar. Todo sale de una sola
- * semilla: los primeros N árboles de un bosque de 100 son el bosque de N.
+export function buildRandomTree(points: LabeledPt[], maxDepth: number, rng: () => number, settings: ForestSettings = {}): TreeNode {
+  const min = settings.minSamplesLeaf ?? 1;
+  const maxFeatures = settings.maxFeatures ?? 1;
+  const count = countLabels(points);
+  const leaf: TreeNode = { kind: 'leaf', label: count[1] > count[0] ? 1 : 0, count };
+  if (maxDepth <= 0 || new Set(points).size < 2 * min || count[0] === 0 || count[1] === 0) return leaf;
+  const axes: ('x' | 'y')[] = rng() < 0.5 ? ['x', 'y'] : ['y', 'x'];
+  let best: { axis: 'x' | 'y'; threshold: number; score: number } | null = null;
+  for (const axis of axes) {
+    // El bootstrap repite referencias: Gini usa multiplicidades, el mínimo
+    // por hoja exige clientes distintos, como n_node_samples de sklearn.
+    const split = bestSplitOnAxis(points, axis, min, true);
+    if (split === null || split.score >= gini(count) - 1e-12) continue;
+    if (best === null || split.score < best.score - 1e-12) best = { axis, ...split };
+    if (maxFeatures === 1) break;
+  }
+  if (!best) return leaf;
+  const { axis, threshold } = best;
+  return { kind: 'split', axis, threshold, count,
+    left: buildRandomTree(points.filter((p) => p[axis] <= threshold), maxDepth - 1, rng, settings),
+    right: buildRandomTree(points.filter((p) => p[axis] > threshold), maxDepth - 1, rng, settings),
+  };
+}
+
+/** Semilla reproducible: con los mismos ajustes, el bosque de N es el prefijo
+ * del bosque de 100. Votos duros didácticos; no predict_proba de sklearn.
  */
-export function buildForest(points: LabeledPt[], nTrees: number, maxDepth: number, seed: number): TreeNode[] {
+export function buildForest(points: LabeledPt[], nTrees: number, maxDepth: number, seed: number, settings: ForestSettings = {}): TreeNode[] {
+  if (!Number.isInteger(nTrees) || nTrees < 0 || !Number.isInteger(maxDepth) || maxDepth < 0) throw new RangeError('Tamaño y profundidad deben ser enteros no negativos');
+  const min = settings.minSamplesLeaf ?? 1;
+  if (!Number.isInteger(min) || min < 1 || ![1, 2].includes(settings.maxFeatures ?? 1)) throw new RangeError('Ajustes de hojas o variables inválidos');
   const rng = mulberry32(seed);
   const trees: TreeNode[] = [];
   for (let t = 0; t < nTrees; t++) {
-    const sample = points.map(() => points[Math.floor(rng() * points.length)]);
-    trees.push(buildRandomTree(sample, maxDepth, rng));
+    const sample = settings.bootstrap === false ? points : points.map(() => points[Math.floor(rng() * points.length)]);
+    trees.push(buildRandomTree(sample, maxDepth, rng, settings));
   }
   return trees;
 }

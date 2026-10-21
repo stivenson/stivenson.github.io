@@ -1,3 +1,4 @@
+import './OvaParameters.css';
 import { useId, useState, type CSSProperties, type ReactNode } from 'react';
 import type { OvaPlayback } from './useAutoLoop';
 

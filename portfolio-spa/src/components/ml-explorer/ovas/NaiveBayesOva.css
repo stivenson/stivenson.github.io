@@ -1,15 +1,4 @@
-/* Ajustes exclusivos de la OVA de Naive Bayes. */
-.mlx-ova-controls .mlx-nb-settings[role='group'] {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid rgba(85, 170, 255, .3);
-  border-radius: 8px;
-  background: rgba(10, 10, 46, .85);
-}
-.mlx-nb-settings p, .mlx-nb-control-note {
+.mlx-nb-control-note {
   margin: 0;
   font-size: 13px;
   line-height: 1.5;
@@ -28,18 +17,8 @@
 }
 .mlx-nb-summary strong { display: block; }
 
-@media (min-width: 769px) {
-  /* Mantener el gráfico a la vista al recorrer los ajustes de la columna lateral. */
-  .mlx-ova:has(.mlx-nb-viz) { overflow: clip; }
-  .mlx-ova-stage:has(> .mlx-nb-viz) {
-    position: sticky;
-    top: 12px;
-    align-self: start;
-  }
-}
-
 .mlx-nb-setting-result { color: #e8e8f0; font-size: 14px; }
-.mlx-nb-settings .mlx-gl, .mlx-nb-control-note .mlx-gl {
+.mlx-nb-control-note .mlx-gl {
   padding: 0;
   background: none;
   border: 0;

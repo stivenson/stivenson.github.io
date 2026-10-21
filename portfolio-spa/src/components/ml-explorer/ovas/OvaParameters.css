@@ -1,0 +1,132 @@
+/* Secciones de parámetros: no heredan el flex usado por grupos de botones. */
+.mlx-ova .mlx-ova-controls .mlx-parameter-set[role='group'] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
+  padding: 18px;
+  min-width: 0;
+  border: 1px solid rgba(85, 170, 255, .25);
+  border-radius: 12px;
+  background: rgba(10, 10, 46, .65);
+  font-size: 14px;
+  container: ova-settings / inline-size;
+}
+.mlx-parameter-set > strong {
+  display: block;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(85, 170, 255, .18);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.mlx-parameter-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  min-width: 0;
+}
+.mlx-parameter-field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(85, 170, 255, .14);
+  border-radius: 8px;
+  background: rgba(85, 170, 255, .035);
+}
+.mlx-parameter-field--wide,
+.mlx-parameter-field:only-child { grid-column: 1 / -1; }
+.mlx-ova .mlx-parameter-field p {
+  margin: 0;
+  max-width: 68ch;
+  font-size: 14px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.mlx-parameter-set .mlx-slider { gap: 12px; min-width: 0; }
+.mlx-parameter-set .mlx-slider > span {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.mlx-parameter-set .mlx-slider b {
+  padding: 0 8px;
+  border-radius: 5px;
+  background: rgba(16, 185, 129, .15);
+  color: #8ce8c9;
+  font-variant-numeric: tabular-nums;
+}
+.mlx-parameter-set input[type='range'] { margin: 0; min-width: 0; width: 100%; height: 20px; }
+.mlx-ova .mlx-parameter-set select {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin-top: 8px;
+  padding: 9px 10px;
+  border: 1px solid rgba(85, 170, 255, .35);
+  border-radius: 6px;
+  background: #11112b;
+  color: #e8e8f0;
+  font: inherit;
+}
+.mlx-ova .mlx-parameter-set > output {
+  display: block;
+  padding: 12px;
+  border-radius: 6px;
+  background: rgba(85, 170, 255, .075);
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.mlx-ova:has(.mlx-parameter-set) .mlx-ova-controls .mlx-gl {
+  display: inline;
+  padding: 0 2px;
+  border: 0;
+  border-bottom: 1px dashed rgba(85, 170, 255, .6);
+  border-radius: 0;
+  background: none;
+  font-size: inherit;
+  line-height: inherit;
+  text-align: left;
+  white-space: normal;
+}
+.mlx-ova:has(.mlx-parameter-set) .mlx-ova-controls .mlx-gl:hover { background: rgba(85, 170, 255, .12); }
+.mlx-parameter-set :focus-visible { outline: 2px solid #55aaff; outline-offset: 3px; }
+.mlx-parameter-notes {
+  padding: 12px 14px;
+  border: 1px solid rgba(85, 170, 255, .18);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.mlx-parameter-notes summary { cursor: pointer; color: #a8cfff; }
+.mlx-parameter-notes p { margin: 12px 0 0; }
+.mlx-ova:has(.mlx-parameter-set) .mlx-ova-controls { gap: 18px; }
+.mlx-ova:has(.mlx-parameter-set) .mlx-ova-side { min-width: 0; gap: 18px; }
+.mlx-ova:has(.mlx-parameter-set) .mlx-ova-body { gap: 20px; padding: 16px; }
+@container ova-settings (min-width: 560px) {
+  .mlx-parameter-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1500px) {
+  .mlx-ova:has(.mlx-parameter-set) .mlx-ova-body { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 28px; padding: 20px; }
+}
+@media (min-width: 1000px) {
+  .mlx-ova:has(.mlx-parameter-set) { overflow: clip; }
+  .mlx-ova:has(.mlx-parameter-set) .mlx-ova-stage { position: sticky; top: 16px; align-self: start; }
+}
+@media (max-width: 600px) {
+  .mlx-ova .mlx-ova-controls .mlx-parameter-set[role='group'] { padding: 12px; }
+  .mlx-parameter-field { padding: 12px; }
+  .mlx-ova:has(.mlx-parameter-set) .mlx-ova-body { padding: 10px; gap: 18px; }
+}
+
+@media (max-width: 1100px) {
+  .mlx-ova:has(.mlx-parameter-set) .mlx-ova-body { grid-template-columns: minmax(0, 1fr); }
+  .mlx-ova:has(.mlx-parameter-set) .mlx-ova-body .mlx-ova-stage { position: static; }
+}

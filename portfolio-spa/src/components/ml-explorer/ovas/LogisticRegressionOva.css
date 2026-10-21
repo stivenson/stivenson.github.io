@@ -1,17 +1,8 @@
-.mlx-ova-controls .mlx-logistic-settings[role='group'] {
-  display: flex; flex-direction: column; align-items: stretch; gap: 10px;
-  padding: 12px; border: 1px solid rgba(85,170,255,.3); border-radius: 8px;
-  background: rgba(10,10,46,.85);
-}
-.mlx-logistic-settings p, .mlx-logistic-note { margin: 0; font-size: 13px; line-height: 1.5; }
-.mlx-logistic-select { display: flex; flex-direction: column; gap: 6px; }
+.mlx-logistic-note { margin: 0; font-size: 13px; line-height: 1.5; }
+.mlx-logistic-select { display: flex; flex-direction: column; gap: 0; }
 .mlx-logistic-select select { width: 100%; padding: 6px; color: #e8e8f0; background: #0a0a2e; border: 1px solid #4c59d3; border-radius: 4px; }
 .mlx-logistic-static { display: flex; align-items: start; gap: 8px; }
 .mlx-logistic-viz { display: grid; gap: 12px; }
 .mlx-logistic-summary { padding: 10px; border: 1px solid rgba(16,185,129,.4); border-radius: 8px; background: rgba(16,185,129,.08); font-size: 14px; line-height: 1.6; }
 .mlx-logistic-summary span { display: block; }
-.mlx-logistic-settings .mlx-gl, .mlx-logistic-note .mlx-gl { padding: 0; background: none; border: 0; border-bottom: 1px dashed rgba(85,170,255,.5); border-radius: 0; }
-@media (min-width: 769px) {
-  .mlx-ova:has(.mlx-logistic-viz) { overflow: clip; }
-  .mlx-ova-stage:has(> .mlx-logistic-viz) { position: sticky; top: 12px; align-self: start; }
-}
+.mlx-logistic-note .mlx-gl { padding: 0; background: none; border: 0; border-bottom: 1px dashed rgba(85,170,255,.5); border-radius: 0; }

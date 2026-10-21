@@ -162,10 +162,20 @@ export const GLOSSARY = {
     what: 'Un modelo cuyas reglas puedes leer y explicar, como «cada m² suma 2.5 millones».',
     why: 'En crédito, salud o decisiones públicas a menudo es obligatorio explicar por qué se decidió algo.',
   },
+  diversidadBosque: {
+    term: 'Diversidad entre árboles (max_features)',
+    what: 'Los árboles pueden aprender reglas distintas si usan otras muestras o consideran otras variables al buscar cada corte. max_features limita cuántas variables se consideran inicialmente.',
+    why: 'Promediar ayuda más cuando los errores no son idénticos. Menos variables puede diversificar los árboles, pero también debilitar cada uno; se compara con validación.',
+  },
+  acuerdoBosque: {
+    term: 'Acuerdo entre votos',
+    what: 'La fracción de árboles que eligen una clase. Si 60 de 100 votan impago, el acuerdo por esa clase es 60 %. Eso es lo que representa el fondo de esta OVA.',
+    why: 'No equivale a 60 % de acierto ni garantiza una probabilidad calibrada de impago. RandomForestClassifier promedia probabilidades de hojas, que pueden diferir del voto mayoritario.',
+  },
   bootstrap: {
     term: 'Muestra bootstrap',
     what: 'Una muestra del mismo tamaño que los datos, sacada al azar con reposición: algunos ejemplos salen repetidos y otros (cerca de un tercio) no salen.',
-    why: 'Random Forest entrena cada árbol con una muestra bootstrap distinta, y por eso los árboles se equivocan en sitios distintos.',
+    why: 'Con bootstrap activado, el bosque usa muestras distintas para favorecer la diversidad. No garantiza que los árboles cometan errores distintos ni que aumente el acierto.',
   },
   tasaAprendizaje: {
     term: 'Tasa de aprendizaje (learning rate)',
@@ -215,12 +225,12 @@ export const GLOSSARY = {
   oob: {
     term: 'Puntaje OOB (fuera de la bolsa)',
     what: 'El acierto del bosque medido fila por fila, usando solo los árboles que no vieron esa fila en su muestra bootstrap (cerca de un tercio de los árboles).',
-    why: 'Da una estimación de cómo le irá con datos nuevos sin apartar un conjunto de prueba.',
+    why: 'Aprovecha filas omitidas al entrenar cada árbol. Si usas OOB para elegir ajustes, reserva otra evaluación final; no reemplaza una separación temporal o por grupos cuando la tarea la requiere.',
   },
   importanciaPermutacion: {
     term: 'Importancia por permutación',
     what: 'Cuánto cae el acierto del modelo en datos nuevos si revuelves al azar una columna.',
-    why: 'Si revolverla no cambia nada, el modelo no depende de esa feature; es más confiable que la importancia por impureza.',
+    why: 'Mide dependencia para ese modelo, conjunto de evaluación y métrica. Una caída pequeña puede deberse a redundancia con otras columnas; una importancia negativa puede aparecer por variación. No demuestra causalidad.',
   },
   sesgoVarianza: {
     term: 'Sesgo y varianza',

@@ -18,15 +18,46 @@ fraude = (rng.random(n) < 1 / (1 + np.exp(-riesgo))).astype(int)
 
 X = np.column_stack([monto, hora, distancia, intentos, antiguedad])
 nombres = ["monto", "hora", "distancia", "intentos", "antigüedad"]
-X_tr, X_te, y_tr, y_te = train_test_split(X, fraude, test_size=0.3, random_state=0, stratify=fraude)
+# 600 para entrenar, 200 para elegir ajustes y 200 para la prueba final.
+X_dev, X_test, y_dev, y_test = train_test_split(X, fraude, test_size=0.2, random_state=0, stratify=fraude)
+X_train, X_val, y_train, y_val = train_test_split(X_dev, y_dev, test_size=0.25, random_state=1, stratify=y_dev)
 
-arbol = DecisionTreeClassifier(random_state=0).fit(X_tr, y_tr)
-bosque = RandomForestClassifier(n_estimators=100, random_state=0).fit(X_tr, y_tr)
-print(f"Fraudes: {fraude.sum()} de {n} compras ({fraude.mean():.0%})")
-print(f"Un árbol solo   → entrenamiento {arbol.score(X_tr, y_tr):.1%} | datos nuevos {arbol.score(X_te, y_te):.1%}")
-print(f"Bosque de 100   → entrenamiento {bosque.score(X_tr, y_tr):.1%} | datos nuevos {bosque.score(X_te, y_te):.1%}")
+# Los cinco ajustes principales; la semilla facilita reproducir, no mejorar.
+TAMANOS = [10, 100]  # n_estimators
+PROFUNDIDADES = [3, None]  # max_depth
+MINIMOS_POR_HOJA = [1, 5]  # min_samples_leaf
+VARIABLES_POR_CORTE = ["sqrt", None]  # max_features; None considera todas
+BOOTSTRAP = True
+FIJOS = dict(criterion="gini", min_samples_split=2, ccp_alpha=0.0,
+             class_weight=None, random_state=0, n_jobs=1)
 
-perm = permutation_importance(bosque, X_te, y_te, n_repeats=5, random_state=0)
-print("\nImportancia de cada señal      impureza  permutación")
+print(f"Compras: entrenamiento={len(y_train)}, validación={len(y_val)}, prueba={len(y_test)}")
+mayoria = int(np.bincount(y_train).argmax())
+print(f"Línea base: siempre clase {mayoria}, validación {(y_val == mayoria).mean():.1%}")
+arbol = DecisionTreeClassifier(random_state=0).fit(X_train, y_train)
+print(f"Un árbol: entrenamiento {arbol.score(X_train, y_train):.1%} | validación {arbol.score(X_val, y_val):.1%}")
+print("Árboles | profundidad | mínimo hoja | variables | bootstrap | acierto validación")
+candidatos = []
+configuraciones = [(n, d, m, f, BOOTSTRAP) for n in TAMANOS for d in PROFUNDIDADES
+                   for m in MINIMOS_POR_HOJA for f in VARIABLES_POR_CORTE]
+# Contraste adicional: sin muestreo y con todas las variables por corte.
+configuraciones.append((100, None, 1, None, False))
+for n_arboles, prof, minimo, variables, muestreo in configuraciones:
+    bosque = RandomForestClassifier(n_estimators=n_arboles, max_depth=prof,
+        min_samples_leaf=minimo, max_features=variables, bootstrap=muestreo, **FIJOS).fit(X_train, y_train)
+    score = bosque.score(X_val, y_val)
+    nodos = sum(a.tree_.node_count for a in bosque.estimators_)
+    candidatos.append((score, -nodos, -n_arboles, bosque))
+    print(f"{n_arboles:>7} | {str(prof):>11} | {minimo:>11} | {str(variables):>9} | {str(muestreo):>9} | {score:>18.1%}")
+
+# En empate, prefiere menos nodos y luego menos árboles; nunca mira la prueba.
+mejor = max(candidatos, key=lambda c: c[:3])[-1]
+print(f"\nElegido: árboles={mejor.n_estimators}, profundidad={mejor.max_depth}, mínimo hoja={mejor.min_samples_leaf}, variables={mejor.max_features}, bootstrap={mejor.bootstrap}")
+print(f"Elegido: entrenamiento {mejor.score(X_train, y_train):.1%} | validación {mejor.score(X_val, y_val):.1%}")
+# Inspección con validación: la prueba final sigue reservada.
+perm = permutation_importance(mejor, X_val, y_val, n_repeats=5, random_state=0)
+print("\nImportancia de cada señal: impureza | permutación en validación")
 for j in np.argsort(-perm.importances_mean, kind="stable"):
-    print(f"  {nombres[j]:<11}                  {bosque.feature_importances_[j]:.2f}       {perm.importances_mean[j]:.3f}")
+    print(f"  {nombres[j]:<11} {mejor.feature_importances_[j]:.2f} | {perm.importances_mean[j]:.3f}")
+print(f"\nPrueba final (una configuración): {mejor.score(X_test, y_test):.1%}")
+print("No confundas probabilidad, acierto e importancia. Estas compras son simuladas.")

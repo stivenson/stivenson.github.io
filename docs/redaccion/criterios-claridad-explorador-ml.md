@@ -34,7 +34,8 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 5. Mantener coherencia entre entrada del control, animación, leyenda, lectura de resultados y explicación principal. Los pasos de animación no son necesariamente iteraciones de entrenamiento.
 6. Si cambia la lógica, añadir o ajustar pruebas significativas de los resultados. Si cambia Python, verificar ejercicios y notebooks.
 7. Comprobar teclado, foco, reinicio, movimiento reducido y pantalla completa cuando el cambio afecte esas interacciones.
-8. Tomar e inspeccionar capturas propias de la OVA antes y después de una interacción representativa, más sus fichas de conceptos, en escritorio y móvil. Corregir recortes y contradicciones antes de avanzar.
+8. Distribuir cada ajuste con su nombre, valor y explicación en un bloque propio. Separar el título del grupo y los resultados de los controles. Usar columnas según el espacio real disponible en el panel, conservar una columna en móvil y evitar que los estilos de grupos de botones afecten estos bloques. Revisar escritorio amplio y mediano, tablet y móvil.
+9. Tomar e inspeccionar capturas propias de la OVA antes y después de una interacción representativa, más sus fichas de conceptos, en escritorio y móvil. Corregir recortes y contradicciones antes de avanzar.
 
 ## Cierre por algoritmo
 
@@ -47,7 +48,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: regresión lineal, Random Forest, Gradient Boosting, SVM, KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: regresión lineal, Gradient Boosting, SVM, KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -80,3 +81,24 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Python: 300 ejemplos para entrenar, 100 para validación y 100 para prueba final. Comparación de 12 combinaciones; una sola configuración evaluada al final. Código, salida esperada y notebooks individual/conjunto sincronizados.
 - Capturas de escritorio (1280 × 900) con mínimos 1 y 4, controles y fichas en móvil (390 × 844), pantalla completa, teclado, restauración, recorrido y movimiento reducido comprobados.
 - Revisión local sobre el commit publicado 31aa800; no incluye despliegue. Las mejoras anteriores de guía, Naive Bayes y regresión logística sí se publicaron en ese commit.
+
+### Random Forest — revisión individual del 21 de octubre de 2026
+
+- Ocho pestañas revisadas. n_estimators, max_depth, min_samples_leaf, max_features y bootstrap visibles en Tipo, separados de los cortes aprendidos, el recorrido y la velocidad.
+- OVA: los cinco ajustes afectan al cálculo. El bosque se construye con el tamaño solicitado; la animación revela sus prefijos reproducibles. Bosque final fijo permite comparar sin esperar. Restauración y movimiento reducido conservan la coherencia.
+- Mínimo por hoja: cuenta clientes distintos aunque el bootstrap repita filas; Gini pondera las apariciones. Con max_features=2 compara ambos ejes; con 1 usa el primer eje sorteado que permite una mejora. Se documenta esta simplificación frente a sklearn.
+- El fondo muestra acuerdo entre votos duros; RandomForestClassifier promedia probabilidades de hojas y no siempre produce la misma clase. Ficha de acuerdo y ejemplo numérico en Fórmula.
+- Resultados junto al gráfico: entrenamiento y 40 casos simulados de comparación. Se aclara que se reutilizan al ajustar y que algunas coordenadas coinciden con entrenamiento; no son una prueba independiente.
+- Fichas de diversidad y acuerdo añadidas; bootstrap, OOB e importancia por permutación revisadas para evitar garantías y confusión con evaluación final.
+- Python: 600 compras de entrenamiento, 200 de validación y 200 de prueba. Compara 17 configuraciones; calcula importancia por permutación con validación y consulta la prueba una vez. Salida y notebooks sincronizados.
+- Verificación: siete casos deterministas sin bootstrap/todas las columnas comparados con la referencia CART de scikit-learn 1.6.1; no se afirma equivalencia de generadores aleatorios. Pruebas de mínimos con duplicados, profundidad, prefijos, controles, restauración, reproducción y fichas.
+- Capturas propias de escritorio (1280 × 900), móvil (390 × 844), pantalla completa y modales. Revisión local sobre a04f019, sin despliegue.
+
+### Revisión visual de controles — 21 de octubre de 2026
+
+- Aplicada a Random Forest, árbol de decisión, Naive Bayes, regresión logística y regresión lineal. Un estilo genérico de grupos de botones interfería con la distribución de los parámetros; se separaron ambos usos.
+- Nombre, valor y ayuda de cada ajuste permanecen juntos en tarjetas; título y resultados ocupan filas independientes. Dos columnas cuando el contenedor tiene espacio y una cuando se estrecha. En tablet se apilan gráfico y controles para evitar paneles demasiado angostos.
+- Notas técnicas extensas de árbol y bosque plegadas, con acceso visible. Las fichas de conceptos siguen disponibles mediante enlaces dentro de las explicaciones. El umbral logístico conserva un bloque separado del entrenamiento.
+- Capturas propias inspeccionadas de las cinco OVAs a 1920 × 1080 y 390 × 844. Random Forest comprobado además a 1440 × 900 y 1024 × 900; paneles sin desbordamiento horizontal. Ficha de mínimo por hoja comprobada en pantalla completa.
+- Verificación: compilación de producción, TypeScript, 62 pruebas de OVA/reproducción y 6 pruebas seleccionadas de integración aprobadas. Actualizada una expectativa antigua de regresión lineal: la OVA está en Tipo y la fórmula en su pestaña.
+- Vista previa local en el puerto 5182; cambios pendientes de publicación, sobre a04f019. Este criterio visual se incorpora a la revisión de los siguientes algoritmos.

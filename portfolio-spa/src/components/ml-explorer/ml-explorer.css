@@ -1526,7 +1526,7 @@ p.mlx-py-error {
 
 /* ---------- Fase 2: botones de opción, Naive Bayes ---------- */
 
-.mlx-ova-controls [role='group'] {
+.mlx-ova-controls [role='group']:not(.mlx-parameter-set) {
   display: flex;
   flex-wrap: wrap;
   align-items: center;

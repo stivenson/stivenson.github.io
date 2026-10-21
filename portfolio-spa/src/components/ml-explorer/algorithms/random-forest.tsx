@@ -8,252 +8,109 @@ import expectedOutput from './python/random-forest.out.txt?raw';
 const randomForest: AlgorithmModule = {
   slug: 'random-forest',
   row: {
-    type: 'Supervisado',
-    bestUse: 'Tareas donde importa la exactitud',
-    formula: 'Bagging de árboles de decisión',
-    assumptions: 'Poca correlación entre los árboles',
-    pros: 'Reduce el sobreajuste',
-    cons: 'Más lento, menos interpretable',
-    whenNot: 'Predicciones en tiempo real muy exigentes',
-    realWorld: 'Detección de fraude',
+    type: 'Supervisado', bestUse: 'Tareas donde importa la exactitud', formula: 'Bagging de árboles de decisión',
+    assumptions: 'Poca correlación entre los árboles', pros: 'Reduce el sobreajuste',
+    cons: 'Más lento, menos interpretable', whenNot: 'Predicciones en tiempo real muy exigentes', realWorld: 'Detección de fraude',
   },
   tabs: {
     type: {
-      essential: (
-        <>
-          <p>
-            <b><G k="supervisado" after=":">Supervisado</G></b> aprende de ejemplos que ya traen la respuesta (clientes marcados como «pagó» o «no pagó»).
-          </p>
-          <p>
-            Es un <G k="ensamble" after=":">ensamble</G> <b>entrena muchos árboles de decisión distintos y los pone a votar</b>.
-            Cada árbol por separado se equivoca bastante; la mayoría de votos, mucho menos, siempre que los árboles no se equivoquen en los mismos casos (ver Supuestos).
-          </p>
-          <p>
-            Sirve para clasificar (los árboles votan) y para predecir números (se promedian sus respuestas). El
-            simulador y el ejercicio clasifican.
-          </p>
-        </>
-      ),
-      deepDive: (
-        <p>
-          Combina dos fuentes de azar: <G k="bagging">bagging</G> (cada árbol ve una <G k="bootstrap" after=")">muestra bootstrap</G> y <G k="feature">features</G> al azar en cada corte. Fue propuesto por Leo Breiman en 2001.
-        </p>
-      ),
+      essential: <>
+        <p><b><G k="supervisado">Supervisado</G>:</b> aprende de clientes con respuesta conocida. Es un <G k="ensamble">ensamble</G>: combina árboles que aprenden con distintas muestras y variables. Puede clasificar o predecir cantidades.</p>
+        <p>En clasificación, esta OVA usa mayoría de votos. <b>RandomForestClassifier promedia las probabilidades que entregan las hojas</b> y elige la clase con mayor promedio. Ambas reglas pueden dar resultados distintos, especialmente con hojas que mezclan clases.</p>
+        <h4>Qué ajustas y qué aprende el bosque</h4>
+        <p>Los <G k="hiperparametro">hiperparámetros</G> configuran el entrenamiento; las preguntas, cortes y respuestas de las hojas son <G k="parametroAprendido">parámetros aprendidos</G>.</p>
+        <ul>
+          <li><b>Número de árboles — <code>n_estimators</code>:</b> cuántos se entrenan y combinan. Más árboles pueden estabilizar el resultado, con más tiempo y memoria; el acierto no tiene por qué subir en cada incremento.</li>
+          <li><b>Profundidad — <code>max_depth</code>:</b> limita las preguntas en cada recorrido de cada árbol. <code>None</code> no fija ese límite, pero otras condiciones pueden detenerlo.</li>
+          <li><b>Mínimo por hoja — <code>min_samples_leaf</code>:</b> exige suficientes ejemplos en ambos lados de cada corte. Subirlo evita <G k="minimoHoja">hojas pequeñas</G>, aunque puede perder patrones útiles.</li>
+          <li><b>Variables por corte — <code>max_features</code>:</b> cuántas columnas se consideran inicialmente al buscar cada corte; no cuántas columnas acepta el bosque. En clasificación, <code>'sqrt'</code> usa la raíz cuadrada del número de columnas, redondeada hacia abajo y con mínimo 1. <code>None</code> considera todas.</li>
+          <li><b>Muestreo — <code>bootstrap</code>:</b> con <code>True</code>, cada árbol recibe una muestra con reposición: puede repetir filas y dejar otras fuera. Con <code>False</code>, usa todas las filas. La selección aleatoria de variables todavía puede producir árboles distintos.</li>
+        </ul>
+        <p>La OVA permite experimentar con estos cinco ajustes sobre dos variables. El avance muestra bosques parciales: <b>mostrar 10 de 100 árboles no cambia los 100 solicitados</b>. La velocidad es un <G k="controlDidactico">control de visualización</G>.</p>
+        <p>Compara ajustes con <G k="datosValidacion">validación</G>, y reserva una prueba final. La semilla (<code>random_state</code> en Python) facilita reproducir un resultado; no conviene buscar la semilla que más acierte.</p>
+      </>,
+      deepDive: <>
+        <p><code>criterion</code>, <code>min_samples_split</code>, <code>max_samples</code> y <code>class_weight</code> son otros ajustes. La OVA mantiene <G k="gini">Gini</G> y mínimo 2 antes de dividir; con muestreo hace tantas extracciones como filas hay. Python deja sus valores explícitos.</p>
+        <p>Consulta la <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html" target="_blank" rel="noreferrer">documentación de RandomForestClassifier</a> y la <a href="https://scikit-learn.org/stable/modules/ensemble.html#forest" target="_blank" rel="noreferrer">guía de bosques de scikit-learn</a>.</p>
+      </>,
     },
     bestUse: {
-      essential: (
-        <>
-          <p>
-            Úsalo cuando tienes <b>datos en tabla</b> (filas y columnas) y lo que importa es <b>acertar</b> más que
-            explicar cada decisión.
-          </p>
-          <ul>
-            <li>Detectar fraude o compras sospechosas.</li>
-            <li>Predecir qué clientes se van a ir (abandono).</li>
-            <li>Mantenimiento predictivo: qué máquina fallará pronto según sus sensores.</li>
-          </ul>
-          <p className="mlx-rule">
-            Si un árbol solo se queda corto, un bosque es el siguiente paso natural: pide poco ajuste y rara vez
-            sale mal.
-          </p>
-        </>
-      ),
-      deepDive: (
-        <>
-        <p>
-          Funciona bien «de fábrica»: con los valores por defecto de scikit-learn (100 árboles, sin límite de
-          profundidad) suele quedar cerca de su mejor resultado. No necesita <G k="escalado">escalar</G> las <G k="feature" after=".">features</G>
-        </p>
-        <p>
-          Con{' '}
-          <code>oob_score=True</code> <G before="(" k="oob" after=")">OOB</G> estima su <G k="exactitud">exactitud</G> con las filas que cada árbol no vio (las que quedaron fuera de su <G k="bootstrap" after=",">muestra bootstrap</G> cerca de un tercio), sin apartar un
-          conjunto de prueba.
-        </p>
-        </>
-      ),
+      essential: <>
+        <p>Es un candidato para <G k="tabular">datos tabulares</G> cuando hay combinaciones y relaciones que un modelo lineal o un árbol pequeño no recoge bien.</p>
+        <ul><li>Clasificar compras para revisión por posible fraude.</li><li>Predecir abandono a partir de actividad y características de clientes.</li><li>Estimar fallas de máquinas según mediciones y uso.</li></ul>
+        <p>Empieza con una <G k="lineaBase">línea base</G>, como regresión logística o un árbol pequeño. Compara el bosque con Gradient Boosting usando las mismas particiones y medidas. Mide también memoria y tiempo de respuesta.</p>
+        <p className="mlx-rule">Prueba primero un tamaño manejable; ajusta el crecimiento de los árboles y las variables por corte. Aumenta el número de árboles si la mejora o estabilidad observada compensa el costo.</p>
+      </>,
+      deepDive: <>
+        <p>No necesita <G k="escalado">escalar</G> las columnas numéricas para comparar cortes. Sí requiere representar las categorías de forma adecuada y revisar qué información estará disponible al predecir.</p>
+        <p>Con <code>bootstrap=True</code>, <code>oob_score=True</code> puede estimar rendimiento usando, para cada fila, los árboles que no la incluyeron en su muestra (<G k="oob">OOB</G>). Si eliges ajustes mirando esa estimación, no la presentes también como una prueba final independiente.</p>
+      </>,
     },
     formula: {
-      essential: (
-        <>
-          <p>
-            <b>Ejemplo:</b> un bosque de 5 árboles revisa una compra. Tres dicen «fraude» y dos dicen «normal».
-            Gana «fraude», 3 votos contra 2, y la probabilidad estimada es 3/5 = 60 % (scikit-learn promedia las probabilidades de los árboles; con árboles profundos da casi lo mismo, ver Fórmula › A fondo).
-          </p>
-          <p>Para que los árboles no sean copias, cada uno se entrena distinto:</p>
-          <ol>
-            <li>
-              Con una <G k="bootstrap" after=":">muestra bootstrap</G> se sacan al azar tantas filas como hay, con
-              reposición. Algunas se repiten y otras quedan fuera.
-            </li>
-            <li>En cada corte, el árbol solo puede elegir entre unas pocas <G k="feature">features</G> sorteadas.</li>
-          </ol>
-          <Tex block>{'\\hat{y}(x) = \\text{mayoría}\\{\\,h_1(x),\\ \\dots,\\ h_B(x)\\,\\}'}</Tex>
-          <p>
-            <Tex>{'h_b'}</Tex> es el árbol número <Tex>{'b'}</Tex> y <Tex>{'B'}</Tex> el número de árboles. Mueve
-            el simulador de 1 a 100 árboles: con los mismos datos del árbol de decisión, el acierto en 40 clientes
-            nuevos sube de 35 a 39.
-          </p>
-        </>
-      ),
-      deepDive: (
-        <>
-          <p>
-            Por qué funciona: si cada árbol tiene <G k="sesgoVarianza">varianza</G> <Tex>{'\\sigma^2'}</Tex> y la correlación entre dos
-            árboles es <Tex after=",">{'\\rho'}</Tex> el promedio de <Tex>{'B'}</Tex> árboles tiene varianza
-          </p>
-          <Tex block>{'\\rho\\,\\sigma^2 + \\frac{1-\\rho}{B}\\,\\sigma^2'}</Tex>
-          <p>
-            Más árboles borran el segundo término; el primero solo baja si los árboles se parecen menos{' '}
-            <Tex before="(">{'\\rho'}</Tex> pequeño). Para eso sirve sortear features: en clasificación scikit-learn usa{' '}
-            <Tex>{'\\sqrt{p}'}</Tex> features por corte (<code>max_features="sqrt"</code>). En realidad,
-            scikit-learn no cuenta votos: promedia las probabilidades de los árboles, lo que casi siempre da la
-            misma clase.
-          </p>
-        </>
-      ),
+      essential: <>
+        <p><b>Ejemplo de la OVA:</b> si tres de cinco árboles votan impago, gana impago. El <G k="acuerdoBosque">acuerdo</G> es 60 %; no significa 60 % de aciertos ni una <G k="calibracion">probabilidad calibrada</G> de impago.</p>
+        <ol><li>Con <G k="bootstrap">muestreo con reposición</G>, se forman muestras que pueden repetir clientes.</li><li>En cada corte se sortean variables candidatas según <code>max_features</code>.</li><li>Se combinan las respuestas de los árboles.</li></ol>
+        <Tex block>{'\\hat{y}_{\\mathrm{OVA}}(x) = \\text{mayoría}\\{h_1(x),\\ldots,h_B(x)\\}'}</Tex>
+        <p>En Python, cada árbol entrega una probabilidad por clase. Por ejemplo, dos árboles dan 0,51 y uno 0: el promedio es 0,34 para esa clase, aunque dos de tres votos individuales la prefieran. Por eso promediar probabilidades no siempre equivale a contar votos.</p>
+        <Tex block>{'\\hat{p}_c(x)=\\frac{1}{B}\\sum_{b=1}^{B} p_{b,c}(x),\\qquad \\hat{y}(x)=\\operatorname{argmax}_c\\hat{p}_c(x)'}</Tex>
+        <p><Tex>{'B'}</Tex> es el número de árboles. En la OVA compara tamaños con los demás ajustes fijos; la comparación simulada puede subir, bajar o mantenerse.</p>
+      </>,
+      deepDive: <>
+        <p>Un modelo ilustrativo con árboles de igual <G k="sesgoVarianza">varianza</G> y correlación común <Tex>{'\\rho'}</Tex> muestra por qué importa su diversidad:</p>
+        <Tex block>{'\\operatorname{Var}(\\bar h)=\\rho\\sigma^2+\\frac{1-\\rho}{B}\\sigma^2'}</Tex>
+        <p>Al crecer <Tex>{'B'}</Tex>, el segundo término baja; la parte compartida no desaparece. Es una explicación simplificada de la reducción de variabilidad, no una fórmula para predecir el acierto de cualquier bosque.</p>
+      </>,
     },
     assumptions: {
-      essential: (
-        <>
-          <p>
-            Supone que <b>los árboles se equivocan en sitios distintos</b>. Si todos cometen el mismo error, votar
-            no lo corrige.
-          </p>
-          <p>
-            Ejemplo: si una sola <G k="feature">feature</G> delata casi todo el fraude, todos los árboles la usan primero y quedan
-            parecidos. El sorteo de features en cada corte obliga a algunos árboles a buscar otras señales.
-          </p>
-          <p>Como cualquier modelo supervisado, también supone que los datos nuevos se parecen a los de entrenamiento.</p>
-        </>
-      ),
-      deepDive: (
-        <p>
-          No supone relaciones lineales ni distribuciones particulares, y no le afecta la escala de las features.
-          Lo que no puede hacer es <G k="extrapolar" after=":">extrapolar</G> en <G k="regresion" after=",">regresión</G> nunca predice un valor fuera del rango de las
-          respuestas que vio al entrenar.
-        </p>
-      ),
+      essential: <>
+        <p>No exige relaciones lineales ni una distribución concreta. Para que combinar árboles ayude, conviene que <b>sus errores no sean idénticos</b>; <code>bootstrap</code> y <code>max_features</code> influyen en esa <G k="diversidadBosque">diversidad</G>.</p>
+        <p>Necesita datos representativos, respuestas fiables y variables disponibles al predecir. Si todos los árboles aprenden la misma <G k="fugaInformacion">fuga de información</G>, combinarlos no la corrige.</p>
+      </>,
+      deepDive: <p>En <G k="regresion">regresión</G>, un bosque estándar promedia respuestas de sus hojas; no puede <G k="extrapolar">extrapolar</G> fuera del rango de los objetivos que aprendió.</p>,
     },
     pros: {
-      essential: (
-        <ul>
-          <li>
-            <b>Reduce el <G k="overfitting" after=":">sobreajuste</G></b> un árbol profundo memoriza el{' '}
-            <G k="ruido" after=";">ruido</G> al promediar muchos, ese ruido se diluye. En el ejercicio, el árbol solo acierta
-            77.7 % en compras nuevas y el bosque, 82.3 %.
-          </li>
-          <li>
-            <b>Poca preparación:</b> no hay que <G k="escalado">escalar</G> las <G k="feature">features</G> y funciona bien con los valores por defecto. En scikit-learn 1.6 además acepta <G k="faltantes">valores faltantes</G> (NaN).
-          </li>
-          <li>
-            <b>Dice qué features pesan:</b> trae una medida de importancia de cada señal.
-          </li>
-        </ul>
-      ),
-      deepDive: (
-        <p>
-          Los árboles se entrenan de forma independiente, así que se reparten entre los núcleos del procesador (
-          <code>n_jobs=-1</code>). Ojo con la importancia «de fábrica» (<code>feature_importances_</code>): mide cuánta <G k="gini">impureza</G> quitó cada feature y favorece a las que tienen muchos valores distintos. En el ejercicio,
-          «antigüedad» (que no influye en el fraude) saca 0.12, más que «intentos»; la <G k="importanciaPermutacion">importancia por permutación</G> (medida en los datos nuevos) la deja en −0.006, es decir, en nada. Otra trampa: si dos features están muy <G k="correlacion" after=",">correlacionadas</G> ambas medidas se reparten la importancia entre ellas.
-        </p>
-      ),
+      essential: <ul>
+        <li><b>Puede reducir la variabilidad:</b> combinar árboles distintos suele hacer el resultado menos sensible que un solo árbol; no elimina automáticamente el <G k="overfitting">sobreajuste</G>.</li>
+        <li><b>Captura combinaciones:</b> encuentra interacciones entre columnas sin definirlas todas a mano. El <G k="escalado">escalado</G> numérico no es necesario para comparar sus cortes.</li>
+        <li><b>Permite explorar señales:</b> compara importancia por impureza con <G k="importanciaPermutacion">importancia por permutación</G>; ninguna demuestra causalidad.</li>
+      </ul>,
+      deepDive: <p>Los árboles se pueden entrenar en paralelo con <code>n_jobs</code>. La importancia por impureza favorece columnas con muchos valores distintos; las variables <G k="correlacion">correlacionadas</G> complican la interpretación de ambas medidas.</p>,
     },
     cons: {
-      essential: (
-        <ul>
-          <li>
-            <b>Menos interpretable:</b> no puedes leer 100 árboles como lees uno. Sabes qué <G k="feature">features</G> pesan, pero no
-            la regla exacta.
-          </li>
-          <li>
-            <b>Más lento y pesado:</b> guarda y consulta todos los árboles en cada predicción.
-          </li>
-          <li>
-            <b>El 100 % de entrenamiento engaña:</b> en el ejercicio, árbol y bosque aciertan el 100 % de los datos
-            con los que aprendieron. Solo los datos nuevos dicen la verdad.
-          </li>
-        </ul>
-      ),
-      deepDive: (
-        <p>
-          Cada árbol crece sin límite por defecto, así que el modelo ocupa memoria y el tiempo de predicción crece
-          con el número de árboles y su profundidad. En el simulador, con 100 árboles el bosque todavía vota
-          «impago» (60 de 100 árboles) en el cliente de <G k="ruido">ruido</G> de abajo a la izquierda (ingreso 3, deuda 1.5), que no pagó aunque su deuda es baja: promediar reduce el <G k="overfitting" after=",">sobreajuste</G> no lo
-          elimina.
-        </p>
-      ),
+      essential: <ul>
+        <li><b>Menor legibilidad:</b> revisar cientos de árboles es más difícil que leer uno pequeño.</li>
+        <li><b>Costo de cálculo:</b> más árboles y más hojas consumen memoria y tiempo, incluso si el acierto ya se estabilizó.</li>
+        <li><b>Puede aprender ruido:</b> el acierto sobre entrenamiento no mide el rendimiento con datos nuevos.</li>
+        <li><b>Probabilidades que requieren revisión:</b> mucha coincidencia entre árboles no garantiza <G k="calibracion">calibración</G>.</li>
+      </ul>,
+      deepDive: <p>La OVA simplifica el método con votos de clase, dos variables y un generador de azar propio. Sus cifras no reproducen las de scikit-learn. Los 40 casos simulados son una comparación didáctica reutilizada, con algunas coordenadas coincidentes con entrenamiento; no una prueba independiente.</p>,
     },
     whenNot: {
-      essential: (
-        <>
-          <p className="mlx-rule">
-            No lo uses si debes explicar cada decisión regla por regla, o si cada predicción debe salir en
-            microsegundos en un equipo pequeño.
-          </p>
-          <p>
-            Ejemplo: un sensor embebido que decide en tiempo real con poca memoria. Un modelo lineal o un árbol corto
-            ocupan mucho menos.
-          </p>
-        </>
-      ),
-      deepDive: (
-        <>
-        <p>
-          Si buscas la máxima <G k="exactitud">exactitud</G> en <G k="tabular" after=",">datos tabulares</G> Gradient Boosting suele superarlo, a cambio de más
-          ajuste de <G k="hiperparametro" after=".">hiperparámetros</G>
-        </p>
-        <p>
-          Con imágenes, audio o texto largo, las <G k="redNeuronal">redes
-          neuronales</G> sacan mejores <G k="feature">features</G> que las columnas crudas.
-        </p>
-        </>
-      ),
+      essential: <>
+        <p className="mlx-rule">Si necesitas reglas breves o tienes límites estrictos de memoria y respuesta, compara primero un modelo lineal o un árbol pequeño.</p>
+        <p>Para relaciones <G k="tabular">tabulares</G> complejas, compara Gradient Boosting; no hay un ganador universal. Con imágenes, audio o texto largo, suele ser más importante construir o aprender una buena representación que aumentar el bosque.</p>
+      </>,
+      deepDive: <p>Si la tarea necesita contexto de una secuencia o aprender desde píxeles, considera <G k="redNeuronal">redes neuronales</G> apropiadas y modelos ya entrenados. Un bosque todavía puede servir sobre medidas útiles extraídas de esas entradas.</p>,
     },
     realWorld: {
-      essential: (
-        <>
-          <p>
-            <b>Detección de fraude.</b> Los bancos combinan señales como el monto, la hora, la distancia a la ciudad
-            habitual y los intentos fallidos de clave, y los <G k="ensamble">ensambles</G> de árboles son una de sus herramientas
-            habituales.
-          </p>
-          <p>
-            El ejercicio genera 1 000 compras con una regla oculta: el fraude sube con el monto, la madrugada, la
-            distancia y los intentos fallidos; la antigüedad de la tarjeta no influye. Hay 30 % de fraudes, así que
-            decir siempre «no es fraude» ya acierta 70 %: ese es el piso. Un árbol solo acierta 77.7 % en compras
-            nuevas; el bosque de 100 árboles, 82.3 %.
-          </p>
-          <p>
-            Mira las dos columnas de importancia. La de impureza le da 0.12 a «antigüedad»; la de permutación (cuánto
-            cae el acierto si se revuelve esa columna en los datos nuevos) la deja en −0.006, es decir, en nada.
-          </p>
-        </>
-      ),
-      deepDive: (
-        <>
-        <p>
-          En la vida real el fraude es menos del 1 % de las compras: con tan pocos casos, la <G k="exactitud">exactitud</G> no sirve
-          (99 % se logra sin detectar nada). Se miden la <G k="precisionSensibilidad">precisión y la sensibilidad</G> con una{' '}
-          <G k="matrizConfusion" after=".">matriz de confusión</G>
-        </p>
-        <p>
-          Además se ajusta el <G k="umbral">umbral</G> y se le da más peso
-          a la <G k="desbalance">clase rara</G> (<code>class_weight="balanced"</code>).
-        </p>
-        </>
-      ),
+      essential: <>
+        <p><b>Detector educativo de fraude:</b> genera 1 000 compras simuladas con monto, hora, distancia, intentos fallidos y antigüedad. Esta última no interviene en la regla generadora, pero puede adquirir importancia aparente por azar.</p>
+        <p>Python separa entrenamiento, validación y prueba. Compara un árbol y varias configuraciones de bosque con validación; elige una configuración antes de evaluar la prueba final. Los ajustes quedan explícitos para modificarlos y observar el efecto.</p>
+        <p>La OVA clasifica pago/impago con 28 clientes y dos variables; el ejercicio usa compras y cinco columnas. Comparten conceptos, pero sus cifras no son directamente comparables.</p>
+      </>,
+      deepDive: <>
+        <p>Si hay pocas compras fraudulentas, acertar la clase mayoritaria puede ocultar muchos casos perdidos. Revisa <G k="precisionSensibilidad">precisión y sensibilidad</G> y la <G k="matrizConfusion">matriz de confusión</G> según el costo de cada error.</p>
+        <p><code>class_weight</code> modifica el entrenamiento; el <G k="umbral">umbral</G> modifica la decisión posterior. Se eligen con validación. La importancia por permutación del ejercicio se calcula también con validación, antes de consultar la prueba final.</p>
+      </>,
     },
   },
-  Ova: RandomForestOva,
-  ovaTab: 'type',
-  autoPlayOva: true,
+  Ova: RandomForestOva, ovaTab: 'type', autoPlayOva: true,
   python: { code, expectedOutput, colabNotebook: 'random-forest' },
   inYourField: [
     { area: 'Industrial', example: 'predecir qué máquina fallará en la próxima semana a partir de vibración, temperatura y horas de uso.' },
-    { area: 'Ambiental', example: 'clasificar el uso del suelo (bosque, cultivo, ciudad, agua) a partir de las bandas de imágenes satelitales.' },
-    { area: 'Civil', example: 'estimar el riesgo de falla de tramos de tubería según edad, material, presión y tipo de suelo.' },
+    { area: 'Ambiental', example: 'clasificar el uso del suelo a partir de medidas extraídas de imágenes satelitales.' },
+    { area: 'Civil', example: 'estimar fallas de tuberías según edad, material, presión y tipo de suelo.' },
   ],
   alternatives: ['gradient-boosting', 'decision-tree', 'logistic-regression'],
 };
-
 export default randomForest;
