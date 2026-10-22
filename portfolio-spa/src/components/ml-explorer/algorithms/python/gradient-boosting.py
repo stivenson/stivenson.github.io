@@ -16,31 +16,42 @@ riesgo = 3 * deuda * (ingreso < 3) + 1.2 * deuda + 0.7 * atrasos - 0.3 * ingreso
 impago = (rng.random(n) < 1 / (1 + np.exp(-riesgo))).astype(int)
 
 X = np.column_stack([ingreso, deuda, atrasos, edad])
-X_tr, X_te, y_tr, y_te = train_test_split(X, impago, test_size=0.3, random_state=0, stratify=impago)
+# Prueba aparte; las comparaciones solo miran entrenamiento y validación.
+X_dev, X_test, y_dev, y_test = train_test_split(X, impago, test_size=0.2, random_state=0, stratify=impago)
+X_train, X_val, y_train, y_val = train_test_split(X_dev, y_dev, test_size=0.25, random_state=1, stratify=y_dev)
+TASAS = [0.03, 0.1, 0.3]
+MAX_ARBOLES = 300
+# Fijamos complejidad y muestreo para comparar tasa y cantidad de etapas.
+FIJOS = dict(max_depth=3, min_samples_leaf=20, subsample=1.0,
+             loss="log_loss", n_iter_no_change=None, random_state=0)
 
-# 300 árboles a propósito (el valor por defecto es 100), para ver qué pasa cuando sobran.
-# min_samples_leaf=20: cada hoja debe tener al menos 20 clientes.
-gb = GradientBoostingClassifier(
-    n_estimators=300, learning_rate=0.1, max_depth=3, min_samples_leaf=20, random_state=0
-)
-gb.fit(X_tr, y_tr)
+print(f"Clientes: entrenamiento={len(y_train)}, validación={len(y_val)}, prueba={len(y_test)}")
+print("Tasa | árboles elegidos | pérdida validación")
+resultados = []
+for tasa in TASAS:
+    modelo = GradientBoostingClassifier(n_estimators=MAX_ARBOLES, learning_rate=tasa, **FIJOS)
+    modelo.fit(X_train, y_train)
+    curva_val = [log_loss(y_val, p[:, 1]) for p in modelo.staged_predict_proba(X_val)]
+    cantidad = int(np.argmin(curva_val)) + 1
+    resultados.append((curva_val[cantidad - 1], tasa, cantidad, modelo, curva_val))
+    print(f"{tasa:>4.2f} | {cantidad:>16} | {curva_val[cantidad - 1]:>18.3f}")
 
-perdida_tr = [log_loss(y_tr, p[:, 1]) for p in gb.staged_predict_proba(X_tr)]
-perdida_te = [log_loss(y_te, p[:, 1]) for p in gb.staged_predict_proba(X_te)]
-mejor = int(np.argmin(perdida_te)) + 1
+perdida, tasa, cantidad, modelo, curva_val = min(resultados, key=lambda fila: fila[0])
+print(f"\nElegido con validación: tasa={tasa}, árboles={cantidad}, pérdida={perdida:.3f}")
+# Se entrena otra vez con la misma parte de entrenamiento y los ajustes elegidos.
+# La prueba se consulta una sola vez: no se eligen ajustes mirando su resultado.
+final = GradientBoostingClassifier(n_estimators=cantidad, learning_rate=tasa, **FIJOS).fit(X_train, y_train)
+print(f"Prueba final: pérdida={log_loss(y_test, final.predict_proba(X_test)[:, 1]):.3f}")
+print("Fijos: profundidad=3, mínimo por hoja=20, subsample=1.0, pérdida=log_loss")
 
-print(f"Impagos: {impago.sum()} de {n} clientes")
-print("Árboles | pérdida entrenamiento | pérdida datos nuevos")
-for m in [1, 10, 50, 100, 200, 300]:
-    print(f"{m:>7} | {perdida_tr[m - 1]:>21.3f} | {perdida_te[m - 1]:>20.3f}")
-print(f"\nMenor pérdida en datos nuevos: {perdida_te[mejor - 1]:.3f} con {mejor} árboles")
-
-plt.figure(figsize=(4.5, 3.2))
-plt.plot(range(1, 301), perdida_tr, label="entrenamiento")
-plt.plot(range(1, 301), perdida_te, label="datos nuevos")
-plt.axvline(mejor, ls="--", c="gray")
+curva_train = [log_loss(y_train, p[:, 1]) for p in modelo.staged_predict_proba(X_train)]
+plt.figure(figsize=(5, 3.2))
+plt.plot(range(1, MAX_ARBOLES + 1), curva_train, label="entrenamiento")
+plt.plot(range(1, MAX_ARBOLES + 1), curva_val, label="validación")
+plt.axvline(cantidad, ls="--", c="gray", label="cantidad elegida")
 plt.xlabel("número de árboles")
 plt.ylabel("pérdida logarítmica")
-plt.title("Después de la línea gris, más árboles empeoran")
+plt.title(f"Comparar etapas con tasa {tasa}: prueba final aparte")
 plt.legend()
+plt.tight_layout()
 plt.show()

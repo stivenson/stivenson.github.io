@@ -48,7 +48,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: regresión lineal, Gradient Boosting, SVM, KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: SVM, KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -102,3 +102,15 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Capturas propias inspeccionadas de las cinco OVAs a 1920 × 1080 y 390 × 844. Random Forest comprobado además a 1440 × 900 y 1024 × 900; paneles sin desbordamiento horizontal. Ficha de mínimo por hoja comprobada en pantalla completa.
 - Verificación: compilación de producción, TypeScript, 62 pruebas de OVA/reproducción y 6 pruebas seleccionadas de integración aprobadas. Actualizada una expectativa antigua de regresión lineal: la OVA está en Tipo y la fórmula en su pestaña.
 - Vista previa local en el puerto 5182; cambios pendientes de publicación, sobre a04f019. Este criterio visual se incorpora a la revisión de los siguientes algoritmos.
+
+### Gradient Boosting — revisión individual del 21 de octubre de 2026
+
+- Ocho pestañas revisadas. Tipo explica n_estimators, learning_rate, max_depth, min_samples_leaf, subsample y los ajustes de parada temprana. Se distingue regresión, clasificación binaria y cantidad de árboles por etapa multiclase. Los nombres se refieren al Gradient Boosting clásico de scikit-learn.
+- OVA: tasa y cantidad de árboles modifican realmente el conjunto; vista final fija para comparar. Profundidad 1, mínimo por hoja 1, todas las filas y pérdida cuadrática explícitamente fijos. Recorrido y velocidad separados del entrenamiento. No se presenta el MSE de entrenamiento como validación ni como diagnóstico automático de sobreajuste.
+- Se conserva la comparación de curvas, residuos y explicación numérica de una corrección. Título corregido: cada árbol corrige al conjunto anterior. Etiquetas de tasa sin sugerir un valor universalmente equilibrado.
+- Fichas compartidas: tasa, modelo débil y parada temprana revisadas para evitar garantías. Ficha nueva de subsample distingue muestreo sin reposición del bootstrap de Random Forest.
+- Python: 480 clientes simulados para entrenar, 160 para validación y 160 para prueba final. Compara tasas 0.03, 0.1 y 0.3 hasta 300 etapas; elige solo con validación y consulta la prueba una vez. Resultado reproducido en Pyodide 0.27.7 / scikit-learn 1.6.1: tasa 0.03, 129 etapas; pérdida de validación 0.575 y de prueba 0.509. Código y notebooks sincronizados.
+- Referencia numérica: 15 combinaciones de tasa/cantidad, 41 consultas por combinación, contrastadas con GradientBoostingRegressor de scikit-learn 1.6.1 (árboles de profundidad 1); prefijos reproducibles verificados.
+- Organización visual usa el patrón compartido de tarjetas de parámetros. Fichas comprobadas en pantalla completa, cierre y retorno del foco; controles, reinicio y movimiento reducido cubiertos por pruebas.
+- Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844; tarjetas sin desbordamiento horizontal y ficha de tasa legible en escritorio/móvil. Compilación, TypeScript, pruebas de OVA, referencia numérica, glosario, notebooks e integración aprobadas; ejercicio ejecutado en Pyodide.
+- Revisión local sobre f110feb; sin publicación de esta revisión.

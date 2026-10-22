@@ -193,15 +193,12 @@ it('Gradient Boosting real (?alg=gradient-boosting): recorre las 8 pestañas sin
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
-      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
-      expect(svg).not.toBeNull();
-      expect(svg!.querySelectorAll('circle')).toHaveLength(21);
-      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('2.41');
-      expect(container.querySelector('.katex')).not.toBeNull();
+    if (id === 'type') {
+      expect(container.querySelector('.mlx-tabpanel svg[role="img"]')).not.toBeNull();
+      expect(screen.getByRole('group', { name: 'Hiperparámetros de Gradient Boosting' })).toBeTruthy();
     }
+    if (id === 'formula') expect(container.querySelector('.katex')).not.toBeNull();
   }
-
   expect(error).not.toHaveBeenCalled();
 });
 

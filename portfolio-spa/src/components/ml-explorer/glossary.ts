@@ -179,8 +179,8 @@ export const GLOSSARY = {
   },
   tasaAprendizaje: {
     term: 'Tasa de aprendizaje (learning rate)',
-    what: 'Qué fracción de cada corrección se aplica: con 0.1, cada árbol nuevo corrige solo el 10 % del error que ve.',
-    why: 'Más pequeña necesita más árboles pero suele generalizar mejor; más grande aprende rápido y sobreajusta antes.',
+    what: 'En Gradient Boosting, multiplica la corrección predicha por cada árbol antes de sumarla al conjunto. Con 0.1 se incorpora el 10 % del aporte del árbol, que no tiene por qué corregir todo el residuo de cada ejemplo.',
+    why: 'Se elige junto con el número de árboles usando validación. Reducirla puede exigir más árboles; ningún valor garantiza una mejor predicción en datos nuevos.',
   },
   perdidaLog: {
     term: 'Pérdida logarítmica (log loss)',
@@ -257,10 +257,15 @@ export const GLOSSARY = {
     what: 'Entrenar modelos uno tras otro, cada uno enfocado en los errores que dejaron los anteriores, y sumarlos.',
     why: 'Corrige paso a paso, pero si se pasa de pasos empieza a corregir ruido.',
   },
+  subsampleBoosting: {
+    term: 'Fracción de filas por árbol (subsample)',
+    what: 'En el Gradient Boosting clásico de scikit-learn, indica la fracción de filas de entrenamiento que se elige sin reposición para ajustar cada árbol. Con 1 se usan todas; con 0.8 se sortea un 80 % por etapa.',
+    why: 'Introduce variación entre etapas y puede regularizar. Se compara junto con la tasa y la cantidad de árboles; no es el bootstrap con reposición de Random Forest.',
+  },
   modeloDebil: {
     term: 'Modelo débil',
     what: 'Un modelo muy simple que por sí solo apenas mejora la predicción, como un árbol de uno o dos cortes.',
-    why: 'Boosting suma cientos de ellos; al ser simples, cada uno corrige poco y es difícil que memorice.',
+    why: 'Su complejidad limita qué correcciones puede representar cada árbol. Sumar muchos modelos simples también puede sobreajustar; se evalúa el conjunto con validación.',
   },
   gradiente: {
     term: 'Gradiente',
@@ -270,7 +275,7 @@ export const GLOSSARY = {
   paradaTemprana: {
     term: 'Parada temprana (early stopping)',
     what: 'Detener el entrenamiento cuando el error en datos de validación deja de bajar.',
-    why: 'Evita seguir sumando árboles que solo memorizan ruido, sin adivinar el número de antemano.',
+    why: 'Es una regla de selección con validación y una tolerancia de mejora. No demuestra por sí sola que el modelo haya empezado a memorizar ruido; la prueba final sigue aparte.',
   },
   validacionCruzada: {
     term: 'Validación cruzada',

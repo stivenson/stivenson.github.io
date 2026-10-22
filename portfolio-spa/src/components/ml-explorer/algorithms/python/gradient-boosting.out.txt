@@ -1,10 +1,9 @@
-Impagos: 271 de 800 clientes
-Árboles | pérdida entrenamiento | pérdida datos nuevos
-      1 |                 0.620 |                0.619
-     10 |                 0.530 |                0.529
-     50 |                 0.437 |                0.506
-    100 |                 0.386 |                0.526
-    200 |                 0.317 |                0.565
-    300 |                 0.265 |                0.611
+Clientes: entrenamiento=480, validación=160, prueba=160
+Tasa | árboles elegidos | pérdida validación
+0.03 |              129 |              0.575
+0.10 |               29 |              0.577
+0.30 |               15 |              0.579
 
-Menor pérdida en datos nuevos: 0.504 con 24 árboles
+Elegido con validación: tasa=0.03, árboles=129, pérdida=0.575
+Prueba final: pérdida=0.509
+Fijos: profundidad=3, mínimo por hoja=20, subsample=1.0, pérdida=log_loss

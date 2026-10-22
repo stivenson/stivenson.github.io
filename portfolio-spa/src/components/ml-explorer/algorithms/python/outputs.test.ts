@@ -69,17 +69,11 @@ describe('cifras citadas en los textos', () => {
     expect(randomForest).toMatch(/^\s+monto\s+0\.44\s+0\.139$/m);
   });
 
-  it('Gradient Boosting: la pérdida en datos nuevos toca fondo (0.504) con 24 árboles y sube a 0.611 con 300', () => {
-    expect(gradientBoosting).toContain('Impagos: 271 de 800 clientes');
-    expect(gradientBoosting).toContain('Menor pérdida en datos nuevos: 0.504 con 24 árboles');
-    expect(gradientBoosting).toMatch(/^\s+1 \|\s+0\.620 \|\s+0\.619$/m);
-    expect(gradientBoosting).toMatch(/^\s+300 \|\s+0\.265 \|\s+0\.611$/m);
-  });
-
-  it('Gradient Boosting: en entrenamiento la pérdida baja en cada fila de la tabla (de 0.620 a 0.265)', () => {
-    const train = [...gradientBoosting.matchAll(/^\s+\d+ \|\s+([\d.]+) \|/gm)].map((m) => Number(m[1]));
-    expect(train).toEqual([0.62, 0.53, 0.437, 0.386, 0.317, 0.265]);
-    for (let i = 1; i < train.length; i++) expect(train[i]).toBeLessThan(train[i - 1]);
+  it('Gradient Boosting: elige tasa y etapas con validación y evalúa una prueba separada', () => {
+    expect(gradientBoosting).toContain('Clientes: entrenamiento=480, validación=160, prueba=160');
+    expect(gradientBoosting).toContain('Elegido con validación: tasa=0.03, árboles=129, pérdida=0.575');
+    expect(gradientBoosting).toContain('Prueba final: pérdida=0.509');
+    expect(gradientBoosting.match(/^0\./gm)).toHaveLength(3);
   });
 
   it('SVM: RBF con C = 1 acierta 98.7 % (7 fallos de 540) y guarda 593 de 1257; C = 100, 99.4 %; C = 0.01, 18.3 % con 1257 vectores', () => {

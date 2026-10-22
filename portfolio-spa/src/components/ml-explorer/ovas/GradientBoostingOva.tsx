@@ -1,3 +1,4 @@
+import { G } from '../Gloss';
 import { useMemo, useRef, useState } from 'react';
 import { GB_MAX_STEPS, GB_RATES, GB_XS as XS, GB_YS as YS } from './datasets';
 import { OVA_COLORS, OvaFrame } from './OvaFrame';
@@ -9,17 +10,6 @@ import { useAutoLoop } from './useAutoLoop';
 const PLOT = createPlot(440, 360, 42, [0, 10], [0, 8]);
 const START_RATE = 0.3;
 const TREE_CHECKPOINTS = [0, 1, 2, 5, 10, 20, 35, GB_MAX_STEPS];
-const STAGE_LABELS = [
-  'Predicción inicial · promedio',
-  'Árbol 1 · primera corrección',
-  '2 árboles · corrige errores grandes',
-  '5 árboles · aparece la forma general',
-  '10 árboles · curva más precisa',
-  '20 árboles · afina detalles',
-  '35 árboles · ajustes pequeños',
-  '50 árboles · error mínimo',
-];
-const RATE_LABELS: Record<number, string> = { 0.1: 'Suave', 0.3: 'Equilibrada', 1: 'Agresiva' };
 
 function decimal(value: number, digits = 2) {
   return value.toFixed(digits).replace('.', ',');
@@ -35,30 +25,35 @@ function signed(value: number) {
 
 export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }) {
   const [stage, setStage] = useState(0);
+  const [treeCount, setTreeCount] = useState(GB_MAX_STEPS);
+  const [showFinal, setShowFinal] = useState(false);
   const [rate, setRate] = useState<number>(START_RATE);
   const stageRef = useRef<HTMLDivElement>(null);
   const visible = useInViewport(stageRef);
   const reducedMotion = usePrefersReducedMotion();
-  const last = TREE_CHECKPOINTS.length - 1;
-  const playback = useAutoLoop(stage, last, setStage, visible, reducedMotion, autoPlay, 850, 5000);
-  const steps = TREE_CHECKPOINTS[stage];
-  const previousSteps = stage > 0 ? TREE_CHECKPOINTS[stage - 1] : 0;
-  const model = useMemo(() => boost(XS, YS, GB_MAX_STEPS, rate), [rate]);
+  const checkpoints = TREE_CHECKPOINTS.filter((n) => n <= treeCount);
+  const last = checkpoints.length - 1;
+  const playback = useAutoLoop(stage, last, setStage, visible && !showFinal, reducedMotion, autoPlay && !showFinal, 850, 5000);
+  const currentStage = showFinal ? last : Math.min(stage, last);
+  const steps = checkpoints[currentStage];
+  const previousSteps = currentStage > 0 ? checkpoints[currentStage - 1] : 0;
+  const stageLabel = steps === 0 ? 'Predicción inicial · promedio' : steps === 1 ? 'Árbol 1 · primera corrección' : `${steps} árboles · correcciones acumuladas`;
+  const model = useMemo(() => boost(XS, YS, treeCount, rate), [rate, treeCount]);
   const mse = boostMse(model, XS, YS, steps);
   const previousMse = boostMse(model, XS, YS, previousSteps);
-  const improvement = stage === 0 || previousMse === 0 ? 0 : ((previousMse - mse) / previousMse) * 100;
+  const improvement = currentStage === 0 || previousMse === 0 ? 0 : ((previousMse - mse) / previousMse) * 100;
   const predictions = XS.map((x) => predictBoost(model, x, steps));
   const previousPredictions = XS.map((x) => predictBoost(model, x, previousSteps));
   const residuals = XS.map((_, i) => YS[i] - predictions[i]);
   const previousResiduals = XS.map((_, i) => YS[i] - previousPredictions[i]);
   const under = residuals.filter((residual) => residual > 0).length;
-  const over = residuals.length - under;
-  const focusIndex = stage === 0
+  const over = residuals.filter((residual) => residual < 0).length;
+  const focusIndex = currentStage === 0
     ? null
     : previousResiduals.reduce((best, residual, index) => (
       Math.abs(residual) > Math.abs(previousResiduals[best]) ? index : best
     ), 0);
-  const firstNewTree = stage === 0 ? null : model.stumps[previousSteps];
+  const firstNewTree = currentStage === 0 ? null : model.stumps[previousSteps];
   const focusRawCorrection = focusIndex === null || !firstNewTree
     ? 0
     : XS[focusIndex] <= firstNewTree.threshold ? firstNewTree.left : firstNewTree.right;
@@ -74,52 +69,65 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
 
   return (
     <OvaFrame
-      playback={playback}
-      progressLabel={`${STAGE_LABELS[stage]} · etapa ${stage} de ${last}`}
-      explanation={stage === 0
+      playback={showFinal ? undefined : playback}
+      progressLabel={`${stageLabel} · etapa ${currentStage} de ${last}`}
+      explanation={currentStage === 0
         ? 'El modelo empieza con una línea horizontal: predice el consumo promedio en todos los momentos del día.'
-        : stage === last
-          ? 'Las últimas correcciones son pequeñas. El error de entrenamiento es mínimo, pero seguir ajustando también puede memorizar ruido.'
+        : currentStage === last
+          ? 'Llegaste al número de árboles elegido. El error corresponde a entrenamiento; para elegir ajustes necesitas datos de validación.'
           : `La línea discontinua es la predicción anterior. Los ${steps - previousSteps} árboles nuevos la acercan a los puntos y producen la curva verde.`}
-      title="Cada árbol corrige al anterior"
+      title="Cada árbol corrige al conjunto anterior"
       hint="Ejemplo de demanda eléctrica: cada punto es el consumo observado en un momento del día. La línea discontinua conserva la predicción anterior y la verde muestra el resultado después de sumar árboles. Las líneas verticales son residuos: naranja significa que el modelo predijo poco y azul que predijo demasiado. La tarjeta «Una corrección, con números» sigue el punto resaltado."
       controls={
-        <div className="mlx-gb-rate-control" role="group" aria-label="Tasa de aprendizaje">
-          <span>Tasa de aprendizaje</span>
-          <div className="mlx-gb-rate-options">
-            {GB_RATES.map((r) => (
-              <button
-                key={r}
-                type="button"
-                aria-label={`Tasa ${shortDecimal(r)}: ${RATE_LABELS[r]}`}
-                aria-pressed={rate === r}
-                onClick={() => {
-                  setRate(r);
-                  setStage(0);
-                }}
-              >
-                <strong>{shortDecimal(r)}</strong>
-                <small>{RATE_LABELS[r]}</small>
-              </button>
-            ))}
+        <>
+          <div className="mlx-parameter-set" role="group" aria-label="Hiperparámetros de Gradient Boosting">
+            <strong>Ajustes de entrenamiento</strong>
+            <div className="mlx-parameter-fields">
+              <div className="mlx-parameter-field">
+                <label className="mlx-slider"><span>Árboles solicitados (n_estimators) <b>{treeCount}</b></span>
+                  <select aria-label="Árboles solicitados (n_estimators)" value={treeCount} onChange={(e) => { setTreeCount(Number(e.target.value)); setStage(0); }}>
+                    {[10, 20, 35, 50].map((n) => <option key={n} value={n}>{n} árboles</option>)}
+                  </select>
+                </label>
+                <p>Cantidad de correcciones que se entrenan en secuencia. Compárala junto con la <G k="tasaAprendizaje">tasa</G>; más árboles no garantizan mejores predicciones en días nuevos.</p>
+              </div>
+              <div className="mlx-parameter-field">
+                <span>Tasa de aprendizaje (learning_rate)</span>
+                <div className="mlx-gb-rate-options">
+                  {GB_RATES.map((r) => (
+                    <button key={r} type="button" aria-label={`Tasa ${shortDecimal(r)}`} aria-pressed={rate === r} onClick={() => { setRate(r); setStage(0); }}>
+                      <strong>{shortDecimal(r)}</strong>
+                    </button>
+                  ))}
+                </div>
+                <p>Multiplica el aporte de cada árbol: 0,1 incorpora el 10 % de su corrección. Una <G k="tasaAprendizaje">tasa menor</G> puede necesitar más árboles; observa el MSE con la misma cantidad.</p>
+              </div>
+            </div>
+            <output aria-label="Resultado del conjunto completo">Con {treeCount} árboles y tasa {shortDecimal(rate)}: MSE de entrenamiento {decimal(boostMse(model, XS, YS))}. No es una medida de error en datos nuevos.</output>
           </div>
-        </div>
+          <label><input type="checkbox" checked={showFinal} onChange={(e) => { setShowFinal(e.target.checked); playback.restart(); }} /> Mostrar conjunto final</label>
+          <p>Mostrando {steps} de {treeCount} árboles. El recorrido revela grupos de árboles ya calculados; la velocidad y los pasos son <G k="controlDidactico">controles de visualización</G>.</p>
+          <details className="mlx-parameter-notes"><summary>Alcance y ajustes fijos de esta simulación</summary>
+            <p>21 consumos simulados, una variable y pérdida cuadrática. Cada árbol tiene un solo corte (<G k="estructuraArbol">max_depth=1</G>), mínimo por hoja 1 y usa todas las filas (subsample=1). Los cortes y valores de las hojas se aprenden. No hay parada temprana ni evaluación independiente. Python ilustra clasificación binaria con otros datos.</p>
+          </details>
+          <button type="button" onClick={() => { setRate(START_RATE); setTreeCount(GB_MAX_STEPS); setShowFinal(false); playback.restart(); }}>Restablecer ajustes</button>
+        </>
       }
       readoutLive="off"
       readout={
         <>
           <div className="mlx-gb-score" aria-label="Cambio del error cuadrático medio">
-            {stage > 0 && (
+            {currentStage > 0 && (
               <div>
-                <span>MSE anterior</span>
+                <span>MSE anterior · entrenamiento</span>
                 <strong>{decimal(previousMse)}</strong>
               </div>
             )}
             <div className="is-current">
-              <span>MSE actual</span>
+              <span>MSE actual · entrenamiento</span>
               <strong>{decimal(mse)}</strong>
             </div>
-            {stage > 0 && (
+            {currentStage > 0 && (
               <div className={improvement >= 0 ? 'is-improvement' : 'is-worse'}>
                 <span>Este hito</span>
                 <strong>{improvement >= 0 ? '−' : '+'}{decimal(Math.abs(improvement), 1)} %</strong>
@@ -127,12 +135,12 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
             )}
           </div>
           <span className="mlx-gb-residual-summary">
-            {stage === 0
+            {currentStage === 0
               ? 'Predicción base: el promedio de los 21 consumos.'
               : <>Errores restantes: <b>{under}</b> predicciones bajas · <b>{over}</b> altas.</>}
           </span>
           <div className="mlx-gb-checkpoint-explanation" aria-live="off">
-            {stage === 0 || focusIndex === null ? (
+            {currentStage === 0 || focusIndex === null ? (
               <>
                 <b>1. Empezar por el promedio</b>
                 <span>Todos los momentos reciben la misma predicción. La distancia vertical hasta cada punto es el error que aprenderá el primer árbol.</span>
@@ -147,10 +155,10 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
               </>
             )}
           </div>
-          {stage === last && (
+          {currentStage === last && (
             <div className="mlx-gb-overfit-note">
               <b>Ojo con el resultado final</b>
-              <span>El MSE casi cero corresponde a estos datos de entrenamiento. En clientes o días nuevos puede empeorar si el bosque memoriza el ruido.</span>
+              <span>Este MSE se calcula sobre los mismos 21 consumos usados para entrenar. No permite decidir cuántos árboles funcionarán mejor en días nuevos.</span>
             </div>
           )}
         </>
@@ -174,8 +182,8 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
           </g>
           <text className="mlx-gb-axis-label" x={PLOT.sx(10)} y={PLOT.height - 9} textAnchor="end">momento del día →</text>
           <text className="mlx-gb-axis-label" x={10} y={PLOT.sy(8) - 13}>↑ consumo eléctrico</text>
-          {stage > 0 && <path className="mlx-gb-curve-previous" d={previousCurve} fill="none" />}
-          {stage > 0 && focusIndex !== null && (
+          {currentStage > 0 && <path className="mlx-gb-curve-previous" d={previousCurve} fill="none" />}
+          {currentStage > 0 && focusIndex !== null && (
             <line
               className="mlx-gb-focus-before"
               x1={PLOT.sx(XS[focusIndex])}
@@ -184,7 +192,7 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
               y2={PLOT.sy(previousPredictions[focusIndex])}
             />
           )}
-          {stage > 0 && XS.map((x, i) => (
+          {currentStage > 0 && XS.map((x, i) => (
             <line
               className={`mlx-gb-residual${i === focusIndex ? ' is-focus' : ''}`}
               key={`r${i}`}
@@ -203,8 +211,8 @@ export function GradientBoostingOva({ autoPlay = false }: { autoPlay?: boolean }
               cx={PLOT.sx(x)}
               cy={PLOT.sy(YS[i])}
               r={5.5}
-              fill={stage === 0 ? OVA_COLORS.axis : residuals[i] > 0 ? OVA_COLORS.class1 : OVA_COLORS.class0}
-              stroke={stage === 0 ? '#d9d9e8' : '#040320'}
+              fill={currentStage === 0 ? OVA_COLORS.axis : residuals[i] > 0 ? OVA_COLORS.class1 : OVA_COLORS.class0}
+              stroke={currentStage === 0 ? '#d9d9e8' : '#040320'}
               strokeWidth={1.5}
             />
           ))}
