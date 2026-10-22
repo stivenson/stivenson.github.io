@@ -57,6 +57,13 @@ describe('cifras citadas en los textos', () => {
     expect(knn).toMatch(/Matrix\s+1\.3 \/ 5/);
   });
 
+  it('KNN: pesos por distancia usan la coincidencia exacta y la evaluación aparte reserva la prueba', () => {
+    expect(knn).toContain('weights=distance: Alien=1.0, Matrix=2.0, Interestelar=2.0');
+    expect(knn).toContain('Clasificación: entrenamiento=106, validación=36, prueba=36');
+    expect(knn).toContain('Elegido con validación: k=11, weights=uniform, p=1');
+    expect(knn).toContain('brute y kd_tree coinciden en validación: True');
+    expect(knn).toContain('Prueba final: 97.2%, errores=1 de 36');
+  });
   it('Random Forest: 30 % de fraudes; el árbol solo 77.7 % y el bosque 82.3 % en compras nuevas, ambos 100 % en entrenamiento', () => {
     expect(randomForest).toContain('Fraudes: 303 de 1000 compras (30%)');
     expect(randomForest).toContain('Un árbol solo   → entrenamiento 100.0% | datos nuevos 77.7%');

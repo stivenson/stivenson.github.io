@@ -108,26 +108,44 @@ export function fitLogistic1D(
 
 // ---------- KNN ----------
 
+export interface KnnSettings {
+  weights?: 'uniform' | 'distance';
+  /** Minkowski: 1 = Manhattan, 2 = euclidiana. */
+  p?: 1 | 2;
+}
+
 export interface KnnResult {
-  /** Índices de los k vecinos, del más cercano al más lejano. */
+  /** Índices de los k vecinos, del más cercano al más lejano. Empates: orden original. */
   neighbors: number[];
-  /** Votos por clase: [clase 0, clase 1]. */
+  /** Cantidad seleccionada por clase, sin ponderar. */
   votes: [number, number];
+  /** Aportes por clase después de aplicar weights. */
+  scores: [number, number];
+  distances: number[];
+  neighborWeights: number[];
   winner: 0 | 1;
-  /** Distancia al k-ésimo vecino (radio del círculo que los contiene). */
+  /** Distancia al último vecino, con la métrica elegida. */
   radius: number;
 }
 
-export function knnVote(points: LabeledPt[], query: Pt, k: number): KnnResult {
-  const order = points
-    .map((p, i) => ({ i, d: Math.hypot(p.x - query.x, p.y - query.y) }))
-    .sort((a, b) => a.d - b.d || a.i - b.i);
-  const top = order.slice(0, Math.max(0, Math.min(k, points.length)));
-  if (top.length === 0) return { neighbors: [], votes: [0, 0], winner: 0, radius: 0 };
+export function knnVote(points: LabeledPt[], query: Pt, k: number, settings: KnnSettings = {}): KnnResult {
+  const order = points.map((point, i) => {
+    const dx = Math.abs(point.x - query.x), dy = Math.abs(point.y - query.y);
+    return { i, d: settings.p === 1 ? dx + dy : Math.hypot(dx, dy) };
+  }).sort((a, b) => a.d - b.d || a.i - b.i);
+  const top = order.slice(0, Math.max(0, Math.min(Math.floor(k), points.length)));
+  if (top.length === 0) return { neighbors: [], votes: [0, 0], scores: [0, 0], distances: [], neighborWeights: [], winner: 0, radius: 0 };
   const votes: [number, number] = [0, 0];
-  for (const t of top) votes[points[t.i].label]++;
-  const winner: 0 | 1 = votes[0] === votes[1] ? points[top[0].i].label : votes[1] > votes[0] ? 1 : 0;
-  return { neighbors: top.map((t) => t.i), votes, winner, radius: top[top.length - 1].d };
+  const scores: [number, number] = [0, 0];
+  const exact = top.some((point) => point.d === 0);
+  const neighborWeights = top.map(({ d }) => settings.weights !== 'distance' ? 1 : exact ? (d === 0 ? 1 : 0) : 1 / d);
+  top.forEach((point, index) => {
+    votes[points[point.i].label]++;
+    scores[points[point.i].label] += neighborWeights[index];
+  });
+  // Como el clasificador de sklearn con etiquetas [0, 1]: empate exacto → clase 0.
+  const winner: 0 | 1 = scores[1] > scores[0] ? 1 : 0;
+  return { neighbors: top.map((point) => point.i), votes, scores, distances: top.map((point) => point.d), neighborWeights, winner, radius: top[top.length - 1].d };
 }
 
 // ---------- Árbol de decisión ----------

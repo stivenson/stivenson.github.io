@@ -93,9 +93,9 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Azul: no le gustó', color: '#55AAFF', mark: 'dot' },
     { label: 'Naranja: le gustó', color: '#FFB454', mark: 'dot' },
     { label: 'Rombo: persona nueva; su color es la predicción', color: '#FFB454', mark: 'diamond' },
-    { label: 'Borde blanco: vecino que participa en la votación', color: '#55AAFF', mark: 'selected-dot' },
+    { label: 'Borde blanco: vecino seleccionado', color: '#55AAFF', mark: 'selected-dot' },
     { label: 'Línea azul o naranja: voto de ese vecino', color: '#55AAFF', mark: 'bicolor-line' },
-    { label: 'Círculo discontinuo: alcance de los k vecinos', color: '#aeb8cc', mark: 'dash-ring' },
+    { label: 'Contorno discontinuo: alcance según la métrica', color: '#aeb8cc', mark: 'dash-ring' },
   ] },
   'Centroides que se mueven solos': { context: 'Coordenadas sintéticas; K-means asigna cada observación al centro más próximo.', items: [
     { label: 'Color: grupo asignado', color: '#55AAFF', mark: 'dot' },

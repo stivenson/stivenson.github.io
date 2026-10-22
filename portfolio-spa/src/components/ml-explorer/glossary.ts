@@ -150,7 +150,27 @@ export const GLOSSARY = {
   distancia: {
     term: 'Distancia euclidiana',
     what: 'La distancia en línea recta entre dos puntos: √((x₁−x₂)² + (y₁−y₂)²).',
-    why: 'Es la medida de parecido que usa KNN por defecto.',
+    why: 'Equivale a Minkowski con p=2, la configuración inicial de KNN en scikit-learn. Cambiar unidades o escalas modifica estas distancias y puede cambiar los vecinos.',
+  },
+  knnVecinos: {
+    term: 'Cantidad de vecinos (n_neighbors, k)',
+    what: 'Cuántos ejemplos cercanos se seleccionan para responder una consulta. La clasificación combina sus clases; la regresión combina sus valores numéricos.',
+    why: 'Pocos vecinos conservan variaciones locales y pueden seguir ruido; muchos amplían el grupo y pueden mezclar regiones. Se elige con validación y no puede superar los ejemplos disponibles.',
+  },
+  knnPesos: {
+    term: 'Aportes de vecinos (weights)',
+    what: 'Uniform asigna el mismo peso a cada vecino. Distance usa el inverso de la distancia: cerca pesa más. Si hay distancias cero entre los vecinos seleccionados, solo esas coincidencias exactas aportan, con el mismo peso entre ellas.',
+    why: 'Los pesos cambian la combinación de respuestas, aunque los vecinos sean los mismos. La fracción del aporte por clase no es una garantía de acierto ni una probabilidad calibrada para casos nuevos.',
+  },
+  knnMetrica: {
+    term: 'Métrica de cercanía (metric y p)',
+    what: 'La regla para medir distancia. En Minkowski, p=1 suma las diferencias absolutas por coordenada (Manhattan) y p=2 usa la distancia en línea recta (euclidiana). P no redefine todas las métricas.',
+    why: 'La métrica y las escalas deciden quién es vecino. En dos ejes con la misma escala, el alcance es un rombo para Manhattan y un círculo para euclidiana. No hay una métrica universalmente mejor.',
+  },
+  knnBusqueda: {
+    term: 'Método de búsqueda de vecinos (algorithm)',
+    what: 'Brute compara con todos los ejemplos; kd_tree y ball_tree construyen índices para buscar vecinos exactos; auto elige una opción compatible. Leaf_size cambia el tamaño de las hojas de esos índices.',
+    why: 'Se comparan por costo y memoria, conservando k, métrica y voto. Los empates de distancia en el límite de k pueden seleccionar ejemplos distintos. Una búsqueda aproximada sí puede cambiar qué vecinos devuelve.',
   },
   ensamble: {
     term: 'Ensamble',

@@ -99,16 +99,16 @@ describe('KNN', () => {
     expect(r.radius).toBeCloseTo(Math.hypot(0.9, 0.1));
   });
 
-  it('en empate gana la clase del vecino más cercano', () => {
+  it('en empate de aportes gana la clase 0, como sklearn con etiquetas [0, 1]', () => {
     const tie: LabeledPt[] = [
       { x: 0, y: 0, label: 1 },
       { x: 1, y: 0, label: 0 },
     ];
-    expect(knnVote(tie, { x: 0.2, y: 0 }, 2).winner).toBe(1);
+    expect(knnVote(tie, { x: 0.2, y: 0 }, 2).winner).toBe(0);
   });
 
   it('con lista vacía o k <= 0 no lanza y devuelve un resultado vacío', () => {
-    const empty = { neighbors: [], votes: [0, 0], winner: 0, radius: 0 };
+    const empty = { neighbors: [], votes: [0, 0], scores: [0, 0], distances: [], neighborWeights: [], winner: 0, radius: 0 };
     expect(knnVote([], { x: 0, y: 0 }, 3)).toEqual(empty);
     expect(knnVote(points, { x: 0, y: 0 }, 0)).toEqual(empty);
     expect(knnVote(points, { x: 0, y: 0 }, -2)).toEqual(empty);

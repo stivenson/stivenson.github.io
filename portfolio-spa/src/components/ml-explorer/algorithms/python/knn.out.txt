@@ -6,3 +6,27 @@ Recomendaciones para Ana (promedio de sus 3 vecinos):
   Interestelar  3.7 / 5
   Alien         1.3 / 5
   Matrix        1.3 / 5
+
+Promedios para películas no vistas, con k=3 y distancia euclidiana:
+weights=uniform: Alien=1.3, Matrix=1.3, Interestelar=3.7
+weights=distance: Alien=1.0, Matrix=2.0, Interestelar=2.0
+Con distancia cero, distance usa solo coincidencias exactas entre los vecinos seleccionados.
+
+Clasificación: entrenamiento=106, validación=36, prueba=36
+k | weights | p | acierto validación
+1 | uniform | 1 | 86.1%
+1 | uniform | 2 | 86.1%
+1 | distance | 1 | 86.1%
+1 | distance | 2 | 86.1%
+5 | uniform | 1 | 94.4%
+5 | uniform | 2 | 94.4%
+5 | distance | 1 | 94.4%
+5 | distance | 2 | 94.4%
+11 | uniform | 1 | 97.2%
+11 | uniform | 2 | 97.2%
+11 | distance | 1 | 97.2%
+11 | distance | 2 | 97.2%
+
+Elegido con validación: k=11, weights=uniform, p=1
+brute y kd_tree coinciden en validación: True
+Prueba final: 97.2%, errores=1 de 36

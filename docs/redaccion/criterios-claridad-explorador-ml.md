@@ -48,7 +48,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -126,3 +126,15 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Capturas inspeccionadas de controles y fichas a 1920 × 1080 y 390 × 844, más distribución a 1440 × 900. Sin desbordamientos horizontales. Bloque principal de hiperparámetros limitado en ancho para evitar líneas excesivamente largas. Ficha nueva de pesos de clase comprobada desde Tipo.
 - Compilación, TypeScript y pruebas pertinentes de referencia, OVA, glosario, espaciado, notebooks, salida esperada y navegación por ocho pestañas aprobadas.
 - Revisión local sobre f392ec4, pendiente de publicación.
+
+### KNN — revisión individual del 22 de octubre de 2026
+
+- Ocho pestañas revisadas. Tipo aclara n_neighbors, weights, metric/p y algorithm/leaf_size; el método de búsqueda exacta se distingue de la regla de voto, con salvedad de empates en el límite de k. Se explica fit (guardar ejemplos/construir índices) y el aprendizaje de las estadísticas de escalado fuera del estimador.
+- OVA: cantidad de vecinos, pesos uniformes o 1/distancia y Minkowski p=1/2 afectan al cálculo. Vista fija del ajuste elegido y recorrido original por k impares; mover el rombo cambia la consulta, no los ejemplos. Contorno circular euclidiano y rombo Manhattan. Vecinos seleccionados, aportes y predicción separados; fracción de aporte no presentada como acierto o calibración.
+- Distancia cero: solo aportan coincidencias exactas seleccionadas; botón de consulta para experimentar, sin infinitos. Empates de distancia por orden original y empates de aportes por clase a favor de 0, alineado con sklearn para etiquetas [0,1]. Actualizada la prueba antigua que resolvía estos últimos por el vecino más cercano. Se aclara que k impar no elimina todos los empates ponderados.
+- Fichas nuevas: cantidad de vecinos, pesos, métrica y búsqueda. Integradas en Tipo y OVA; controles en tarjetas y explicación principal con ancho de lectura limitado.
+- Python conserva el recomendador de seis usuarios como ilustración. Con pesos uniformes mantiene las recomendaciones originales; con distance, Beto coincide exactamente con Ana y sus notas dominan. Se añade una evaluación de clasificación independiente (vino): 106 ejemplos para entrenamiento, 36 de validación y 36 de prueba, Pipeline con StandardScaler y KNeighborsClassifier, 12 combinaciones de k/weights/p elegidas con validación y una prueba final. No se presenta esta evaluación como validación del recomendador. Notebooks sincronizados; Pyodide 0.27.7 / sklearn 1.6.1 ejecutados correctamente.
+- Referencia numérica: 16 combinaciones × 6 consultas, incluida una coincidencia exacta, frente a KNeighborsClassifier; clases, distancias y fracción de aporte coinciden dentro de tolerancia numérica. Pruebas de duplicados, empates, límite de k, contornos, teclado, restauración, fichas/foco y movimiento reducido. Navegación por las ocho pestañas, glosario, densidad, espaciado, notebooks y salida esperada aprobados; TypeScript y compilación aprobados.
+- Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844. Sin desbordes en controles; fichas legibles en escritorio y móvil. Comparaciones de pesos, métrica y coincidencia exacta comprobadas en el navegador.
+- Lectura de Tipo reorganizada en cuatro paneles con preguntas, nombres de parámetros y explicaciones breves. Detalles técnicos desplegables y práctica en tres pasos. Capturas nuevas a 1920 × 1080 y 390 × 844; sin desbordamiento en los cuatro paneles, desplegables y modal de k comprobados. Las 55 pruebas de glosario, densidad y espaciado, TypeScript y compilación aprobadas tras este ajuste visual.
+- Publicación autorizada el 22 de octubre de 2026, preparada sobre 41c84a8. Incluye la reorganización de lectura en paneles.

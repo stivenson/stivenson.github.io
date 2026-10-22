@@ -128,15 +128,12 @@ it('KNN real (?alg=knn): recorre las 8 pestañas sin errores', async () => {
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
-      const svg = container.querySelector('.mlx-tabpanel svg[role="group"]');
-      expect(svg).not.toBeNull();
-      expect(svg!.querySelectorAll('rect.is-draggable[role="button"]')).toHaveLength(1);
-      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('Predicción: 🔵 no le gustó');
-      expect(container.querySelector('.katex')).not.toBeNull();
+    if (id === 'type') {
+      expect(screen.getByRole('group', { name: 'Hiperparámetros de KNN' })).toBeTruthy();
+      expect(container.querySelector('rect.is-draggable[role="button"]')).not.toBeNull();
     }
+    if (id === 'formula') expect(container.querySelector('.katex')).not.toBeNull();
   }
-
   expect(error).not.toHaveBeenCalled();
 });
 
