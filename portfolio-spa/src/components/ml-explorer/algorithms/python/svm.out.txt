@@ -1,14 +1,19 @@
-1257 imágenes para entrenar, 540 nuevas para probar
+Imágenes: entrenamiento=1077, validación=360, prueba=360
+Kernel | C | gamma | acierto validación
+linear | 0.01 | no aplica | 96.4%
+linear | 1 | no aplica | 96.7%
+linear | 100 | no aplica | 96.7%
+rbf | 0.01 | scale | 47.8%
+rbf | 0.01 | 0.001 | 47.8%
+rbf | 0.01 | 0.1 | 28.3%
+rbf | 1 | scale | 95.8%
+rbf | 1 | 0.001 | 92.2%
+rbf | 1 | 0.1 | 88.9%
+rbf | 100 | scale | 96.1%
+rbf | 100 | 0.001 | 96.9%
+rbf | 100 | 0.1 | 88.9%
 
-Kernel  C      acierto en nuevas  vectores de soporte
-linear  0.01               93.3%                 1158
-linear  1                  98.5%                  386
-linear  100                98.1%                  371
-rbf     0.01               18.3%                 1257
-rbf     1                  98.7%                  593
-rbf     100                99.4%                  528
-
-Con RBF y C = 1 falla 7 de 540. Por ejemplo:
-  era un 8, dijo 1
-  era un 9, dijo 5
-  era un 8, dijo 9
+Elegido con validación: kernel=rbf, C=100, gamma=0.001
+Prueba final: 97.8%, errores=8 de 360
+Vectores de soporte: 413 de 1077 imágenes de entrenamiento
+El acierto de validación elige los ajustes; el de prueba estima el resultado final.

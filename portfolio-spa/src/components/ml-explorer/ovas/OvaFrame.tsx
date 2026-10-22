@@ -127,11 +127,11 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Fondo más intenso: mayor acuerdo entre árboles', color: '#55AAFF', mark: 'square' },
     { label: 'Anillo blanco: caso contradictorio (ruido)', color: '#e8e8f0', mark: 'ring' },
   ] },
-  'La calle más ancha posible': { context: 'Puntos sintéticos con dos clases para visualizar el margen máximo.', items: [
+  'La calle más ancha posible': { context: '22 puntos simulados para comparar kernel, C y gamma; cifras de entrenamiento.', items: [
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
     { label: 'Relleno: predicción; borde: clase real', color: '#FFB454', mark: 'ring' },
     { label: 'Centro verde: frontera de decisión', color: '#10b981', mark: 'line' },
-    { label: 'Franja tenue: margen de separación', color: '#9898b0', mark: 'square' },
+    { label: 'Franja tenue: zona de margen (RBF: espacio del kernel)', color: '#9898b0', mark: 'square' },
     { label: 'Anillo blanco: vector soporte', color: '#ffffff', mark: 'ring' },
   ] },
 };

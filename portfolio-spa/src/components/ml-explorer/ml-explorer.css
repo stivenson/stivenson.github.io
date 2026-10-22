@@ -3123,3 +3123,6 @@ p.mlx-py-error {
     animation: none;
   }
 }
+
+/* Mantener legible la explicación de ajustes en pantallas amplias. */
+.mlx-hyperparameter-guide { max-width: 96ch; }

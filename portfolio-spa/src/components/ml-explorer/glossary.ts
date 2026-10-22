@@ -189,13 +189,13 @@ export const GLOSSARY = {
   },
   margen: {
     term: 'Margen',
-    what: 'La franja entre la frontera de decisión y los puntos más cercanos de cada clase. Con margen duro queda vacía; con margen blando (el de scikit-learn) se deja que algunos puntos entren, a cambio de un castigo C.',
-    why: 'Una SVM busca la frontera con el margen más ancho: deja la mayor distancia de seguridad posible a ambos lados.',
+    what: 'Zona alrededor de la frontera de una SVM, delimitada por los puntajes −1 y +1. Con kernel lineal, el ancho entre esos límites es 2 / ||w||. En margen blando pueden entrar ejemplos o quedar del lado equivocado.',
+    why: 'El entrenamiento combina un margen amplio con penalizar sus violaciones según C. Con RBF se define en el espacio del kernel: la franja dibujada no tiene un ancho físico uniforme en los ejes originales.',
   },
   vectorSoporte: {
     term: 'Vector de soporte',
-    what: 'Cada punto que queda sobre el borde del margen, dentro de él o del lado equivocado.',
-    why: 'Solo ellos definen la frontera de la SVM: si borras cualquier otro punto, la frontera no cambia.',
+    what: 'Un ejemplo de entrenamiento con peso no nulo en la función de decisión de la SVM. Suele estar sobre el margen, dentro de él o del lado equivocado; estar justo sobre un borde no basta por sí solo para identificarlo.',
+    why: 'La predicción combina estos ejemplos con sus pesos aprendidos y un desplazamiento. Su número es un resultado del entrenamiento, no un hiperparámetro; puede incluir gran parte del conjunto.',
   },
   kernel: {
     term: 'Kernel',
@@ -320,12 +320,17 @@ export const GLOSSARY = {
   parametroC: {
     term: 'C (en SVM)',
     what: 'Cuánto se castiga cada punto que queda dentro del margen o del lado equivocado.',
-    why: 'C pequeño: margen ancho y tolerante. C grande: margen estrecho que intenta acertar cada punto y puede memorizar.',
+    why: 'Aumentarlo da más peso a esas violaciones frente a mantener un margen amplio. Un C pequeño regulariza más. Se elige con validación, junto con el kernel, gamma y el escalado; C=1 no es un equilibrio universal.',
+  },
+  svmPesosClase: {
+    term: 'Pesos de clase en SVM (class_weight)',
+    what: 'Multiplican C para los ejemplos de cada clase: un peso mayor penaliza más sus violaciones del margen. Con balanced se calculan a partir de las frecuencias de las clases de entrenamiento.',
+    why: 'Permiten comparar cómo se reparten los errores cuando hay clases poco frecuentes o costos distintos. No equivalen a probabilidades y no garantizan mejorar la métrica que te interesa.',
   },
   gamma: {
     term: 'γ (gamma, en el kernel RBF)',
     what: 'Qué tan lejos llega la influencia de cada punto: con γ grande, solo a sus vecinos inmediatos.',
-    why: 'γ muy grande da fronteras que rodean cada punto (sobreajuste); muy pequeño, fronteras casi rectas.',
+    why: 'Se compara junto con C y las escalas. Grande permite influencias locales; pequeño extiende la influencia. No determina por sí solo el sobreajuste. SVC con kernel lineal ignora gamma; scale lo calcula a partir de la varianza que recibe el modelo.',
   },
   margenBlando: {
     term: 'Margen duro y margen blando',

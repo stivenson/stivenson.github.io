@@ -76,13 +76,11 @@ describe('cifras citadas en los textos', () => {
     expect(gradientBoosting.match(/^0\./gm)).toHaveLength(3);
   });
 
-  it('SVM: RBF con C = 1 acierta 98.7 % (7 fallos de 540) y guarda 593 de 1257; C = 100, 99.4 %; C = 0.01, 18.3 % con 1257 vectores', () => {
-    expect(svm).toContain('1257 imágenes para entrenar, 540 nuevas para probar');
-    expect(svm).toMatch(/^rbf\s+1\s+98\.7%\s+593$/m);
-    expect(svm).toMatch(/^rbf\s+100\s+99\.4%\s+528$/m);
-    expect(svm).toMatch(/^rbf\s+0\.01\s+18\.3%\s+1257$/m);
-    expect(svm).toMatch(/^linear\s+1\s+98\.5%\s+386$/m);
-    expect(svm).toContain('Con RBF y C = 1 falla 7 de 540.');
+  it('SVM: elige C, kernel y gamma con validación y reserva la prueba final', () => {
+    expect(svm).toContain('Imágenes: entrenamiento=1077, validación=360, prueba=360');
+    expect(svm).toContain('Elegido con validación: kernel=rbf, C=100, gamma=0.001');
+    expect(svm).toContain('Prueba final: 97.8%, errores=8 de 360');
+    expect(svm).toContain('Vectores de soporte: 413 de 1077');
   });
   it('Naive Bayes: 16 reseñas, 38 palabras; 93 %, 5 % y 28 %; «nueva» se ignora', () => {
     expect(naiveBayes).toContain('16 reseñas, 38 palabras distintas');

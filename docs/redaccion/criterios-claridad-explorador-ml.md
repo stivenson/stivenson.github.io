@@ -48,7 +48,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: SVM, KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: KNN, K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -114,3 +114,15 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Organización visual usa el patrón compartido de tarjetas de parámetros. Fichas comprobadas en pantalla completa, cierre y retorno del foco; controles, reinicio y movimiento reducido cubiertos por pruebas.
 - Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844; tarjetas sin desbordamiento horizontal y ficha de tasa legible en escritorio/móvil. Compilación, TypeScript, pruebas de OVA, referencia numérica, glosario, notebooks e integración aprobadas; ejercicio ejecutado en Pyodide.
 - Revisión local sobre f110feb; sin publicación de esta revisión.
+
+### SVM — revisión individual del 21 de octubre de 2026
+
+- Ocho pestañas revisadas. Tipo expone C, kernel, gamma, class_weight, tol y max_iter. Se distinguen pesos aprendidos, selección de ejemplos de soporte, ajustes de optimización y reproducción. C=1 deja de presentarse como un equilibrio universal. Gamma numérico de la OVA y gamma="scale" de SVC se diferencian; el escalado se aprende solo con entrenamiento.
+- OVA: comparación directa del ajuste elegido, además del recorrido original por valores de C hasta el elegido. Cada paso compara un modelo, no una iteración del optimizador. Gamma funciona con RBF y queda deshabilitado con kernel lineal. Restauración y movimiento reducido comprobados. Pesos iguales, escalas 0–10 y tolerancia se identifican como fijos.
+- Aciertos identificados como entrenamiento. El ancho geométrico solo se muestra para kernel lineal; la zona de margen de RBF se define en el espacio del kernel. Fichas de margen, soporte, C y gamma aclaradas; ficha nueva de pesos de clase.
+- La revisión visual con gamma=3 detectó que una banda de puntajes cercanos a cero pintaba regiones enteras de verde. Ahora la frontera aproximada marca cambios de signo entre celdas vecinas de la cuadrícula 32 × 32. Prueba de regresión para zonas lejanas con puntaje casi cero.
+- Referencia: 20 combinaciones (5 C lineales y 5 × 3 C/gamma en RBF), 47 consultas cada una, contrastadas con SVC de scikit-learn 1.6.1 en Pyodide. Mismas clases y conjuntos de soporte; puntajes y anchos con tolerancia absoluta de 0.005. No se promete igualdad exacta entre solvers.
+- Python: 1077 imágenes para entrenar, 360 para validación, 360 para prueba. Pipeline con StandardScaler y SVC; 12 configuraciones comparadas solo con validación. Elegido RBF, C=100, gamma=0.001; prueba 97.8 %, 8 errores, 413 soportes. Prueba consultada una vez. Código, salida y ambos notebooks sincronizados y ejecutados con Pyodide 0.27.7.
+- Capturas inspeccionadas de controles y fichas a 1920 × 1080 y 390 × 844, más distribución a 1440 × 900. Sin desbordamientos horizontales. Bloque principal de hiperparámetros limitado en ancho para evitar líneas excesivamente largas. Ficha nueva de pesos de clase comprobada desde Tipo.
+- Compilación, TypeScript y pruebas pertinentes de referencia, OVA, glosario, espaciado, notebooks, salida esperada y navegación por ocho pestañas aprobadas.
+- Revisión local sobre f392ec4, pendiente de publicación.

@@ -217,15 +217,12 @@ it('SVM real (?alg=svm): recorre las 8 pestañas sin errores', async () => {
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
-      const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
-      expect(svg).not.toBeNull();
-      expect(svg!.querySelectorAll('circle[r="6"]')).toHaveLength(22);
-      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('Ancho del margen: 2.13');
-      expect(container.querySelector('.katex')).not.toBeNull();
+    if (id === 'type') {
+      expect(container.querySelector('.mlx-tabpanel svg[role="img"]')).not.toBeNull();
+      expect(screen.getByRole('group', { name: 'Hiperparámetros de SVM' })).toBeTruthy();
     }
+    if (id === 'formula') expect(container.querySelector('.katex')).not.toBeNull();
   }
-
   expect(error).not.toHaveBeenCalled();
 });
 

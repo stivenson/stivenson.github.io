@@ -130,3 +130,5 @@
   .mlx-ova:has(.mlx-parameter-set) .mlx-ova-body { grid-template-columns: minmax(0, 1fr); }
   .mlx-ova:has(.mlx-parameter-set) .mlx-ova-body .mlx-ova-stage { position: static; }
 }
+
+.mlx-ova .mlx-parameter-set select:disabled { opacity: .55; cursor: not-allowed; }
