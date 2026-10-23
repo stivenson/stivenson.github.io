@@ -104,7 +104,7 @@ export const GLOSSARY = {
   },
   umbral: {
     term: 'Umbral de decisión',
-    what: 'La probabilidad a partir de la cual decides «sí». Por defecto, 0.5.',
+    what: 'El valor de corte para tomar una decisión a partir de una puntuación. Con probabilidades binarias suele usarse 0.5; en el autoencoder se compara el error de reconstrucción con un límite calibrado, que no es una probabilidad.',
     why: 'Moverlo cambia el balance entre falsas alarmas y casos que se escapan.',
   },
   matrizConfusion: {
@@ -199,8 +199,8 @@ export const GLOSSARY = {
   },
   tasaAprendizaje: {
     term: 'Tasa de aprendizaje (learning rate)',
-    what: 'En Gradient Boosting, multiplica la corrección predicha por cada árbol antes de sumarla al conjunto. Con 0.1 se incorpora el 10 % del aporte del árbol, que no tiene por qué corregir todo el residuo de cada ejemplo.',
-    why: 'Se elige junto con el número de árboles usando validación. Reducirla puede exigir más árboles; ningún valor garantiza una mejor predicción en datos nuevos.',
+    what: 'Controla el tamaño del ajuste. En redes entrenadas por gradiente escala la actualización de los pesos; en Gradient Boosting multiplica el aporte de cada árbol antes de sumarlo al conjunto. Con 0.1 incorpora el 10 % de ese aporte, no necesariamente de todo el error.',
+    why: 'Se compara con validación junto con el presupuesto: épocas en una red o cantidad de árboles en boosting. Reducirla puede requerir más entrenamiento; aumentarla demasiado puede volver inestable el ajuste por gradiente.',
   },
   perdidaLog: {
     term: 'Pérdida logarítmica (log loss)',
@@ -464,8 +464,8 @@ export const GLOSSARY = {
   },
   regularizacionL1L2: {
     term: 'Regularización L1 (Lasso) y L2 (Ridge)',
-    what: 'Dos formas de castigar pesos grandes: L1 (Lasso) suma sus valores absolutos y puede dejar algunos en 0 exacto; L2 (Ridge) suma sus cuadrados y los encoge a todos sin anularlos.',
-    why: 'L1 sirve además para descartar features inútiles; L2 es la opción por defecto y más estable cuando hay features parecidas.',
+    what: 'Dos formas de castigar pesos grandes: L1 (Lasso) suma sus valores absolutos y puede dejar algunos en 0 exacto; L2 (Ridge) suma sus cuadrados y favorece pesos más pequeños.',
+    why: 'L1 puede reducir la cantidad de variables utilizadas; L2 puede ayudar cuando hay variables relacionadas. La fuerza de la penalización se compara con validación y su nombre depende de la implementación.',
   },
   dataset: {
     term: 'Dataset (conjunto de datos)',
@@ -645,7 +645,7 @@ export const GLOSSARY = {
   reconstruccion: {
     term: 'Error de reconstrucción',
     what: 'La diferencia entre los datos originales y los que se recuperan desde su versión comprimida.',
-    why: 'Mide cuánto se pierde al comprimir; también sirve para detectar anomalías, que se reconstruyen peor.',
+    why: 'En este ejemplo es el promedio de diferencias al cuadrado por medida (MSE). Puede orientar una alarma, pero un error alto no confirma fraude; depende de la escala y del modelo.',
   },
   epsilon: {
     term: 'Radio de vecindario (eps, ε)',
@@ -839,8 +839,13 @@ export const GLOSSARY = {
   },
   autoencoder: {
     term: 'Autoencoder',
-    what: 'Una red que aprende a copiar su entrada pasando por un cuello de botella: un codificador comprime y un decodificador reconstruye.',
-    why: 'Solo aprende a copiar bien lo que se parece a sus datos de entrenamiento y reconstruye mal lo raro: por eso sirve para detectar anomalías.',
+    what: 'Una red que aprende a reconstruir su entrada desde una representación: el codificador produce el código y el decodificador intenta recuperar el dato. Un cuello más estrecho es una forma de limitar la copia; hay otras variantes.',
+    why: 'Puede dar errores mayores ante datos distintos del entrenamiento. Es una señal para revisar, no una garantía: también puede reconstruir bien anomalías o marcar normales.',
+  },
+  aeCalibracion: {
+    term: 'Calibración del umbral de anomalía',
+    what: 'Con el modelo ya entrenado, se calculan errores en normales independientes. El percentil elegido fija la línea: por encima se lanza una alarma. No cambia los pesos de la red.',
+    why: 'Un percentil mayor sube o conserva el umbral y reduce o conserva las alarmas. No garantiza una tasa futura de falsas alarmas; depende de la muestra, el cambio de datos y la regla de comparación. Con pocos casos se interpola entre errores ordenados.',
   },
   cuelloBotella: {
     term: 'Cuello de botella (código latente)',

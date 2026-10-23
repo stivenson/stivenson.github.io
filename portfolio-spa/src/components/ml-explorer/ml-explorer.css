@@ -3171,3 +3171,8 @@ p.mlx-py-error {
 
 /* Mantener legible el plano XOR junto al diagrama de red. */
 .mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage .mlx-mlp-map > svg { max-height: clamp(240px, 32vh, 340px); }
+
+/* Autoencoder: conservar legible el gráfico de errores junto a la red. */
+.mlx-ova:not(.mlx-ova--expanded) .mlx-ova-stage .mlx-ae-viz > svg.mlx-ae-error-plot { max-height: clamp(240px, 32vh, 340px); }
+
+.mlx-ae-axis-note { margin: 0.5rem 0 0; font-size: 0.8rem; line-height: 1.6; color: #c1c9dd; max-width: 60ch; }

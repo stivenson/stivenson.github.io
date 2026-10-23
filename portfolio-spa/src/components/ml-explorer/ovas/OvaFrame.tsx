@@ -32,10 +32,11 @@ interface OvaLegendSpec {
 }
 
 const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
-  'Un cuello de botella que delata el fraude': { context: 'Compras simuladas; las variables y los errores ilustran el método.', items: [
+  'Comprimir y decidir cuándo lanzar una alarma': { context: 'Compras simuladas; las variables y los errores ilustran el método.', items: [
     { label: 'Compra normal', color: '#55AAFF', mark: 'dot' },
-    { label: 'Fraude conocido', color: '#FFB454', mark: 'dot' },
-    { label: 'Error de reconstrucción alto', color: '#f43f5e', mark: 'ring' },
+    { label: 'Fraude simulado conocido', color: '#f43f5e', mark: 'square' },
+    { label: 'Borde blanco: supera el umbral', color: '#ffffff', mark: 'ring' },
+    { label: 'Línea: umbral calibrado', color: '#10b981', mark: 'dash' },
     { label: 'Conexiones: pesos aprendidos', color: '#10b981', mark: 'line' },
   ] },
   'Grupos por densidad: ε y minPts': { context: 'Coordenadas sintéticas; los grupos se descubren por densidad.', items: [

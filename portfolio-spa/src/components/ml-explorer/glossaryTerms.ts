@@ -71,7 +71,7 @@ export const REQUIRED_TERMS: readonly RequiredTerm[] = [
   { re: 'datos tabulares|tabular(es)?', key: 'tabular' },
   { re: 'clases desbalanceadas|desbalance', key: 'desbalance' },
   { re: 'extrapola\\p{L}*', key: 'extrapolar' },
-  { re: 'calibra\\p{L}*', key: 'calibracion' },
+  { re: 'calibra\\p{L}*', key: 'calibracion', alsoBy: ['aeCalibracion'] },
   { re: 'clusters?|clústeres?', key: 'cluster' },
   { re: 'centroides?', key: 'centroide' },
   { re: 'inercia', key: 'inercia' },

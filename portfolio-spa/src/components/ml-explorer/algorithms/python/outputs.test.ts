@@ -189,13 +189,11 @@ describe('cifras citadas en los textos', () => {
     expect(transformer).toContain('con codificación posicional: «banco» cambia 0.30 al invertir la frase');
   });
 
-  it('Autoencoders: 1000 normales y 10 fraudes; k = 1 detecta 9, k = 2 los 10 (0.17 contra 20.06); con k = 4 el error de los fraudes baja a 0.70 y detecta 9', () => {
-    expect(autoencoders).toContain('1000 compras normales para entrenar y 10 fraudes que el modelo nunca ve');
-    const rows = [...autoencoders.matchAll(/^\s+(\d) \|\s+([\d.]+) \|\s+([\d.]+) \|\s+(\d+) de 10$/gm)].map((m) => m.slice(1).map(Number));
-    expect(rows).toEqual([
-      [1, 0.52, 20.49, 9],
-      [2, 0.17, 20.06, 10],
-      [4, 0.01, 0.7, 9],
-    ]);
+  it('Autoencoders: selecciona con validación, calibra aparte y muestra falsas alarmas en prueba', () => {
+    expect(autoencoders).toContain('600 entrenamiento / 200 validación / 100 calibración / 100 prueba');
+    expect(autoencoders).toContain('Elegido con validación: k=2; percentil=95%');
+    expect(autoencoders).toContain('Umbral independiente de calibración: 0.542');
+    expect(autoencoders).toContain('Prueba final: falsas alarmas 6/100; fraudes señalados 9/10');
+    expect(autoencoders).toContain('normales 0.166; fraudes 6.507');
   });
 });

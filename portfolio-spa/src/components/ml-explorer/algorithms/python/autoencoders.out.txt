@@ -1,6 +1,13 @@
-1000 compras normales para entrenar y 10 fraudes que el modelo nunca ve
+Normales: 600 entrenamiento / 200 validación / 100 calibración / 100 prueba
+Fraudes simulados: 20 validación / 10 prueba; ninguno entrena la red
 
-cuello k | error normales | error fraudes | fraudes detectados
-       1 |           0.52 |         20.49 |         9 de 10
-       2 |           0.17 |         20.06 |        10 de 10
-       4 |           0.01 |          0.70 |         9 de 10
+Validación: cuello k | falsas alarmas / 200 | fraudes señalados / 20
+                     1 |                   10 |                    18
+                     2 |                   10 |                    20
+                     4 |                   10 |                    19
+
+Elegido con validación: k=2; percentil=95%
+Umbral independiente de calibración: 0.542
+Prueba final: falsas alarmas 6/100; fraudes señalados 9/10
+Error medio de prueba: normales 0.166; fraudes 6.507
+Datos sintéticos: una alarma no confirma fraude ni mide rendimiento real.

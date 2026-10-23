@@ -410,5 +410,18 @@ it('Transformer real (?alg=transformer): recorre las 8 pestañas sin errores', a
 });
 
 it('Autoencoders real (?alg=autoencoders): recorre las 8 pestañas sin errores', async () => {
-  await tourRealAlgorithm('autoencoders', 'Autoencoders', 'Fraudes detectados: 3 de 3');
+  const error=vi.spyOn(console,'error');
+  const {container}=render(<MemoryRouter initialEntries={['/articles/x?alg=autoencoders']}><MLExplorer /></MemoryRouter>);
+  await screen.findByRole('tab', {name:TAB_LABELS.type}, {timeout:10000});
+  for(const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab',{name:TAB_LABELS[id]}));
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+    if(id==='type') {
+      expect(screen.getByRole('group',{name:'Ajustes del autoencoder'})).toBeTruthy();
+      fireEvent.click(screen.getByRole('checkbox',{name:'Mostrar resultado final'}));
+      expect(container.querySelector('[role="status"]')?.textContent).toContain('Falsas alarmas:');
+    }
+    if(id==='formula') expect(container.querySelector('.katex')).not.toBeNull();
+  }
+  expect(error).not.toHaveBeenCalled();
 });

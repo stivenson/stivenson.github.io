@@ -107,7 +107,7 @@ ALGORITHMS: list[tuple[str, str, str]] = [
     (
         "autoencoders",
         "Autoencoders (autocodificadores)",
-        "Detector de fraude sin etiquetas: el error de reconstrucción delata las compras raras.",
+        "Autoencoder lineal: compara el cuello con validación y calibra alarmas con normales independientes.",
     ),
 ]
 
