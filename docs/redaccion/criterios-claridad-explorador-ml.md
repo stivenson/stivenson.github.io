@@ -48,7 +48,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: agrupamiento jerárquico, PCA, MLP, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -153,3 +153,17 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844. Tarjetas de lectura y controles sin desbordamiento horizontal. Modal de parada en escritorio, modal de arranques en móvil y retorno del foco comprobados; valores de límite, tolerancia y arranques comprobados en el navegador.
 - Fuentes: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html y https://scikit-learn.org/stable/modules/clustering.html#k-means
 - Publicación autorizada el 22 de octubre de 2026, preparada sobre d2aac5a. Incluye paneles, controles de arranques y parada, fichas y notebooks sincronizados.
+
+
+### DBSCAN — revisión individual del 22 de octubre de 2026
+
+- Cuatro paneles en Tipo: eps, min_samples/minPts, metric/p y algorithm/leaf_size. Vecindario frente a diámetro del grupo, conteo del propio punto, unidades y distancia explícitos. Detalles sobre n_jobs como rendimiento y sample_weight como entrada a fit; la OVA conserva pesos iguales.
+- OVA: conserva expansión por núcleos y añade distancia Manhattan, contorno acorde (círculo/rombo), resultado final fijo, restauración y examen de un punto. Contorno blanco y cruz muestran el punto observado; se informa cantidad de vecinos y condición de núcleo/borde/ruido. La inspección no cambia el agrupamiento. Controles organizados en tarjetas, con mínimo local explicado con el valor elegido. Repetición y velocidad identificadas como didácticas; no se inventan iteraciones ni arranques de DBSCAN.
+- Nuevas fichas de distancia y búsqueda. Revisadas eps, minPts, núcleo/borde/ruido, densidad y HDBSCAN. Se aclara que p solo configura Minkowski, que un borde compartido no conecta grupos por sí mismo y que ruido no confirma error o anomalía. Retiradas garantías de escalabilidad y de superioridad de HDBSCAN; memoria de sklearn puede ser cuadrática con vecindarios grandes. Limitación de predict para nuevos puntos explicitada.
+- Python conserva los 145 reportes y cifras originales. Haversine y eps en radianes, BallTree explícito; compara min_samples=3/5/8 con eps=300 m fijo. Compara una matriz pequeña de distancias en metros con haversine en radianes: mismas etiquetas. Pyodide 0.27.7 / sklearn 1.6.1 ejecutados. Notebooks individual y agregado sincronizados.
+- Referencia independiente: 342 combinaciones (19 eps × 9 mínimos × dos métricas), con tolerancia de frontera eps+1e-9 igual a la OVA. Etiquetas y núcleos coinciden con sklearn. Tres pruebas adicionales de conteo propio/frontera inclusiva, grupo de diámetro mayor que eps y borde compartido que no une núcleos de grupos distintos.
+- Cuatro pruebas DOM de expansión/vista final, cambios de métrica/forma, inspección/restauración, extremos de cero/un grupo y movimiento reducido. Pasan las pruebas de contenido/glosario/espaciado, 93 de datasets y 17 de matemáticas de fase 3, 58 de notebooks y 18 de encabezados. Dos pruebas de cifras específicas de DBSCAN y navegación por ocho pestañas aprobadas. Corregida expectativa antigua que buscaba la OVA en Fórmula en vez de Tipo. TypeScript y compilación aprobados.
+- La ejecución completa de outputs.test.ts detecta cuatro expectativas antiguas de Decision Tree y Random Forest que ya no corresponden a sus salidas publicadas. Esos tests y archivos de salida no se modificaron en esta revisión; las dos pruebas de DBSCAN pasan. Deuda registrada, fuera del cambio de DBSCAN.
+- Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844. Sin desbordamiento horizontal en controles ni paneles de lectura. Modal de min_samples en escritorio y de distancia en móvil, cierre y retorno del foco comprobados. En navegador se verificó la comparación euclidiana (2 grupos/4 ruido) frente a Manhattan (5/7), un borde con dos vecinos frente al mínimo 4 y ruido con solo el propio punto.
+- Fuentes: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html y https://scikit-learn.org/stable/modules/clustering.html#dbscan
+- Publicación autorizada el 22 de octubre de 2026, preparada sobre 2f0369a. Incluye paneles, comparación de métricas, inspección de vecindarios y notebooks sincronizados.

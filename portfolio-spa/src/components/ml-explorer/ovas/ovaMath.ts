@@ -881,8 +881,12 @@ export interface DbscanResult {
  * un grupo nuevo por los núcleos alcanzables. Un punto de borde se queda en
  * el primer grupo que lo alcanza.
  */
-export function dbscan(points: Pt[], eps: number, minPts: number): DbscanResult {
-  const neighbors = points.map((p) => points.flatMap((q, j) => (dist(p, q) <= eps + 1e-9 ? [j] : [])));
+export type DbscanMetric = 'euclidean' | 'manhattan';
+export function dbscanDistance(a: Pt, b: Pt, metric: DbscanMetric = 'euclidean'): number {
+  return metric === 'manhattan' ? Math.abs(a.x-b.x) + Math.abs(a.y-b.y) : dist(a,b);
+}
+export function dbscan(points: Pt[], eps: number, minPts: number, metric: DbscanMetric = 'euclidean'): DbscanResult {
+  const neighbors = points.map((p) => points.flatMap((q, j) => (dbscanDistance(p, q, metric) <= eps + 1e-9 ? [j] : [])));
   const core = neighbors.map((nb) => nb.length >= minPts);
   const labels = points.map(() => -1);
   let label = 0;

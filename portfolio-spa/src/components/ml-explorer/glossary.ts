@@ -648,24 +648,34 @@ export const GLOSSARY = {
     why: 'Mide cuánto se pierde al comprimir; también sirve para detectar anomalías, que se reconstruyen peor.',
   },
   epsilon: {
-    term: 'ε (épsilon, en DBSCAN)',
-    what: 'El radio del vecindario: dos puntos son vecinos si están a distancia ε o menos.',
-    why: 'Es el parámetro más delicado: muy pequeño y todo es ruido; muy grande y todo se funde en un grupo.',
+    term: 'Radio de vecindario (eps, ε)',
+    what: 'La distancia máxima para considerar vecinos a dos puntos en DBSCAN. Incluye la frontera: distancia menor o igual a eps.',
+    why: 'El grupo puede medir mucho más que eps porque se encadenan núcleos. Su unidad depende de la distancia: no son siempre metros. Cambiar escala o métrica exige revisar eps.'
   },
   minPts: {
-    term: 'minPts (min_samples)',
-    what: 'Cuántos puntos debe haber en el vecindario de radio ε, contando el propio punto, para que sea un punto núcleo.',
-    why: 'Más alto exige zonas más densas y deja más puntos como ruido. Una regla común: el doble del número de features.',
+    term: 'Mínimo local (min_samples, minPts)',
+    what: 'El mínimo de ejemplos dentro del vecindario para que un punto sea núcleo. Con pesos iguales, cuenta al propio punto: min_samples=4 requiere él y otros tres.',
+    why: 'No solicita una cantidad de grupos. Aumentarlo hace más exigente la condición de núcleo. Si se usan pesos en fit, se compara su suma, no solo la cantidad de filas.'
   },
   puntoNucleo: {
-    term: 'Punto núcleo, de borde y ruido',
-    what: 'Núcleo: hay al menos minPts puntos (contándose él) a distancia ε o menos. Borde: no los tiene, pero es vecino de un núcleo. Ruido: ninguna de las dos cosas.',
-    why: 'DBSCAN arma cada grupo con núcleos vecinos entre sí y sus bordes; el ruido queda fuera de todo grupo.',
+    term: 'Núcleo, borde y ruido',
+    what: 'Núcleo: alcanza el mínimo en su vecindario. Borde: no lo alcanza, pero es vecino de un núcleo. Ruido: ninguna de esas condiciones.',
+    why: 'Solo los núcleos expanden el grupo; el borde se incorpora sin conectar grupos a través de sí mismo. Ruido significa fuera de los grupos con estos ajustes, no error ni anomalía confirmada.'
   },
   densidad: {
-    term: 'Densidad',
-    what: 'Cuántos puntos hay en una zona de cierto tamaño.',
-    why: 'DBSCAN llama grupo a toda zona densa conectada, tenga la forma que tenga.',
+    term: 'Densidad local',
+    what: 'Cuántos ejemplos hay cerca de un punto, según el vecindario y la distancia elegidos.',
+    why: 'DBSCAN conecta núcleos con suficiente densidad y añade sus bordes. eps y min_samples fijan juntos la exigencia; no existe un único umbral adecuado para todos los conjuntos.'
+  },
+  dbMetrica: {
+    term: 'Distancia en DBSCAN (metric y p)',
+    what: 'La regla que decide qué puntos están dentro de eps. Euclidiana mide línea recta; Manhattan suma diferencias por eje. Con Minkowski, p=2 y p=1 dan esas distancias.',
+    why: 'La métrica y las escalas cambian los vecinos, los núcleos y los grupos. p solo configura Minkowski: no transforma haversine ni convierte automáticamente grados a metros.'
+  },
+  dbBusqueda: {
+    term: 'Búsqueda de vecinos (algorithm y leaf_size)',
+    what: 'La forma de encontrar los vecindarios: brute compara todos; kd_tree y ball_tree usan índices. auto selecciona una opción compatible. leaf_size configura las hojas de esos índices.',
+    why: 'Estos ajustes buscan cambiar tiempo y memoria, no la regla de densidad. Su conveniencia depende de la métrica y los datos. Los bordes compartidos también pueden depender del orden de exploración.'
   },
   haversine: {
     term: 'Distancia haversine',
@@ -674,8 +684,8 @@ export const GLOSSARY = {
   },
   hdbscan: {
     term: 'HDBSCAN',
-    what: 'Una versión de DBSCAN que prueba todos los valores de ε a la vez y se queda con los grupos más estables.',
-    why: 'Encuentra grupos de densidades distintas, donde un solo ε no sirve. Viene en scikit-learn desde la versión 1.3.',
+    what: 'Un método que construye una jerarquía de agrupamientos por densidad y selecciona grupos persistentes según sus criterios.',
+    why: 'Es un candidato cuando un solo eps no describe todos los grupos. También tiene ajustes, como min_cluster_size y min_samples; no garantiza descubrir los grupos útiles para tu tarea.',
   },
   tsneUmap: {
     term: 't-SNE y UMAP',

@@ -3161,3 +3161,7 @@ p.mlx-py-error {
 .mlx-ova .mlx-km-run-notes ol { margin: 1rem 0; padding-left: 1.5rem; }
 .mlx-ova .mlx-km-run-notes li + li { margin-top: .4rem; }
 .mlx-ova .mlx-km-run-notes p { margin: 1rem 0 0; max-width: 72ch; line-height: 1.75; }
+
+.mlx-ova .mlx-db-notes p { margin: 1rem 0 0; max-width: 72ch; line-height: 1.75; }
+.mlx-ova .mlx-db-notes select { display: block; width: 100%; margin-top: .6rem; padding: .6rem; background: #11112b; color: #e8e8f0; border: 1px solid #425578; border-radius: 6px; }
+.mlx-db-notes label { display: block; margin-top: 1rem; }

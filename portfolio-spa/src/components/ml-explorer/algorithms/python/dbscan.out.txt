@@ -5,3 +5,12 @@ eps = 800 m → 2 zonas [106, 31], ruido: 8
 
 K-Means (K = 3) manda 17 de los 60 reportes de la avenida a otra zona
 y mete los 15 aislados en alguna zona: el más lejano queda a 2.2 km de su centro
+
+eps=300 m fijo | min_samples | zonas | ruido | núcleos
+ 3 | 3 | 13 | 131
+ 5 | 3 | 13 | 131
+ 8 | 4 | 13 | 120
+
+Metros y radianes dan las mismas etiquetas: True
+min_samples incluye el propio reporte; un ruido no confirma error ni anomalía.
+Los números de grupo son identificadores; ruido usa -1. Estos datos son sintéticos.

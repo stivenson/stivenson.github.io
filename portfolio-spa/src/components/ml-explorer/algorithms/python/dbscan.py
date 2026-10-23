@@ -1,6 +1,7 @@
 # Clustering geoespacial: ¿dónde se concentran los reportes de huecos en la vía?
 import numpy as np
 from sklearn.cluster import DBSCAN, KMeans
+from sklearn.metrics.pairwise import haversine_distances
 
 rng = np.random.default_rng(5)
 R = 6371.0  # radio de la Tierra en km
@@ -19,7 +20,7 @@ print(f"{len(grados)} reportes (latitud, longitud)")
 
 # La distancia haversine trabaja en radianes sobre la esfera: eps en metros ÷ 1000 ÷ R.
 for metros in (150, 300, 800):
-    db = DBSCAN(eps=metros / 1000 / R, min_samples=5, metric="haversine").fit(np.radians(grados))
+    db = DBSCAN(eps=metros / 1000 / R, min_samples=5, metric="haversine", algorithm="ball_tree", leaf_size=30).fit(np.radians(grados))
     zonas = sorted(np.bincount(db.labels_[db.labels_ >= 0]).tolist(), reverse=True)
     print(f"eps = {metros:3d} m → {len(zonas)} zonas {zonas}, ruido: {np.sum(db.labels_ == -1)}")
 
@@ -29,3 +30,20 @@ partidos = np.sum(en_avenida != np.bincount(en_avenida).argmax())
 lejos = np.linalg.norm(sueltos - km3.cluster_centers_[km3.labels_[-15:]], axis=1)
 print(f"\nK-Means (K = 3) manda {partidos} de los 60 reportes de la avenida a otra zona")
 print(f"y mete los 15 aislados en alguna zona: el más lejano queda a {lejos.max():.1f} km de su centro")
+
+# Cambia solo el mínimo local: eps y la distancia se mantienen.
+print("\neps=300 m fijo | min_samples | zonas | ruido | núcleos")
+for minimo in (3, 5, 8):
+    modelo = DBSCAN(eps=300 / 1000 / R, min_samples=minimo,
+                    metric="haversine", algorithm="ball_tree", leaf_size=30).fit(np.radians(grados))
+    zonas = len(set(modelo.labels_) - {-1})
+    print(f"{minimo:2d} | {zonas} | {np.sum(modelo.labels_ == -1):2d} | {len(modelo.core_sample_indices_):3d}")
+
+# Matriz pequeña de distancias en metros: mismas unidades para datos y eps.
+distancias_m = haversine_distances(np.radians(grados)) * R * 1000
+en_metros = DBSCAN(eps=300, min_samples=5, metric="precomputed", algorithm="brute").fit(distancias_m)
+en_radianes = DBSCAN(eps=300 / 1000 / R, min_samples=5,
+                     metric="haversine", algorithm="ball_tree", leaf_size=30).fit(np.radians(grados))
+print("\nMetros y radianes dan las mismas etiquetas:", np.array_equal(en_metros.labels_, en_radianes.labels_))
+print("min_samples incluye el propio reporte; un ruido no confirma error ni anomalía.")
+print("Los números de grupo son identificadores; ruido usa -1. Estos datos son sintéticos.")

@@ -41,7 +41,7 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
   'Grupos por densidad: ε y minPts': { context: 'Coordenadas sintéticas; los grupos se descubren por densidad.', items: [
     { label: 'Color: grupo encontrado', color: '#55AAFF', mark: 'dot' },
     { label: 'Gris: ruido', color: '#9898b0', mark: 'dot' },
-    { label: 'Anillo: vecindario ε', color: '#10b981', mark: 'ring' },
+    { label: 'Círculo / rombo: vecindario ε; blanco: punto observado', color: '#10b981', mark: 'ring' },
     { label: 'Relleno: núcleo; punto hueco: borde', color: '#FFB454', mark: 'ring' },
   ] },
   'Un filtro de 3×3 recorre la imagen': { context: 'Dígito manuscrito real de 8×8 de scikit-learn; intensidades de píxel entre 0 y 16.', items: [

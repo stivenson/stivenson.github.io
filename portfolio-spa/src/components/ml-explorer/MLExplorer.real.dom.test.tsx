@@ -267,10 +267,10 @@ it('DBSCAN real (?alg=dbscan): recorre las 8 pestañas sin errores', async () =>
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
+    if (id === 'type') {
       expect(container.querySelector('.mlx-tabpanel svg[role="img"]')).not.toBeNull();
-      expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('2 grupos y 4 puntos de ruido');
-      expect(container.querySelector('.katex')).not.toBeNull();
+      expect(screen.getByRole('group', { name: 'Hiperparámetros de DBSCAN' })).toBeTruthy();
+
     }
   }
 
