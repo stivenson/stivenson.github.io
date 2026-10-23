@@ -565,7 +565,7 @@ export const GLOSSARY = {
   inercia: {
     term: 'Inercia',
     what: 'La suma de las distancias al cuadrado de cada punto a su centroide. Cuanto más baja, más apretados los grupos.',
-    why: 'Es lo que K-Means minimiza. Siempre baja al subir K, así que sola no sirve para elegir K.',
+    why: 'Es lo que K-Means minimiza. El mínimo posible no aumenta al subir K; los arranques prácticos pueden dar resultados distintos. Compárala con la misma escala y los mismos datos, no como acierto.',
   },
   silueta: {
     term: 'Coeficiente de silueta',
@@ -581,6 +581,26 @@ export const GLOSSARY = {
     term: 'Mínimo local',
     what: 'Una solución mejor que todas las vecinas, pero peor que la mejor posible.',
     why: 'K-Means puede quedarse en uno según dónde arranquen los centroides; por eso se repite con varios arranques.',
+  },
+  kmGrupos: {
+    term: 'Cantidad de grupos (n_clusters, K)',
+    what: 'El número de centroides que K-Means busca. Se elige antes de entrenar; no es la cantidad de iteraciones.',
+    why: 'Un K mayor puede dividir grupos y reducir la inercia sin producir segmentos más útiles. Compara silueta, estabilidad e interpretación.'
+  },
+  kmInicio: {
+    term: 'Inicialización de centroides (init)',
+    what: 'La regla para ubicar los centros antes de aprender: puntos aleatorios, k-means++ o coordenadas indicadas por ti.',
+    why: 'Puede llevar a resultados diferentes con el mismo K. Los centros iniciales son un punto de partida, no el resultado entrenado.'
+  },
+  kmArranques: {
+    term: 'Arranques independientes (n_init)',
+    what: 'Cuántas veces se ejecuta K-Means desde centros iniciales diferentes. Se conserva la ejecución con menor inercia final.',
+    why: 'Cada arranque contiene sus propias iteraciones. Más arranques cuestan más y pueden evitar soluciones peores; no garantizan el óptimo global ni descubren K.'
+  },
+  kmParada: {
+    term: 'Parada de K-Means (max_iter y tol)',
+    what: 'max_iter limita las iteraciones por arranque. tol permite detenerse cuando los centros se mueven suficientemente poco; también puede parar por asignaciones estables.',
+    why: 'Llegar al límite no demuestra convergencia. Una tolerancia mayor permite parar antes y puede cambiar el resultado; no es un porcentaje de acierto.'
   },
   kmeansPP: {
     term: 'k-means++',

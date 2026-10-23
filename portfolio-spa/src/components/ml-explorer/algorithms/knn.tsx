@@ -31,36 +31,36 @@ const knn: AlgorithmModule = {
             Sirve para clasificar (los vecinos votan) y para predecir números (se promedian sus valores). El simulador
             usa el voto. Python conserva un recomendador pequeño por promedio y añade una clasificación evaluada aparte.
           </p>
-          <section className="mlx-hyperparameter-guide mlx-knn-guide" aria-label="Hiperparámetros y distancias de KNN">
+          <section className="mlx-hyperparameter-guide mlx-settings-guide" aria-label="Hiperparámetros y distancias de KNN">
             <h4>Qué puedes ajustar</h4>
             <p>Los <G k="hiperparametro">hiperparámetros</G> deciden qué vecinos participan y cómo se combina su respuesta.</p>
-            <div className="mlx-knn-guide-grid">
-              <section className="mlx-knn-guide-card">
+            <div className="mlx-settings-guide-grid">
+              <section className="mlx-settings-guide-card">
                 <h5>¿Cuántos vecinos participan?</h5>
-                <code className="mlx-knn-guide-api">n_neighbors</code>
+                <code className="mlx-settings-guide-api">n_neighbors</code>
                 <p><G k="knnVecinos">k</G> es la cantidad de vecinos consultados.</p><p><b>Un k pequeño</b> conserva detalles y puede seguir ruido. <b>Uno mayor</b> amplía el grupo y puede mezclar regiones distintas.</p>
                 <details><summary>Cómo elegir la cantidad</summary><p>Elige k con validación. Solo pueden participar tantos vecinos como ejemplos disponibles.</p></details>
               </section>
-              <section className="mlx-knn-guide-card">
+              <section className="mlx-settings-guide-card">
                 <h5>¿Cuánto aporta cada vecino?</h5>
-                <code className="mlx-knn-guide-api">weights</code>
+                <code className="mlx-settings-guide-api">weights</code>
                 <p><code>uniform</code>: todos pesan igual.</p><p><code>distance</code>: los más cercanos aportan más mediante <G k="knnPesos">pesos por distancia</G>.</p>
                 <details><summary>Cómo se calcula el aporte</summary><p>Con distance, el peso es inversamente proporcional a la distancia. Si hay coincidencias exactas entre los vecinos seleccionados, solo esas coincidencias aportan.</p></details>
               </section>
-              <section className="mlx-knn-guide-card">
+              <section className="mlx-settings-guide-card">
                 <h5>¿Qué significa estar cerca?</h5>
-                <code className="mlx-knn-guide-api">metric · p</code>
+                <code className="mlx-settings-guide-api">metric · p</code>
                 <p>La <G k="knnMetrica">métrica</G> define cómo medimos el parecido.</p><p>En la OVA: <b>p=2</b> mide en línea recta (euclidiana); <b>p=1</b> suma las diferencias por eje (Manhattan).</p>
                 <details><summary>Cuándo se usa p</summary><p>Estas equivalencias usan <code>metric="minkowski"</code>. P no modifica todas las métricas: por ejemplo, no redefine el coseno.</p></details>
               </section>
-              <section className="mlx-knn-guide-card">
+              <section className="mlx-settings-guide-card">
                 <h5>¿Cómo se encuentran los vecinos?</h5>
-                <code className="mlx-knn-guide-api">algorithm · leaf_size</code>
+                <code className="mlx-settings-guide-api">algorithm · leaf_size</code>
                 <p>El <G k="knnBusqueda">método de búsqueda</G> organiza la consulta. La OVA compara todos los ejemplos.</p><p>El tamaño de hoja afecta el costo de los índices, no la regla de voto.</p>
                 <details><summary>Opciones de búsqueda en Python</summary><p><code>brute</code> compara todos; <code>kd_tree</code> y <code>ball_tree</code> usan índices. <code>auto</code> elige una opción compatible.</p></details>
               </section>
             </div>
-            <section className="mlx-knn-guide-practice" aria-label="Comparación guiada en la OVA">
+            <section className="mlx-settings-guide-practice" aria-label="Comparación guiada en la OVA">
               <h5>Pruébalo en la OVA</h5>
               <p>Activa «Mostrar ajuste elegido» y cambia un ajuste a la vez:</p>
               <ol>
@@ -71,7 +71,7 @@ const knn: AlgorithmModule = {
               <p>No conocemos la respuesta real del rombo: su voto no mide acierto en personas nuevas.</p>
             </section>
             <p>El <G k="escalado">escalado</G> también influye en el parecido. En esta OVA, ambos gustos usan la escala 0–10.</p>
-            <details className="mlx-knn-guide-scope">
+            <details className="mlx-settings-guide-scope">
               <summary>Qué cambia en la OVA y cómo se resuelven los empates</summary>
               <p>Mover el rombo cambia solo la consulta. El recorrido y su velocidad son <G k="controlDidactico">controles de visualización</G>.</p>
               <p>Los empates de distancias se resuelven por el orden original; los de aportes por clase favorecen la clase 0. Un k impar no evita todos los empates con pesos.</p>

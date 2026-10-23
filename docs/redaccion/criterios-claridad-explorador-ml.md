@@ -48,7 +48,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: K-Means, agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: agrupamiento jerárquico, DBSCAN, PCA, MLP, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -138,3 +138,18 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844. Sin desbordes en controles; fichas legibles en escritorio y móvil. Comparaciones de pesos, métrica y coincidencia exacta comprobadas en el navegador.
 - Lectura de Tipo reorganizada en cuatro paneles con preguntas, nombres de parámetros y explicaciones breves. Detalles técnicos desplegables y práctica en tres pasos. Capturas nuevas a 1920 × 1080 y 390 × 844; sin desbordamiento en los cuatro paneles, desplegables y modal de k comprobados. Las 55 pruebas de glosario, densidad y espaciado, TypeScript y compilación aprobadas tras este ajuste visual.
 - Publicación autorizada el 22 de octubre de 2026, preparada sobre 41c84a8. Incluye la reorganización de lectura en paneles.
+
+
+### K-Means — revisión individual del 22 de octubre de 2026
+
+- Tipo incorpora cuatro paneles sobre n_clusters, init, n_init y max_iter/tol; diferencia grupos, vecinos de KNN, arranques e iteraciones. Semilla, algorithm y escalado aclarados. Fichas nuevas de cantidad de grupos, inicialización, arranques y parada, compartidas con la OVA. Se reutiliza el estilo de paneles de KNN mediante clases generales, conservando su apariencia.
+- OVA: conserva A/B con inicio aleatorio y n_init=1. Añade k-means++ clásico D², 1–10 arranques, límite de 1–20 iteraciones y tolerancia relativa al movimiento de centros. Muestra el arranque de menor inercia sin promediar ejecuciones y enumera los resultados de todos. Los candidatos anteriores se conservan al aumentar n_init. Vista final fija y restauración; velocidad/repetición identificadas como visualización.
+- Motivo de parada explícito: asignaciones estables, tolerancia o límite. Agotar el límite no se llama convergencia. Asignaciones finales se recalculan con los centros; si se para pronto, estos pueden no ser el promedio de las asignaciones finales. Vacíos conservan su centro en la OVA; sklearn puede reubicarlos.
+- Se explicitan generador propio, k-means++ clásico frente al greedy de sklearn, Lloyd, pesos iguales, distancia euclidiana y coordenadas sintéticas 0–10. No se promete equivalencia de las semillas A/B con random_state.
+- Revisión de las ocho pestañas: inercia mínima teórica frente a mínimos locales prácticos, costo de arranques/iteraciones, escalas y utilidad de los segmentos. Se retiran garantías de velocidad o de superioridad de otro modelo. Inercia y silueta no se presentan como acierto ni utilidad comercial.
+- Python conserva los 300 clientes y resultados originales; hace explícitos init, n_init, max_iter, tol y Lloyd. Añade comparación con K=3 fijo y una tabla de parada con centros explícitos idénticos. n_iter_ es del arranque elegido y no informa por sí solo el motivo exacto de parada. Notebooks individual y agregado sincronizados. Ejecutado con Pyodide 0.27.7 / sklearn 1.6.1.
+- Referencia independiente: 72 casos (K=1…6, random/k-means++, semillas A/B, tres combinaciones de límite/tolerancia), con centros iniciales explícitos iguales frente a KMeans de sklearn 1.6.1. Coinciden inercia, centros y asignaciones con tolerancia 1e-8. Pruebas de rescate del mal arranque B, reproducibilidad y motivos de parada.
+- 273 pruebas de referencia, datos, matemáticas, OVA, glosario y notebooks aprobadas; 55 de glosario/densidad/espaciado y 18 de encabezados aprobadas. Integración por las ocho pestañas aprobada; corregidas las expectativas antiguas que buscaban la OVA en Fórmula aunque está en Tipo y los nombres de reproducción anteriores. TypeScript y compilación aprobados.
+- Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844. Tarjetas de lectura y controles sin desbordamiento horizontal. Modal de parada en escritorio, modal de arranques en móvil y retorno del foco comprobados; valores de límite, tolerancia y arranques comprobados en el navegador.
+- Fuentes: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html y https://scikit-learn.org/stable/modules/clustering.html#k-means
+- Publicación autorizada el 22 de octubre de 2026, preparada sobre d2aac5a. Incluye paneles, controles de arranques y parada, fichas y notebooks sincronizados.

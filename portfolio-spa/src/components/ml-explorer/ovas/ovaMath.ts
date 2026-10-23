@@ -662,6 +662,7 @@ export interface KMeansState {
   labels: number[];
   /** Suma de distancias² de cada punto a su centroide. */
   inertia: number;
+  stopReason?: 'stable' | 'tolerance' | 'limit';
 }
 
 function assign(points: Pt[], centroids: Pt[]): KMeansState {
@@ -673,12 +674,14 @@ function assign(points: Pt[], centroids: Pt[]): KMeansState {
 /**
  * Algoritmo de Lloyd paso a paso. El estado 0 son los centroides iniciales
  * con su asignación; cada estado siguiente mueve cada centroide al promedio
- * de sus puntos y reasigna. Para cuando ninguna asignación cambia (igual que
- * KMeans(init=…, n_init=1, algorithm="lloyd") de scikit-learn). Un grupo que
+ * de sus puntos y reasigna. Para por asignaciones estables, movimiento² menor
+ * que tol × varianza media por eje, o el límite de iteraciones. Un grupo que
  * se queda sin puntos conserva su centroide: queda quieto en su sitio
  * (scikit-learn, en cambio, lo reubicaría en un punto lejano).
  */
-export function kmeansRun(points: Pt[], init: Pt[], maxIterations = 100): KMeansState[] {
+export function kmeansRun(points: Pt[], init: Pt[], maxIterations = 100, tolerance = 0): KMeansState[] {
+  const mean = { x: points.reduce((s, p) => s + p.x, 0) / points.length, y: points.reduce((s, p) => s + p.y, 0) / points.length };
+  const threshold = tolerance * points.reduce((s, p) => s + sqDist(p, mean), 0) / (2 * points.length);
   const states = [assign(points, init)];
   for (let it = 0; it < maxIterations; it++) {
     const prev = states[states.length - 1];
@@ -689,7 +692,10 @@ export function kmeansRun(points: Pt[], init: Pt[], maxIterations = 100): KMeans
     });
     const next = assign(points, centroids);
     states.push(next);
-    if (next.labels.every((l, i) => l === prev.labels[i])) break;
+    const shift = centroids.reduce((sum, c, j) => sum + sqDist(c, prev.centroids[j]), 0);
+    if (next.labels.every((l, i) => l === prev.labels[i])) { next.stopReason = 'stable'; break; }
+    if (tolerance > 0 && shift <= threshold) { next.stopReason = 'tolerance'; break; }
+    if (it === maxIterations - 1) next.stopReason = 'limit';
   }
   return states;
 }

@@ -10,3 +10,16 @@ Segmentos con K = 3 (de menor a mayor gasto):
   100 clientes | gasto 114 mil |  1.9 visitas al mes
   100 clientes | gasto 301 mil | 11.5 visitas al mes
   100 clientes | gasto 447 mil |  3.9 visitas al mes
+
+K=3 fijo | init | n_init | iteraciones del elegido | inercia
+random     |  1 |  5 | 39.5
+random     | 10 |  5 | 39.5
+k-means++  |  1 |  2 | 39.5
+k-means++  | 10 |  2 | 39.5
+
+Parada: mismo inicio explícito, un arranque
+max_iter=  1, tol=0.0: n_iter_= 1, inercia=296.7
+max_iter=300, tol=0.0: n_iter_=19, inercia=245.8
+max_iter=300, tol=0.1: n_iter_= 3, inercia=246.2
+Llegar a max_iter no demuestra convergencia; n_iter_ tampoco da el motivo exacto de parada.
+Compara inercia solo con los mismos datos y escala. No es acierto ni utilidad comercial.

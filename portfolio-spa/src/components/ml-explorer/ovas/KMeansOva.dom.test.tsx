@@ -38,22 +38,22 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const status = (c: HTMLElement) => c.querySelector('[role="status"]')?.textContent ?? '';
+const status = (c: HTMLElement) => c.textContent ?? '';
 const button = (name: string | RegExp) => screen.getByRole('button', { name });
 
 describe('KMeansOva', () => {
   it('arranque A con K = 3: paso a paso, la inercia baja de 294.05 a 15.18 en 6 pasos', () => {
     const error = vi.spyOn(console, 'error');
     const { container } = render(<KMeansOva />);
-    expect(status(container)).toContain('Paso 0 de 6');
+    expect(status(container)).toContain('Iteración 0 de 6');
     expect(status(container)).toContain('Inercia: 294.05');
     expect(status(container)).not.toContain('Convergió');
-    for (let i = 0; i < 6; i++) fireEvent.click(button('Paso ▸'));
-    expect(status(container)).toContain('Paso 6 de 6');
+    for (let i = 0; i < 6; i++) fireEvent.click(button('Siguiente paso'));
+    expect(status(container)).toContain('Iteración 6 de 6');
     expect(status(container)).toContain('Inercia: 15.18');
-    expect(status(container)).toContain('Convergió: ningún punto cambió de grupo.');
+    expect(status(container)).toContain('Convergió: asignaciones estables.');
     expect(status(container)).toContain('Silueta: 0.75');
-    expect((button('Paso ▸') as HTMLButtonElement).disabled).toBe(true);
+    expect((button('Siguiente paso') as HTMLButtonElement).disabled).toBe(true);
     expect(error).not.toHaveBeenCalled();
   });
 
@@ -61,19 +61,19 @@ describe('KMeansOva', () => {
     const { container } = render(<KMeansOva />);
     fireEvent.click(button('B'));
     expect(button('B').getAttribute('aria-pressed')).toBe('true');
-    fireEvent.click(button('Paso ▸'));
-    fireEvent.click(button('Paso ▸'));
-    expect(status(container)).toContain('Paso 2 de 2');
+    fireEvent.click(button('Siguiente paso'));
+    fireEvent.click(button('Siguiente paso'));
+    expect(status(container)).toContain('Iteración 2 de 2');
     expect(status(container)).toContain('Inercia: 123.31');
     expect(status(container)).toContain('Silueta: 0.18');
   });
 
   it('el slider de K reinicia; con K = 1 no muestra silueta', () => {
     const { container } = render(<KMeansOva />);
-    fireEvent.click(button('Paso ▸'));
-    fireEvent.change(screen.getByRole('slider'), { target: { value: '1' } });
-    expect(status(container)).toContain('Paso 0 de 1');
-    fireEvent.click(button('Paso ▸'));
+    fireEvent.click(button('Siguiente paso'));
+    fireEvent.change(screen.getByRole('slider', { name: 'Grupos (n_clusters)' }), { target: { value: '1' } });
+    expect(status(container)).toContain('Iteración 0 de 1');
+    fireEvent.click(button('Siguiente paso'));
     expect(status(container)).toContain('Inercia: 209.39');
     expect(status(container)).not.toContain('Silueta');
     expect(container.querySelectorAll('.mlx-km-centroid')).toHaveLength(1);
@@ -82,33 +82,33 @@ describe('KMeansOva', () => {
   it('Reproducir avanza un paso cada KM_STEP_MS y se detiene al converger', () => {
     vi.useFakeTimers();
     const { container } = render(<KMeansOva />);
-    fireEvent.click(button('▶ Reproducir'));
-    expect(button('⏸ Pausar').getAttribute('aria-pressed')).toBe('true');
+    fireEvent.click(button('Reproducir'));
+    expect(button('Pausar')).toBeTruthy();
     act(() => vi.advanceTimersByTime(KM_STEP_MS));
-    expect(status(container)).toContain('Paso 1 de 6');
+    expect(status(container)).toContain('Iteración 1 de 6');
     for (let i = 0; i < 6; i++) act(() => vi.advanceTimersByTime(KM_STEP_MS));
-    expect(status(container)).toContain('Paso 6 de 6');
-    expect(button('▶ Reproducir').getAttribute('aria-pressed')).toBe('false');
+    expect(status(container)).toContain('Iteración 6 de 6');
+    expect(button('Reproducir de nuevo')).toBeTruthy();
   });
 
   it('fuera de la pantalla la animación se pausa y sigue al volver', () => {
     vi.useFakeTimers();
     const { container } = render(<KMeansOva />);
-    fireEvent.click(button('▶ Reproducir'));
+    fireEvent.click(button('Reproducir'));
     setVisible(false);
     act(() => vi.advanceTimersByTime(KM_STEP_MS * 3));
-    expect(status(container)).toContain('Paso 0 de 6');
+    expect(status(container)).toContain('Iteración 0 de 6');
     setVisible(true);
     act(() => vi.advanceTimersByTime(KM_STEP_MS));
-    expect(status(container)).toContain('Paso 1 de 6');
+    expect(status(container)).toContain('Iteración 1 de 6');
   });
 
-  it('con «reducir movimiento», Reproducir salta al resultado final sin animar', () => {
+  it('con «reducir movimiento» permite pasos manuales y vista final sin temporizadores', () => {
     mockReducedMotion(true);
     vi.useFakeTimers();
     const { container } = render(<KMeansOva />);
-    fireEvent.click(button('▶ Reproducir'));
-    expect(status(container)).toContain('Paso 6 de 6');
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Mostrar resultado final' }));
+    expect(status(container)).toContain('Iteración 6 de 6');
     expect(status(container)).toContain('Inercia: 15.18');
     expect(vi.getTimerCount()).toBe(0);
   });
@@ -126,7 +126,7 @@ describe('KMeansOva', () => {
   it('al desmontar durante la reproducción no quedan timers colgados', () => {
     vi.useFakeTimers();
     const { unmount } = render(<KMeansOva />);
-    fireEvent.click(button('▶ Reproducir'));
+    fireEvent.click(button('Reproducir'));
     expect(vi.getTimerCount()).toBe(1);
     unmount();
     expect(vi.getTimerCount()).toBe(0);
@@ -134,9 +134,12 @@ describe('KMeansOva', () => {
 
   it('el aria-label del svg dice cuántos grupos hay', () => {
     const { container } = render(<KMeansOva />);
+    expect(container.querySelector('svg')?.getAttribute('aria-label')).toContain('todos neutrales');
+    fireEvent.click(button('Siguiente paso'));
     expect(container.querySelector('svg')?.getAttribute('aria-label')).toContain('en 3 grupos');
-    fireEvent.change(screen.getByRole('slider'), { target: { value: '1' } });
-    expect(container.querySelector('svg')?.getAttribute('aria-label')).toContain('en 1 grupo,');
+    fireEvent.change(screen.getByRole('slider', { name: 'Grupos (n_clusters)' }), { target: { value: '1' } });
+    fireEvent.click(button('Siguiente paso'));
+    expect(container.querySelector('svg')?.getAttribute('aria-label')).toContain('en 1 grupo ');
   });
 
   it('mientras reproduce, el readout no se anuncia (aria-live="off"); al pausar o converger vuelve a anunciar', () => {
@@ -144,16 +147,31 @@ describe('KMeansOva', () => {
     const { container } = render(<KMeansOva />);
     const live = () => container.querySelector('[role="status"]')?.getAttribute('aria-live');
     expect(live()).toBe('polite');
-    fireEvent.click(button('▶ Reproducir'));
+    fireEvent.click(button('Reproducir'));
     expect(live()).toBe('off');
     act(() => vi.advanceTimersByTime(KM_STEP_MS));
     expect(live()).toBe('off');
-    fireEvent.click(button('⏸ Pausar'));
+    fireEvent.click(button('Pausar'));
     expect(live()).toBe('polite');
-    fireEvent.click(button('▶ Reproducir'));
+    fireEvent.click(button('Reproducir'));
     expect(live()).toBe('off');
     for (let i = 0; i < 6; i++) act(() => vi.advanceTimersByTime(KM_STEP_MS));
     expect(status(container)).toContain('Convergió');
     expect(live()).toBe('polite');
   });
 });
+
+ it('vista final muestra arranque elegido, motivo de parada y restaura ajustes', () => {
+    const { container } = render(<KMeansOva />);
+    fireEvent.click(button('B'));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Mostrar resultado final' }));
+    expect(status(container)).toContain('Inercia: 123.31');
+    fireEvent.change(screen.getByRole('slider', { name: 'Arranques (n_init)' }), { target: { value: '2' } });
+    expect(status(container)).toContain('Inercia: 15.18');
+    fireEvent.click(button('Restablecer ajustes'));
+    expect((screen.getByRole('slider', { name: 'Arranques (n_init)' }) as HTMLInputElement).value).toBe('1');
+    expect((screen.getByRole('checkbox', { name: 'Mostrar resultado final' }) as HTMLInputElement).checked).toBe(false);
+    fireEvent.change(screen.getByRole('slider', { name: 'Límite por arranque (max_iter)' }), { target: { value: '1' } });
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Mostrar resultado final' }));
+    expect(status(container)).toContain('Paró por max_iter; no implica convergencia.');
+  });

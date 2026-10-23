@@ -292,12 +292,12 @@ it('K-Means real (?alg=k-means): recorre las 8 pestañas sin errores', async () 
     expect(screen.getByRole('tab', { selected: true }).textContent).toBe(TAB_LABELS[id]);
     expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
 
-    if (id === 'formula') {
+    if (id === 'type') {
       const svg = container.querySelector('.mlx-tabpanel svg[role="img"]');
       expect(svg).not.toBeNull();
       expect(svg!.querySelectorAll('circle')).toHaveLength(24);
       expect(container.querySelector('.mlx-tabpanel [role="status"]')?.textContent).toContain('Inercia: 294.05');
-      expect(container.querySelector('.katex')).not.toBeNull();
+      expect(screen.getByRole('group', { name: 'Hiperparámetros de K-Means' })).toBeTruthy();
     }
   }
 
