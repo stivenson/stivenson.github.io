@@ -48,7 +48,7 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 ## Estado
 
 - Guía de elección: actualizada; fichas compartidas y distinción entre hiperparámetro, parámetro aprendido y control didáctico integradas.
-- Pendiente de revisión individual: agrupamiento jerárquico, PCA, MLP, CNN, RNN, Transformer y autoencoders.
+- Pendiente de revisión individual: agrupamiento jerárquico, PCA, CNN, RNN, Transformer y autoencoders.
 
 ### Naive Bayes — revisión individual del 20 de octubre de 2026
 
@@ -167,3 +167,18 @@ La autorización incluye ajustar la OVA cuando sea necesario para clarificar los
 - Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844. Sin desbordamiento horizontal en controles ni paneles de lectura. Modal de min_samples en escritorio y de distancia en móvil, cierre y retorno del foco comprobados. En navegador se verificó la comparación euclidiana (2 grupos/4 ruido) frente a Manhattan (5/7), un borde con dos vecinos frente al mínimo 4 y ruido con solo el propio punto.
 - Fuentes: https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html y https://scikit-learn.org/stable/modules/clustering.html#dbscan
 - Publicación autorizada el 22 de octubre de 2026, preparada sobre 2f0369a. Incluye paneles, comparación de métricas, inspección de vecindarios y notebooks sincronizados.
+
+
+### MLP — revisión individual del 23 de octubre de 2026
+
+- Tipo incorpora cuatro paneles: hidden_layer_sizes/activation, solver/learning_rate_init/batch_size, alpha y parada (max_iter/tol/n_iter_no_change, con early_stopping/validation_fraction). Se distingue arquitectura de pesos/sesgos aprendidos, actualización de época y entrenamiento de propagación. Fichas nuevas de arquitectura, optimizador, penalización y parada. Dropout se identifica como ajuste de otras bibliotecas, no de MLPClassifier. Ajustes dependientes del solver explicitados: L-BFGS no usa tasa inicial ni minibatches; learning_rate solo configura el calendario de SGD.
+- Ocho pestañas revisadas; retiradas garantías de rendimiento, cantidad universal de datos o superioridad automática de más neuronas. Cheatsheet armonizado. Se aclara CPU para MLPClassifier y GPU en otras bibliotecas; escala fija de píxeles 0–16 dividida por 16. Valores anteriores de prueba reemplazados por la evaluación con partición explícita.
+- OVA: preserva la red 2→2→1, selección de casos y nueve deslizadores de pesos/sesgos, ahora en paneles dentro de un desplegable de exploración manual. La OVA no entrena: esos valores no se llaman hiperparámetros. Añade activación oculta logistic/tanh/relu/identity que modifica realmente el cálculo, con salida logística fija. Los pesos se conservan al cambiar activación; no se presenta como comparación de redes reentrenadas. Vista de salida completa y restauración.
+- Lectura de h₁/h₂ y explicaciones «al menos una/no ambas» solo se conservan para el ejemplo inicial sigmoidal; se retiran cuando cambian pesos/activación. Números ocultos pueden salir de 0–1; brillo acotado sin alterar el valor mostrado. Plano XOR ampliado para legibilidad. Aciertos explícitamente de demostración, sin equivaler a generalización ni calibración. Pasos de propagación y velocidad separados de épocas y entrenamiento.
+- Python: 1 077 imágenes de entrenamiento, 360 de validación y 360 de prueba. Cinco candidatos (2/8/32 ReLU, 32 tanh y 32 ReLU con alpha=0.1); Adam, tasa 0.003, lote 64 y hasta 150 épocas explícitos. Selección solo con validación; la prueba se consulta al final. Elegido candidato 5, validación 96.4 %, prueba 97.2 % (10 errores/360), 2 410 pesos/sesgos. Advertencias de convergencia visibles; llegar a max_iter no se interpreta como convergencia ni diagnóstico de sobreajuste.
+- Ejecutado con Pyodide 0.27.7 / sklearn 1.6.1. Notebooks sincronizados. Celda opcional PyTorch armonizada como ejemplo independiente de 32 ReLU que usa validación, sin volver a consultar prueba; sintaxis verificada, entrenamiento PyTorch no ejecutado en esta revisión.
+- Referencia: 240 propagaciones (tres configuraciones de pesos × cuatro activaciones × veinte puntos), frente a implementaciones de activación de sklearn y expit de scipy; activaciones ocultas y salida coinciden con tolerancia 1e-10. Prueba adicional de composición afín con identity. Pruebas DOM preservan recorrido, cuatro esquinas, edición de pesos, cambio de activación, saturación visual y restauración.
+- Pruebas pertinentes de contenido/glosario/densidad/espaciado, notebooks, encabezados, matemáticas, referencia, OVA, integración por ocho pestañas y salida MLP aprobadas; TypeScript y compilación aprobados. Integración MLP actualizada al emplazamiento actual de la OVA en Tipo. La deuda previamente registrada de cuatro expectativas antiguas de salida de Decision Tree/Random Forest queda fuera de esta revisión.
+- Capturas inspeccionadas a 1920 × 1080, 1440 × 900 y 390 × 844; sin desbordamiento en paneles y campos, incluyendo los nueve pesos manuales. Ficha de arquitectura en escritorio y de parada en móvil; retorno del foco comprobado. Cambiar a identity con pesos fijos muestra 10/20 frente a 20/20 del ejemplo; anular un peso de salida también cambia la respuesta.
+- Fuente: https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
+- Publicación autorizada por el usuario el 23 de octubre de 2026, preparada sobre 73921bd.

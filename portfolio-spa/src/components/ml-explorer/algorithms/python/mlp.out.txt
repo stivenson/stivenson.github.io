@@ -1,8 +1,18 @@
-1257 imágenes para entrenar y 540 nuevas para medir
+Datos: entrenamiento=1077, validación=360, prueba=360
+ID | ocultas | activación | alpha | parámetros | épocas | entrena | valida | límite
+ 1 |       2 | relu       | 0.0001 |        160 |    150 |   74.6% |  71.4% | True
+   Aviso candidato 1: alcanzó el presupuesto sin convergencia declarada.
+ 2 |       8 | relu       | 0.0001 |        610 |    150 |   99.9% |  95.3% | True
+   Aviso candidato 2: alcanzó el presupuesto sin convergencia declarada.
+ 3 |      32 | relu       | 0.0001 |       2410 |    150 |  100.0% |  95.3% | True
+   Aviso candidato 3: alcanzó el presupuesto sin convergencia declarada.
+ 4 |      32 | tanh       | 0.0001 |       2410 |    150 |  100.0% |  95.8% | True
+   Aviso candidato 4: alcanzó el presupuesto sin convergencia declarada.
+ 5 |      32 | relu       | 0.1000 |       2410 |    150 |   99.9% |  96.4% | True
+   Aviso candidato 5: alcanzó el presupuesto sin convergencia declarada.
 
-neuronas ocultas | pesos | entrenamiento | datos nuevos
-               2 |   160 |         52.7% |        49.8%
-               8 |   610 |         94.4% |        91.3%
-              32 |  2410 |         98.8% |        97.6%
-
-Primera imagen nueva (es un 1): 1 con 88%, 8 con 11%
+Elegido con validación: candidato 5 (96.4%)
+Prueba final: 97.2%, errores=10 de 360
+Pesos y sesgos aprendidos: 2410
+Los hiperparámetros se eligieron antes; coefs_ e intercepts_ se aprendieron con entrenamiento.
+n_iter_ cuenta épocas con Adam; llegar a max_iter no demuestra convergencia ni sobreajuste.

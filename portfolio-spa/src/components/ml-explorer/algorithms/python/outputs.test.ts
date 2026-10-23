@@ -153,15 +153,12 @@ describe('cifras citadas en los textos', () => {
     expect(pca).toContain('Para retener el 90 % bastan 21 de 64 componentes');
   });
 
-  it('MLP: 1257 imágenes para entrenar y 540 nuevas; 2, 8 y 32 neuronas → 49.8 %, 91.3 % y 97.6 % en datos nuevos; 2410 pesos; el 1 con 88 %', () => {
-    expect(mlp).toContain('1257 imágenes para entrenar y 540 nuevas para medir');
-    const rows = [...mlp.matchAll(/^\s+(\d+) \|\s+(\d+) \|\s+([\d.]+)% \|\s+([\d.]+)%$/gm)].map((m) => m.slice(1).map(Number));
-    expect(rows).toEqual([
-      [2, 160, 52.7, 49.8],
-      [8, 610, 94.4, 91.3],
-      [32, 2410, 98.8, 97.6],
-    ]);
-    expect(mlp).toContain('Primera imagen nueva (es un 1): 1 con 88%, 8 con 11%');
+  it('MLP: selecciona con validación y consulta la prueba final después', () => {
+    expect(mlp).toContain('Datos: entrenamiento=1077, validación=360, prueba=360');
+    expect(mlp).toContain('Elegido con validación: candidato 5 (96.4%)');
+    expect(mlp).toContain('Prueba final: 97.2%, errores=10 de 360');
+    expect(mlp).toContain('Pesos y sesgos aprendidos: 2410');
+    expect(mlp).toContain('Aviso candidato 5: alcanzó el presupuesto sin convergencia declarada.');
   });
 
   it('CNN: usa un dígito manuscrito real; los filtros producen mapas 6×6 y pooling 3×3; 9 pesos contra 2304', () => {

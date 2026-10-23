@@ -381,7 +381,20 @@ async function tourRealAlgorithm(slug: string, heading: string, readout: string)
 }
 
 it('MLP real (?alg=mlp): recorre las 8 pestañas sin errores', async () => {
-  await tourRealAlgorithm('mlp', 'Neural Networks (MLP)', 'Aciertos: 15 de 20');
+  const error = vi.spyOn(console, 'error');
+  const {container}=render(<MemoryRouter initialEntries={['/articles/x?alg=mlp']}><MLExplorer /></MemoryRouter>);
+  await screen.findByRole('tab', {name:TAB_LABELS.type}, {timeout:10000});
+  for(const id of TAB_IDS) {
+    fireEvent.click(screen.getByRole('tab',{name:TAB_LABELS[id]}));
+    expect(container.querySelector('.mlx-essential')?.textContent?.trim()).toBeTruthy();
+    if(id==='type') {
+      expect(screen.getByRole('group',{name:'Hiperparámetro de activación MLP'})).toBeTruthy();
+      fireEvent.click(screen.getByRole('checkbox',{name:'Mostrar salida completa'}));
+      expect(container.querySelector('[role="status"]')?.textContent).toContain('20 de 20');
+    }
+    if(id==='formula') expect(container.querySelector('.katex')).not.toBeNull();
+  }
+  expect(error).not.toHaveBeenCalled();
 });
 
 it('CNN real (?alg=cnn): recorre las 8 pestañas sin errores', async () => {

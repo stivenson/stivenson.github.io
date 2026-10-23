@@ -64,7 +64,7 @@ const OVA_LEGENDS: Record<string, OvaLegendSpec> = {
     { label: 'Unión en 3D: mismo paso, dos probabilidades', color: '#10b981', mark: 'dash' },
     { label: 'Gris: evidencia neutral o desconocida', color: '#9898b0', mark: 'dot' },
   ] },
-  'Dos neuronas ocultas resuelven XOR': { context: 'Puntos sintéticos XOR; cada punto es una observación con dos entradas.', items: [
+  'Una red de dos neuronas ocultas para XOR': { context: 'Puntos sintéticos XOR; cada punto es una observación con dos entradas.', items: [
     { label: 'Azul / naranja: clase 0 / clase 1', color: '#55AAFF', mark: 'dot' },
     { label: 'Al final: relleno predicho; borde real', color: '#FFB454', mark: 'ring' },
     { label: 'Anillo blanco discontinuo: caso seguido', color: '#ffffff', mark: 'dash-ring' },

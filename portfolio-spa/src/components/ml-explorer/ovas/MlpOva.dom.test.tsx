@@ -34,7 +34,7 @@ describe('MlpOva', () => {
 
     next();
     expect(status(container)).toContain('ŷ = 0.00 · predicción clase 0');
-    expect(status(container)).toContain('Aciertos: 20 de 20');
+    expect(status(container)).toContain('Aciertos en la demostración: 20 de 20');
     expect(container.querySelectorAll('.mlx-mlp-cell')).toHaveLength(400);
     expect(error).not.toHaveBeenCalled();
   });
@@ -63,7 +63,7 @@ describe('MlpOva', () => {
     fireEvent.change(slider('Salida · peso de oculta 1'), { target: { value: '0' } });
     expect(container.querySelector('.mlx-ova-progress')?.getAttribute('data-step')).toBe('0');
     advance(3);
-    expect(status(container)).toContain('Aciertos: 10 de 20');
+    expect(status(container)).toContain('Aciertos en la demostración: 10 de 20');
   });
 
   it('presenta el plano como imagen y deja la guía fuera del estado dinámico', () => {
@@ -73,7 +73,22 @@ describe('MlpOva', () => {
     expect(svg?.querySelectorAll('circle.mlx-mlp-point')).toHaveLength(20);
     expect(svg?.querySelector('.mlx-mlp-traced-ring')).toBeTruthy();
     expect(svg?.querySelectorAll('rect.mlx-mlp-cell')).toHaveLength(0);
-    const hint = screen.getByText(/Cada neurona oculta aprende un corte lineal distinto/);
+    const hint = screen.getByText(/Esta red muestra una propagación con pesos de ejemplo/);
     expect(container.querySelector('[role="status"]')?.contains(hint)).toBe(false);
   });
 });
+
+  it('cambia activación con pesos fijos, limita el brillo y restaura el ejemplo', () => {
+    const {container}=render(<MlpOva />);
+    fireEvent.click(screen.getByRole('checkbox', {name:'Mostrar salida completa'}));
+    expect(status(container)).toContain('Aciertos en la demostración: 20 de 20');
+    fireEvent.change(screen.getByRole('combobox', {name:'Activación oculta (activation)'}), {target:{value:'identity'}});
+    expect(status(container)).toContain('Aciertos en la demostración: 10 de 20');
+    expect(status(container)).not.toContain('«al menos una»');
+    expect([...container.querySelectorAll('.mlx-mlp-point')].every(e=>Number(e.getAttribute('fill-opacity'))<=1)).toBe(true);
+    fireEvent.change(screen.getByRole('combobox', {name:'Activación oculta (activation)'}), {target:{value:'relu'}});
+    expect([...container.querySelectorAll('.mlx-mlp-point')].every(e=>Number(e.getAttribute('fill-opacity'))<=1)).toBe(true);
+    fireEvent.click(screen.getByRole('button', {name:'Restablecer ejemplo XOR'}));
+    expect((screen.getByRole('combobox', {name:'Activación oculta (activation)'}) as HTMLSelectElement).value).toBe('logistic');
+    expect((screen.getByRole('checkbox', {name:'Mostrar salida completa'}) as HTMLInputElement).checked).toBe(false);
+  });

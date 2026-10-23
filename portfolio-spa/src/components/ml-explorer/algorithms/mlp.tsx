@@ -9,12 +9,12 @@ const mlp: AlgorithmModule = {
   slug: 'mlp',
   row: {
     type: 'Supervisado',
-    bestUse: 'Problemas complejos y no lineales',
+    bestUse: 'Relaciones no lineales entre columnas numéricas',
     formula: 'Capas de neuronas con pesos y funciones de activación',
-    assumptions: 'Muchos datos de entrenamiento',
+    assumptions: 'Datos representativos y escalas comparables',
     pros: 'Modela relaciones complejas',
-    cons: 'Necesita muchos datos y es una caja negra',
-    whenNot: 'Con pocos datos o si hay que explicar cada decisión',
+    cons: 'Sensible al ajuste; explicación menos directa',
+    whenNot: 'Pocos datos o explicación directa prioritaria',
     realWorld: 'Reconocimiento de imágenes y de voz',
   },
   tabs: {
@@ -26,7 +26,7 @@ const mlp: AlgorithmModule = {
               <G k="supervisado" after=":">Supervisado</G>
             </b>{' '}
             aprende de ejemplos que ya traen la respuesta, como la regresión logística. La diferencia es que entre la
-            entrada y la salida pone <b>capas de neuronas</b> que aprenden sus propias <G k="feature">features</G>{' '}
+            entrada y la salida pone <b><G k="capaOculta">capas ocultas</G></b> que aprenden sus propias <G k="feature">features</G>{' '}
             intermedias.
           </p>
           <p>
@@ -34,6 +34,51 @@ const mlp: AlgorithmModule = {
             <i>Multi-Layer Perceptron</i>). Cada <G k="neurona">neurona</G> hace una suma con pesos y la dobla con una{' '}
             <G k="funcionActivacion" after=".">función de activación</G>
           </p>
+          <section className="mlx-hyperparameter-guide mlx-settings-guide" aria-label="Hiperparámetros de MLP">
+            <h4>Qué eliges y qué aprende la red</h4>
+            <p>Los <G k="hiperparametro">hiperparámetros</G> configuran la red y el entrenamiento. Los <G k="parametroAprendido">pesos y sesgos</G> se calculan al entrenar; moverlos manualmente en la OVA sirve para explorar, no para elegir hiperparámetros.</p>
+            <div className="mlx-settings-guide-grid">
+              <section className="mlx-settings-guide-card">
+                <h5>¿Cuántas capas y neuronas?</h5>
+                <code className="mlx-settings-guide-api">hidden_layer_sizes · activation</code>
+                <p>La <G k="mlpArquitectura">arquitectura</G> fija el tamaño: <code>(32,)</code> es una capa de 32 neuronas; <code>(32, 16)</code> son dos capas.</p>
+                <p>La <G k="funcionActivacion">función de activación</G> transforma la suma de cada neurona. Más tamaño no garantiza más aciertos.</p>
+                <details><summary>Ocultas y salida no son lo mismo</summary><p>En MLPClassifier, activation configura las capas ocultas. La salida binaria es logística; la multiclase usa <G k="softmax">softmax</G>. La OVA permite logistic, tanh, <G k="relu">ReLU</G> e identity con los mismos pesos.</p></details>
+              </section>
+              <section className="mlx-settings-guide-card">
+                <h5>¿Cómo se actualizan los pesos?</h5>
+                <code className="mlx-settings-guide-api">solver · learning_rate_init · batch_size</code>
+                <p>El <G k="mlpOptimizador">optimizador</G> define la actualización. La <G k="tasaAprendizaje">tasa inicial</G> controla el tamaño del paso con Adam o SGD.</p>
+                <p><G k="batch">batch_size</G> cuenta ejemplos por actualización; no es la cantidad de épocas ni de neuronas.</p>
+                <details><summary>Qué ajustes dependen del optimizador</summary><p>L-BFGS no usa learning_rate_init ni minibatches. <code>learning_rate</code> configura el calendario de SGD; no el de Adam. Con batch_size="auto" se usan hasta 200 ejemplos.</p></details>
+              </section>
+              <section className="mlx-settings-guide-card">
+                <h5>¿Cuánto penalizas los pesos?</h5>
+                <code className="mlx-settings-guide-api">alpha</code>
+                <p><G k="mlpRegularizacion">alpha</G> controla la <G k="regularizacionL1L2">penalización L2</G>. No es una tasa de aprendizaje ni un peso de una conexión.</p>
+                <p>Puede limitar ajustes excesivos; si penaliza demasiado también puede perder relaciones útiles.</p>
+                <details><summary>Dropout depende de la biblioteca</summary><p><G k="dropout">Dropout</G> se usa en otras implementaciones, como <G k="pytorch">PyTorch</G>, pero MLPClassifier no tiene ese parámetro. El ejercicio usa alpha explícitamente.</p></details>
+              </section>
+              <section className="mlx-settings-guide-card">
+                <h5>¿Cuándo paras de entrenar?</h5>
+                <code className="mlx-settings-guide-api">max_iter · tol · n_iter_no_change</code>
+                <p>Con Adam o SGD, max_iter es un límite de <G k="epoca">épocas</G>: pasadas completas por el entrenamiento.</p>
+                <p>La <G k="mlpParada">regla de parada</G> también puede terminar antes si no mejora lo suficiente.</p>
+                <details><summary>Qué mira early_stopping</summary><p>Con <code>early_stopping=True</code>, reserva <code>validation_fraction</code> y vigila su acierto. Si es False, vigila la pérdida de entrenamiento. El ejercicio mantiene False y compara candidatos con validación externa; la prueba se consulta al final.</p></details>
+              </section>
+            </div>
+            <section className="mlx-settings-guide-practice" aria-label="Comparación guiada en la OVA">
+              <h5>Pruébalo en la OVA</h5>
+              <p>Activa «Mostrar salida completa» y conserva los pesos iniciales:</p>
+              <ol>
+                <li><b>Activación:</b> cambia logistic por tanh, ReLU e identity. Observa los valores ocultos, la frontera y los aciertos de demostración.</li>
+                <li><b>Pesos:</b> vuelve a logistic y abre la exploración manual. Lleva a cero un peso de la salida y observa qué cambia.</li>
+                <li><b>Lectura:</b> restablece el ejemplo y recorre entrada, h₁, h₂ y salida. Son etapas de cálculo, no épocas.</li>
+              </ol>
+              <p>Los pesos se conservan al cambiar la activación: esta comparación no demuestra cuál activación entrenaría mejor. Python sí aprende los pesos.</p>
+            </section>
+            <p>El <G k="escalado">escalado</G> y la semilla también importan. <code>random_state</code> ayuda a reproducir la inicialización y el orden de los lotes; no mejora la red por sí solo. La velocidad de la OVA es un <G k="controlDidactico">control de visualización</G>.</p>
+          </section>
         </>
       ),
       deepDive: (
@@ -48,8 +93,7 @@ const mlp: AlgorithmModule = {
       essential: (
         <>
           <p>
-            Úsalo cuando la relación entre la entrada y la respuesta es <b>curva y enredada</b>, hay muchos ejemplos y
-            no necesitas explicar cada decisión.
+            Es un candidato cuando necesitas modelar relaciones <b>no lineales entre columnas numéricas</b>, con datos representativos y presupuesto para comparar ajustes.
           </p>
           <ul>
             <li>Reconocer dígitos o letras escritas a mano.</li>
@@ -59,16 +103,13 @@ const mlp: AlgorithmModule = {
             </li>
           </ul>
           <p className="mlx-rule">
-            Con datos en tabla, compáralo siempre con un <G k="ensamble">ensamble</G> de árboles: muchas veces el
-            ensamble gana.
+            Con datos en tabla, compara una referencia sencilla y un <G k="ensamble">ensamble</G> de árboles con las mismas particiones y la misma medida de evaluación.
           </p>
         </>
       ),
       deepDive: (
         <p>
-          Con <G k="tabular">datos tabulares</G> de miles de filas, Gradient Boosting suele igualar o superar a un MLP
-          con mucho menos ajuste. El MLP brilla cuando las features son señales crudas y numerosas (píxeles, audio) o
-          cuando se combina con otras redes.
+          Con <G k="tabular">datos tabulares</G>, el resultado depende de la representación y de los ajustes. Mide calidad, tiempo y memoria. Para imágenes o secuencias, compara arquitecturas que aprovechen su estructura en lugar de asumir que un MLP más grande será mejor.
         </p>
       ),
     },
@@ -88,7 +129,7 @@ const mlp: AlgorithmModule = {
           <Tex block>{'\\begin{gathered} h = \\sigma(W_1 x + b_1) \\\\ \\hat{y} = \\sigma(W_2 h + b_2) \\end{gathered}'}</Tex>
           <p>
             <Tex>{'x'}</Tex> es la entrada, <Tex>{'h'}</Tex> la salida de la capa oculta y <Tex>{'\\hat{y}'}</Tex> la
-            predicción. Las matrices <Tex>{'W'}</Tex> y los vectores <Tex>{'b'}</Tex> son los pesos que se aprenden;{' '}
+            predicción. Las matrices <Tex>{'W'}</Tex> y los vectores <Tex>{'b'}</Tex> son pesos y sesgos que se aprenden;{' '}
             <Tex>{'\\sigma'}</Tex> es la <G k="funcionActivacion" after=".">función de activación</G>
           </p>
         </>
@@ -116,10 +157,7 @@ const mlp: AlgorithmModule = {
       essential: (
         <>
           <p>
-            Supone que hay <b>muchos datos</b>: tiene muchos pesos que ajustar. En el ejercicio, la red de 32{' '}
-            <G k="neurona">neuronas</G> tiene 2 410 parámetros (pesos y sesgos) para 1 257 imágenes de entrenamiento, y
-            aun así acierta en datos nuevos porque los dígitos se parecen mucho entre sí. Con muchos menos datos,
-            memoriza <G before="(" k="overfitting" after=").">sobreajuste</G>
+            Necesita <b>datos representativos y capacidad adecuada</b>. Una capa de 32 <G k="neurona">neuronas</G> en este ejercicio tiene 2 410 pesos y sesgos. Esa cantidad no determina por sí sola cuántas imágenes hacen falta; compara entrenamiento y validación para revisar el <G k="overfitting">sobreajuste</G>.
           </p>
           <p>
             También supone{' '}
@@ -151,21 +189,17 @@ const mlp: AlgorithmModule = {
             <b>
               Aprende sus propias <G k="feature" after=":">features</G>
             </b>{' '}
-            en el ejercicio, la red de 32 <G k="neurona">neuronas</G> acierta el 97.6 % de los dígitos nuevos a partir
-            de los píxeles crudos.
+            el ejercicio aprende combinaciones de los 64 píxeles con una capa de <G k="neurona">neuronas</G> ocultas; la prueba final mide la red elegida con validación.
           </li>
           <li>
-            <b>Escala con los datos:</b> con más ejemplos y más neuronas suele seguir mejorando, cuando un modelo lineal
-            ya no mejora.
+            <b>Capacidad ajustable:</b> puedes cambiar tamaño y entrenamiento; mide si el costo adicional produce una mejora útil.
           </li>
         </ul>
       ),
       deepDive: (
         <p>
           La misma maquinaria (capas, <G k="retropropagacion" after=",">retropropagación</G> descenso por <G k="batch" after=")">lotes</G>{' '}
-          sirve para imágenes, texto y audio, y corre rápido en una <G k="gpu" after=".">GPU</G> Con 2 neuronas ocultas la red
-          del ejercicio solo acierta el 49.8 % en datos nuevos; con 8, el 91.3 %: con un entrenamiento corto, el tamaño
-          de la capa importa mucho.
+          sirve para distintas tareas. Algunas bibliotecas aprovechan <G k="gpu">GPU</G>; MLPClassifier se ejecuta en CPU. Arquitectura, inicialización y presupuesto interactúan: el tamaño de una capa no basta para predecir el resultado.
         </p>
       ),
     },
@@ -173,15 +207,14 @@ const mlp: AlgorithmModule = {
       essential: (
         <ul>
           <li>
-            <b>Caja negra:</b> 2 410 pesos no se leen uno por uno. No sabes por qué decidió lo que decidió.
+            <b>Explicación menos directa:</b> miles de pesos no se interpretan como unas pocas reglas; revisar una decisión necesita herramientas y contexto adicionales.
           </li>
           <li>
             <b>Muchas perillas:</b> capas, <G k="neurona" after=",">neuronas</G> <G k="tasaAprendizaje" after=",">tasa de aprendizaje</G>{' '}
             <G k="epoca" after=",">épocas</G> regularización. Una mala elección y no aprende o memoriza.
           </li>
           <li>
-            <b>Resultados que varían:</b> los pesos arrancan al azar. Con otra semilla, la red de 32 apenas cambia, pero
-            la de 2 cambia mucho: las redes pequeñas son las más inestables. El ejercicio fija{' '}
+            <b>Resultados que varían:</b> los pesos arrancan al azar. Cambiar la semilla puede cambiar la solución; conviene revisar la variación con varias semillas sin elegir la mejor mirando la prueba. El ejercicio fija{' '}
             <code>random_state=0</code>.
           </li>
         </ul>
@@ -189,9 +222,7 @@ const mlp: AlgorithmModule = {
       deepDive: (
         <>
           <p>
-            Contra el <G k="overfitting" after=":">sobreajuste</G> más datos, <G k="regularizacionL1L2" after=",">regularización L2</G>{' '}
-            <G k="dropout">dropout</G> o parar cuando el acierto en validación deja de mejorar (
-            <code>early_stopping=True</code>).
+            Ante <G k="overfitting">sobreajuste</G>, compara capacidad, <G k="regularizacionL1L2">regularización L2</G> y parada con validación. <G k="dropout">Dropout</G> pertenece a otras implementaciones: no es un ajuste de MLPClassifier.
           </p>
           <p>
             Para explicar predicciones existen técnicas como <G k="shap" after=",">SHAP</G> pero son aproximadas.
@@ -202,11 +233,9 @@ const mlp: AlgorithmModule = {
     whenNot: {
       essential: (
         <>
-          <p className="mlx-rule">No lo uses con pocos datos ni cuando cada decisión se debe justificar.</p>
+          <p className="mlx-rule">Si necesitas una explicación directa o hay pocos datos representativos, empieza por referencias más sencillas.</p>
           <p>
-            Ejemplo: aprobar créditos con 500 clientes y 10 columnas. Una regresión logística o un árbol poco profundo
-            aciertan parecido, entrenan en segundos y explican cada rechazo. Con miles de filas en tabla, prueba antes
-            Gradient Boosting.
+            Con unas pocas columnas y pocos ejemplos, compara regresión logística o un árbol pequeño antes de aumentar la red. La evaluación con datos separados decide si la complejidad adicional ayuda; no hay una cantidad universal de filas que lo resuelva.
           </p>
         </>
       ),
@@ -226,23 +255,18 @@ const mlp: AlgorithmModule = {
             <G k="redNeuronal">redes neuronales</G> fue leer códigos postales y cheques escritos a mano, en los años 90.
             Aquellas redes ya eran convolucionales, pero la idea de capas que aprenden es la misma.
           </p>
-          <p>
-            El ejercicio entrena un MLP con 1 257 de los 1 797 dígitos de 8×8 que trae scikit-learn y lo prueba con los
-            540 restantes. Con 2 <G k="neurona">neuronas</G> ocultas acierta el 49.8 %; con 8, el 91.3 %; con 32, el
-            97.6 %. La red de 32 da una probabilidad por dígito: a la primera imagen nueva, un 1, le da 88 %.
-          </p>
+          <p>El ejercicio conserva los 1 797 dígitos de 8×8 y divide los píxeles entre 16. Separa 1 077 imágenes de entrenamiento, 360 de validación y 360 de prueba. Compara tamaño, activación y alpha con validación; después consulta la prueba una sola vez. En esta ejecución elige 32 <G k="neurona">neuronas</G>, <G k="relu">ReLU</G> y alpha=0.1: validación 96.4 % y prueba 97.2 %, con 10 errores de 360. Son resultados de este conjunto y esta semilla.</p>
+
         </>
       ),
       deepDive: (
         <>
           <p>
             En producción las redes se entrenan con <G k="pytorch" after=",">PyTorch o TensorFlow</G> en <G k="gpu">GPU</G> y por{' '}
-            <G k="batch" after=".">lotes</G> El notebook de Colab trae, como celda opcional, una red equivalente en PyTorch: su
-            acierto es parecido, no idéntico, porque cambian el sorteo de los pesos y otros detalles del entrenamiento.
+            <G k="batch" after=".">lotes</G> El notebook de Colab trae, como celda opcional, una red de ejemplo en PyTorch que se compara solo con validación. No reproduce necesariamente el candidato elegido ni vuelve a consultar la prueba final.
           </p>
           <p>
-            El ejercicio entrena 150 <G k="epoca">épocas</G> y para ahí a propósito, para que corra en segundos en el
-            navegador. Con más épocas la red de 2 sube bastante, pero sigue lejos de las otras dos.
+            Cada candidato permite hasta 150 <G k="epoca">épocas</G> con Adam y puede parar antes por su tolerancia. El ejercicio muestra n_iter_ y si alcanzó el límite; no lo interpreta automáticamente como convergencia ni como <G k="overfitting">sobreajuste</G>.
           </p>
         </>
       ),

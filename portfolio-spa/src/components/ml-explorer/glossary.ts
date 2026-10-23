@@ -702,6 +702,26 @@ export const GLOSSARY = {
     what: 'Una operación pequeña: multiplica cada entrada por un peso, suma todo más un sesgo y pasa el resultado por una función de activación.',
     why: 'Una sola neurona traza una recta (o un plano); muchas, en capas, trazan fronteras curvas.',
   },
+  mlpArquitectura: {
+    term: 'Arquitectura MLP (hidden_layer_sizes)',
+    what: 'La cantidad de capas ocultas y de neuronas por capa. (32,) indica una capa de 32; (32, 16), dos capas con 32 y 16.',
+    why: 'La arquitectura se elige antes de entrenar; los pesos y sesgos se aprenden después. Más neuronas aumentan capacidad y costo, sin garantizar mejor desempeño con datos nuevos.'
+  },
+  mlpOptimizador: {
+    term: 'Optimizador y paso inicial (solver, learning_rate_init)',
+    what: 'El optimizador decide cómo actualizar pesos. En MLPClassifier, Adam y SGD usan learning_rate_init; L-BFGS no usa ese ajuste ni minibatches.',
+    why: 'Una tasa mayor puede acelerar o desestabilizar el entrenamiento. learning_rate configura un calendario solo para SGD; no cambia el calendario de Adam.'
+  },
+  mlpRegularizacion: {
+    term: 'Penalización de pesos (alpha en MLPClassifier)',
+    what: 'La fuerza de la penalización L2 sobre los pesos. Se divide por la cantidad de ejemplos al agregarse a la pérdida; no es la tasa de aprendizaje.',
+    why: 'Puede limitar ajustes excesivos, pero una penalización alta también puede impedir aprender relaciones útiles. Se elige con validación, no mirando la prueba final.'
+  },
+  mlpParada: {
+    term: 'Parada de MLP (max_iter, tol, early_stopping)',
+    what: 'Con Adam o SGD, max_iter limita épocas. tol y n_iter_no_change definen cuánto tiempo esperar mejoras. early_stopping usa una fracción interna de validación para decidir la parada.',
+    why: 'Sin early_stopping se vigila la pérdida de entrenamiento; con él se vigila el acierto en validación. Alcanzar el límite no demuestra convergencia ni sobreajuste. Con L-BFGS, max_iter cuenta iteraciones del optimizador.'
+  },
   capaOculta: {
     term: 'Capa oculta',
     what: 'Un grupo de neuronas entre la entrada y la salida. Nadie le dice qué calcular: aprende sus propias features intermedias.',

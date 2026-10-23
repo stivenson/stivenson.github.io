@@ -919,14 +919,18 @@ export interface Mlp2 {
 const neuron = ([w1, w2, b]: Neuron2, a: number, c: number) => sigmoid(w1 * a + w2 * c + b);
 
 /** Paso hacia adelante: las salidas de las dos neuronas ocultas y la probabilidad final de la clase 1. */
-export function mlpForward(net: Mlp2, p: Pt): { h: [number, number]; y: number } {
-  const h: [number, number] = [neuron(net.h1, p.x, p.y), neuron(net.h2, p.x, p.y)];
+export type MlpActivation = 'logistic' | 'tanh' | 'relu' | 'identity';
+export function mlpActivate(z: number, activation: MlpActivation): number {
+  return activation === 'logistic' ? sigmoid(z) : activation === 'tanh' ? Math.tanh(z) : activation === 'relu' ? Math.max(0,z) : z;
+}
+export function mlpForward(net: Mlp2, p: Pt, activation: MlpActivation = 'logistic'): { h: [number, number]; y: number } {
+  const h: [number, number] = [net.h1, net.h2].map(([w1,w2,b]) => mlpActivate(w1*p.x+w2*p.y+b, activation)) as [number, number];
   return { h, y: neuron(net.out, h[0], h[1]) };
 }
 
 /** Puntos bien clasificados (clase 1 si la probabilidad es ≥ 0.5). */
-export function mlpHits(net: Mlp2, points: LabeledPt[]): number {
-  return points.filter((p) => (mlpForward(net, p).y >= 0.5 ? 1 : 0) === p.label).length;
+export function mlpHits(net: Mlp2, points: LabeledPt[], activation: MlpActivation = 'logistic'): number {
+  return points.filter((p) => (mlpForward(net, p, activation).y >= 0.5 ? 1 : 0) === p.label).length;
 }
 
 // ---------- Convolución (CNN) ----------
