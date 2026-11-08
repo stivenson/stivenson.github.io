@@ -1,4 +1,4 @@
-import { RichTabPanel, Icon, CommandLine } from '../components';
+import { RichTabPanel, Icon } from '../components';
 import { PageShell } from '../components';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
 import profileData from '../data/profile.json';
@@ -211,24 +211,24 @@ export function About() {
   ];
 
   return (
-    <PageShell>
-      <CommandLine command="whoami --about">
-        <span style={{ display: 'block', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
-          <strong style={{ color: 'var(--electric-cyan)' }}>{personal.name}</strong>
-          {' — '}{personal.title}
-        </span>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: 'var(--font-size-sm)' }}>
-          <Icon name="pin" size={14} />
-          {personal.location}
-        </span>
-        <span style={{ display: 'block', marginTop: '10px' }}>
-          Ingeniero de Sistemas apasionado por la tecnología con propósito social.
-          Creo que el código debe servir a la gente y transformar realidades.
-        </span>
-      </CommandLine>
+    <PageShell className="lore-page">
+      <header className="lore-heading">
+        <div>
+          <p className="journey-kicker">CÓDICE PERSONAL · HISTORIAS Y VALORES</p>
+          <h1>Sobre mí</h1>
+          <p>Una mirada a mis orígenes, ideas y aspiraciones, más allá de los cargos y la tecnología.</p>
+        </div>
+        <div className="lore-identity">
+          <span className="lore-identity-mark" aria-hidden="true">✳</span>
+          <span><strong>{personal.name}</strong><small>{personal.title}</small></span>
+          <span className="lore-location"><Icon name="pin" size={13} />{personal.location}</span>
+        </div>
+      </header>
 
       <ScrollReveal>
-        <RichTabPanel tabs={tabs} defaultTab="origins" />
+        <div className="lore-panel-frame">
+          <RichTabPanel tabs={tabs} defaultTab="origins" />
+        </div>
       </ScrollReveal>
     </PageShell>
   );
@@ -236,14 +236,9 @@ export function About() {
 
 function QuestionAnswer({ question, answer }: { question: string; answer: string }) {
   return (
-    <div style={{
-      padding: '14px 16px',
-      background: 'var(--card-accent-bg-light, rgba(76,89,211,0.06))',
-      borderLeft: '2px solid var(--electric-blue)',
-      borderRadius: '0 var(--border-radius-md) var(--border-radius-md) 0',
-    }}>
-      <p className="eyebrow" style={{ marginBottom: '6px' }}>{question}</p>
-      <p className="editorial" style={{ color: 'var(--rf-text)' }}>{answer}</p>
+    <div className="lore-answer">
+      <p className="eyebrow">{question}</p>
+      <p className="editorial">{answer}</p>
     </div>
   );
 }

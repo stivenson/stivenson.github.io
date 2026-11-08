@@ -37,8 +37,8 @@ export function RichTabPanel({ tabs, defaultTab }: RichTabPanelProps) {
                   position: 'absolute',
                   inset: 0,
                   borderRadius: 'var(--border-radius-sm) var(--border-radius-sm) 0 0',
-                  background: 'rgba(76, 89, 211, 0.15)',
-                  borderBottom: '2px solid var(--electric-blue)',
+                  background: 'rgba(115, 177, 132, 0.12)',
+                  borderBottom: '2px solid var(--term-amber)',
                 }}
                 transition={tabMorphTransition}
               />

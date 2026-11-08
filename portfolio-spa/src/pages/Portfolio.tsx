@@ -11,6 +11,61 @@ interface Repo {
   stars: number;
 }
 
+const featuredProjects = [
+  {
+    number: '01',
+    region: 'Salud digital · IA',
+    title: 'BrainWeb SBD',
+    subtitle: 'Análisis de imágenes médicas con IA',
+    description: 'Plataforma para explorar imágenes MRI simuladas de BrainWeb (McGill): visor multiplanar 2D, visualización 3D y selección de volúmenes mediante lenguaje natural.',
+    detail: '108 volúmenes para cerebro normal y esclerosis múltiple, parametrizados por modalidad, ruido y RF.',
+    tags: ['Python', 'React', 'Three.js', 'HuggingFace'],
+    icon: 'activity' as IconName,
+    href: 'https://project-mri-production.up.railway.app/',
+    action: 'Abrir proyecto',
+    art: 'mri',
+  },
+  {
+    number: '02',
+    region: 'Herramientas · IA',
+    title: 'Directorio de interfaces LLM',
+    subtitle: 'Explora herramientas de inteligencia artificial',
+    description: 'Directorio organizado de chats, dashboards y herramientas para trabajar con modelos de lenguaje.',
+    detail: 'Catálogo de interfaces conversacionales, herramientas y recursos de IA.',
+    tags: ['Directorio', 'Interfaces IA', 'Herramientas'],
+    icon: 'bot' as IconName,
+    href: 'https://stivenson.github.io/llm-directory.html',
+    action: 'Explorar directorio',
+    art: 'llm',
+  },
+  {
+    number: '03',
+    region: 'Bienestar · Privacidad',
+    title: 'Soporte en Crisis TOC',
+    subtitle: 'Psicoeducación y autorregulación emocional',
+    description: 'Recurso digital complementario para personas con TOC, basado en andamiaje cognitivo y navegación por estados internos.',
+    detail: 'Almacenamiento local y enfoque de apoyo no clínico, complementario al tratamiento profesional.',
+    tags: ['Psicoeducación', 'Privacidad local', 'Apoyo complementario'],
+    icon: 'book' as IconName,
+    href: 'https://stivenson.github.io/toc_support.html',
+    action: 'Ver recurso',
+    art: 'toc',
+  },
+  {
+    number: '04',
+    region: 'Agentes · Automatización',
+    title: 'Job Search Agents',
+    subtitle: 'Búsqueda de empleo asistida por agentes',
+    description: 'Sistema con agentes LangGraph que busca vacantes en varias fuentes, extrae información de contacto y genera un reporte HTML interactivo.',
+    detail: 'Incluye protección anti-bot, Agent Skills y matching de oportunidades.',
+    tags: ['LangGraph', 'Agentes IA', 'Agent Skills'],
+    icon: 'search' as IconName,
+    href: 'https://github.com/stivenson/job_search_agents',
+    action: 'Ver repositorio',
+    art: 'agents',
+  },
+];
+
 export function Portfolio() {
   const { github } = profileData;
 
@@ -85,185 +140,55 @@ export function Portfolio() {
 
   return (
     <PageShell>
-      <header className="design-portfolio-intro">
-        <p className="design-kicker">TRABAJO QUE PUEDES EXPLORAR</p>
-        <h1>Productos, investigación y código.</h1>
-        <p>Aplicaciones propias y proyectos académicos. Explora las demos o visita <a href={github.profileUrl} target="_blank" rel="noopener noreferrer">mi perfil de GitHub ↗</a>.</p>
+      <FeaturedProjects showAllLink={false} />
+      <header className="portfolio-heading">
+        <div>
+          <p className="eyebrow">ATLAS DE PROYECTOS · CÓDIGO, IA Y PRODUCTO</p>
+          <h1>Proyectos destacados</h1>
+          <p>Una selección de herramientas, investigación aplicada y recursos abiertos.</p>
+        </div>
+        <a className="portfolio-github-link" href={github.profileUrl} target="_blank" rel="noopener noreferrer">
+          Explorar GitHub <span aria-hidden="true">↗</span>
+        </a>
       </header>
 
-      <FeaturedProjects showAllLink={false} />
-
-      {/* BrainWeb SBD Panel */}
-      <RichPanel title="BrainWeb SBD — Análisis de Imágenes Médicas con IA" icon={<Icon name="activity" size={16} />} electric>
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <div className="panel-icon">
-            <Icon name="activity" size={28} />
+      <section className="quest-board" aria-labelledby="quest-board-title">
+        <div className="quest-board-heading">
+          <div>
+            <span className="quest-board-kicker">REGISTRO DE EXPEDICIÓN</span>
+            <h2 id="quest-board-title">Proyectos principales</h2>
           </div>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <p className="eyebrow" style={{ marginBottom: '6px' }}>Proyecto Académico · Semillero DSI · Universidad Simón Bolívar</p>
-            <h3 style={{ fontSize: '16px', marginBottom: '8px', color: 'var(--electric-cyan)', fontWeight: 600 }}>
-              Plataforma web interactiva para ciencia de datos en salud
-            </h3>
-            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.65' }}>
-              Plataforma para explorar imágenes MRI simuladas del dataset BrainWeb (McGill). Incluye
-              visor 2D multiplanar, visor 3D interactivo con Three.js, y asistente NLP que selecciona
-              volúmenes mediante lenguaje natural vía LLMs en HuggingFace. Cubre cerebro normal y
-              esclerosis múltiple con 108 volúmenes parametrizados por modalidad, ruido y RF.
-            </p>
-            <a
-              href="https://project-mri-production.up.railway.app/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-cmd"
-            >
-              Abrir BrainWeb SBD <span className="ext" aria-hidden="true">↗</span>
-            </a>
-            <div className="panel-note">
-              <strong>Stack:</strong>
-              <span style={{ fontFamily: 'var(--font-mono)', marginLeft: '6px' }}>
-                Python · Flask · React · Vite · Three.js · LLM/NLP · HuggingFace · Railway
-              </span>
-            </div>
-          </div>
+          <span className="quest-board-count">04 EN EL MAPA</span>
         </div>
-      </RichPanel>
-
-      {/* LLM Directory Panel */}
-      <RichPanel title="Directorio de Interfaces - LLMs" icon={<Icon name="bot" size={16} />} electric>
-        <div style={{ 
-          display: 'flex', 
-          gap: '16px', 
-          alignItems: 'flex-start',
-          flexWrap: 'wrap'
-        }}>
-          <div className="panel-icon">
-            <Icon name="bot" size={28} />
-          </div>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <h3 style={{ 
-              fontSize: '16px', 
-              marginBottom: '8px',
-              color: 'var(--electric-blue)',
-              fontWeight: 600
-            }}>
-              Directorio de Interfaces de Inteligencia Artificial
-            </h3>
-            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.6' }}>
-              Tu guía completa de interfaces de inteligencia artificial: chats conversacionales, 
-              dashboards y herramientas de modelos de lenguaje. Una recopilación cuidadosamente 
-              organizada de las mejores herramientas y plataformas de IA disponibles.
-            </p>
-            <a
-              href="https://stivenson.github.io/llm-directory.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-cmd"
+        <div className="quest-grid">
+          {featuredProjects.map((project, index) => (
+            <article
+              className={`quest-card quest-card--${project.art}${index === 0 ? ' quest-card--lead' : ''}`}
+              key={project.number}
             >
-              Visitar Directorio de LLMs <span className="ext" aria-hidden="true">↗</span>
-            </a>
-            <div className="panel-note">
-              <strong>Características</strong>
-              <ul>
-                <li>Interfaces de chat conversacionales</li>
-                <li>Dashboards de IA</li>
-                <li>Herramientas de modelos de lenguaje</li>
-                <li>Recursos organizados y actualizados</li>
-              </ul>
-            </div>
-          </div>
+              <div className={`quest-art quest-art--${project.art}`} aria-hidden="true">
+                <span className="quest-art-coordinate">REGIÓN {project.number}</span>
+                <div className="quest-art-emblem"><Icon name={project.icon} size={30} /></div>
+                <span className="quest-art-mark">✳</span>
+              </div>
+              <div className="quest-card-body">
+                <div className="quest-card-meta">
+                  <span>{project.region}</span>
+                  <span className="quest-card-number">{project.number}</span>
+                </div>
+                <h3>{project.title}</h3>
+                <p className="quest-card-subtitle">{project.subtitle}</p>
+                <p className="quest-card-description">{project.description}</p>
+                <p className="quest-card-detail">{project.detail}</p>
+                <TagList tags={project.tags} electric />
+                <a className="quest-card-action" href={project.href} target="_blank" rel="noopener noreferrer">
+                  {project.action} <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </article>
+          ))}
         </div>
-      </RichPanel>
-
-      {/* TOC Support Panel */}
-      <RichPanel title="Soporte en Crisis TOC" icon={<Icon name="book" size={16} />} electric>
-        <div style={{ 
-          display: 'flex', 
-          gap: '16px', 
-          alignItems: 'flex-start',
-          flexWrap: 'wrap'
-        }}>
-          <div className="panel-icon">
-            <Icon name="book" size={28} />
-          </div>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <h3 style={{ 
-              fontSize: '16px', 
-              marginBottom: '8px',
-              color: 'var(--electric-blue)',
-              fontWeight: 600
-            }}>
-              Herramienta de Psicoeducación y Autorregulación Emocional
-            </h3>
-            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.6' }}>
-              Herramienta de psicoeducación y autorregulación emocional orientada al Trastorno Obsesivo-Compulsivo (TOC), 
-              basada en andamiaje cognitivo y navegación por estados internos, implementada como interfaz digital no clínica 
-              de apoyo personal, complementaria —no sustitutiva— al tratamiento profesional.
-            </p>
-            <a
-              href="https://stivenson.github.io/toc_support.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-cmd"
-            >
-              Acceder al Soporte TOC <span className="ext" aria-hidden="true">↗</span>
-            </a>
-            <div className="panel-note">
-              <strong>Características</strong>
-              <ul>
-                <li>Interfaz de apoyo emocional con LLMs</li>
-                <li>Almacenamiento local y privacidad garantizada</li>
-                <li>Navegación por estados internos</li>
-                <li>Herramienta complementaria no clínica</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </RichPanel>
-
-      {/* Job Search Agents Panel */}
-      <RichPanel title="Job Search Agents" icon={<Icon name="search" size={16} />} electric>
-        <div style={{ 
-          display: 'flex', 
-          gap: '16px', 
-          alignItems: 'flex-start',
-          flexWrap: 'wrap'
-        }}>
-          <div className="panel-icon">
-            <Icon name="search" size={28} />
-          </div>
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <h3 style={{ 
-              fontSize: '16px', 
-              marginBottom: '8px',
-              color: 'var(--electric-blue)',
-              fontWeight: 600
-            }}>
-              Sistema Inteligente de Búsqueda de Empleo con Agentes IA
-            </h3>
-            <p style={{ fontSize: '13px', color: 'var(--rf-text-muted)', marginBottom: '12px', lineHeight: '1.6' }}>
-              Sistema inteligente de búsqueda de empleo que utiliza agentes LangGraph para buscar trabajos en múltiples fuentes, 
-              extraer información de contacto y generar un reporte HTML interactivo.
-            </p>
-            <a
-              href="https://github.com/stivenson/job_search_agents"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-cmd"
-            >
-              Visitar Job Search Agents <span className="ext" aria-hidden="true">↗</span>
-            </a>
-            <div className="panel-note">
-              <strong>Características</strong>
-              <ul>
-                <li>Arquitectura multiagente con LangGraph</li>
-                <li>Protección anti-bot avanzada</li>
-                <li>Sistema de Agent Skills</li>
-                <li>Matching inteligente y extracción de información</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </RichPanel>
+      </section>
 
       {/* Academic Guides Panel */}
       <RichPanel title="Guías Académicas — Unisimón" icon={<Icon name="cap" size={16} />} electric>

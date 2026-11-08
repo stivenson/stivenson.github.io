@@ -14,6 +14,7 @@ import './styles/richfaces.css';
 import './styles/retro-modern.css';
 import './styles/design-refresh.css';
 import './styles/design-motion.css';
+import './styles/metroidvania.css';
 
 // Route-based code splitting: each page (and its heavy deps — markdown,
 // syntax-highlighter, etc.) loads only when its route is visited.

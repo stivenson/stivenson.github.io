@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { RichTabPanel, Timeline, TagList, Icon, CommandLine } from '../components';
+import { RichTabPanel, Timeline, TagList, Icon } from '../components';
 import { PageShell } from '../components';
 import { ScrollReveal } from '../components/motion/ScrollReveal';
 import profileData from '../data/profile.json';
@@ -55,14 +55,7 @@ export function Resume() {
     content: (
       <div>
         <p style={{ marginBottom: '8px', fontSize: '12px' }}>
-          <span style={{ 
-            display: 'inline-block',
-            padding: '2px 8px',
-            background: 'rgba(76, 89, 211, 0.12)',
-            borderRadius: '4px',
-            fontSize: '11px',
-            color: 'rgba(255, 255, 255, 0.85)'
-          }}>
+          <span className="journey-modality">
             {exp.modality}
           </span>
         </p>
@@ -112,7 +105,7 @@ export function Resume() {
         <div>
           {sortedCourses.map((course, index) => {
             const courseData = typeof course === 'string' 
-              ? { name: course, emoji: '📚', color: '#6B7BF0' }
+              ? { name: course, emoji: '📚', color: '#9fc99f' }
               : course;
             return (
               <div 
@@ -224,7 +217,7 @@ export function Resume() {
                 transition: 'all 0.2s ease'
               }}
               whileHover={{ 
-                boxShadow: '0 4px 12px rgba(76, 89, 211, 0.25)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
                 borderColor: 'var(--electric-blue)'
               }}
             >
@@ -257,10 +250,10 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '11px',
                       padding: '2px 8px',
-                      background: '#0a0a2e',
+                      background: 'rgba(104, 144, 104, 0.08)',
                       borderRadius: '4px',
-                      border: '1px solid #4C59D3',
-                      color: '#6B7BF0',
+                      border: '1px solid rgba(130, 164, 132, 0.25)',
+                      color: '#bdd3b9',
                       fontWeight: 500
                     }}>
                       {project.tool}
@@ -268,7 +261,7 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '11px',
                       padding: '2px 8px',
-                      background: '#4C59D3',
+                      background: '#34583f',
                       borderRadius: '4px',
                       color: '#ffffff',
                       fontWeight: 500
@@ -350,7 +343,7 @@ export function Resume() {
                 transition: 'all 0.2s ease'
               }}
               whileHover={{ 
-                boxShadow: '0 4px 12px rgba(76, 89, 211, 0.25)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2)',
                 borderColor: 'var(--electric-blue)'
               }}
             >
@@ -415,7 +408,7 @@ export function Resume() {
                           padding: '4px 10px',
                           background: ref.social.platform === 'instagram' 
                             ? 'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)'
-                            : 'rgba(76, 89, 211, 0.15)',
+                            : 'rgba(115, 177, 132, 0.12)',
                           borderRadius: '4px',
                           color: ref.social.platform === 'instagram' ? 'white' : 'var(--electric-blue)',
                           display: 'inline-flex',
@@ -449,7 +442,7 @@ export function Resume() {
                     <span style={{ 
                       fontSize: '12px',
                       padding: '4px 10px',
-                      background: '#4C59D3',
+                      background: '#34583f',
                       borderRadius: '4px',
                       color: '#ffffff',
                       display: 'inline-flex',
@@ -470,15 +463,27 @@ export function Resume() {
   ];
 
   return (
-    <PageShell>
-      <CommandLine command="cat cv.md">
-        +12 años como Full Stack Developer, especializado en arquitecturas cloud,
-        microservicios y desarrollo de productos bancarios. Actualmente cursando
-        Maestría en Inteligencia Artificial.
-      </CommandLine>
+    <PageShell className="journey-page">
+      <header className="journey-heading">
+        <div>
+          <p className="journey-kicker">ARCHIVO DE CAMPAÑA · EXPERIENCIA Y FORMACIÓN</p>
+          <h1>Trayectoria profesional</h1>
+          <p>Un recorrido por los equipos, estudios y proyectos que han marcado mi trabajo en software e inteligencia artificial.</p>
+        </div>
+        <div className="journey-index" aria-label="Secciones del archivo">
+          <span>01 <b>Experiencia</b></span>
+          <span>02 <b>Educación</b></span>
+          <span>03 <b>Cursos</b></span>
+          <span>04 <b>Proyectos académicos</b></span>
+          <span>05 <b>Habilidades</b></span>
+          <span>06 <b>Referencias</b></span>
+        </div>
+      </header>
 
       <ScrollReveal delay={0.05}>
-        <RichTabPanel tabs={tabs} defaultTab="experience" />
+        <div className="journey-panel-frame">
+          <RichTabPanel tabs={tabs} defaultTab="experience" />
+        </div>
       </ScrollReveal>
     </PageShell>
   );
