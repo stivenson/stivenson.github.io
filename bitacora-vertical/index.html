@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101c21">
+  <link rel="icon" href="data:,">
+  <title>Bitácora vertical · simulación registrada</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div>
+          <div class="eyebrow">LABORATORIO DE CÁLCULO · ING. MULTIMEDIA</div>
+          <h1>Bitácora vertical</h1>
+        </div>
+      </div>
+      <div class="trace-meta">
+        <span id="engineDot" class="status-dot" aria-hidden="true"></span>
+        <div><strong id="engineBadge">JSBSim · comprobando</strong><small id="runBadge">sin corrida activa</small></div>
+        <span class="version-chip">PHASER 4.2.1</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="flight-strip" aria-label="Estado de la simulación">
+        <div class="strip-label">RECORRIDO REGISTRADO</div>
+        <p id="flightStatus" role="status" aria-live="polite">Esta página reproduce una corrida guardada de JSBSim; aquí no se ejecuta el motor.</p>
+        <div class="sim-stamp"><span>FDM</span><strong>JSBSim</strong><small>corrida guardada · 60 s</small></div>
+      </section>
+      <div id="errorBanner" class="error-banner" role="alert" hidden></div>
+
+      <section class="instrument-grid">
+        <aside class="control-column" aria-label="Controles de corrida y reproducción">
+          <div class="panel-kicker"><span>01</span> CORRIDA Y NAVEGACIÓN</div>
+          <button id="newRunButton" class="run-button" type="button">
+            <span class="run-icon" aria-hidden="true">▶</span><span id="runButtonLabel">CARGAR CORRIDA GUARDADA</span>
+          </button>
+          <div id="runStatus" class="run-status" role="status" aria-live="polite">Carga una corrida guardada para explorarla.</div>
+
+          <div class="time-readout">
+            <div class="readout-label">TIEMPO DEL RECORRIDO</div>
+            <output id="timeReadout" for="timeSlider">--:--.-</output>
+            <span class="unit">SEGUNDOS · REGISTRO</span>
+          </div>
+          <label class="slider-label" for="timeSlider"><span>INICIO</span><span id="durationLabel">60,0 s</span></label>
+          <input id="timeSlider" type="range" min="0" max="600" value="0" step="1" aria-label="Tiempo de la corrida JSBSim, en décimas de segundo" disabled>
+          <div class="transport">
+            <button id="playButton" class="play-button" type="button" aria-label="Reproducir trayectoria" disabled>
+              <span class="play-icon" aria-hidden="true">▶</span><span id="playLabel">REPRODUCIR</span>
+            </button>
+            <button id="resetButton" class="icon-button" type="button" aria-label="Volver al inicio" disabled>↺</button>
+            <label class="speed-control">VELOCIDAD
+              <select id="speedSelect" aria-label="Velocidad de reproducción">
+                <option value="1">1×</option><option value="2">2×</option><option value="4">4×</option>
+              </select>
+            </label>
+          </div>
+          <div class="altimeter-panel">
+            <div class="panel-kicker"><span>02</span> ALTITUD ASL</div>
+            <div class="altimeter-readout"><strong id="altitudeReadout">—</strong><span>ft</span></div>
+            <div class="altimeter-track" aria-hidden="true"><div id="altitudeMarker" class="altimeter-marker"></div></div>
+            <div class="altimeter-scale"><span id="altitudeMin">0</span><span id="altitudeMid">200</span><span id="altitudeMax">400 ft</span></div>
+            <div class="altimeter-foot"><span>CAMBIO DESDE t₀</span><span id="deltaReadout">Δ — ft</span></div>
+          </div>
+          <div class="provenance-note">
+            <span class="note-symbol" aria-hidden="true">i</span>
+            <p>JSBSim calcula la trayectoria. Phaser recorre esa respuesta; no envía controles de vuelo.</p>
+          </div>
+        </aside>
+
+        <section class="visual-column">
+          <div class="metrics-row" aria-label="Integral y diferencia de altitud de la corrida">
+            <article class="metric-card metric-rate"><span>RAZÓN VERTICAL</span><strong id="rateReadout">—</strong><small>−V_Down · ft/s · positivo arriba</small></article>
+            <article class="metric-card metric-integral"><span>ÁREA ACUMULADA</span><strong id="integralReadout">—</strong><small>trapecios sobre esta corrida · ft</small></article>
+            <article class="metric-card metric-residual"><span>RESIDUO</span><strong id="residualReadout">—</strong><small>integral − Δ altitud · ft</small></article>
+          </div>
+          <div class="metrics-row flight-metrics" aria-label="Variables de vuelo leídas desde JSBSim">
+            <article class="metric-card metric-pitch"><span>CABECEO · PITCH</span><strong id="pitchReadout">—</strong><small>grados</small></article>
+            <article class="metric-card metric-tas"><span>TAS</span><strong id="tasReadout">—</strong><small>nudos · velocidad verdadera</small></article>
+            <article class="metric-card metric-cas"><span>CAS</span><strong id="casReadout">—</strong><small>nudos · velocidad calibrada</small></article>
+          </div>
+
+          <section class="chart-panel" aria-label="Gráficas de la corrida JSBSim guardada">
+            <div class="chart-heading">
+              <div><div class="panel-kicker"><span>03</span> PERFIL E INTEGRAL</div><h2>La tasa vertical acumula altitud</h2></div>
+              <div class="chart-legend"><span><i class="swatch swatch-amber"></i>−V_Down (arriba +)</span><span><i class="swatch swatch-mint"></i>Δh ASL</span><span><i class="swatch swatch-blue"></i>∫w dt</span></div>
+            </div>
+            <div id="phaserMount" role="img" aria-label="JSBSim: razón vertical, área acumulada y altitud de la misma corrida"></div>
+            <div class="chart-foot"><span id="sampleBadge">ESPERANDO RECORRIDO GUARDADO</span><span>REPRODUCCIÓN DE UNA CORRIDA GUARDADA</span></div>
+          </section>
+        </section>
+      </section>
+
+      <section class="model-notice" aria-label="Límite del modelo C172">
+        <strong>AVISO Y LÍMITE DEL MODELO</strong>
+        <span id="modelNoticeText">El XML c172x marca el C172 como BETA y lo destina a educación y entretenimiento. Esta página reproduce telemetría obtenida con JSBSim 1.3.3; no ejecuta JSBSim ni representa o valida un vuelo real.</span>
+      </section>
+      <footer class="app-footer">
+        <span>SIMULACIÓN JSBSIM · NO ES UN VUELO REAL</span>
+        <span id="footerSummary">La integral se recalcula a partir de las muestras guardadas; el motor JSBSim no se ejecuta en esta página.</span>
+      </footer>
+    </main>
+  </div>
+  <script src="./vendor/phaser.min.js"></script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
