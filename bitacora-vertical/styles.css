@@ -20,6 +20,7 @@ button, input, select { font: inherit; touch-action: manipulation; }
 .app-shell { min-height: 100vh; max-width: 1680px; margin: 0 auto; padding: 0 34px 24px; background: radial-gradient(circle at 72% 9%, rgba(73,105,103,.18), transparent 32%), var(--ink); }
 .topbar { display:flex; align-items:center; justify-content:space-between; min-height:98px; border-bottom:1px solid var(--line); }
 .brand-lockup { display:flex; align-items:center; gap:16px; }
+.brand-copy { min-width:0; }
 .brand-mark { width:38px; height:38px; border:1px solid var(--amber); border-radius:50%; display:grid; place-items:center; position:relative; }
 .brand-mark::before { content:''; position:absolute; width:24px; height:1px; background:var(--amber); transform:rotate(-45deg); }
 .brand-mark span { position:absolute; width:5px; height:5px; border:1px solid var(--amber); border-radius:50%; }
@@ -27,6 +28,7 @@ button, input, select { font: inherit; touch-action: manipulation; }
 .eyebrow, .panel-kicker, .readout-label, .slider-label, .metric-card span, .chart-foot, .strip-label, .app-footer, .speed-control { font-family:var(--mono); letter-spacing:.08em; }
 .eyebrow { color:var(--mint); font-size:10px; margin-bottom:3px; }
 h1 { margin:0; font-family:var(--display); font-size:32px; line-height:1; letter-spacing:.025em; font-weight:600; }
+.header-description { max-width:470px; margin:5px 0 0; color:var(--muted); font-size:11px; line-height:1.35; }
 .trace-meta { display:flex; align-items:center; gap:10px; font-family:var(--mono); }
 .trace-meta strong { display:block; font-size:11px; font-weight:500; color:var(--paper); }
 .trace-meta small { display:block; color:var(--muted); font-size:9px; margin-top:4px; }
@@ -133,6 +135,7 @@ input[type=range]::-moz-range-thumb { width:18px; height:18px; border-radius:50%
   .topbar { min-height:78px; }
   .brand-mark { width:31px; height:31px; }
   h1 { font-size:26px; }
+  .header-description { max-width:330px; font-size:9px; line-height:1.3; }
   .eyebrow { font-size:7px; }
   .trace-meta { gap:7px; }
   .trace-meta small { display:none; }
@@ -163,6 +166,7 @@ input[type=range]::-moz-range-thumb { width:18px; height:18px; border-radius:50%
   .topbar { min-height:72px; gap:8px; }
   .brand-lockup { gap:9px; }
   h1 { font-size:24px; }
+  .header-description { max-width:210px; font-size:8px; line-height:1.25; }
   .eyebrow { font-size:6px; letter-spacing:.04em; }
   .trace-meta { gap:5px; }
   .trace-meta strong { font-size:9px; }
