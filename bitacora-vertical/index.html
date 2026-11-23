@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101c21">
   <link rel="icon" href="data:,">
-  <title>Bitácora vertical · simulación registrada</title>
+  <title>Bitácora vertical · simulación JSBSim</title>
+  <meta name="description" content="Simulación didáctica: integra la razón vertical de un C172 simulado y observa el cambio de altitud.">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -17,21 +18,43 @@
           <div class="eyebrow">LABORATORIO DE CÁLCULO · INGENIERÍA DE DATOS E IA</div>
           <h1>Bitácora vertical</h1>
           <p class="header-author">Autor: Stivenson Rincón Mora</p>
-          <p class="header-description">Sigue una corrida simulada de C172 y observa cómo la integral de la razón vertical estima el cambio de altitud.</p>
+          <p class="header-description">Observa cómo la integral de la razón vertical de un avión C172 simulado estima su cambio de altitud.</p>
         </div>
       </div>
       <div class="trace-meta">
         <span id="engineDot" class="status-dot" aria-hidden="true"></span>
-        <div><strong id="engineBadge">JSBSim · comprobando</strong><small id="runBadge">sin corrida activa</small></div>
+        <div><button id="engineBadge" class="package-info-trigger" type="button" aria-haspopup="dialog" aria-controls="jsbsimInfo">JSBSim · comprobando</button><small id="runBadge">sin corrida activa</small></div>
         <span class="version-chip">PHASER 4.2.1</span>
       </div>
     </header>
 
+    <dialog id="jsbsimInfo" class="info-dialog" aria-labelledby="jsbsimInfoTitle" aria-describedby="jsbsimInfoDescription">
+      <div class="info-dialog-heading">
+        <div><div class="panel-kicker"><span>FDM</span> SOFTWARE DE SIMULACIÓN</div><h2 id="jsbsimInfoTitle">JSBSim: dinámica de vuelo calculada</h2></div>
+        <button class="dialog-close" type="button" aria-label="Cerrar información" data-dialog-close>×</button>
+      </div>
+      <div class="info-dialog-content" id="jsbsimInfoDescription">
+        <p>JSBSim es una biblioteca de software libre que modela el movimiento de aeronaves a partir de la aerodinámica, la propulsión, los controles y las fuerzas externas. Se usa como motor de simulación para estudiar trayectorias y se integra con otras herramientas de simulación.</p>
+        <p>En este proyecto, JSBSim 1.3.3 ejecuta el escenario <code>c1723.xml</code> del modelo <code>c172x</code> y entrega 601 muestras durante 60 segundos. Phaser presenta la trayectoria; la gráfica compara la integral trapezoidal de <code>−V_Down</code> con el cambio de altitud de la misma corrida.</p>
+        <dl class="glossary-grid">
+          <div><dt>FDM</dt><dd>Modelo de dinámica de vuelo: calcula la respuesta física del vehículo.</dd></div>
+          <div><dt>6DoF</dt><dd>Seis grados de libertad: tres movimientos lineales y tres rotacionales.</dd></div>
+          <div><dt>NED</dt><dd>Marco norte–este–abajo; abajo es positivo, por eso <code>w = −V_Down</code>.</dd></div>
+        </dl>
+        <p class="modal-limitation">Es una simulación didáctica con una configuración fija; no representa un vuelo real ni valida una aeronave.</p>
+        <nav class="info-sources" aria-label="Fuentes oficiales de JSBSim">
+          <a href="https://github.com/JSBSim-Team/jsbsim" target="_blank" rel="noopener noreferrer">Proyecto y documentación oficial</a>
+          <a href="https://jsbsim-team.github.io/jsbsim-reference-manual/" target="_blank" rel="noopener noreferrer">Manual de referencia</a>
+          <a href="https://github.com/JSBSim-Team/jsbsim/blob/v1.3.3/scripts/c1723.xml" target="_blank" rel="noopener noreferrer">Escenario C172 · versión 1.3.3</a>
+        </nav>
+      </div>
+    </dialog>
+
     <main>
       <section class="flight-strip" aria-label="Estado de la simulación">
-        <div class="strip-label">RECORRIDO REGISTRADO</div>
-        <p id="flightStatus" role="status" aria-live="polite">Esta página reproduce una corrida guardada de JSBSim; aquí no se ejecuta el motor.</p>
-        <div class="sim-stamp"><span>FDM</span><strong>JSBSim</strong><small>corrida guardada · 60 s</small></div>
+        <div class="strip-label" id="simulationMode">CONECTANDO</div>
+        <p id="flightStatus" role="status" aria-live="polite">Conectando con JSBSim en Railway; si no responde, se carga una corrida guardada.</p>
+        <div class="sim-stamp"><span>FDM</span><strong>JSBSim</strong><small id="simulationModeDetail">estado del motor · comprobando</small></div>
       </section>
       <div id="errorBanner" class="error-banner" role="alert" hidden></div>
 
@@ -39,14 +62,14 @@
         <aside class="control-column" aria-label="Controles de corrida y reproducción">
           <div class="panel-kicker"><span>01</span> CORRIDA Y NAVEGACIÓN</div>
           <button id="newRunButton" class="run-button" type="button">
-            <span class="run-icon" aria-hidden="true">▶</span><span id="runButtonLabel">CARGAR CORRIDA GUARDADA</span>
+            <span class="run-icon" aria-hidden="true">▶</span><span id="runButtonLabel">NUEVA CORRIDA JSBSIM</span>
           </button>
-          <div id="runStatus" class="run-status" role="status" aria-live="polite">Carga una corrida guardada para explorarla.</div>
+          <div id="runStatus" class="run-status" role="status" aria-live="polite">Conectando con el motor local…</div>
 
           <div class="time-readout">
-            <div class="readout-label">TIEMPO DEL RECORRIDO</div>
+            <div class="readout-label">TIEMPO DE ESTA CORRIDA</div>
             <output id="timeReadout" for="timeSlider">--:--.-</output>
-            <span class="unit">SEGUNDOS · REGISTRO</span>
+            <span class="unit">SEGUNDOS · FDM</span>
           </div>
           <label class="slider-label" for="timeSlider"><span>INICIO</span><span id="durationLabel">60,0 s</span></label>
           <input id="timeSlider" type="range" min="0" max="600" value="0" step="1" aria-label="Tiempo de la corrida JSBSim, en décimas de segundo" disabled>
@@ -86,28 +109,35 @@
             <article class="metric-card metric-cas"><span>CAS</span><strong id="casReadout">—</strong><small>nudos · velocidad calibrada</small></article>
           </div>
 
-          <section class="chart-panel" aria-label="Gráficas de la corrida JSBSim guardada">
+          <section class="chart-panel" aria-label="Gráficas de la corrida JSBSim activa">
             <div class="chart-heading">
               <div><div class="panel-kicker"><span>03</span> PERFIL E INTEGRAL</div><h2>La tasa vertical acumula altitud</h2></div>
-              <div class="chart-legend"><span><i class="swatch swatch-amber"></i>−V_Down (arriba +)</span><span><i class="swatch swatch-mint"></i>Δh ASL</span><span><i class="swatch swatch-blue"></i>∫w dt</span></div>
+              <div class="chart-legend"><span><i class="swatch swatch-amber"></i>−V_Down (arriba +)</span><span><i class="swatch swatch-mint"></i>Δh ASL</span><span><i class="swatch swatch-blue"></i>∫w dt</span><span class="aircraft-legend"><i aria-hidden="true">✈</i> avión C172</span></div>
+            </div>
+            <div class="integral-equation" role="img" aria-label="Integral desde cero hasta t de w de tau en dt, igual a la integral de menos V Down, aproximadamente igual al cambio de altitud del avión C172">
+              <span class="equation-label">INTEGRAL PRINCIPAL</span>
+              <span class="equation-formula"><span class="integral-symbol">∫</span><sub>0</sub><sup>t</sup> w(τ) dτ <b>=</b> <span class="integral-symbol">∫</span><sub>0</sub><sup>t</sup> −V<sub>Down</sub>(τ) dτ <b>≈</b> Δh</span>
+              <span class="equation-note">w = −V<sub>Down</sub> · cambio de altitud del avión C172</span>
             </div>
             <div id="phaserMount" role="img" aria-label="JSBSim: razón vertical, área acumulada y altitud de la misma corrida"></div>
-            <div class="chart-foot"><span id="sampleBadge">ESPERANDO RECORRIDO GUARDADO</span><span>REPRODUCCIÓN DE UNA CORRIDA GUARDADA</span></div>
+            <div class="chart-foot"><span id="sampleBadge">ESPERANDO DATOS DEL FDM</span><span>DATOS NUEVOS EN CADA CORRIDA</span></div>
           </section>
         </section>
       </section>
 
       <section class="model-notice" aria-label="Límite del modelo C172">
         <strong>AVISO Y LÍMITE DEL MODELO</strong>
-        <span id="modelNoticeText">El XML c172x marca el C172 como BETA y lo destina a educación y entretenimiento. Esta página reproduce telemetría obtenida con JSBSim 1.3.3; no ejecuta JSBSim ni representa o valida un vuelo real.</span>
+        <span id="modelNoticeText">El XML c172x marca el C172 como BETA y lo destina a educación y entretenimiento. El aviso de arranque depende del nivel de depuración; este puente fija debug_level=0 y captura la salida nativa, así que no lo imprime. Esta demostración no representa ni valida un vuelo real.</span>
       </section>
       <footer class="app-footer">
         <span>SIMULACIÓN JSBSIM · NO ES UN VUELO REAL</span>
-        <span id="footerSummary">La integral se recalcula a partir de las muestras guardadas; el motor JSBSim no se ejecuta en esta página.</span>
+        <span id="footerSummary">La integración se calcula sobre las muestras devueltas por el FDM.</span>
       </footer>
     </main>
   </div>
+  <script src="./config.js"></script>
   <script src="./vendor/phaser.min.js"></script>
   <script type="module" src="./main.js"></script>
+  <script src="./package-info.js"></script>
 </body>
 </html>
