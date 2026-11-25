@@ -24,6 +24,7 @@ const featuredProjects = [
     href: 'https://project-mri-production.up.railway.app/',
     action: 'Abrir proyecto',
     art: 'mri',
+    supportHref: 'https://stivenson.github.io/apoyar.html?project=project-mri',
   },
   {
     number: '02',
@@ -37,6 +38,7 @@ const featuredProjects = [
     href: 'https://stivenson.github.io/llm-directory.html',
     action: 'Explorar directorio',
     art: 'llm',
+    supportHref: 'https://stivenson.github.io/apoyar.html?project=directorio-llms',
   },
   {
     number: '03',
@@ -50,6 +52,7 @@ const featuredProjects = [
     href: 'https://stivenson.github.io/toc_support.html',
     action: 'Ver recurso',
     art: 'toc',
+    supportHref: 'https://stivenson.github.io/apoyar.html?project=toc-support',
   },
   {
     number: '04',
@@ -184,6 +187,9 @@ export function Portfolio() {
                 <a className="quest-card-action" href={project.href} target="_blank" rel="noopener noreferrer">
                   {project.action} <span aria-hidden="true">↗</span>
                 </a>
+                {project.supportHref && (
+                  <a className="quest-card-support" href={project.supportHref}>Apoyar este proyecto (opcional)</a>
+                )}
               </div>
             </article>
           ))}

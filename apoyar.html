@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Apoyo voluntario para proyectos gratuitos de Stivenson Rincón.">
+  <title>Apoyar un proyecto · Stivenson Rincón</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #070b13; color: #edf2f8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(ellipse at top, #142039, #070b13 65%); }
+    main { width: min(100%, 620px); padding: clamp(24px, 5vw, 44px); border: 1px solid #29364a; border-radius: 18px; background: rgba(12, 19, 31, .96); box-shadow: 0 24px 80px #0008; }
+    .eyebrow { margin: 0 0 12px; color: #8da6c9; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(28px, 6vw, 42px); line-height: 1.1; }
+    .intro { margin: 16px 0 24px; color: #bdc9d8; line-height: 1.65; }
+    .methods { display: grid; gap: 12px; }
+    .method, .copy-box { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 17px; border: 1px solid #344660; border-radius: 11px; color: #f4f7fb; background: #111c2d; text-decoration: none; }
+    .method:hover, button:hover { border-color: #76a9e8; background: #17263b; }
+    .method strong { display: block; }
+    .method small { display: block; margin-top: 3px; color: #aebdd0; }
+    .method[hidden], .copy-box[hidden], #pending[hidden] { display: none; }
+    .arrow { color: #a9c7ee; font-size: 20px; }
+    .copy-box { align-items: flex-start; flex-direction: column; }
+    .copy-box code { max-width: 100%; overflow-wrap: anywhere; color: #d5e7ff; }
+    button { border: 1px solid #415773; border-radius: 8px; padding: 9px 12px; color: #eef5ff; background: #1b2a3e; font: inherit; cursor: pointer; }
+    #pending { margin: 4px 0 0; color: #aebdd0; font-size: 14px; line-height: 1.5; }
+    #paypal-pending { margin: 4px 0 0; color: #aebdd0; font-size: 14px; line-height: 1.5; }
+    .disclosure { margin-top: 20px; padding-top: 17px; border-top: 1px solid #29364a; color: #9eafc4; font-size: 13px; line-height: 1.6; }
+    .back { display: inline-block; margin-top: 22px; color: #a9c7ee; font-size: 14px; text-decoration: none; }
+    .back:hover { text-decoration: underline; }
+    :focus-visible { outline: 3px solid #8fc4ff; outline-offset: 3px; }
+  </style>
+  <script src="donation-config.js"></script>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Aportes voluntarios</p>
+    <h1 id="title">Apoyar este proyecto</h1>
+    <p id="intro" class="intro"></p>
+    <section class="methods" aria-label="Formas de aportar">
+      <a id="paypal" class="method" hidden target="_blank" rel="noopener noreferrer">
+        <span><strong>PayPal</strong><small>Aporte voluntario</small></span><span class="arrow" aria-hidden="true">↗</span>
+      </a>
+      <a id="binance-link" class="method" hidden target="_blank" rel="noopener noreferrer">
+        <span><strong>Binance Pay</strong><small>Abrir el destino de pago</small></span><span class="arrow" aria-hidden="true">↗</span>
+      </a>
+      <div id="binance-copy" class="copy-box" hidden>
+        <strong id="binance-label">Binance Pay ID</strong>
+        <code id="binance-destination"></code>
+        <small>En Binance Pay, elige enviar y pega este ID.</small>
+        <small id="binance-network"></small>
+        <button id="copy" type="button">Copiar destino</button>
+      </div>
+      <p id="paypal-pending" role="status" hidden>PayPal.Me estará disponible cuando termine de configurarse.</p>
+      <p id="pending" role="status" hidden>Los medios de aporte se están configurando. Puedes volver más adelante.</p>
+    </section>
+    <p id="disclosure" class="disclosure"></p>
+    <a class="back" href="https://stivenson.github.io/">← Volver al portafolio</a>
+  </main>
+  <script>
+    (function () {
+      const projects = {
+        "directorio-llms": {
+          title: "Apoyar el Directorio de LLMs",
+          intro: "Si este directorio gratuito te resulta útil, puedes contribuir voluntariamente a mantenerlo y actualizarlo.",
+          disclosure: "El aporte es opcional. El directorio seguirá disponible sin pago."
+        },
+        "toc-support": {
+          title: "Apoyar Soporte en Crisis TOC",
+          intro: "Si este recurso gratuito te resulta útil, puedes contribuir voluntariamente a sus costes de operación.",
+          disclosure: "El aporte es completamente opcional y no cambia el acceso al recurso. Esta herramienta es de apoyo personal, no es atención clínica ni un servicio de emergencias."
+        },
+        "project-mri": {
+          title: "Apoyar la demo Project MRI",
+          intro: "Si esta demo gratuita te resulta útil, puedes contribuir voluntariamente a sus costes de alojamiento y operación.",
+          disclosure: "El aporte se recibe a título personal por Stivenson Rincón. No es una campaña oficial del Semillero DSI ni de la Universidad Simón Bolívar. El proyecto mantiene los créditos de todo su equipo."
+        }
+      };
+      const params = new URLSearchParams(window.location.search);
+      const project = projects[params.get("project")] || projects["directorio-llms"];
+      document.getElementById("title").textContent = project.title;
+      document.getElementById("intro").textContent = project.intro;
+      document.getElementById("disclosure").textContent = project.disclosure;
+      const config = window.DONATION_CONFIG || {};
+      const validHttps = function (value) {
+        try { return new URL(value).protocol === "https:" ? value : ""; }
+        catch (_) { return ""; }
+      };
+      const paypalUrl = validHttps(config.paypalUrl || "");
+      const paypal = document.getElementById("paypal");
+      if (paypalUrl) { paypal.href = paypalUrl; paypal.hidden = false; }
+      document.getElementById("paypal-pending").hidden = Boolean(paypalUrl);
+      const binancePaymentUrl = validHttps(config.binancePaymentUrl || "");
+      const binanceLink = document.getElementById("binance-link");
+      if (binancePaymentUrl) { binanceLink.href = binancePaymentUrl; binanceLink.hidden = false; }
+      const binanceDestination = String(config.binanceDestination || "").trim();
+      const binanceCopy = document.getElementById("binance-copy");
+      if (binanceDestination) {
+        document.getElementById("binance-label").textContent = config.binanceLabel || "Destino Binance";
+        document.getElementById("binance-destination").textContent = binanceDestination;
+        document.getElementById("binance-network").textContent = config.binanceNetwork
+          ? "Red / moneda: " + config.binanceNetwork : "";
+        binanceCopy.hidden = false;
+        document.getElementById("copy").addEventListener("click", async function () {
+          const status = document.getElementById("pending");
+          try {
+            await navigator.clipboard.writeText(binanceDestination);
+            status.textContent = "Destino Binance copiado.";
+          } catch (_) {
+            status.textContent = "No se pudo copiar automáticamente. Selecciona el destino y cópialo.";
+          }
+          status.hidden = false;
+        });
+      }
+      document.getElementById("pending").hidden = Boolean(paypalUrl || binancePaymentUrl || binanceDestination);
+    })();
+  </script>
+</body>
+</html>

@@ -532,6 +532,13 @@ body {
   text-decoration: none;
 }
 .quest-card-action:hover { color: #f5daa4; text-decoration: underline; }
+.quest-card-support {
+  margin-top: 8px;
+  color: #9cab96;
+  font-size: 10px;
+  text-decoration: none;
+}
+.quest-card-support:hover { color: #e7eee3; text-decoration: underline; }
 .quest-card-action span { font-size: 14px; }
 .quest-card--lead .quest-card-body { padding: clamp(22px, 3vw, 36px); }
 .quest-card--lead h3 { font-size: clamp(24px, 3vw, 34px); }
