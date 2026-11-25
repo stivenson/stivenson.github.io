@@ -16,9 +16,14 @@
     .methods { display: grid; gap: 12px; }
     .method, .copy-box { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 17px; border: 1px solid #344660; border-radius: 11px; color: #f4f7fb; background: #111c2d; text-decoration: none; }
     .method:hover, button:hover { border-color: #76a9e8; background: #17263b; }
+    .method-paypal, .copy-box-paypal { border-color: rgba(0, 156, 222, .38); background: linear-gradient(112deg, rgba(0, 156, 222, .15), #111c2d 58%, rgba(0, 48, 135, .12)); }
+    .method-paypal:hover { background: linear-gradient(112deg, rgba(0, 156, 222, .22), #17263b 58%, rgba(0, 48, 135, .17)); }
+    .method-binance, .copy-box-binance { border-color: rgba(240, 185, 11, .32); background: linear-gradient(112deg, rgba(240, 185, 11, .12), #111c2d 58%, rgba(240, 185, 11, .055)); }
+    .method-binance:hover { background: linear-gradient(112deg, rgba(240, 185, 11, .18), #17263b 58%, rgba(240, 185, 11, .09)); }
+    .copy-box-nequi { border-color: rgba(92, 45, 145, .55); background: linear-gradient(112deg, rgba(92, 45, 145, .23), #111c2d 58%, rgba(92, 45, 145, .10)); }
     .method strong { display: block; }
     .method small { display: block; margin-top: 3px; color: #aebdd0; }
-    .method[hidden], .copy-box[hidden], #pending[hidden], #paypal-pending-card[hidden] { display: none; }
+    .method[hidden], .copy-box[hidden], #pending[hidden], #paypal-pending-card[hidden], #nequi-qr[hidden] { display: none; }
     .arrow { color: #a9c7ee; font-size: 20px; }
     .brand-content { display: flex; min-width: 0; align-items: center; gap: 12px; }
     .brand-mark { width: 32px; height: 32px; flex: 0 0 auto; }
@@ -28,6 +33,9 @@
     .method-pending button:disabled { cursor: not-allowed; opacity: .6; }
     .copy-box { align-items: flex-start; flex-direction: column; }
     .copy-box code { max-width: 100%; overflow-wrap: anywhere; color: #d5e7ff; }
+    .nequi-heading { display: flex; align-items: center; gap: 10px; }
+    .nequi-mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 50%; color: #fff; background: #5c2d91; font-weight: 800; }
+    #nequi-qr { width: min(100%, 280px); height: auto; object-fit: contain; padding: 8px; border-radius: 8px; background: #fff; image-rendering: pixelated; }
     button { border: 1px solid #415773; border-radius: 8px; padding: 9px 12px; color: #eef5ff; background: #1b2a3e; font: inherit; cursor: pointer; }
     #pending { margin: 4px 0 0; color: #aebdd0; font-size: 14px; line-height: 1.5; }
     .disclosure { margin-top: 20px; padding-top: 17px; border-top: 1px solid #29364a; color: #9eafc4; font-size: 13px; line-height: 1.6; }
@@ -43,13 +51,13 @@
     <h1 id="title">Apoyar este proyecto</h1>
     <p id="intro" class="intro"></p>
     <section class="methods" aria-label="Formas de aportar">
-      <a id="paypal" class="method" hidden target="_blank" rel="noopener noreferrer">
+      <a id="paypal" class="method method-paypal" hidden target="_blank" rel="noopener noreferrer">
         <span class="brand-content">
           <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path fill="#009cde" d="M11 5h15c7 0 10 4 9 10-1 7-6 11-13 11h-5l-2 9H6l4-27z"/><path fill="#003087" d="M16 12h12c5 0 7 3 6 7-1 5-4 8-10 8h-4l-1 7h-7l3-22z"/></svg>
           <span><strong>PayPal</strong><small>Aporte voluntario</small></span>
         </span><span class="arrow" aria-hidden="true">↗</span>
       </a>
-      <div id="paypal-pending-card" class="method method-pending">
+      <div id="paypal-pending-card" class="method method-pending method-paypal">
         <span class="brand-content">
           <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path fill="#009cde" d="M11 5h15c7 0 10 4 9 10-1 7-6 11-13 11h-5l-2 9H6l4-27z"/><path fill="#003087" d="M16 12h12c5 0 7 3 6 7-1 5-4 8-10 8h-4l-1 7h-7l3-22z"/></svg>
           <span><strong>PayPal.Me</strong><small>El botón de aporte se activará cuando terminemos la configuración.</small></span>
@@ -57,13 +65,13 @@
         <a class="brand-info" href="https://pep.paypal.com/co/cshelp/article/%C2%BFqu%C3%A9-es-paypalme-help432?locale.x=es_CO" target="_blank" rel="noopener noreferrer">Conocer PayPal.Me <span aria-hidden="true">↗</span></a>
         <button type="button" disabled aria-disabled="true">En configuración</button>
       </div>
-      <a id="binance-link" class="method" hidden target="_blank" rel="noopener noreferrer">
+      <a id="binance-link" class="method method-binance" hidden target="_blank" rel="noopener noreferrer">
         <span class="brand-content">
           <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><g fill="#F0B90B"><path d="m20 2.5 5.5 5.5-5.5 5.5L14.5 8zM8 14l5.5 5.5L8 25l-5.5-5.5zM20 14l6 6-6 6-6-6zM32 14l5.5 5.5L32 25l-5.5-5.5zM20 25l5.5 5.5-5.5 5.5-5.5-5.5z"/></g></svg>
           <span><strong>Binance Pay</strong><small>Abrir el destino de pago</small></span>
         </span><span class="arrow" aria-hidden="true">↗</span>
       </a>
-      <div id="binance-copy" class="copy-box" hidden>
+      <div id="binance-copy" class="copy-box copy-box-binance" hidden>
         <a class="brand-info" href="https://pay.binance.com/es" target="_blank" rel="noopener noreferrer">
           <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><g fill="#F0B90B"><path d="m20 2.5 5.5 5.5-5.5 5.5L14.5 8zM8 14l5.5 5.5L8 25l-5.5-5.5zM20 14l6 6-6 6-6-6zM32 14l5.5 5.5L32 25l-5.5-5.5zM20 25l5.5 5.5-5.5 5.5-5.5-5.5z"/></g></svg>
           <span>Binance Pay <span aria-hidden="true">↗</span></span>
@@ -73,6 +81,12 @@
         <small>En Binance Pay, elige enviar y pega este ID.</small>
         <small id="binance-network"></small>
         <button id="copy" type="button">Copiar destino</button>
+      </div>
+      <div id="nequi-copy" class="copy-box copy-box-nequi">
+        <div class="nequi-heading"><span class="nequi-mark" aria-hidden="true">N</span><strong>Nequi · QR personal Bre‑B</strong></div>
+        <small>Escanéalo con la app de tu entidad para enviar un aporte voluntario.</small>
+        <img id="nequi-qr" src="assets/nequi-breb.png" alt="Código QR personal Bre‑B de Nequi para recibir aportes">
+        <small>Elige el monto que quieras aportar y confirma que el destinatario sea correcto.</small>
       </div>
       <p id="pending" role="status" hidden>Los medios de aporte se están configurando. Puedes volver más adelante.</p>
     </section>
@@ -134,7 +148,7 @@
           status.hidden = false;
         });
       }
-      document.getElementById("pending").hidden = Boolean(paypalUrl || binancePaymentUrl || binanceDestination);
+      document.getElementById("pending").hidden = true;
     })();
   </script>
 </body>
