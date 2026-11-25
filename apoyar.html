@@ -18,13 +18,18 @@
     .method:hover, button:hover { border-color: #76a9e8; background: #17263b; }
     .method strong { display: block; }
     .method small { display: block; margin-top: 3px; color: #aebdd0; }
-    .method[hidden], .copy-box[hidden], #pending[hidden] { display: none; }
+    .method[hidden], .copy-box[hidden], #pending[hidden], #paypal-pending-card[hidden] { display: none; }
     .arrow { color: #a9c7ee; font-size: 20px; }
+    .brand-content { display: flex; min-width: 0; align-items: center; gap: 12px; }
+    .brand-mark { width: 32px; height: 32px; flex: 0 0 auto; }
+    .brand-info { display: inline-flex; align-items: center; gap: 10px; margin: 2px 0 4px; color: #c8d8ef; font-size: 13px; font-weight: 600; text-decoration: none; }
+    .brand-info:hover { color: #fff; text-decoration: underline; }
+    .method-pending { flex-wrap: wrap; background: #0e1725; }
+    .method-pending button:disabled { cursor: not-allowed; opacity: .6; }
     .copy-box { align-items: flex-start; flex-direction: column; }
     .copy-box code { max-width: 100%; overflow-wrap: anywhere; color: #d5e7ff; }
     button { border: 1px solid #415773; border-radius: 8px; padding: 9px 12px; color: #eef5ff; background: #1b2a3e; font: inherit; cursor: pointer; }
     #pending { margin: 4px 0 0; color: #aebdd0; font-size: 14px; line-height: 1.5; }
-    #paypal-pending { margin: 4px 0 0; color: #aebdd0; font-size: 14px; line-height: 1.5; }
     .disclosure { margin-top: 20px; padding-top: 17px; border-top: 1px solid #29364a; color: #9eafc4; font-size: 13px; line-height: 1.6; }
     .back { display: inline-block; margin-top: 22px; color: #a9c7ee; font-size: 14px; text-decoration: none; }
     .back:hover { text-decoration: underline; }
@@ -39,10 +44,28 @@
     <p id="intro" class="intro"></p>
     <section class="methods" aria-label="Formas de aportar">
       <a id="paypal" class="method" hidden target="_blank" rel="noopener noreferrer">
-        <span><strong>PayPal</strong><small>Aporte voluntario</small></span><span class="arrow" aria-hidden="true">↗</span>
+        <span class="brand-content">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path fill="#009cde" d="M11 5h15c7 0 10 4 9 10-1 7-6 11-13 11h-5l-2 9H6l4-27z"/><path fill="#003087" d="M16 12h12c5 0 7 3 6 7-1 5-4 8-10 8h-4l-1 7h-7l3-22z"/></svg>
+          <span><strong>PayPal</strong><small>Aporte voluntario</small></span>
+        </span><span class="arrow" aria-hidden="true">↗</span>
+      </a>
+      <div id="paypal-pending-card" class="method method-pending">
+        <span class="brand-content">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path fill="#009cde" d="M11 5h15c7 0 10 4 9 10-1 7-6 11-13 11h-5l-2 9H6l4-27z"/><path fill="#003087" d="M16 12h12c5 0 7 3 6 7-1 5-4 8-10 8h-4l-1 7h-7l3-22z"/></svg>
+          <span><strong>PayPal.Me</strong><small>El botón de aporte se activará cuando terminemos la configuración.</small></span>
+        </span>
+        <a class="brand-info" href="https://pep.paypal.com/co/cshelp/article/%C2%BFqu%C3%A9-es-paypalme-help432?locale.x=es_CO" target="_blank" rel="noopener noreferrer">Conocer PayPal.Me <span aria-hidden="true">↗</span></a>
+        <button type="button" disabled aria-disabled="true">En configuración</button>
+      </div>
+      <a class="brand-info" href="https://pay.binance.com/es" target="_blank" rel="noopener noreferrer">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><g fill="#F0B90B"><path d="m20 2.5 5.5 5.5-5.5 5.5L14.5 8zM8 14l5.5 5.5L8 25l-5.5-5.5zM20 14l6 6-6 6-6-6zM32 14l5.5 5.5L32 25l-5.5-5.5zM20 25l5.5 5.5-5.5 5.5-5.5-5.5z"/></g></svg>
+        <span>Binance Pay <span aria-hidden="true">↗</span></span>
       </a>
       <a id="binance-link" class="method" hidden target="_blank" rel="noopener noreferrer">
-        <span><strong>Binance Pay</strong><small>Abrir el destino de pago</small></span><span class="arrow" aria-hidden="true">↗</span>
+        <span class="brand-content">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><g fill="#F0B90B"><path d="m20 2.5 5.5 5.5-5.5 5.5L14.5 8zM8 14l5.5 5.5L8 25l-5.5-5.5zM20 14l6 6-6 6-6-6zM32 14l5.5 5.5L32 25l-5.5-5.5zM20 25l5.5 5.5-5.5 5.5-5.5-5.5z"/></g></svg>
+          <span><strong>Binance Pay</strong><small>Abrir el destino de pago</small></span>
+        </span><span class="arrow" aria-hidden="true">↗</span>
       </a>
       <div id="binance-copy" class="copy-box" hidden>
         <strong id="binance-label">Binance ID</strong>
@@ -51,7 +74,6 @@
         <small id="binance-network"></small>
         <button id="copy" type="button">Copiar destino</button>
       </div>
-      <p id="paypal-pending" role="status" hidden>PayPal.Me estará disponible cuando termine de configurarse.</p>
       <p id="pending" role="status" hidden>Los medios de aporte se están configurando. Puedes volver más adelante.</p>
     </section>
     <p id="disclosure" class="disclosure"></p>
@@ -89,7 +111,7 @@
       const paypalUrl = validHttps(config.paypalUrl || "");
       const paypal = document.getElementById("paypal");
       if (paypalUrl) { paypal.href = paypalUrl; paypal.hidden = false; }
-      document.getElementById("paypal-pending").hidden = Boolean(paypalUrl);
+      document.getElementById("paypal-pending-card").hidden = Boolean(paypalUrl);
       const binancePaymentUrl = validHttps(config.binancePaymentUrl || "");
       const binanceLink = document.getElementById("binance-link");
       if (binancePaymentUrl) { binanceLink.href = binancePaymentUrl; binanceLink.hidden = false; }
